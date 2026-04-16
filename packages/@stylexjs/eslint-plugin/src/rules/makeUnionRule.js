@@ -13,6 +13,7 @@ import type {
   RuleCheck,
 } from '../stylex-valid-styles';
 import type { Expression, Pattern, Property } from 'estree';
+/*:: import { Rule } from 'eslint'; */
 
 import makeLiteralRule from './makeLiteralRule';
 
@@ -23,6 +24,7 @@ export default function makeUnionRule(
     node: Expression | Pattern,
     variables?: Variables,
     prop?: Property,
+    context?: Rule.RuleContext,
   ): RuleResponse => {
     const failedRules = [];
     for (const _rule of rules) {
@@ -33,7 +35,7 @@ export default function makeUnionRule(
             ? makeLiteralRule(_rule)
             : _rule;
 
-      const check = rule(node, variables, prop);
+      const check = rule(node, variables, prop, context);
       if (check === undefined) {
         // passes, that means we pass.
         return undefined;

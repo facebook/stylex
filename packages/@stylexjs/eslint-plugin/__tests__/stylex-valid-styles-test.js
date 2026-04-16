@@ -1264,8 +1264,8 @@ revert`,
         const styles = stylex.create({
           default: {
             borderWidth: '1px',
-    borderStyle: 'solid',
-    borderColor: 'blue',
+            borderStyle: 'solid',
+            borderColor: 'blue',
           }
         });
       `,
@@ -1281,8 +1281,8 @@ revert`,
         const styles = stylex.create({
           default: {
             borderWidth: '1px',
-    borderStyle: 'solid',
-    borderColor: 'blue',
+            borderStyle: 'solid',
+            borderColor: 'blue',
           }
         });
       `,
@@ -1306,8 +1306,8 @@ revert`,
         const styles = stylex.create({
           default: {
             borderWidth: '1px',
-    borderStyle: 'solid',
-    borderColor: 'rgba(var(--black), 0.0975)',
+            borderStyle: 'solid',
+            borderColor: 'rgba(var(--black), 0.0975)',
           }
         });
       `,
@@ -1323,8 +1323,8 @@ revert`,
         const styles = stylex.create({
           default: {
             borderWidth: '1px',
-    borderStyle: 'solid',
-    borderColor: 'rgba(var(--black), 0.0975)',
+            borderStyle: 'solid',
+            borderColor: 'rgba(var(--black), 0.0975)',
           }
         });
       `,
@@ -1348,8 +1348,8 @@ revert`,
         const styles = stylex.create({
           default: {
             borderWidth: '1px',
-    borderStyle: 'solid',
-    borderColor: 'blue',
+            borderStyle: 'solid',
+            borderColor: 'blue',
           }
         });
       `,
@@ -1365,8 +1365,8 @@ revert`,
         const styles = stylex.create({
           default: {
             borderWidth: '1px',
-    borderStyle: 'solid',
-    borderColor: 'blue',
+            borderStyle: 'solid',
+            borderColor: 'blue',
           }
         });
       `,
@@ -1390,8 +1390,8 @@ revert`,
         const styles = stylex.create({
           default: {
             borderWidth: '1px',
-    borderStyle: 'solid',
-    borderColor: 'blue',
+            borderStyle: 'solid',
+            borderColor: 'blue',
           }
         });
       `,
@@ -1407,8 +1407,8 @@ revert`,
         const styles = stylex.create({
           default: {
             borderWidth: '1px',
-    borderStyle: 'solid',
-    borderColor: 'blue',
+            borderStyle: 'solid',
+            borderColor: 'blue',
           }
         });
       `,
@@ -1432,8 +1432,8 @@ revert`,
         const styles = stylex.create({
           default: {
             borderWidth: '1px',
-    borderStyle: 'solid',
-    borderColor: 'blue',
+            borderStyle: 'solid',
+            borderColor: 'blue',
           }
         });
       `,
@@ -1449,8 +1449,8 @@ revert`,
         const styles = stylex.create({
           default: {
             borderWidth: '1px',
-    borderStyle: 'solid',
-    borderColor: 'blue',
+            borderStyle: 'solid',
+            borderColor: 'blue',
           }
         });
       `,
@@ -1474,7 +1474,7 @@ revert`,
         const styles = stylex.create({
           default: {
             borderWidth: '1px',
-    borderStyle: 'solid',
+            borderStyle: 'solid',
           }
         });
       `,
@@ -1490,7 +1490,7 @@ revert`,
         const styles = stylex.create({
           default: {
             borderWidth: '1px',
-    borderStyle: 'solid',
+            borderStyle: 'solid',
           }
         });
       `,
@@ -1514,7 +1514,7 @@ revert`,
         const styles = stylex.create({
           default: {
             borderWidth: '1px',
-    borderColor: 'var(--foo)',
+            borderColor: 'var(--foo)',
           }
         });
       `,
@@ -1530,7 +1530,7 @@ revert`,
         const styles = stylex.create({
           default: {
             borderWidth: '1px',
-    borderColor: 'var(--foo)',
+            borderColor: 'var(--foo)',
           }
         });
       `,
@@ -2816,9 +2816,9 @@ eslintTester.run('stylex-valid-styles [autofixers]', rule.default, {
         const styles = stylex.create({
           default: {
             gridColumnEnd: '4',
-    gridColumnStart: '2',
-    gridRowEnd: '3',
-    gridRowStart: '1',
+            gridColumnStart: '2',
+            gridRowEnd: '3',
+            gridRowStart: '1',
           }
         });
       `,
@@ -2834,9 +2834,9 @@ eslintTester.run('stylex-valid-styles [autofixers]', rule.default, {
         const styles = stylex.create({
           default: {
             gridColumnEnd: '4',
-    gridColumnStart: '2',
-    gridRowEnd: '3',
-    gridRowStart: '1',
+            gridColumnStart: '2',
+            gridRowEnd: '3',
+            gridRowStart: '1',
           }
         });
       `,
@@ -2861,7 +2861,7 @@ eslintTester.run('stylex-valid-styles [autofixers]', rule.default, {
         const styles = stylex.create({
           default: {
             gridColumnEnd: '3',
-    gridColumnStart: '1',
+            gridColumnStart: '1',
           }
         });
       `,
@@ -2888,7 +2888,7 @@ eslintTester.run('stylex-valid-styles [autofixers]', rule.default, {
         const styles = stylex.create({
           default: {
             gridRowEnd: '3',
-    gridRowStart: '1',
+            gridRowStart: '1',
           }
         });
       `,
@@ -2915,7 +2915,7 @@ eslintTester.run('stylex-valid-styles [autofixers]', rule.default, {
         const styles = stylex.create({
           default: {
             gridTemplateColumns: '120px 1fr',
-    gridTemplateRows: 'auto 1fr',
+            gridTemplateRows: 'auto 1fr',
           }
         });
       `,
@@ -2942,7 +2942,7 @@ eslintTester.run('stylex-valid-styles [autofixers]', rule.default, {
         const styles = stylex.create({
           default: {
             rowGap: '10px',
-    columnGap: '20px',
+            columnGap: '20px',
           }
         });
       `,
@@ -2969,7 +2969,7 @@ eslintTester.run('stylex-valid-styles [autofixers]', rule.default, {
         const styles = stylex.create({
           default: {
             rowGap: 10,
-    columnGap: 10,
+            columnGap: 10,
           }
         });
       `,
@@ -3014,9 +3014,9 @@ eslintTester.run('stylex-valid-styles [autofixers]', rule.default, {
         const styles = stylex.create({
           default: {
             gridColumnEnd: 'header',
-    gridColumnStart: 'header',
-    gridRowEnd: 'header',
-    gridRowStart: 'header',
+            gridColumnStart: 'header',
+            gridRowEnd: 'header',
+            gridRowStart: 'header',
           }
         });
       `,
@@ -3051,8 +3051,8 @@ eslintTester.run('stylex-valid-styles [autofixers]', rule.default, {
         const styles = stylex.create({
           default: {
             animationDuration: '1s',
-    animationTimingFunction: 'ease-in',
-    animationName: 'fadeIn',
+            animationTimingFunction: 'ease-in',
+            animationName: 'fadeIn',
           }
         });
       `,
@@ -3077,9 +3077,9 @@ eslintTester.run('stylex-valid-styles [autofixers]', rule.default, {
         const styles = stylex.create({
           default: {
             fontFamily: 'Arial',
-    fontWeight: 'bold',
-    fontSize: '16px',
-    lineHeight: 1.5,
+            fontWeight: 'bold',
+            fontSize: '16px',
+            lineHeight: 1.5,
           }
         });
       `,
@@ -3105,8 +3105,8 @@ eslintTester.run('stylex-valid-styles [autofixers]', rule.default, {
         const styles = stylex.create({
           default: {
             fontFamily: 'Arial',
-    fontWeight: 700,
-    fontSize: '16px',
+            fontWeight: 700,
+            fontSize: '16px',
           }
         });
       `,
@@ -3195,8 +3195,8 @@ eslintTester.run('stylex-valid-styles [autofixers]', rule.default, {
         const styles = stylex.create({
           default: {
             borderWidth: '1px',
-    borderStyle: 'solid',
-    borderColor: 'blue',
+            borderStyle: 'solid',
+            borderColor: 'blue',
           }
         });
       `,
@@ -3277,7 +3277,7 @@ eslintTester.run('stylex-valid-styles [autofixers]', rule.default, {
         const styles = stylex.create({
           default: {
             gridColumnStart: '2',
-    gridRowStart: '1',
+            gridRowStart: '1',
           }
         });
       `,
