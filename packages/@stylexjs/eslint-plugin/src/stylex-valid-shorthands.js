@@ -14,10 +14,7 @@ import type {
   Node,
   Property,
   ObjectExpression,
-  Comment,
 } from 'estree';
-import type { SourceCode } from 'eslint/eslint-rule';
-import type { Token } from 'eslint/eslint-ast';
 import {
   createBlockInlineTransformer,
   createSpecificTransformer,
@@ -25,6 +22,7 @@ import {
 } from './utils/splitShorthands.js';
 import { CANNOT_FIX } from './utils/splitShorthands.js';
 import getSourceCode from './utils/getSourceCode';
+import getNodeIndentation from './utils/getNodeIndentation';
 import createImportTracker from './utils/createImportTracker';
 /*:: import { Rule } from 'eslint'; */
 
@@ -272,38 +270,5 @@ const stylexValidShorthands = {
     };
   },
 };
-
-function isSameLine(
-  aNode: Property | Comment | Token,
-  bNode: Property | Comment | Token,
-): boolean {
-  return Boolean(
-    aNode.loc && bNode.loc && aNode.loc?.start.line === bNode.loc?.start.line,
-  );
-}
-
-function getNodeIndentation(
-  sourceCode: SourceCode,
-  node: Property | Comment,
-): string {
-  const tokenBefore = sourceCode.getTokenBefore(node, {
-    includeComments: false,
-  });
-
-  const isTokenBeforeSameLineAsNode =
-    !!tokenBefore && isSameLine(tokenBefore, node);
-
-  const sliceStart =
-    isTokenBeforeSameLineAsNode && tokenBefore?.loc
-      ? tokenBefore.loc.end.column
-      : 0;
-
-  return node?.loc
-    ? sourceCode.lines[node.loc.start.line - 1].slice(
-        sliceStart,
-        node.loc.start.column,
-      )
-    : '';
-}
 
 export default stylexValidShorthands as typeof stylexValidShorthands;

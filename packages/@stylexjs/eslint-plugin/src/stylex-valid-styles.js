@@ -41,6 +41,8 @@ import isStylexResolvedVarsToken from './rules/isStylexResolvedVarsToken';
 import isCSSVariable from './rules/isCSSVariable';
 import evaluate from './utils/evaluate';
 import resolveKey from './utils/resolveKey';
+import formatPropertiesWithNodeIndentation from './utils/formatPropertiesWithNodeIndentation';
+import getSourceCode from './utils/getSourceCode';
 import {
   CSSPropertyKeys,
   CSSProperties,
@@ -132,12 +134,25 @@ const serializeValue = (propertyKey: string, val: number | string): string => {
   return `'${escaped}'`;
 };
 
+const formatExpandedProperties = (
+  prop: $ReadOnly<Property>,
+  expanded: $ReadOnlyArray<$ReadOnly<[string, number | string]>>,
+  context?: Rule.RuleContext,
+): string => {
+  const sourceCode = context != null ? getSourceCode(context) : undefined;
+  const properties = expanded.map(
+    ([key, value]) => `${key}: ${serializeValue(key, value)}`,
+  );
+  return formatPropertiesWithNodeIndentation(prop, properties, sourceCode);
+};
+
 const showErrorWithFix =
   (message: string, propertyKey: string): RuleCheck =>
   (
     node: $ReadOnly<Expression | Pattern>,
     _variables?: Variables,
     prop?: $ReadOnly<Property>,
+    context?: Rule.RuleContext,
   ): RuleResponse => {
     const response: $NonMaybeType<RuleResponse> = { message };
     const shorthandProp = shorthandExpansionMap[propertyKey];
@@ -157,9 +172,7 @@ const showErrorWithFix =
       // Cannot be auto-fixed
       return response;
     }
-    const newPropertiesText = expanded
-      .map(([key, value]) => `${key}: ${serializeValue(key, value)}`)
-      .join(',\n    ');
+    const newPropertiesText = formatExpandedProperties(prop, expanded, context);
     const fixFn = (fixer: Rule.RuleFixer) => {
       return fixer.replaceText(prop, newPropertiesText);
     };
@@ -767,7 +780,7 @@ const stylexValidStyles = {
           const propCheck: RuleCheck = CSSPropertyReplacements[key];
           // eslint-disable-next-line no-unused-vars
           const val: Property = style;
-          const check = propCheck(style.value, variables, style);
+          const check = propCheck(style.value, variables, style, context);
           if (check != null) {
             const { message } = check;
             const { suggest } = check;
@@ -902,9 +915,11 @@ const stylexValidStyles = {
                   canFix &&
                   !(expanded.length === 1 && expanded[0]?.[1] === CANNOT_FIX);
                 if (isFixable) {
-                  const newPropertiesText = expanded
-                    .map(([k, v]) => `${k}: ${serializeValue(k, v)}`)
-                    .join(',\n    ');
+                  const newPropertiesText = formatExpandedProperties(
+                    style,
+                    expanded,
+                    context,
+                  );
                   const fixFn = (fixer: Rule.RuleFixer) =>
                     fixer.replaceText(style, newPropertiesText);
                   // animation is suggest-only since animationName needs keyframes()

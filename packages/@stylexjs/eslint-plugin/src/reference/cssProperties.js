@@ -23,6 +23,8 @@ import isPercentage from '../rules/isPercentage';
 import isAbsoluteLength from '../rules/isAbsoluteLength';
 import isRelativeLength from '../rules/isRelativeLength';
 import { borderSplitter } from '../utils/split-css-value';
+import formatPropertiesWithNodeIndentation from '../utils/formatPropertiesWithNodeIndentation';
+import getSourceCode from '../utils/getSourceCode';
 
 export type RuleResponse = void | {
   message: string,
@@ -37,6 +39,7 @@ export type RuleCheck = (
   node: $ReadOnly<Expression | Pattern>,
   variables?: Variables,
   prop?: $ReadOnly<Property>,
+  context?: Rule.RuleContext,
 ) => RuleResponse;
 
 export type Variables = $ReadOnlyMap<string, Expression | 'ARG'>;
@@ -527,9 +530,23 @@ const serializeValue = (propertyKey: string, val: number | string): string => {
   return `'${escaped}'`;
 };
 
+const formatReplacementProperties = (
+  prop: $ReadOnly<Property>,
+  properties: $ReadOnlyArray<string>,
+  context?: Rule.RuleContext,
+): string => {
+  const sourceCode = context != null ? getSourceCode(context) : undefined;
+  return formatPropertiesWithNodeIndentation(prop, properties, sourceCode);
+};
+
 const border =
   (suffix: string = ''): RuleCheck =>
-  (node: Expression | Pattern, _variables?: Variables, prop?: Property) => {
+  (
+    node: Expression | Pattern,
+    _variables?: Variables,
+    prop?: Property,
+    context?: Rule.RuleContext,
+  ) => {
     const response: $NonMaybeType<RuleResponse> = {
       message: `The 'border${suffix}' property is not supported. Use the 'border${suffix}Width', 'border${suffix}Style' and 'border${suffix}Color' properties instead.`,
     };
@@ -569,7 +586,10 @@ const border =
               `border${suffix}Color: ${serializeValue(`border${suffix}Color`, color)}`,
             );
           }
-          return fixer.replaceText(prop, newRules.join(',\n    '));
+          return fixer.replaceText(
+            prop,
+            formatReplacementProperties(prop, newRules, context),
+          );
         };
         response.fix = fixFn;
         response.suggest = {
