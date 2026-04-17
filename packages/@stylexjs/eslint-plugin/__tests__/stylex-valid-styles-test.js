@@ -801,6 +801,31 @@ eslintTester.run('stylex-valid-styles', rule.default, {
       },
     });
     `,
+    // test for firstThatWorks
+    `
+    import stylex from '@stylexjs/stylex';
+    stylex.create({
+      default: {
+        position: stylex.firstThatWorks('sticky', 'fixed'),
+      },
+    });
+    `,
+    `
+    import * as stylex from '@stylexjs/stylex';
+    stylex.create({
+      default: {
+        display: stylex.firstThatWorks('grid', 'flex'),
+      },
+    });
+    `,
+    `
+    import { create, firstThatWorks } from '@stylexjs/stylex';
+    create({
+      default: {
+        position: firstThatWorks('sticky', 'fixed'),
+      },
+    });
+    `,
     // test for ternary and logical expressions
     {
       code: `
@@ -2353,6 +2378,58 @@ revert`,
 none
 a CSS Variable
 a \`positionTry(...)\` function call, a reference to it, or a list of references
+null
+initial
+inherit
+unset
+revert`,
+        },
+      ],
+    },
+    // test for firstThatWorks with an invalid argument value
+    {
+      code: `
+        import stylex from '@stylexjs/stylex';
+        stylex.create({
+          default: {
+            position: stylex.firstThatWorks('invalid-value', 'fixed'),
+          },
+        });
+      `,
+      errors: [
+        {
+          message: `position value must be one of:
+static
+relative
+absolute
+sticky
+fixed
+null
+initial
+inherit
+unset
+revert`,
+        },
+      ],
+    },
+    // test for firstThatWorks with an invalid argument value in second position
+    {
+      code: `
+        import stylex from '@stylexjs/stylex';
+        stylex.create({
+          default: {
+            position: stylex.firstThatWorks('fixed', 'invalid-value'),
+          },
+        });
+      `,
+      errors: [
+        {
+          message: `position value must be one of:
+static
+relative
+absolute
+sticky
+fixed
 null
 initial
 inherit
