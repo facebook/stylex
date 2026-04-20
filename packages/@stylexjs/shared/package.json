@@ -1,6 +1,6 @@
 {
   "name": "@stylexjs/shared",
-  "version": "0.18.2",
+  "version": "0.18.3",
   "main": "lib/index.js",
   "repository": {
     "type": "git",

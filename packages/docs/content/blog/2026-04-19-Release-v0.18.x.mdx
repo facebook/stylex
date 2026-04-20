@@ -11,8 +11,9 @@ tags:
 ---
 
 StyleX v0.18 adds compile-time environment values with `stylex.env`, a new
-`@stylexjs/create` scaffolding CLI, Bun support in `@stylexjs/unplugin`, and a
-couple of ergonomics improvements for writing and applying styles.
+`@stylexjs/create` scaffolding CLI, Bun support in `@stylexjs/unplugin`,
+improvements to the theming and linting workflows, and better tooling for
+debugging StyleX in development.
 
 ## `stylex.env` for compile-time constants and shareable tokens
 
@@ -98,6 +99,15 @@ await Bun.build({
 For Bun's dev server, you can also use the dedicated Bun plugin entrypoint from
 `@stylexjs/unplugin/bun`.
 
+## StyleX Dev Tools Extension
+
+A StyleX devtools extensions is now available in the
+[Chrome Web Store](https://chromewebstore.google.com/detail/stylex-devtools/pfcoadoepdjlhhnchklcinajnmmninem).
+
+It shows you exactly styles applied, the source of each style object, and give
+you a convenient and simple way to override styles on individual elements
+without accidentally modifying an atomic CSS rule.
+
 ## `stylex.attrs` is back
 
 We also brought back `stylex.attrs`, which is especially useful for SSR and
@@ -134,6 +144,27 @@ This compiles to the same output as:
 The `sx` prop is enabled by default and the prop name can be customised. The
 output can also be customised to use `stylex.attrs` instead of `stylex.props`.
 
+## Self-referencing variables in `defineVars`
+
+`stylex.defineVars` now supports zero-argument functions to define values for
+variables that depend on other variables in the same set.
+
+```tsx title="colors.stylex.ts"
+import * as stylex from '@stylexjs/stylex';
+
+export const colors = stylex.defineVars({
+  text: 'black',
+  textMuted: () => `color-mix(${colors.text}, transparent 50%)`,
+});
+```
+
+This pattern can be very useful as their values will always reflect the
+derivation based on the _current_ value of the other variables, with no need to
+override them in themes at all. However, you can optionally override them in
+themes if you want to deviate from the default derivation.
+
+This pattern is particularly useful for design systems.
+
 ## Selector and layering improvements
 
 `stylex.when` now supports attribute selectors in addition to pseudo-classes,
@@ -149,6 +180,8 @@ them to avoid naming collisions.
 - Fixed Bun and unplugin integration details, including emitted bundle handling.
 - Fixed priority calculation for compound pseudo selectors.
 - Added shorthand expansion support for `flex` and `grid` in the ESLint plugin.
+- Added shorthand expansion support for `gap` and `gridGap` in the ESLint
+  plugin.
 - Fixed a number of ESLint false positives and numeric-value edge cases.
 
 As always, thanks to everyone filing issues, contributing fixes, and trying
