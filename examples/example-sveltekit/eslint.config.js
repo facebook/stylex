@@ -5,17 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 import js from '@eslint/js';
+import { defineConfig } from 'eslint/config';
 import globals from 'globals';
 import stylexPlugin from '@stylexjs/eslint-plugin';
-import reactHooks from 'eslint-plugin-react-hooks';
-import reactRefresh from 'eslint-plugin-react-refresh';
+import svelte from 'eslint-plugin-svelte';
 import tseslint from 'typescript-eslint';
-import { defineConfig, globalIgnores } from 'eslint/config';
-import { dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 const stylexRules = {
   '@stylexjs/valid-styles': 'error',
   '@stylexjs/no-unused': 'error',
@@ -24,20 +19,21 @@ const stylexRules = {
 };
 
 export default defineConfig([
-  globalIgnores(['dist']),
   {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      js.configs.recommended,
-      tseslint.configs.recommended,
-      reactHooks.configs['recommended-latest'],
-      reactRefresh.configs.vite,
-    ],
+    ignores: ['.svelte-kit/**', 'build/**', 'node_modules/**'],
+  },
+  js.configs.recommended,
+  ...tseslint.configs.recommended,
+  ...svelte.configs['flat/recommended'],
+  {
+    files: ['**/*.{js,ts,svelte}'],
     languageOptions: {
-      ecmaVersion: 2020,
-      globals: globals.browser,
+      globals: {
+        ...globals.browser,
+        ...globals.node,
+      },
       parserOptions: {
-        tsconfigRootDir: __dirname,
+        parser: tseslint.parser,
       },
     },
     plugins: {
