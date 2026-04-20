@@ -44,16 +44,3 @@ const styles = stylex.create({
   },
 });
 ```
-
-Function values are also supported for untyped variable leaves. These functions
-run at compile time and can reference other keys from the same `defineVars`
-group. The output remains a normal CSS variable reference.
-
-```tsx
-import * as stylex from '@stylexjs/stylex';
-
-export const colors = stylex.defineVars({
-  text: 'black',
-  textMuted: () => `color-mix(${colors.text}, transparent 50%)`,
-});
-```
