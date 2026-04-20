@@ -31,12 +31,16 @@
     "@stylexjs/shared-ui": "0.18.2"
   },
   "devDependencies": {
+    "@stylexjs/eslint-plugin": "0.18.2",
     "@stylexjs/unplugin": "0.18.2",
+    "@typescript-eslint/parser": "^8.58.2",
     "@cloudflare/vite-plugin": "^1.15.2",
     "@cloudflare/workers-types": "^4.20260120.0",
     "@types/node": "^24.10.1",
     "@types/react": "^19.2.6",
     "@types/react-dom": "^19.2.3",
+    "eslint": "^9.39.1",
+    "shx": "^0.4.0",
     "typescript": "^5.9.3",
     "vite": "^7.2.4",
     "wrangler": "^4.50.0"

@@ -28,6 +28,7 @@
     "@vitejs/plugin-react": "^4.5.2",
     "@vitejs/plugin-rsc": "^0.5.3",
     "cross-env": "^10.1.0",
+    "shx": "^0.4.0",
     "typescript": "^5.9.3",
     "vite": "^7.2.4"
   },

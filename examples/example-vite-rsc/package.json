@@ -16,11 +16,15 @@
     "@stylexjs/shared-ui": "0.18.2"
   },
   "devDependencies": {
+    "@stylexjs/eslint-plugin": "0.18.2",
+    "@typescript-eslint/parser": "^8.58.2",
     "@types/react": "^19.2.6",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "latest",
     "@vitejs/plugin-rsc": "latest",
+    "eslint": "^9.39.1",
     "rsc-html-stream": "^0.0.7",
+    "shx": "^0.4.0",
     "vite": "^7.1.12",
     "@stylexjs/unplugin": "0.18.2"
   }

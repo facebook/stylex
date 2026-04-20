@@ -26,6 +26,7 @@
     "@typescript-eslint/parser": "^8.48.1",
     "eslint": "^9.39.1",
     "eslint-config-next": "^16.0.6",
+    "shx": "^0.4.0",
     "typescript": "^5.9.3",
     "client-only": "0.0.1"
   }

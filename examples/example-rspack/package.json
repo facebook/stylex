@@ -15,7 +15,10 @@
   "devDependencies": {
     "@rspack/cli": "^1.6.4",
     "@rspack/core": "^1.6.4",
+    "@stylexjs/eslint-plugin": "0.18.2",
     "css-loader": "^7.1.2",
-    "@stylexjs/unplugin": "0.18.2"
+    "@stylexjs/unplugin": "0.18.2",
+    "eslint": "^9.39.1",
+    "shx": "^0.4.0"
   }
 }
