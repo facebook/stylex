@@ -3,6 +3,7 @@
   "pages": [
     "./create.mdx",
     "./props.mdx",
+    "./attrs.mdx",
     "./defineConsts.mdx",
     "./defineVars.mdx",
     "./createTheme.mdx",
