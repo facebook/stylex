@@ -4572,10 +4572,10 @@
   resolved "https://registry.npmjs.org/@rolldown/pluginutils/-/pluginutils-1.0.0-beta.53.tgz"
   integrity sha512-vENRlFU4YbrwVqNDZ7fLvy+JR1CRkyr01jhSiDpE1u6py3OMzQfztQU2jxykW3ALNxO4kSlqIDeYyD0Y9RcQeQ==
 
-"@rolldown/pluginutils@1.0.0-rc.2":
-  version "1.0.0-rc.2"
-  resolved "https://registry.npmjs.org/@rolldown/pluginutils/-/pluginutils-1.0.0-rc.2.tgz"
-  integrity sha512-izyXV/v+cHiRfozX62W9htOAvwMo4/bXKDrQ+vom1L1qRuexPock/7VZDAhnpHCLNejd3NJ6hiab+tO0D44Rgw==
+"@rolldown/pluginutils@1.0.0-rc.15":
+  version "1.0.0-rc.15"
+  resolved "https://registry.yarnpkg.com/@rolldown/pluginutils/-/pluginutils-1.0.0-rc.15.tgz#e75d7731593e195d23710f9ff49bf5c745c96682"
+  integrity sha512-UromN0peaE53IaBRe9W7CjrZgXl90fqGpK+mIZbA3qSTeYqg3pqpROBdIPvOG3F5ereDHNwoHBI2e50n1BDr1g==
 
 "@rollup/plugin-alias@^5.1.1":
   version "5.1.1"
@@ -6515,20 +6515,19 @@
     "@types/babel__core" "^7.20.5"
     react-refresh "^0.17.0"
 
-"@vitejs/plugin-rsc@^0.5.3", "@vitejs/plugin-rsc@^0.5.9", "@vitejs/plugin-rsc@latest":
-  version "0.5.19"
-  resolved "https://registry.npmjs.org/@vitejs/plugin-rsc/-/plugin-rsc-0.5.19.tgz"
-  integrity sha512-YuRKVEOYQFq4OdLKIoGpLKL0y0fyhWjjEDVHEIvPsXGk+jQ+uVbuM6hzVseb6N95x8cbdDGUe3m+qNU1dPldrg==
+"@vitejs/plugin-rsc@^0.5.24", "@vitejs/plugin-rsc@^0.5.9", "@vitejs/plugin-rsc@latest":
+  version "0.5.24"
+  resolved "https://registry.yarnpkg.com/@vitejs/plugin-rsc/-/plugin-rsc-0.5.24.tgz#ecef2689a72f409fff18c352398eba408a646a69"
+  integrity sha512-FQ7o1Zf1GUB8L5qlIuV2mvIv/KahG2qUYW2gMpxyIN3zF7voDsfvA/t8w/TLjYC0T6p3JwMnK3N+YzMGf/m75A==
   dependencies:
-    "@rolldown/pluginutils" "1.0.0-rc.2"
+    "@rolldown/pluginutils" "1.0.0-rc.15"
     es-module-lexer "^2.0.0"
     estree-walker "^3.0.3"
     magic-string "^0.30.21"
-    periscopic "^4.0.2"
-    srvx "^0.10.1"
+    srvx "^0.11.15"
     strip-literal "^3.1.0"
-    turbo-stream "^3.1.0"
-    vitefu "^1.1.1"
+    turbo-stream "^3.2.0"
+    vitefu "^1.1.3"
 
 "@vitest/browser@^4.0.13":
   version "4.0.18"
@@ -7694,9 +7693,9 @@ base64-js@^1.3.1:
   integrity sha512-AKpaYlHn8t4SVbOHCy+b5+KKgvR4vrsD8vbvrbiQJps7fKDTkjkDry6ji0rUJjC0kzbNePLwzxq8iypo41qeWA==
 
 baseline-browser-mapping@^2.8.25, baseline-browser-mapping@^2.9.0, baseline-browser-mapping@^2.9.14, baseline-browser-mapping@^2.9.19:
-  version "2.10.16"
-  resolved "https://registry.yarnpkg.com/baseline-browser-mapping/-/baseline-browser-mapping-2.10.16.tgz#ef80cf218a53f165689a6e32ffffdca1f35d979c"
-  integrity sha512-Lyf3aK28zpsD1yQMiiHD4RvVb6UdMoo8xzG2XzFIfR9luPzOpcBlAsT/qfB1XWS1bxWT+UtE4WmQgsp297FYOA==
+  version "2.10.21"
+  resolved "https://registry.yarnpkg.com/baseline-browser-mapping/-/baseline-browser-mapping-2.10.21.tgz#136f9f181ee0d7ca6e3edbf42d9559763d2c1141"
+  integrity sha512-Q+rUQ7Uz8AHM7DEaNdwvfFCTq7a43lNTzuS94eiWqwyxfV/wJv+oUivef51T91mmRY4d4A1u9rcSvkeufCVXlA==
 
 basic-ftp@^5.0.2:
   version "5.2.0"
@@ -12710,7 +12709,7 @@ is-reference@1.2.1:
   dependencies:
     "@types/estree" "*"
 
-is-reference@^3.0.2, is-reference@^3.0.3:
+is-reference@^3.0.3:
   version "3.0.3"
   resolved "https://registry.npmjs.org/is-reference/-/is-reference-3.0.3.tgz"
   integrity sha512-ixkJoqQvAP88E6wLydLGGqCJsrFUnqoH6HnaczB8XmDH1oaWU+xxdptvikTgaEhtZ53Ky6YXiBuUI2WXLMCwjw==
@@ -15703,15 +15702,6 @@ pend@~1.2.0:
   resolved "https://registry.npmjs.org/pend/-/pend-1.2.0.tgz"
   integrity sha512-F3asv42UuXchdzt+xXqfW1OGlVBe+mxa2mqI0pg5yAHZPvFmY3Y6drSf/GQ1A86WgWEN9Kzh/WrgKa6iGcHXLg==
 
-periscopic@^4.0.2:
-  version "4.0.2"
-  resolved "https://registry.npmjs.org/periscopic/-/periscopic-4.0.2.tgz"
-  integrity sha512-sqpQDUy8vgB7ycLkendSKS6HnVz1Rneoc3Rc+ZBUCe2pbqlVuCC5vF52l0NJ1aiMg/r1qfYF9/myz8CZeI2rjA==
-  dependencies:
-    "@types/estree" "*"
-    is-reference "^3.0.2"
-    zimmerframe "^1.0.0"
-
 picocolors@^1.0.0, picocolors@^1.1.0, picocolors@^1.1.1, picocolors@~1.1.1:
   version "1.1.1"
   resolved "https://registry.npmjs.org/picocolors/-/picocolors-1.1.1.tgz"
@@ -18261,10 +18251,10 @@ sprintf-js@~1.0.2:
   resolved "https://registry.npmjs.org/sprintf-js/-/sprintf-js-1.0.3.tgz"
   integrity sha512-D9cPgkvLlV3t3IzL0D0YLvGA9Ahk4PcvVwUbN0dSGr1aP0Nrt4AEnTUbuGvquEC0mA64Gqt1fzirlRs5ibXx8g==
 
-srvx@^0.10.1:
-  version "0.10.1"
-  resolved "https://registry.npmjs.org/srvx/-/srvx-0.10.1.tgz"
-  integrity sha512-A//xtfak4eESMWWydSRFUVvCTQbSwivnGCEf8YGPe2eHU0+Z6znfUTCPF0a7oV3sObSOcrXHlL6Bs9vVctfXdg==
+srvx@^0.11.15:
+  version "0.11.15"
+  resolved "https://registry.yarnpkg.com/srvx/-/srvx-0.11.15.tgz#51c08f993bb116f5821ec929a466a29e8d5c7b61"
+  integrity sha512-iXsux0UcOjdvs0LCMa2Ws3WwcDUozA3JN3BquNXkaFPP7TpRqgunKdEgoZ/uwb1J6xaYHfxtz9Twlh6yzwM6Tg==
 
 stable-hash@^0.0.5:
   version "0.0.5"
@@ -19150,10 +19140,10 @@ tslib@^2.0.0, tslib@^2.0.1, tslib@^2.0.3, tslib@^2.1.0, tslib@^2.4.0, tslib@^2.8
   resolved "https://registry.npmjs.org/tslib/-/tslib-2.8.1.tgz"
   integrity sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==
 
-turbo-stream@^3.1.0:
-  version "3.1.0"
-  resolved "https://registry.npmjs.org/turbo-stream/-/turbo-stream-3.1.0.tgz"
-  integrity sha512-tVI25WEXl4fckNEmrq70xU1XumxUwEx/FZD5AgEcV8ri7Wvrg2o7GEq8U7htrNx3CajciGm+kDyhRf5JB6t7/A==
+turbo-stream@^3.2.0:
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/turbo-stream/-/turbo-stream-3.2.0.tgz#433db9e373b1dbdb272c3817cffb5eb46e4080b4"
+  integrity sha512-EK+bZ9UVrVh7JLslVFOV0GEMsociOqVOvEMTAd4ixMyffN5YNIEdLZWXUx5PJqDbTxSIBWw04HS9gCY4frYQDQ==
 
 type-check@^0.4.0, type-check@~0.4.0:
   version "0.4.0"
@@ -19910,10 +19900,10 @@ vite-tsconfig-paths@^5.1.4, vite-tsconfig-paths@~5.1.4:
   optionalDependencies:
     fsevents "~2.3.3"
 
-vitefu@^1.1.1:
-  version "1.1.1"
-  resolved "https://registry.npmjs.org/vitefu/-/vitefu-1.1.1.tgz"
-  integrity sha512-B/Fegf3i8zh0yFbpzZ21amWzHmuNlLlmJT6n7bu5e+pCHUKQIfXSYokrqOBGEMMe9UG2sostKQF9mml/vYaWJQ==
+vitefu@^1.1.1, vitefu@^1.1.3:
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/vitefu/-/vitefu-1.1.3.tgz#59b9885b1c200856319d7e9ceb0e99a065430009"
+  integrity sha512-ub4okH7Z5KLjb6hDyjqrGXqWtWvoYdU3IGm/NorpgHncKoLTCfRIbvlhBm7r0YstIaQRYlp4yEbFqDcKSzXSSg==
 
 vitest@^4.0.13:
   version "4.0.15"
@@ -20660,7 +20650,7 @@ youch@4.1.0-beta.10:
     cookie "^1.0.2"
     youch-core "^0.3.3"
 
-zimmerframe@^1.0.0, zimmerframe@^1.1.2:
+zimmerframe@^1.1.2:
   version "1.1.4"
   resolved "https://registry.npmjs.org/zimmerframe/-/zimmerframe-1.1.4.tgz"
   integrity sha512-B58NGBEoc8Y9MWWCQGl/gq9xBCe4IiKM0a2x7GZdQKOW5Exr8S1W24J6OgM1njK8xCRGvAJIL/MxXHf6SkmQKQ==
