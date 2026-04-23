@@ -2193,6 +2193,21 @@ eslintTester.run('stylex-valid-styles [restrictions]', rule.default, {
         });
       `,
     },
+    {
+      code: `
+        import * as stylex from "@stylexjs/stylex";
+
+        const styles = stylex.create({
+          button: {
+            backgroundColor: {
+              default: "red",
+              ":active:not(:disabled)": "blue",
+              ":hover:not(:disabled)": { default: null, "@media (any-hover: hover) and (any-pointer: fine)": "blue" },
+            },
+          },
+        });
+      `,
+    },
   ],
   invalid: [
     {
