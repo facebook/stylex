@@ -23,10 +23,13 @@ import isPercentage from '../rules/isPercentage';
 import isAbsoluteLength from '../rules/isAbsoluteLength';
 import isRelativeLength from '../rules/isRelativeLength';
 import { borderSplitter } from '../utils/split-css-value';
+import formatPropertiesWithNodeIndentation from '../utils/formatPropertiesWithNodeIndentation';
+import getSourceCode from '../utils/getSourceCode';
 
 export type RuleResponse = void | {
   message: string,
   distance?: number,
+  fix?: Rule.ReportFixer,
   suggest?: {
     fix: Rule.ReportFixer,
     desc: string,
@@ -36,6 +39,7 @@ export type RuleCheck = (
   node: $ReadOnly<Expression | Pattern>,
   variables?: Variables,
   prop?: $ReadOnly<Property>,
+  context?: Rule.RuleContext,
 ) => RuleResponse;
 
 export type Variables = $ReadOnlyMap<string, Expression | 'ARG'>;
@@ -52,16 +56,27 @@ const isNamedColor: RuleCheck = makeUnionRule(
 
 const isLength: RuleCheck = makeUnionRule(isAbsoluteLength, isRelativeLength);
 
-const isNonNumericString: RuleCheck = (node: Node): RuleResponse => {
+const isNonNumericString: RuleCheck = (
+  node: Node,
+  _variables?: Variables,
+  _prop?: Property,
+): RuleResponse => {
   if (node.type === 'Literal' && typeof node.value === 'string') {
     if (/^[-+]?(?:\d+|\d*\.\d+)$/.test(node.value)) {
       if (node.value === '0') {
         return undefined;
       }
 
-      return {
+      const response: $NonMaybeType<RuleResponse> = {
         message: 'a non-numeric string',
       };
+      response.suggest = {
+        desc: `Replace string '${node.value}' with number ${Number(node.value)}?`,
+        fix: (fixer: Rule.RuleFixer): Rule.Fix | null => {
+          return fixer.replaceText(node, String(Number(node.value)));
+        },
+      };
+      return response;
     }
   }
   return undefined;
@@ -483,11 +498,55 @@ const backgroundOrigin: RuleCheck = box;
 const backgroundRepeat: RuleCheck = repeatStyle;
 const backgroundSize: RuleCheck = bgSize;
 const blockSize: RuleCheck = width;
-const quotedString = (val: number | string) =>
-  typeof val === 'string' ? `'${val}'` : val;
+const NUMERIC_LITERAL_VALUE_REGEX = /^[-+]?(?:\d+|\d*\.\d+)$/;
+
+const NUMERIC_LITERAL_PROPERTIES = new Set([
+  'lineHeight',
+  'fontWeight',
+  'animationIterationCount',
+  'borderWidth',
+  'borderTopWidth',
+  'borderRightWidth',
+  'borderBottomWidth',
+  'borderLeftWidth',
+  'borderInlineStartWidth',
+  'borderInlineEndWidth',
+  'borderBlockStartWidth',
+  'borderBlockEndWidth',
+]);
+
+const serializeValue = (propertyKey: string, val: number | string): string => {
+  if (typeof val === 'number') {
+    return String(val);
+  }
+  if (
+    NUMERIC_LITERAL_PROPERTIES.has(propertyKey) &&
+    NUMERIC_LITERAL_VALUE_REGEX.test(val)
+  ) {
+    return String(Number(val));
+  }
+  // Escape single quotes within the string
+  const escaped = val.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+  return `'${escaped}'`;
+};
+
+const formatReplacementProperties = (
+  prop: $ReadOnly<Property>,
+  properties: $ReadOnlyArray<string>,
+  context?: Rule.RuleContext,
+): string => {
+  const sourceCode = context != null ? getSourceCode(context) : undefined;
+  return formatPropertiesWithNodeIndentation(prop, properties, sourceCode);
+};
+
 const border =
   (suffix: string = ''): RuleCheck =>
-  (node: Expression | Pattern, _variables?: Variables, prop?: Property) => {
+  (
+    node: Expression | Pattern,
+    _variables?: Variables,
+    prop?: Property,
+    context?: Rule.RuleContext,
+  ) => {
     const response: $NonMaybeType<RuleResponse> = {
       message: `The 'border${suffix}' property is not supported. Use the 'border${suffix}Width', 'border${suffix}Style' and 'border${suffix}Color' properties instead.`,
     };
@@ -495,34 +554,47 @@ const border =
       return response;
     }
     if (typeof node.value === 'number') {
+      const fixFn = (fixer: Rule.RuleFixer): Rule.Fix | null => {
+        return fixer.replaceText(
+          prop,
+          `border${suffix}Width: ${String(node.value)}`,
+        );
+      };
+      response.fix = fixFn;
       response.suggest = {
         desc: `Replace 'border${suffix}' set to a number with 'border${suffix}Width' instead?`,
-        fix: (fixer: Rule.RuleFixer): Rule.Fix | null => {
-          return fixer.replaceText(
-            prop,
-            `border${suffix}Width: ${String(node.value)}`,
-          );
-        },
+        fix: fixFn,
       };
     }
     if (typeof node.value === 'string') {
       const [width, style, color] = borderSplitter(node.value);
       if (width != null || style != null || color != null) {
+        const fixFn = (fixer: Rule.RuleFixer): Rule.Fix | null => {
+          const newRules = [];
+          if (width != null) {
+            newRules.push(
+              `border${suffix}Width: ${serializeValue(`border${suffix}Width`, width)}`,
+            );
+          }
+          if (style != null) {
+            newRules.push(
+              `border${suffix}Style: ${serializeValue(`border${suffix}Style`, style)}`,
+            );
+          }
+          if (color != null) {
+            newRules.push(
+              `border${suffix}Color: ${serializeValue(`border${suffix}Color`, color)}`,
+            );
+          }
+          return fixer.replaceText(
+            prop,
+            formatReplacementProperties(prop, newRules, context),
+          );
+        };
+        response.fix = fixFn;
         response.suggest = {
           desc: `Replace 'border${suffix}' with 'border${suffix}Width', 'border${suffix}Style' and 'border${suffix}Color' instead?`,
-          fix: (fixer: Rule.RuleFixer): Rule.Fix | null => {
-            const newRules = [];
-            if (width != null) {
-              newRules.push(`border${suffix}Width: ${quotedString(width)}`);
-            }
-            if (style != null) {
-              newRules.push(`border${suffix}Style: ${quotedString(style)}`);
-            }
-            if (color != null) {
-              newRules.push(`border${suffix}Color: ${quotedString(color)}`);
-            }
-            return fixer.replaceText(prop, newRules.join(',\n    '));
-          },
+          fix: fixFn,
         };
       }
     }
