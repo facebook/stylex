@@ -2234,7 +2234,13 @@ const CSSProperties = {
   textTransform: textTransform,
   textUnderlineOffset: textUnderlineOffset,
   textUnderlinePosition: textUnderlinePosition,
-  textWrap: makeUnionRule('wrap', 'nowrap', 'balance', 'pretty') as RuleCheck,
+  textWrap: makeUnionRule(
+    'wrap',
+    'nowrap',
+    'balance',
+    'pretty',
+    'stable',
+  ) as RuleCheck,
 
   touchAction: touchAction,
   transform: transform,
