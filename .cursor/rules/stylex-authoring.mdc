@@ -1,0 +1,18 @@
+---
+description: "WF-AUTHOR workflow routing and constraints"
+globs:
+  - "**/*.{js,jsx,ts,tsx}"
+---
+
+Workflow: `WF-AUTHOR` (P0)
+Author valid, idiomatic StyleX styles in apps
+
+Load sources first:
+- `packages/docs/static/llm/stylex-authoring.md`
+- `packages/@stylexjs/eslint-plugin/README.md`
+
+Hard constraints:
+- Use stylex.create() for definitions and stylex.props() for application.
+- Prefer longhands over disallowed multivalue shorthand patterns.
+- Avoid mixing className/style with stylex.props() on the same element.
+- Use modern nested syntax for media queries and pseudo-classes.

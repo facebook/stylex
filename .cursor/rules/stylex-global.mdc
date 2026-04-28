@@ -1,0 +1,12 @@
+---
+description: "StyleX global router: default setup/authoring workflows and canonical source files."
+alwaysApply: true
+---
+
+Use `WF-SETUP` and `WF-AUTHOR` by default.
+Use `WF-MAINTAIN` only for StyleX internals under `packages/@stylexjs/*` and `packages/style-value-parser/*`.
+Load canonical sources first:
+- `packages/docs/static/llm/stylex-installation.md`
+- `packages/docs/static/llm/stylex-authoring.md`
+- `packages/@stylexjs/eslint-plugin/README.md`
+Keep this rule short and route to canonical docs instead of duplicating long explanations.

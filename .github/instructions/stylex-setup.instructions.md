@@ -1,0 +1,26 @@
+---
+applyTo: "**/{vite.config,webpack.config,rspack.config,rollup.config,esbuild.config,next.config,babel.config,postcss.config}.{js,cjs,mjs,ts}"
+---
+# WF-SETUP (P0)
+
+Install and configure StyleX in app projects
+
+When to use:
+
+- User asks to install StyleX or integrate it with a bundler/framework
+- User asks for plugin config, CSS entrypoint setup, or compile setup
+- User is troubleshooting setup or module resolution
+- User is creating .stylex.ts/.stylex.js files for defineVars or defineConsts
+- User is setting up theming, variables, or constants infrastructure
+
+Load sources first:
+
+- `packages/docs/static/llm/stylex-installation.md`
+- `packages/docs/static/llm/stylex-authoring.md`
+
+Hard constraints:
+
+- Provide minimal, working config for the user's exact stack.
+- Keep StyleX plugin ordering constraints where required (for example, before React in Vite).
+- Include @stylex stylesheet directive guidance where needed.
+- Mention .stylex extension and module-resolution caveats when relevant.
