@@ -2334,19 +2334,39 @@ export const pseudoElements: RuleCheck = makeUnionRule(
   makeLiteralRule('::-moz-range-progress'),
 );
 
+const generalPseudoClasses: $ReadOnlyArray<string> = [
+  ':first-child',
+  ':last-child',
+  ':only-child',
+  ':hover',
+  ':focus',
+  ':focus-visible',
+  ':focus-within',
+  ':active',
+  ':visited',
+  ':disabled',
+];
+const compoundGeneralPseudoClasses = generalPseudoClasses.join('|');
+
+const pseudoClassesWithArgs: $ReadOnlyArray<string> = [
+  ':nth-child',
+  ':nth-of-type',
+  ':not',
+];
+const compoundPseudoClassesWithArgs = `(${pseudoClassesWithArgs.join(
+  '|',
+)})\\([^\\)]+\\)`;
+
+const compoundPseudoClassesPattern = [
+  compoundGeneralPseudoClasses,
+  compoundPseudoClassesWithArgs,
+].join('|');
+
 export const pseudoClassesAndAtRules: RuleCheck = makeUnionRule(
-  makeLiteralRule(':first-child'),
-  makeLiteralRule(':last-child'),
-  makeLiteralRule(':only-child'),
-  makeLiteralRule(':nth-child'),
-  makeLiteralRule(':nth-of-type'),
-  makeLiteralRule(':hover'),
-  makeLiteralRule(':focus'),
-  makeLiteralRule(':focus-visible'),
-  makeLiteralRule(':focus-within'),
-  makeLiteralRule(':active'),
-  makeLiteralRule(':visited'),
-  makeLiteralRule(':disabled'),
+  makeRegExRule(
+    new RegExp(`^(${compoundPseudoClassesPattern})+$`),
+    'a compound pseudo class',
+  ),
   makeRegExRule(/^@media/, 'a media query'),
   makeRegExRule(/^@container/, 'a media query'),
   makeRegExRule(/^@supports/, 'a supports query'),
