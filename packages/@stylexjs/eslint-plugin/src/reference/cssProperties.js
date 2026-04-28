@@ -2340,6 +2340,7 @@ export const pseudoClassesAndAtRules: RuleCheck = makeUnionRule(
   makeLiteralRule(':only-child'),
   makeLiteralRule(':nth-child'),
   makeLiteralRule(':nth-of-type'),
+  makeLiteralRule(':empty'),
   makeLiteralRule(':hover'),
   makeLiteralRule(':focus'),
   makeLiteralRule(':focus-visible'),
