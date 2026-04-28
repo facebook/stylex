@@ -319,6 +319,42 @@ ruleTester.run('stylex-enforce-extension', rule.default, {
       `,
       filename: 'testComponent.stylex.jsx',
     },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        export const vars = stylex.unstable_defineVarsNested({});
+      `,
+      filename: 'testComponent.stylex.jsx',
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        export const consts = stylex.unstable_defineConstsNested({});
+      `,
+      filename: 'testComponent.stylex.jsx',
+    },
+    {
+      code: `
+        import { unstable_defineVarsNested } from '@stylexjs/stylex';
+        export const vars = unstable_defineVarsNested({});
+      `,
+      filename: 'testComponent.stylex.jsx',
+    },
+    {
+      code: `
+        import { unstable_defineConstsNested } from '@stylexjs/stylex';
+        export const consts = unstable_defineConstsNested({});
+      `,
+      filename: 'testComponent.stylex.jsx',
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        export const consts = stylex.unstable_defineConstsNested({});
+      `,
+      filename: 'myComponent.stylex.const.jsx',
+      options: [{ enforceDefineConstsExtension: true }],
+    },
   ],
 
   invalid: [
@@ -912,6 +948,79 @@ ruleTester.run('stylex-enforce-extension', rule.default, {
       `,
       filename: 'myComponent.stylex.jsx',
       errors: [{ message: invalidDefaultExport('defineMarker') }],
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        export const vars = stylex.unstable_defineVarsNested({});
+      `,
+      filename: 'testComponent.jsx',
+      errors: [
+        { message: invalidFilenameWithRestrictedExports('.stylex.jsx') },
+      ],
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        export const consts = stylex.unstable_defineConstsNested({});
+      `,
+      filename: 'testComponent.jsx',
+      errors: [
+        { message: invalidFilenameWithRestrictedExports('.stylex.jsx') },
+      ],
+    },
+    {
+      code: `
+        import { unstable_defineVarsNested } from '@stylexjs/stylex';
+        export const vars = unstable_defineVarsNested({});
+      `,
+      filename: 'testComponent.jsx',
+      errors: [
+        { message: invalidFilenameWithRestrictedExports('.stylex.jsx') },
+      ],
+    },
+    {
+      code: `
+        import { unstable_defineConstsNested } from '@stylexjs/stylex';
+        export const consts = unstable_defineConstsNested({});
+      `,
+      filename: 'testComponent.jsx',
+      errors: [
+        { message: invalidFilenameWithRestrictedExports('.stylex.jsx') },
+      ],
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        export const vars = stylex.unstable_defineVarsNested({});
+        export const somethingElse = someFunction();
+      `,
+      filename: 'myComponent.stylex.jsx',
+      errors: [{ message: invalidExportFromThemeFiles }],
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        export const consts = stylex.unstable_defineConstsNested({});
+      `,
+      filename: 'myComponent.jsx',
+      options: [{ enforceDefineConstsExtension: true }],
+      errors: [
+        {
+          message:
+            invalidConstsFilenameWithRestrictedExports('.stylex.const.jsx'),
+        },
+      ],
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        export const consts = stylex.unstable_defineConstsNested({});
+        export const somethingElse = someFunction();
+      `,
+      filename: 'myComponent.stylex.const.jsx',
+      options: [{ enforceDefineConstsExtension: true }],
+      errors: [{ message: invalidExportFromConstsFiles }],
     },
   ],
 });
