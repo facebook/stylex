@@ -38,6 +38,7 @@
     "@radix-ui/react-popover": "^1.1.15",
     "@radix-ui/react-navigation-menu": "^1.2.14",
     "lucide-react": "^0.553.0",
+    "remark-directive": "^4.0.0",
     "use-query-params": "^2.2.2"
   },
   "devDependencies": {
