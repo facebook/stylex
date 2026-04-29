@@ -10,8 +10,8 @@ tags:
   - release
 ---
 
-StyleX v0.18 adds compile-time environment values with `stylex.env`, a new
-`@stylexjs/create` scaffolding CLI, Bun support in `@stylexjs/unplugin`, and a
+StyleX v0.18 adds compile-time environment values with `stylex.env`, a
+`create-stylex-app` scaffolding CLI, Bun support in `@stylexjs/unplugin`, and a
 couple of ergonomics improvements for writing and applying styles.
 
 ## `stylex.env` for compile-time constants and shareable tokens
@@ -66,17 +66,18 @@ const styles = stylex.create({
 Because these values are substituted before compilation, identical values still
 deduplicate into the same generated CSS rules.
 
-## `npm create @stylexjs`
+## `create-stylex-app`
 
-We now ship `@stylexjs/create`, a project scaffolding CLI for spinning up a new
+We now ship `create-stylex-app`, a project scaffolding CLI for spinning up a new
 StyleX app from an official template:
 
 ```bash
-npm create @stylexjs my-app
+npx create-stylex-app my-app
 ```
 
 The CLI can scaffold projects for common setups including Next.js, Vite,
 Webpack, Rspack, esbuild, React Router, Waku, and more.
+(Thanks [abhakat](https://github.com/abhakat))
 
 ## Bun support in `@stylexjs/unplugin`
 
