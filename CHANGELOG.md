@@ -2,9 +2,11 @@
 
 ## 0.18.3 (Apr 29, 2026)
 - Experimental nested APIs for `defineVars`, `defineConsts`, and `createTheme`.
+- Add recursive derivation support for `defineVars`.
 - ESLint auto-fixers for shorthand expansion, gated by `styleResolution` config.
 - Respect project `browserslist` config instead of hardcoding `>= 1%`.
 - Add `:empty` pseudo-class and unclosed string detection to the compiler.
+- StyleX DevTools extension now available in the Chrome Web Store.
 
 ## 0.18.2 (Mar 23, 2026)
 - Bring back `stylex.attrs` for SSR and non-React frameworks.
