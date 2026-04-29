@@ -1,9 +1,15 @@
 # Changelog
 
+## 0.18.3 (Unreleased)
+- Experimental nested APIs for `defineVars`, `defineConsts`, and `createTheme`.
+- ESLint auto-fixers for shorthand expansion, gated by `styleResolution` config.
+- Respect project `browserslist` config instead of hardcoding `>= 1%`.
+- Add `:empty` pseudo-class and unclosed string detection to the compiler.
+
 ## 0.18.2 (Mar 23, 2026)
 - Bring back `stylex.attrs` for SSR and non-React frameworks.
 - Add `layersBefore`, `layersAfter`, and `layersPrefix` for `@layer` control.
-- Add `flex` and `grid` shorthand expansion to ESLint plugin.
+- Add `flex`, `grid`, and `animation` shorthand expansion to ESLint plugin.
 - ESLint fixes: bare number support, false positive fixes in `stylex.create`.
 
 ## 0.18.1 (Mar 5, 2026)
