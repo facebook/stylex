@@ -21,9 +21,12 @@ Focus on critical issues only. Do not nitpick naming, style preferences, or sugg
 
 - Must include a changelog entry or blog post update.
 - Version bumps must be consistent across all workspace packages.
-- Credit community contributors with `(Thanks [username](url)!)` format.
+- Release blog posts should credit community contributors with `(Thanks [username](url)!)` format.
 
 ### Documentation
 
 - Code examples in docs and blog posts must use valid CSS and JS syntax.
-- Blog posts should credit community contributors.
+
+### Style
+
+- Flag minor issues like typos, grammar, and formatting as low-priority nits.
