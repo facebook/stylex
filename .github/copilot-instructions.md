@@ -4,7 +4,7 @@ Focus on critical issues only. Do not nitpick naming, style preferences, or sugg
 
 ### Must-haves
 
-- **CLA**: External contributors must have a signed CLA. Flag if the `CLA Signed` label is missing.
+- **CLA**: External contributors must sign the CLA at https://code.facebook.com/cla. Flag if the `CLA Signed` label is missing on external PRs.
 - **CI signals**: Flag if any CI check is failing and the PR does not acknowledge it.
 - **Tests**: New babel-plugin features or bug fixes must include tests. Prefer `toMatchInlineSnapshot()` for all assertion snapshots.
 - **Types**: Changes to babel-plugin source must update both Flow (`.js.flow`) and TypeScript (`.d.ts`) declarations if the public API changes.
