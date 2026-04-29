@@ -15,6 +15,7 @@ Focus on critical issues only. Do not nitpick naming, style preferences, or sugg
 
 - New compile-time APIs must throw at runtime with a clear error message.
 - New APIs should include documentation, eslint plugin support, and tests.
+- Review test snapshot output and compiled JS/CSS to verify no regressions in generated code.
 
 ### Release PRs
 
