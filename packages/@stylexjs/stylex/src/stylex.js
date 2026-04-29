@@ -401,6 +401,3 @@ export const legacyMerge: IStyleX = /*@__PURE__*/ (function () {
   _legacyMerge.unstable_createThemeNested = unstable_createThemeNested;
   return _legacyMerge;
 })();
-
-// Re-export atoms for cleaner imports
-export { default as x } from '@stylexjs/atoms';

@@ -16,7 +16,7 @@ export type AtomProperty = {
   (value: string | number): Atom,
 };
 
-export type Atoms = $ReadOnly<{
+export type Atoms = Readonly<{
   [_Key in keyof CSSProperties]: AtomProperty,
 }>;
 
