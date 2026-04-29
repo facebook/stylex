@@ -102,12 +102,12 @@ For Bun's dev server, you can also use the dedicated Bun plugin entrypoint from
 
 ## StyleX Dev Tools Extension
 
-A StyleX devtools extensions is now available in the
+A StyleX DevTools extension is now available in the
 [Chrome Web Store](https://chromewebstore.google.com/detail/stylex-devtools/pfcoadoepdjlhhnchklcinajnmmninem).
 
-It shows you exactly styles applied, the source of each style object, and give
-you a convenient and simple way to override styles on individual elements
-without accidentally modifying an atomic CSS rule.
+It shows the styles applied, the source of each style object, and provides a
+simple way to override styles on individual elements without modifying atomic
+CSS rules.
 
 ## `stylex.attrs` is back
 
@@ -155,7 +155,7 @@ import * as stylex from '@stylexjs/stylex';
 
 export const colors = stylex.defineVars({
   text: 'black',
-  textMuted: () => `color-mix(${colors.text}, transparent 50%)`,
+  textMuted: () => `color-mix(in srgb, ${colors.text}, transparent 50%)`,
 });
 ```
 

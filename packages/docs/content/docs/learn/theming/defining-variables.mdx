@@ -81,8 +81,8 @@ import * as stylex from '@stylexjs/stylex';
 
 export const colors = stylex.defineVars({
   text: 'black',
-  textMuted: () => `color-mix(${colors.text}, transparent 50%)`,
-  textSubtle: () => `color-mix(${colors.textMuted}, transparent 50%)`,
+  textMuted: () => `color-mix(in srgb, ${colors.text}, transparent 50%)`,
+  textSubtle: () => `color-mix(in srgb, ${colors.textMuted}, transparent 50%)`,
 });
 ```
 
