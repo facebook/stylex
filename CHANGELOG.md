@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.18.3 (Unreleased)
+## 0.18.3 (Apr 29, 2026)
 - Experimental nested APIs for `defineVars`, `defineConsts`, and `createTheme`.
 - ESLint auto-fixers for shorthand expansion, gated by `styleResolution` config.
 - Respect project `browserslist` config instead of hardcoding `>= 1%`.
