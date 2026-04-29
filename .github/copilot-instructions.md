@@ -25,7 +25,3 @@ Focus on critical issues only. Do not nitpick naming, style preferences, or sugg
 ### Documentation
 
 - Code examples in docs and blog posts must use valid CSS and JS syntax.
-
-### Style
-
-- Flag minor issues like typos, grammar, and formatting as low-priority nits.
