@@ -188,6 +188,9 @@ export default class StateManager {
   +stylexDefineConstsNestedImport: Set<string> = new Set();
   +stylexCreateThemeNestedImport: Set<string> = new Set();
   +stylexConditionalImport: Set<string> = new Set();
+  // Map of local identifier -> imported name.
+  // For namespace/default imports we store '*'.
+  +atomImports: Map<string, string> = new Map();
 
   injectImportInserted: ?t.Identifier = null;
 
