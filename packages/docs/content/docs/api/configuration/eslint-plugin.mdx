@@ -42,7 +42,7 @@ type PropLimits = {
   // The property name as a string or a glob pattern
   [propertyName: string]: {
     limit: // Disallow the property
-    | null
+      | null
       // Allow any string value
       | 'string'
       // Allow any number value
@@ -132,7 +132,7 @@ type Options = {
 
 ### `@stylexjs/valid-shorthands` rule
 
-```ts
+````ts
 type Options = {
   // Possible strings where you can import stylex from
   //
@@ -149,7 +149,7 @@ type Options = {
   // Default: false
   preferInline: boolean;
 };
-```
+````
 
 ### `@stylexjs/enforce-extension` rule
 
