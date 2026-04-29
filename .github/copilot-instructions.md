@@ -18,7 +18,7 @@ Focus on critical issues only. Do not nitpick naming, style preferences, or sugg
 
 ### Release PRs
 
-- Must include a changelog entry or blog post update.
+- Must include a changelog entry.
 - Version bumps must be consistent across all workspace packages.
 - Release blog posts should credit community contributors with `(Thanks [username](url)!)` format.
 
