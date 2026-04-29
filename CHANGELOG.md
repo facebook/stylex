@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.18.3 (Apr 29, 2026)
+- Add recursive derivation support for `defineVars`.
+- StyleX DevTools extension now available in the Chrome Web Store.
+
 ## 0.18.2 (Mar 23, 2026)
 - Bring back `stylex.attrs` for SSR and non-React frameworks.
 - Add `layersBefore`, `layersAfter`, and `layersPrefix` for `@layer` control.
