@@ -12,7 +12,7 @@
 
 ## 0.18.0 (Mar 3, 2026)
 - Add `stylex.env` API for compile-time constants and shareable design tokens.
-- New `create-stylex-app` CLI for scaffolding projects with `npx create-stylex-app`.
+- New `@stylexjs/create` CLI for scaffolding projects with `npm create @stylexjs`.
 - Add Bun support and improvements to the `unplugin` bundler plugin.
 - Support attribute selectors in `stylex.when` and conditional styles.
 - Fix priority calculation for compound pseudo selectors.

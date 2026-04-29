@@ -18,6 +18,7 @@
     "@stylexjs/unplugin": "0.18.2",
     "@stylexjs/eslint-plugin": "0.18.2",
     "esbuild": "^0.27.0",
-    "eslint": "^8.57.1"
+    "eslint": "^8.57.1",
+    "shx": "^0.4.0"
   }
 }

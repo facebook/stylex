@@ -24,8 +24,11 @@
     "@rollup/plugin-commonjs": "^26.0.1",
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-replace": "^5.0.7",
+    "@stylexjs/eslint-plugin": "0.18.2",
     "@stylexjs/rollup-plugin": "0.18.2",
+    "eslint": "^9.39.1",
     "rollup": "^4.59.0",
+    "shx": "^0.4.0",
     "serve": "^14.2.4"
   }
 }
