@@ -886,6 +886,17 @@ export const filePathResolver = (
     // Otherwise, try to resolve the path with aliases
     const allAliases = possibleAliasedPaths(importPathStr, aliases);
     for (const possiblePath of allAliases) {
+      // If the alias expanded to an absolute path, resolve it directly
+      // rather than going through moduleResolve which expects relative
+      // or module-style paths.
+      if (path.isAbsolute(possiblePath)) {
+        for (const candidate of getPossibleFilePaths(possiblePath)) {
+          if (fs.existsSync(candidate)) {
+            return candidate;
+          }
+        }
+        continue;
+      }
       try {
         return url.fileURLToPath(
           moduleResolve(possiblePath, url.pathToFileURL(sourceFilePath)),
