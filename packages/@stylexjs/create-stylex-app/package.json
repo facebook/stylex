@@ -1,10 +1,12 @@
 {
-  "name": "@stylexjs/create",
+  "name": "create-stylex-app",
   "version": "0.18.2",
-  "description": "Create a new StyleX project from official templates",
+  "description": "Scaffold a new StyleX project from official templates",
   "repository": "https://www.github.com/facebook/stylex",
   "license": "MIT",
-  "bin": "./lib/index.js",
+  "bin": {
+    "create-stylex-app": "./lib/index.js"
+  },
   "files": [
     "lib",
     "templates.json"
@@ -17,8 +19,7 @@
     "stylex",
     "scaffold",
     "cli",
-    "create-app",
-    "npm-create"
+    "create-app"
   ],
   "dependencies": {
     "fs-extra": "^11.3.0",

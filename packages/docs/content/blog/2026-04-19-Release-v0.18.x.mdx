@@ -22,14 +22,14 @@ variables whose values are inlined at compile-time. However, sometimes you may
 want something simpler, akin to using environment variables at compile time.
 
 StyleX now supports `stylex.env`, which can be configured with arbitrary values
-as part of the confiration. This system is limited in how it can be shared. It
+as part of the configuration. This system is limited in how it can be shared. It
 is not suitable for defining constants as part of a library. However, in other
 scenarios it can be an easy way to define arbitrary values and use them without
 worrying about compilation rules.
 
 `stylex.env` can be used arbitrarily in any stylex API and can hold any
 arbitrary value including objects and arrays and it has no overhead compared to
-using liternal values directly in your source.
+using literal values directly in your source.
 
 ```js title="babel.config.js"
 module.exports = {
@@ -113,7 +113,7 @@ import * as stylex from '@stylexjs/stylex';
 This is useful for using StyleX with frameworks such as Solid.js, Svelte, Vue,
 Qwik.js etc. (See the
 [SvelteKit example](https://github.com/facebook/stylex/tree/main/examples/example-sveltekit)
-for a demo this new API in action!)
+for a demo of this new API in action!)
 
 ## Authoring ergonomics
 

@@ -107,11 +107,10 @@ function showHelp() {
     .join('\n');
 
   console.log(`
-${pc.bold('@stylexjs/create')} - Create a new StyleX project
+${pc.bold('create-stylex-app')} - Create a new StyleX project
 
 ${pc.bold('Usage:')}
-  npm create @stylexjs <project-name> -- [options]
-  npx @stylexjs/create <project-name> [options]
+  npx create-stylex-app <project-name> [options]
 
 ${pc.bold('Options:')}
   -f, --framework <name>   Framework to use
@@ -123,10 +122,9 @@ ${pc.bold('Available frameworks:')}
 ${frameworkList}
 
 ${pc.bold('Examples:')}
-  npm create @stylexjs my-app
-  npm create @stylexjs my-app -- --framework nextjs
-  npm create @stylexjs my-app -- --template github:user/repo/template
-  npx @stylexjs/create my-app --framework nextjs
+  npx create-stylex-app my-app
+  npx create-stylex-app my-app --framework nextjs
+  npx create-stylex-app my-app --template github:user/repo/template
 `);
 }
 
@@ -140,13 +138,13 @@ async function main() {
 
   showWelcomeBanner();
 
-  p.intro(pc.bgMagenta(pc.white(' @stylexjs/create ')));
+  p.intro(pc.bgMagenta(pc.white(' create-stylex-app ')));
 
   const projectName = argv.projectName;
 
   if (!projectName) {
     p.cancel(
-      'Project name is required. Usage: npm create @stylexjs <project-name> -- [options]',
+      'Project name is required. Usage: npx create-stylex-app <project-name>',
     );
     process.exit(1);
   }
@@ -292,7 +290,7 @@ async function main() {
 
     const readme = `# ${projectName}
 
-A new StyleX project created with @stylexjs/create.
+A new StyleX project created with create-stylex-app.
 
 ## Getting Started
 
