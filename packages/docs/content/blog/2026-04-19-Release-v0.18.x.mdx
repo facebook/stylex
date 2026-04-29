@@ -77,7 +77,7 @@ npx create-stylex-app my-app
 
 The CLI can scaffold projects for common setups including Next.js, Vite,
 Webpack, Rspack, esbuild, React Router, Waku, and more.
-(Thanks [abhakat](https://github.com/abhakat))
+(Thanks [abhakat](https://github.com/abhakat)!)
 
 ## Bun support in `@stylexjs/unplugin`
 
@@ -140,17 +140,32 @@ output can also be customised to use `stylex.attrs` instead of `stylex.props`.
 `stylex.when` now supports attribute selectors in addition to pseudo-classes,
 which makes it easier to style elements based on state attributes like
 `[data-state="open"]` or `[aria-expanded="true"]`.
+(Thanks [vincentriemer](https://github.com/vincentriemer)!)
 
 We also added more control over CSS layers when `useCSSLayers` is enabled, so
 you can position StyleX layers relative to other layers in your app and prefix
 them to avoid naming collisions.
+(Thanks [chunw-meta](https://github.com/chunw-meta)!)
 
 ## Fixes and polish
 
 - Fixed Bun and unplugin integration details, including emitted bundle handling.
+  (Thanks [skovhus](https://github.com/skovhus),
+  [martpie](https://github.com/martpie)!)
 - Fixed priority calculation for compound pseudo selectors.
-- Added shorthand expansion support for `flex` and `grid` in the ESLint plugin.
+- Added shorthand expansion support for `flex`, `grid`, `animation`, and
+  `border` in the ESLint plugin.
+  (Thanks [abhakat](https://github.com/abhakat)!)
 - Fixed a number of ESLint false positives and numeric-value edge cases.
+  (Thanks [skovhus](https://github.com/skovhus),
+  [taphill](https://github.com/taphill),
+  [j-malt](https://github.com/j-malt)!)
+- Allow overriding `stylex.env` types in TypeScript.
+  (Thanks [pawelblaszczyk5](https://github.com/pawelblaszczyk5)!)
+- Fixed deterministic sort comparator in `processStylexRules`.
+  (Thanks [matclayton](https://github.com/matclayton)!)
+- Replaced deprecated Flow utility types with modern equivalents.
+  (Thanks [marcoww6](https://github.com/marcoww6)!)
 
 As always, thanks to everyone filing issues, contributing fixes, and trying
 StyleX in more real-world setups.
