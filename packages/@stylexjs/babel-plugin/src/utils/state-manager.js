@@ -667,6 +667,7 @@ export default class StateManager {
           importPath,
           sourceFilePath,
           aliases,
+          this.options.unstable_moduleResolution?.rootDir,
         );
         return resolvedFilePath
           ? ['themeNameRef', this.getCanonicalFilePath(resolvedFilePath)]
@@ -693,6 +694,7 @@ export default class StateManager {
           importPath,
           sourceFilePath,
           aliases,
+          this.options.unstable_moduleResolution?.rootDir,
         );
         return resolvedFilePath ? ['filePath', resolvedFilePath] : false;
       }
@@ -870,6 +872,7 @@ export const filePathResolver = (
   relativeFilePath: string,
   sourceFilePath: string,
   aliases: StyleXStateOptions['aliases'],
+  rootDir?: ?string,
 ): ?string => {
   for (const importPathStr of getPossibleFilePaths(relativeFilePath)) {
     // Try to resolve relative paths as is
@@ -886,6 +889,20 @@ export const filePathResolver = (
     // Otherwise, try to resolve the path with aliases
     const allAliases = possibleAliasedPaths(importPathStr, aliases);
     for (const possiblePath of allAliases) {
+      // Handle /ROOT/ placeholder paths (used by Turbopack).
+      // Replace /ROOT/ with the configured rootDir.
+      if (possiblePath.startsWith('/ROOT/') && rootDir != null) {
+        const realPath = path.join(
+          rootDir,
+          possiblePath.slice('/ROOT/'.length),
+        );
+        for (const candidate of getPossibleFilePaths(realPath)) {
+          if (fs.existsSync(candidate)) {
+            return candidate;
+          }
+        }
+        continue;
+      }
       // If the alias expanded to an absolute path, resolve it directly
       // rather than going through moduleResolve which expects relative
       // or module-style paths.
