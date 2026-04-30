@@ -864,6 +864,56 @@ const getPossibleFilePaths = (filePath: string) => {
   return [filePath, ...EXTENSIONS.map((ext) => filePathNoCodeExtension + ext)];
 };
 
+const resolveRootPlaceholderPath = (
+  filePath: string,
+  sourceFilePath: string,
+): ?string => {
+  const suffix = filePath.slice('/ROOT/'.length);
+  let currentDir = path.dirname(sourceFilePath);
+
+  while (true) {
+    const candidate = path.join(currentDir, suffix);
+
+    for (const fileCandidate of getPossibleFilePaths(candidate)) {
+      if (fs.existsSync(fileCandidate)) {
+        return fileCandidate;
+      }
+    }
+
+    const parentDir = path.dirname(currentDir);
+    if (parentDir === currentDir) {
+      break;
+    }
+    currentDir = parentDir;
+  }
+
+  return null;
+};
+
+const resolveAbsoluteFilePath = (
+  filePath: string,
+  sourceFilePath: string,
+): ?string => {
+  if (filePath.startsWith('/ROOT/')) {
+    const resolvedRootPath = resolveRootPlaceholderPath(
+      filePath,
+      sourceFilePath,
+    );
+
+    if (resolvedRootPath != null) {
+      return resolvedRootPath;
+    }
+  }
+
+  for (const candidate of getPossibleFilePaths(filePath)) {
+    if (fs.existsSync(candidate)) {
+      return candidate;
+    }
+  }
+
+  return null;
+};
+
 // a function that resolves the absolute path of a file when given the
 // relative path of the file from the source file
 export const filePathResolver = (
@@ -886,6 +936,17 @@ export const filePathResolver = (
     // Otherwise, try to resolve the path with aliases
     const allAliases = possibleAliasedPaths(importPathStr, aliases);
     for (const possiblePath of allAliases) {
+      if (path.isAbsolute(possiblePath)) {
+        const resolvedAbsolutePath = resolveAbsoluteFilePath(
+          possiblePath,
+          sourceFilePath,
+        );
+
+        if (resolvedAbsolutePath != null) {
+          return resolvedAbsolutePath;
+        }
+      }
+
       try {
         return url.fileURLToPath(
           moduleResolve(possiblePath, url.pathToFileURL(sourceFilePath)),
