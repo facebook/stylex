@@ -21,7 +21,7 @@
     "@stylexjs/stylex": "^0.18.2"
   },
   "devDependencies": {
-    "scripts": "0.18.2"
+    "scripts": "0.18.3"
   },
   "files": [
     "src"
