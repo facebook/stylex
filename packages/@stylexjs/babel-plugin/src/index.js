@@ -41,6 +41,11 @@ import transformStyleXDefineMarker from './visitors/stylex-define-marker';
 import transformStyleXDefineVarsNested from './visitors/stylex-define-vars-nested';
 import transformStyleXDefineConstsNested from './visitors/stylex-define-consts-nested';
 import transformStyleXCreateThemeNested from './visitors/stylex-create-theme-nested';
+import { createUtilityStylesVisitor } from '@stylexjs/atoms/babel-transform';
+import { convertObjectToAST } from './utils/js-to-ast';
+import styleXCreateSet from './shared/stylex-create';
+import { hoistExpression } from './utils/ast-helpers';
+import { injectDevClassNames } from './utils/dev-classname';
 
 const NAME = 'stylex';
 
@@ -163,6 +168,17 @@ function styleXTransform(): PluginObj<> {
               skipStylexPropsChildren(path, state);
             },
           });
+          // Run atoms visitor first to transform x.prop.value patterns
+          // This runs BEFORE stylex.props so that atomic styles are already
+          // compiled when stylex.props processes them
+          const atomsVisitor = createUtilityStylesVisitor(state, {
+            styleXCreateSet,
+            convertObjectToAST,
+            hoistExpression,
+            injectDevClassNames,
+          });
+          path.traverse(atomsVisitor);
+
           path.traverse({
             CallExpression(path: NodePath<t.CallExpression>) {
               transformStylexCall(path, state);

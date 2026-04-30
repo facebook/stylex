@@ -10,6 +10,7 @@
 'use strict';
 
 import type {
+  CSSProperties,
   CompiledStyles,
   InlineStyles,
   Keyframes,
@@ -41,6 +42,7 @@ import type { ValueWithDefault } from './types/StyleXUtils';
 import * as Types from './types/VarTypes';
 
 export type {
+  CSSProperties,
   CompiledStyles,
   InlineStyles,
   Keyframes,
