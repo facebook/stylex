@@ -31,18 +31,21 @@ function buildNestedCSSRule(
 ): string {
   // Pseudo-elements (::before, ::after, etc.) must come after pseudo-classes
   // in the selector. e.g. `.class:hover::before` not `.class::before:hover`
-const { classes, elements } = pseudos.reduce((acc, p) => {
-  if (p === '::thumb') return acc;
+  const { classes, elements } = pseudos.reduce(
+    (acc, p) => {
+      if (p === '::thumb') return acc;
 
-  if (p.startsWith('::')) {
-    acc.elements += p;
-  } else {
-    acc.classes += p;
-  }
-  return acc;
-}, { classes: '', elements: '' });
+      if (p.startsWith('::')) {
+        acc.elements += p;
+      } else {
+        acc.classes += p;
+      }
+      return acc;
+    },
+    { classes: '', elements: '' },
+  );
 
-const pseudo = classes + elements;
+  const pseudo = classes + elements;
   const combinedAtRules = atRules.concat(constRules);
 
   // Bump specificity of stylex.when selectors
