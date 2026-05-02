@@ -4,11 +4,28 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-import { type UnpluginFactory, type UnpluginInstance } from 'unplugin';
 import type { Options as StyleXOptions } from '@stylexjs/babel-plugin';
 import type { TransformOptions } from 'lightningcss';
 
 type LightningcssOptions = Omit<TransformOptions<any>, 'filename' | 'code'>;
+
+type UnpluginMetaOptions = {
+  framework?:
+    | 'rollup'
+    | 'vite'
+    | 'webpack'
+    | 'rspack'
+    | 'esbuild'
+    | 'rolldown'
+    | 'farm'
+    | 'unloader'
+    | 'bun';
+};
+
+type StyleXUnpluginFactory<Options> = (
+  options?: Options,
+  metaOptions?: UnpluginMetaOptions,
+) => any;
 
 export type CSSLayersConfig =
   | boolean
@@ -29,8 +46,8 @@ export type UserOptions = StyleXOptions & {
   devMode?: 'full' | 'css-only' | 'off';
 };
 
-export const unpluginFactory: UnpluginFactory<Partial<UserOptions>, false>;
+export const unpluginFactory: StyleXUnpluginFactory<Partial<UserOptions>>;
 
-declare const unplugin: UnpluginInstance<Partial<UserOptions>, false>;
+declare const unplugin: any;
 
 export default unplugin;
