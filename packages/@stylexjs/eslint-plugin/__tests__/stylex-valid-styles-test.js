@@ -10,7 +10,8 @@
 jest.disableAutomock();
 
 const { RuleTester: ESLintTester } = require('eslint');
-const rule = require('../src/stylex-valid-styles');
+//const rule = require('../src/stylex-valid-styles');
+const rule = require('../lib/stylex-valid-styles');
 
 const eslintTester = new ESLintTester({
   parser: require.resolve('hermes-eslint'),
@@ -37,6 +38,24 @@ eslintTester.run('stylex-valid-styles', rule.default, {
         }
       });
     `,
+    // TEST CASE for nested conditional styles with vars and stylex.when
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          icon: {
+            transitionDuration: {
+              default: vars.slow,
+              [stylex.when.ancestor(":active")]: vars.fast,
+              [stylex.when.ancestor(":hover")]: {
+                default: null,
+                "@media (hover: hover)": vars.fast,
+              },
+            },
+          },
+        });
+      `,
+    },
     `
       import * as stylex from '@stylexjs/stylex';
       const styles = stylex.create({

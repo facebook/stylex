@@ -14084,10 +14084,10 @@ react-router@7.9.6:
     cookie "^1.0.1"
     set-cookie-parser "^2.6.0"
 
-react-server-dom-webpack@19.2.1, react-server-dom-webpack@^19.2.1:
-  version "19.2.1"
-  resolved "https://registry.npmjs.org/react-server-dom-webpack/-/react-server-dom-webpack-19.2.1.tgz"
-  integrity sha512-6z3FuEtZ7wVWyPYRhKKRo4TF7IyQ7XrQZRW1fTjzK2mLVmcv7xJtoANSixaUJ+EFjCh2ekNOaBSoI9spiMSnNA==
+react-server-dom-webpack@19.2.5:
+  version "19.2.5"
+  resolved "https://registry.yarnpkg.com/react-server-dom-webpack/-/react-server-dom-webpack-19.2.5.tgz#b16c0bd15e6cb469bab952f367f8ceaaebe11206"
+  integrity sha512-bYhdd2cZJhXHqyJBoloYaJrn8MrL9Egf3ZZVn0OrIODCCORm2goFD7C+xszf6xgfsSJi0rtgB/ichcuHfkJ4yQ==
   dependencies:
     acorn-loose "^8.3.0"
     neo-async "^2.6.1"
@@ -14097,6 +14097,15 @@ react-server-dom-webpack@19.3.0-canary-561ee24d-20251101:
   version "19.3.0-canary-561ee24d-20251101"
   resolved "https://registry.npmjs.org/react-server-dom-webpack/-/react-server-dom-webpack-19.3.0-canary-561ee24d-20251101.tgz"
   integrity sha512-4OGpVCjGIwcy/+oj1FK5vqL4KUrYT6R1U77HBnPpGRAn9WkLAPAv7kb8twUWuYStOcupr4HYcDQBxfXil8knEw==
+  dependencies:
+    acorn-loose "^8.3.0"
+    neo-async "^2.6.1"
+    webpack-sources "^3.2.0"
+
+react-server-dom-webpack@^19.2.1:
+  version "19.2.1"
+  resolved "https://registry.npmjs.org/react-server-dom-webpack/-/react-server-dom-webpack-19.2.1.tgz"
+  integrity sha512-6z3FuEtZ7wVWyPYRhKKRo4TF7IyQ7XrQZRW1fTjzK2mLVmcv7xJtoANSixaUJ+EFjCh2ekNOaBSoI9spiMSnNA==
   dependencies:
     acorn-loose "^8.3.0"
     neo-async "^2.6.1"
