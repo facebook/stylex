@@ -10,8 +10,7 @@
 jest.disableAutomock();
 
 const { RuleTester: ESLintTester } = require('eslint');
-//const rule = require('../src/stylex-valid-styles');
-const rule = require('../lib/stylex-valid-styles');
+const rule = require('../src/stylex-valid-styles');
 
 const eslintTester = new ESLintTester({
   parser: require.resolve('hermes-eslint'),
