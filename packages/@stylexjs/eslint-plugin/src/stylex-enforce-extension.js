@@ -67,7 +67,7 @@ const stylexEnforceExtension = {
     let hasDefineVarsExports = false;
     let hasDefineMarkerExports = false;
     let reportedDefaultExportError = false;
-    const fileName = context.getFilename();
+    const fileName = context.filename;
     const options = context.options[0] || {};
     const {
       validImports: importsToLookFor = ['stylex', '@stylexjs/stylex'],
