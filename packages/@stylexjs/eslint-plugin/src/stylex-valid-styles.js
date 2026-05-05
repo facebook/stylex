@@ -369,8 +369,7 @@ const stylexValidStyles = {
     const stylexResolvedVarsTokenImports = new Set<string>();
 
     // Track same-file defineVars/defineVarsNested/defineConstsNested declarations.
-    const currentFilename =
-      context.getFilename != null ? context.getFilename() : '';
+    const currentFilename = context.filename;
     const isStylexFile = isValidStylexResolvedVarsFileExtension(
       currentFilename,
       themeFileExtension,
