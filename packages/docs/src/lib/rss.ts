@@ -6,6 +6,8 @@
  */
 import { Feed } from 'feed';
 import { blogSource } from '@/lib/source';
+import logoUrl from '@/static/img/stylex-logo-small.svg?no-inline';
+import faviconUrl from '@/static/img/favicon.svg?no-inline';
 import { marked } from 'marked';
 import type { InferPageType } from 'fumadocs-core/source';
 
@@ -44,8 +46,8 @@ async function createFeed(): Promise<Feed> {
     id: `https://stylexjs.com/blog`,
     link: `https://stylexjs.com/blog`,
     language: 'en',
-    image: `${baseUrl}/img/stylex-logo-small-light.svg`,
-    favicon: `${baseUrl}/img/favicon.svg`,
+    image: `${baseUrl}${logoUrl}`,
+    favicon: `${baseUrl}${faviconUrl}`,
     copyright: `Copyright © ${new Date().getFullYear()} Meta Platforms, Inc.`,
     feedLinks: {
       rss: `${baseUrl}/blog/rss.xml`,
