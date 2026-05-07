@@ -9,7 +9,7 @@ import { Provider } from '@/components/provider';
 import '@/styles/globals.css';
 import DevStyleXHMR from '@/components/DevStyleXHMR';
 import { SidebarProvider } from '@/contexts/SidebarContext';
-import faviconUrl from '@/static/img/favicon.svg';
+import faviconUrl from '@/static/img/favicon.svg?no-inline';
 import coverImageUrl from '@/static/img/stylex-cover-photo.png';
 
 const DEFAULT_TITLE = 'StyleX — The styling system for ambitious interfaces';
