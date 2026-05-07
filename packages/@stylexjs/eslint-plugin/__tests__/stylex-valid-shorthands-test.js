@@ -94,6 +94,39 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
       })
     `,
     },
+    // borderInlineEnd: single value passes through
+    {
+      code: `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({
+        main: {
+          borderInlineEnd: 'none',
+        },
+      })
+    `,
+    },
+    // borderInlineColor: single value passes through
+    {
+      code: `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({
+        main: {
+          borderInlineColor: 'red',
+        },
+      })
+    `,
+    },
+    // borderBlockStart: single value passes through
+    {
+      code: `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({
+        main: {
+          borderBlockStart: 'solid',
+        },
+      })
+    `,
+    },
     {
       code: `
       import * as stylex from '@stylexjs/stylex';
@@ -2421,12 +2454,14 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
       ],
     },
     // gap: single value expands to rowGap + columnGap
+    // borderInlineEnd: 3-part expansion
     {
       code: `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           main: {
             gap: '10px',
+            borderInlineEnd: '1px solid red',
           },
         });
       `,
@@ -2436,6 +2471,9 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
           main: {
             rowGap: '10px',
             columnGap: '10px',
+            borderInlineEndWidth: '1px',
+            borderInlineEndStyle: 'solid',
+            borderInlineEndColor: 'red',
           },
         });
       `,
@@ -2444,15 +2482,21 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
           message:
             'Property shorthands using multiple values like "gap: 10px" are not supported in StyleX. Separate into individual properties.',
         },
+        {
+          message:
+            'Property shorthands using multiple values like "borderInlineEnd: 1px solid red" are not supported in StyleX. Separate into individual properties.',
+        },
       ],
     },
     // gap: single numeric value expands to rowGap + columnGap
+    // borderInlineStart: 3-part expansion
     {
       code: `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           main: {
             gap: 10,
+            borderInlineStart: '2px dashed blue',
           },
         });
       `,
@@ -2462,6 +2506,9 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
           main: {
             rowGap: 10,
             columnGap: 10,
+            borderInlineStartWidth: '2px',
+            borderInlineStartStyle: 'dashed',
+            borderInlineStartColor: 'blue',
           },
         });
       `,
@@ -2470,15 +2517,21 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
           message:
             'Property shorthands using multiple values like "gap: 10" are not supported in StyleX. Separate into individual properties.',
         },
+        {
+          message:
+            'Property shorthands using multiple values like "borderInlineStart: 2px dashed blue" are not supported in StyleX. Separate into individual properties.',
+        },
       ],
     },
     // gap: numeric zero expands to rowGap + columnGap
+    // borderBlockEnd: 3-part expansion
     {
       code: `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           main: {
             gap: 0,
+            borderBlockEnd: '1px solid red',
           },
         });
       `,
@@ -2488,6 +2541,9 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
           main: {
             rowGap: 0,
             columnGap: 0,
+            borderBlockEndWidth: '1px',
+            borderBlockEndStyle: 'solid',
+            borderBlockEndColor: 'red',
           },
         });
       `,
@@ -2496,15 +2552,21 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
           message:
             'Property shorthands using multiple values like "gap: 0" are not supported in StyleX. Separate into individual properties.',
         },
+        {
+          message:
+            'Property shorthands using multiple values like "borderBlockEnd: 1px solid red" are not supported in StyleX. Separate into individual properties.',
+        },
       ],
     },
     // gap: var() value expands to rowGap + columnGap
+    // borderBlockStart: 3-part expansion
     {
       code: `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           main: {
             gap: 'var(--spacing)',
+            borderBlockStart: '3px dotted green',
           },
         });
       `,
@@ -2514,6 +2576,9 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
           main: {
             rowGap: 'var(--spacing)',
             columnGap: 'var(--spacing)',
+            borderBlockStartWidth: '3px',
+            borderBlockStartStyle: 'dotted',
+            borderBlockStartColor: 'green',
           },
         });
       `,
@@ -2522,15 +2587,21 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
           message:
             'Property shorthands using multiple values like "gap: var(--spacing)" are not supported in StyleX. Separate into individual properties.',
         },
+        {
+          message:
+            'Property shorthands using multiple values like "borderBlockStart: 3px dotted green" are not supported in StyleX. Separate into individual properties.',
+        },
       ],
     },
     // gap: calc() value expands to rowGap + columnGap
+    // borderInline: 3-part expansion
     {
       code: `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           main: {
             gap: 'calc(10px + 1rem)',
+            borderInline: '1px solid red',
           },
         });
       `,
@@ -2540,6 +2611,9 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
           main: {
             rowGap: 'calc(10px + 1rem)',
             columnGap: 'calc(10px + 1rem)',
+            borderInlineWidth: '1px',
+            borderInlineStyle: 'solid',
+            borderInlineColor: 'red',
           },
         });
       `,
@@ -2548,15 +2622,21 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
           message:
             'Property shorthands using multiple values like "gap: calc(10px + 1rem)" are not supported in StyleX. Separate into individual properties.',
         },
+        {
+          message:
+            'Property shorthands using multiple values like "borderInline: 1px solid red" are not supported in StyleX. Separate into individual properties.',
+        },
       ],
     },
     // gap: two values splits to rowGap + columnGap
+    // borderBlock: 3-part expansion
     {
       code: `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           main: {
             gap: '10px 20px',
+            borderBlock: '2px dashed blue',
           },
         });
       `,
@@ -2566,6 +2646,9 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
           main: {
             rowGap: '10px',
             columnGap: '20px',
+            borderBlockWidth: '2px',
+            borderBlockStyle: 'dashed',
+            borderBlockColor: 'blue',
           },
         });
       `,
@@ -2574,15 +2657,21 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
           message:
             'Property shorthands using multiple values like "gap: 10px 20px" are not supported in StyleX. Separate into individual properties.',
         },
+        {
+          message:
+            'Property shorthands using multiple values like "borderBlock: 2px dashed blue" are not supported in StyleX. Separate into individual properties.',
+        },
       ],
     },
     // gridGap: single value expands to rowGap + columnGap
+    // borderInlineEnd: incomplete (missing color) → CANNOT_FIX
     {
       code: `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           main: {
             gridGap: '10px',
+            borderInlineEnd: '1px solid',
           },
         });
       `,
@@ -2592,6 +2681,7 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
           main: {
             rowGap: '10px',
             columnGap: '10px',
+            borderInlineEnd: '1px solid',
           },
         });
       `,
@@ -2600,15 +2690,21 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
           message:
             'Property shorthands using multiple values like "gridGap: 10px" are not supported in StyleX. Separate into individual properties.',
         },
+        {
+          message:
+            'Property shorthands using multiple values like "borderInlineEnd: 1px solid" are not supported in StyleX. Separate into individual properties.',
+        },
       ],
     },
     // gridGap: two values splits to rowGap + columnGap
+    // borderInlineEnd: with rgba() color
     {
       code: `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           main: {
             gridGap: '10px 20px',
+            borderInlineEnd: '1px solid rgba(0, 0, 0, 0.5)',
           },
         });
       `,
@@ -2618,6 +2714,9 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
           main: {
             rowGap: '10px',
             columnGap: '20px',
+            borderInlineEndWidth: '1px',
+            borderInlineEndStyle: 'solid',
+            borderInlineEndColor: 'rgba(0, 0, 0, 0.5)',
           },
         });
       `,
@@ -2626,15 +2725,21 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
           message:
             'Property shorthands using multiple values like "gridGap: 10px 20px" are not supported in StyleX. Separate into individual properties.',
         },
+        {
+          message:
+            'Property shorthands using multiple values like "borderInlineEnd: 1px solid rgba(0, 0, 0, 0.5)" are not supported in StyleX. Separate into individual properties.',
+        },
       ],
     },
     // gridColumnGap: legacy name fix to columnGap
+    // borderInlineColor: 2-value expansion
     {
       code: `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           main: {
             gridColumnGap: '10px',
+            borderInlineColor: 'red blue',
           },
         });
       `,
@@ -2643,6 +2748,8 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
         const styles = stylex.create({
           main: {
             columnGap: '10px',
+            borderInlineStartColor: 'red',
+            borderInlineEndColor: 'blue',
           },
         });
       `,
@@ -2651,15 +2758,21 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
           message:
             'Use "columnGap" instead of legacy formats like "gridColumnGap" to adhere to logical property naming.',
         },
+        {
+          message:
+            'Property shorthands using multiple values like "borderInlineColor: red blue" are not supported in StyleX. Separate into individual properties.',
+        },
       ],
     },
     // gridRowGap: legacy name fix to rowGap
+    // borderInlineStyle: 2-value expansion
     {
       code: `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           main: {
             gridRowGap: '10px',
+            borderInlineStyle: 'solid dashed',
           },
         });
       `,
@@ -2668,6 +2781,8 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
         const styles = stylex.create({
           main: {
             rowGap: '10px',
+            borderInlineStartStyle: 'solid',
+            borderInlineEndStyle: 'dashed',
           },
         });
       `,
@@ -2676,15 +2791,21 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
           message:
             'Use "rowGap" instead of legacy formats like "gridRowGap" to adhere to logical property naming.',
         },
+        {
+          message:
+            'Property shorthands using multiple values like "borderInlineStyle: solid dashed" are not supported in StyleX. Separate into individual properties.',
+        },
       ],
     },
     // gap: two calc() values splits to rowGap + columnGap
+    // borderInlineWidth: 2-value expansion
     {
       code: `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           main: {
             gap: 'calc(10px + 1rem) calc(20px + 2rem)',
+            borderInlineWidth: '1px 2px',
           },
         });
       `,
@@ -2694,6 +2815,8 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
           main: {
             rowGap: 'calc(10px + 1rem)',
             columnGap: 'calc(20px + 2rem)',
+            borderInlineStartWidth: '1px',
+            borderInlineEndWidth: '2px',
           },
         });
       `,
@@ -2702,15 +2825,21 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
           message:
             'Property shorthands using multiple values like "gap: calc(10px + 1rem) calc(20px + 2rem)" are not supported in StyleX. Separate into individual properties.',
         },
+        {
+          message:
+            'Property shorthands using multiple values like "borderInlineWidth: 1px 2px" are not supported in StyleX. Separate into individual properties.',
+        },
       ],
     },
     // gap: two identical values still splits (two values means shorthand)
+    // borderBlockColor: 2-value expansion
     {
       code: `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           main: {
             gap: '0px 0px',
+            borderBlockColor: 'red blue',
           },
         });
       `,
@@ -2720,6 +2849,8 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
           main: {
             rowGap: '0px',
             columnGap: '0px',
+            borderBlockStartColor: 'red',
+            borderBlockEndColor: 'blue',
           },
         });
       `,
@@ -2728,9 +2859,66 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
           message:
             'Property shorthands using multiple values like "gap: 0px 0px" are not supported in StyleX. Separate into individual properties.',
         },
+        {
+          message:
+            'Property shorthands using multiple values like "borderBlockColor: red blue" are not supported in StyleX. Separate into individual properties.',
+        },
       ],
     },
     // gap: with !important and allowImportant
+    // borderBlockWidth: 2-value expansion
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            borderBlockWidth: '1px 3px',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            borderBlockStartWidth: '1px',
+            borderBlockEndWidth: '3px',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "borderBlockWidth: 1px 3px" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // borderBlockStyle: 2-value expansion
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            borderBlockStyle: 'solid dashed',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            borderBlockStartStyle: 'solid',
+            borderBlockEndStyle: 'dashed',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "borderBlockStyle: solid dashed" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // borderInlineEnd: !important with allowImportant
     {
       options: [{ allowImportant: true }],
       code: `
@@ -2738,6 +2926,7 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
         const styles = stylex.create({
           main: {
             gap: '10px 20px !important',
+            borderInlineEnd: '1px solid red !important',
           },
         });
       `,
@@ -2747,6 +2936,9 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
           main: {
             rowGap: '10px !important',
             columnGap: '20px !important',
+            borderInlineEndWidth: '1px !important',
+            borderInlineEndStyle: 'solid !important',
+            borderInlineEndColor: 'red !important',
           },
         });
       `,
@@ -2755,15 +2947,22 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
           message:
             'Property shorthands using multiple values like "gap: 10px 20px !important" are not supported in StyleX. Separate into individual properties.',
         },
+        {
+          message:
+            'Property shorthands using multiple values like "borderInlineEnd: 1px solid red !important" are not supported in StyleX. Separate into individual properties.',
+        },
       ],
     },
     // gridGap: single numeric value expands to rowGap + columnGap
+    // borderInlineColor: !important with allowImportant 2-value
     {
+      options: [{ allowImportant: true }],
       code: `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           main: {
             gridGap: 10,
+            borderInlineColor: 'red blue !important',
           },
         });
       `,
@@ -2773,6 +2972,8 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
           main: {
             rowGap: 10,
             columnGap: 10,
+            borderInlineStartColor: 'red !important',
+            borderInlineEndColor: 'blue !important',
           },
         });
       `,
@@ -2780,6 +2981,10 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
         {
           message:
             'Property shorthands using multiple values like "gridGap: 10" are not supported in StyleX. Separate into individual properties.',
+        },
+        {
+          message:
+            'Property shorthands using multiple values like "borderInlineColor: red blue !important" are not supported in StyleX. Separate into individual properties.',
         },
       ],
     },
