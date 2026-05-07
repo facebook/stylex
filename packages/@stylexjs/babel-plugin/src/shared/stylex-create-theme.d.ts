@@ -20,7 +20,7 @@ declare function styleXCreateTheme(
   },
   options?: StyleXOptions,
 ): [
-  { $$css: true } & { readonly [$$Key$$: string]: string },
+  { readonly $$css: true; readonly [$$Key$$: string]: string | true },
   { [$$Key$$: string]: InjectableStyle },
 ];
 export default styleXCreateTheme;

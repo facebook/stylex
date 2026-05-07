@@ -6,6 +6,17 @@
  */
 const postcss = require('postcss');
 const createBuilder = require('./builder');
+const {
+  getEffectiveBabelConfig,
+  resolveExclude,
+  resolveImportSourcesWithMetadata,
+  resolveIncludeWithMetadata,
+} = require('./discovery');
+
+function isDebugEnabled() {
+  const value = String(process.env.STYLEX_POSTCSS_DEBUG ?? '').toLowerCase();
+  return value === '1' || value === 'true' || value === 'yes';
+}
 
 module.exports = function createPlugin() {
   const PLUGIN_NAME = '@stylexjs/postcss-plugin';
@@ -23,14 +34,57 @@ module.exports = function createPlugin() {
     exclude,
     useCSSLayers = false,
     styleResolution = 'property-specificity',
-    importSources = ['@stylexjs/stylex', 'stylex'],
+    importSources,
   }) => {
-    exclude = [
+    const effectiveBabelConfig = getEffectiveBabelConfig({
+      babelConfig,
+      cwd,
+    });
+
+    const importSourcesResolution = resolveImportSourcesWithMetadata({
+      importSources,
+      babelConfig: effectiveBabelConfig,
+      cwd,
+    });
+    const effectiveImportSources = importSourcesResolution.importSources;
+
+    const includeResolution = resolveIncludeWithMetadata({
+      cwd,
+      include,
+      importSources: effectiveImportSources,
+    });
+    const effectiveInclude = includeResolution.include;
+
+    const effectiveExclude = resolveExclude({
+      include,
+      exclude,
+    });
+
+    const excludeWithDefaults = [
       // Exclude type declaration files by default because it never contains any CSS rules.
       '**/*.d.ts',
       '**/*.flow',
-      ...(exclude ?? []),
+      ...effectiveExclude,
     ];
+
+    if (isDebugEnabled()) {
+      console.info(
+        `[${PLUGIN_NAME}] Auto-discovery details:\n${JSON.stringify(
+          {
+            cwd,
+            importSourcesSource: importSourcesResolution.source,
+            importSources: effectiveImportSources,
+            include: effectiveInclude,
+            includeWasExplicit: includeResolution.hasExplicitInclude,
+            discoveredDependencyDirectories:
+              includeResolution.discoveredDependencyDirectories,
+            exclude: excludeWithDefaults,
+          },
+          null,
+          2,
+        )}`,
+      );
+    }
 
     // Whether to skip the error when transforming StyleX rules.
     // Useful in watch mode where Fast Refresh can recover from errors.
@@ -46,13 +100,13 @@ module.exports = function createPlugin() {
 
           // Configure the builder with the provided options
           await builder.configure({
-            include,
-            exclude,
+            include: effectiveInclude,
+            exclude: excludeWithDefaults,
             cwd,
-            babelConfig,
+            babelConfig: effectiveBabelConfig,
             useCSSLayers,
             styleResolution,
-            importSources,
+            importSources: effectiveImportSources,
             isDev,
           });
 

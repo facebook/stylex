@@ -697,6 +697,19 @@ export const vars = stylex.defineVars({
                       REACT_JSX_RUNTIME_TYPES,
                       'file:///node_modules/@types/react/jsx-runtime.d.ts',
                     );
+                    monaco.languages.typescript.typescriptDefaults.addExtraLib(
+                      `import type { StyleXArray, CompiledStyles, InlineStyles } from '@stylexjs/stylex';
+declare module 'react' {
+  interface DOMAttributes<T> {
+    sx?: StyleXArray<
+      | (null | undefined | CompiledStyles)
+      | boolean
+      | Readonly<[CompiledStyles, InlineStyles]>
+    >;
+  }
+}`,
+                      'file:///react-augmentation.d.ts',
+                    );
                   }}
                   defaultLanguage="typescript"
                   height="100%"

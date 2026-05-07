@@ -43,6 +43,57 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
       })
     `,
     },
+    // border: single value passes through
+    {
+      code: `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({
+        main: {
+          border: 'none',
+        },
+      })
+    `,
+    },
+    {
+      code: `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({
+        main: {
+          border: 'solid',
+        },
+      })
+    `,
+    },
+    {
+      code: `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({
+        main: {
+          border: 0,
+        },
+      })
+    `,
+    },
+    {
+      code: `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({
+        main: {
+          border: 'solid',
+        },
+      })
+    `,
+    },
+    {
+      code: `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({
+        main: {
+          border: 0,
+        },
+      })
+    `,
+    },
     {
       code: `
       import * as stylex from '@stylexjs/stylex';
@@ -322,6 +373,130 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
           },
         })
       `,
+    },
+    // grid-row: numeric single value
+    {
+      code: `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({
+        main: {
+          gridRow: 1,
+        },
+      })
+    `,
+    },
+    // grid-row: compound single value, no slash
+    {
+      code: `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({
+        main: {
+          gridRow: 'span 2',
+        },
+      })
+    `,
+    },
+    // grid-column: string single value
+    {
+      code: `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({
+        main: {
+          gridColumn: '1',
+        },
+      })
+    `,
+    },
+    // grid-column: CSS keyword
+    {
+      code: `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({
+        main: {
+          gridColumn: 'auto',
+        },
+      })
+    `,
+    },
+    // grid-column: span value
+    {
+      code: `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({
+        main: {
+          gridColumn: 'span 3',
+        },
+      })
+    `,
+    },
+    // grid-template: single value, no slash
+    {
+      code: `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({
+        main: {
+          gridTemplate: 'none',
+        },
+      })
+    `,
+    },
+    // grid-area: CSS keyword
+    {
+      code: `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({
+        main: {
+          gridArea: 'auto',
+        },
+      })
+    `,
+    },
+    // grid-area: span, not custom-ident
+    {
+      code: `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({
+        main: {
+          gridArea: 'span 2',
+        },
+      })
+    `,
+    },
+    // grid-area: integer, not custom-ident
+    {
+      code: `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({
+        main: {
+          gridArea: '1',
+        },
+      })
+    `,
+    },
+    // Already-longhand grid properties
+    {
+      code: `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({
+        main: {
+          gridRowStart: 1,
+          gridRowEnd: 3,
+          gridColumnStart: 2,
+          gridColumnEnd: 4,
+        },
+      })
+    `,
+    },
+    // grid-column: calc() with internal slash doesn't split
+    {
+      code: `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({
+        main: {
+          gridColumn: 'calc(100%/3)',
+        },
+      })
+    `,
     },
   ],
   invalid: [
@@ -1250,6 +1425,1643 @@ eslintTester.run('stylex-valid-shorthands', rule.default, {
         {
           message:
             'Property shorthands using multiple values like "borderColor: oklch(0.7 0.15 180) rgb(255 0 0)" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // grid-area: custom-ident expands to 4 longhands
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gridArea: 'header',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gridColumnEnd: 'header',
+            gridColumnStart: 'header',
+            gridRowEnd: 'header',
+            gridRowStart: 'header',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "gridArea: header" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // grid-area: custom-ident with 2 slash-separated parts
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gridArea: 'header / sidebar',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gridColumnEnd: 'sidebar',
+            gridColumnStart: 'sidebar',
+            gridRowEnd: 'header',
+            gridRowStart: 'header',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "gridArea: header / sidebar" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // grid-area: non-custom-ident with 2 slash-separated parts
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gridArea: 'span 2 / span 3',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gridColumnStart: 'span 3',
+            gridRowStart: 'span 2',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "gridArea: span 2 / span 3" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // grid-area: 3 slash-separated parts
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gridArea: '1 / 2 / 3',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gridColumnStart: '2',
+            gridRowEnd: '3',
+            gridRowStart: '1',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "gridArea: 1 / 2 / 3" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // grid-area: 4 slash-separated parts
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gridArea: '1 / 2 / 3 / 4',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gridColumnEnd: '4',
+            gridColumnStart: '2',
+            gridRowEnd: '3',
+            gridRowStart: '1',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "gridArea: 1 / 2 / 3 / 4" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // grid-area: custom-ident row / non-custom-ident column (2 values)
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gridArea: 'header / 2',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gridColumnStart: '2',
+            gridRowEnd: 'header',
+            gridRowStart: 'header',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "gridArea: header / 2" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // grid-area: non-custom-ident row / custom-ident column (2 values)
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gridArea: '1 / sidebar',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gridColumnEnd: 'sidebar',
+            gridColumnStart: 'sidebar',
+            gridRowStart: '1',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "gridArea: 1 / sidebar" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // grid-area: 3 values with custom-ident column-start
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gridArea: '1 / sidebar / 3',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gridColumnEnd: 'sidebar',
+            gridColumnStart: 'sidebar',
+            gridRowEnd: '3',
+            gridRowStart: '1',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "gridArea: 1 / sidebar / 3" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // grid-row: 2 slash-separated parts
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gridRow: '1 / 3',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gridRowEnd: '3',
+            gridRowStart: '1',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "gridRow: 1 / 3" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // grid-row: named lines
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gridRow: 'header-start / content-end',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gridRowEnd: 'content-end',
+            gridRowStart: 'header-start',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "gridRow: header-start / content-end" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // grid-row: compound value after slash
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gridRow: '1 / span 2',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gridRowEnd: 'span 2',
+            gridRowStart: '1',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "gridRow: 1 / span 2" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // grid-column: 2 slash-separated parts
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gridColumn: '2 / 4',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gridColumnEnd: '4',
+            gridColumnStart: '2',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "gridColumn: 2 / 4" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // grid-template: rows / columns
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gridTemplate: '1fr 2fr / 100px 1fr',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gridTemplateColumns: '100px 1fr',
+            gridTemplateRows: '1fr 2fr',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "gridTemplate: 1fr 2fr / 100px 1fr" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // grid-template: with repeat() function
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gridTemplate: 'auto auto / repeat(3, 1fr)',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gridTemplateColumns: 'repeat(3, 1fr)',
+            gridTemplateRows: 'auto auto',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "gridTemplate: auto auto / repeat(3, 1fr)" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // animation: duration + name
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            animation: 'slidein 3s',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            animationDuration: '3s',
+            animationName: 'slidein',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "animation: slidein 3s" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // animation: duration + timing + name
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            animation: 'slidein 3s ease-in',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            animationDuration: '3s',
+            animationTimingFunction: 'ease-in',
+            animationName: 'slidein',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "animation: slidein 3s ease-in" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // animation: duration + delay (two time values)
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            animation: 'slidein 3s 1s',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            animationDuration: '3s',
+            animationDelay: '1s',
+            animationName: 'slidein',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "animation: slidein 3s 1s" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // animation: full shorthand with all properties
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            animation: '3s ease-in 1s 2 reverse both paused slidein',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            animationDuration: '3s',
+            animationTimingFunction: 'ease-in',
+            animationDelay: '1s',
+            animationIterationCount: '2',
+            animationDirection: 'reverse',
+            animationFillMode: 'both',
+            animationPlayState: 'paused',
+            animationName: 'slidein',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "animation: 3s ease-in 1s 2 reverse both paused slidein" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // animation: cubic-bezier timing function
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            animation: 'slidein 300ms cubic-bezier(0.4, 0, 0.2, 1)',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            animationDuration: '300ms',
+            animationTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)',
+            animationName: 'slidein',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "animation: slidein 300ms cubic-bezier(0.4, 0, 0.2, 1)" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // animation: infinite iteration count
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            animation: 'spin 1s linear infinite',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            animationDuration: '1s',
+            animationTimingFunction: 'linear',
+            animationIterationCount: 'infinite',
+            animationName: 'spin',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "animation: spin 1s linear infinite" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // animation: with !important
+    {
+      options: [{ allowImportant: true }],
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            animation: 'slidein 2s ease !important',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            animationDuration: '2s !important',
+            animationTimingFunction: 'ease !important',
+            animationName: 'slidein !important',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "animation: slidein 2s ease !important" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // animation: comma-separated multi-animation is CANNOT_FIX
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            animation: 'slidein 3s, fadeout 2s',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "animation: slidein 3s, fadeout 2s" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // animation: iteration count before duration
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            animation: '2 3s slidein',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            animationDuration: '3s',
+            animationIterationCount: '2',
+            animationName: 'slidein',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "animation: 2 3s slidein" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // animation: ambiguous "none" treated as animation-name (none is default fill-mode)
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            animation: '1s none',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            animationDuration: '1s',
+            animationName: 'none',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "animation: 1s none" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // animation: named keyframe with explicit none fill-mode
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            animation: 'fadein 1s none',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            animationDuration: '1s',
+            animationFillMode: 'none',
+            animationName: 'fadein',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "animation: fadein 1s none" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // animation: alternate-reverse direction
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            animation: 'bounce 1s alternate-reverse',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            animationDuration: '1s',
+            animationDirection: 'alternate-reverse',
+            animationName: 'bounce',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "animation: bounce 1s alternate-reverse" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // flex: single number expands to grow/shrink/basis
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            flex: 1,
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            flexGrow: '1',
+            flexShrink: '1',
+            flexBasis: '0%',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "flex: 1" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // flex: string single number
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            flex: '2',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            flexGrow: '2',
+            flexShrink: '1',
+            flexBasis: '0%',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "flex: 2" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // flex: auto keyword
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            flex: 'auto',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            flexGrow: '1',
+            flexShrink: '1',
+            flexBasis: 'auto',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "flex: auto" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // flex: none keyword
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            flex: 'none',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            flexGrow: '0',
+            flexShrink: '0',
+            flexBasis: 'auto',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "flex: none" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // flex: initial keyword
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            flex: 'initial',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            flexGrow: '0',
+            flexShrink: '1',
+            flexBasis: 'auto',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "flex: initial" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // flex: single basis value (with unit)
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            flex: '100px',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            flexGrow: '1',
+            flexShrink: '1',
+            flexBasis: '100px',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "flex: 100px" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // flex: two numbers (grow shrink)
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            flex: '1 0',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            flexGrow: '1',
+            flexShrink: '0',
+            flexBasis: '0%',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "flex: 1 0" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // flex: number + basis
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            flex: '1 30px',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            flexGrow: '1',
+            flexShrink: '1',
+            flexBasis: '30px',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "flex: 1 30px" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // flex: three values (grow shrink basis)
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            flex: '2 2 10%',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            flexGrow: '2',
+            flexShrink: '2',
+            flexBasis: '10%',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "flex: 2 2 10%" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // flex: with !important (allowImportant)
+    {
+      options: [{ allowImportant: true }],
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            flex: '1 0 auto !important',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            flexGrow: '1 !important',
+            flexShrink: '0 !important',
+            flexBasis: 'auto !important',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "flex: 1 0 auto !important" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // flex: calc() basis
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            flex: '1 1 calc(100% - 20px)',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            flexGrow: '1',
+            flexShrink: '1',
+            flexBasis: 'calc(100% - 20px)',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "flex: 1 1 calc(100% - 20px)" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // gap: single value expands to rowGap + columnGap
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gap: '10px',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            rowGap: '10px',
+            columnGap: '10px',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "gap: 10px" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // gap: single numeric value expands to rowGap + columnGap
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gap: 10,
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            rowGap: 10,
+            columnGap: 10,
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "gap: 10" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // gap: numeric zero expands to rowGap + columnGap
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gap: 0,
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            rowGap: 0,
+            columnGap: 0,
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "gap: 0" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // gap: var() value expands to rowGap + columnGap
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gap: 'var(--spacing)',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            rowGap: 'var(--spacing)',
+            columnGap: 'var(--spacing)',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "gap: var(--spacing)" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // gap: calc() value expands to rowGap + columnGap
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gap: 'calc(10px + 1rem)',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            rowGap: 'calc(10px + 1rem)',
+            columnGap: 'calc(10px + 1rem)',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "gap: calc(10px + 1rem)" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // gap: two values splits to rowGap + columnGap
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gap: '10px 20px',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            rowGap: '10px',
+            columnGap: '20px',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "gap: 10px 20px" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // gridGap: single value expands to rowGap + columnGap
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gridGap: '10px',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            rowGap: '10px',
+            columnGap: '10px',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "gridGap: 10px" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // gridGap: two values splits to rowGap + columnGap
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gridGap: '10px 20px',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            rowGap: '10px',
+            columnGap: '20px',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "gridGap: 10px 20px" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // gridColumnGap: legacy name fix to columnGap
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gridColumnGap: '10px',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            columnGap: '10px',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Use "columnGap" instead of legacy formats like "gridColumnGap" to adhere to logical property naming.',
+        },
+      ],
+    },
+    // gridRowGap: legacy name fix to rowGap
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gridRowGap: '10px',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            rowGap: '10px',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Use "rowGap" instead of legacy formats like "gridRowGap" to adhere to logical property naming.',
+        },
+      ],
+    },
+    // gap: two calc() values splits to rowGap + columnGap
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gap: 'calc(10px + 1rem) calc(20px + 2rem)',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            rowGap: 'calc(10px + 1rem)',
+            columnGap: 'calc(20px + 2rem)',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "gap: calc(10px + 1rem) calc(20px + 2rem)" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // gap: two identical values still splits (two values means shorthand)
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gap: '0px 0px',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            rowGap: '0px',
+            columnGap: '0px',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "gap: 0px 0px" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // gap: with !important and allowImportant
+    {
+      options: [{ allowImportant: true }],
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gap: '10px 20px !important',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            rowGap: '10px !important',
+            columnGap: '20px !important',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "gap: 10px 20px !important" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // gridGap: single numeric value expands to rowGap + columnGap
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gridGap: 10,
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            rowGap: 10,
+            columnGap: 10,
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "gridGap: 10" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // gap: with comma returns CANNOT_FIX (no autofix)
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gap: '10px, 20px',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gap: '10px, 20px',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "gap: 10px, 20px" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // gap: with slash returns CANNOT_FIX (no autofix)
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gap: '10px / 20px',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gap: '10px / 20px',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "gap: 10px / 20px" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    // gap: three values returns CANNOT_FIX (no autofix)
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gap: '10px 20px 30px',
+          },
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            gap: '10px 20px 30px',
+          },
+        });
+      `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "gap: 10px 20px 30px" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    {
+      code: `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({
+        main: {
+          border: '1px solid red'
+        },
+      })
+    `,
+      output: `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({
+        main: {
+          borderWidth: '1px',
+          borderStyle: 'solid',
+          borderColor: 'red'
+        },
+      })
+    `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "border: 1px solid red" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    {
+      code: `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({
+        main: {
+          border: '2px dashed blue'
+        },
+      })
+    `,
+      output: `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({
+        main: {
+          borderWidth: '2px',
+          borderStyle: 'dashed',
+          borderColor: 'blue'
+        },
+      })
+    `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "border: 2px dashed blue" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    {
+      code: `
+          import * as stylex from '@stylexjs/stylex';
+          const styles = stylex.create({
+            main: {
+              borderStart: '1px solid red',
+              borderEnd: '2px dashed blue',
+            },
+          });
+        `,
+      output: `
+          import * as stylex from '@stylexjs/stylex';
+          const styles = stylex.create({
+            main: {
+              borderInlineStart: '1px solid red',
+              borderInlineEnd: '2px dashed blue',
+            },
+          });
+        `,
+      errors: [
+        {
+          message:
+            'Use "borderInlineStart" instead of legacy formats like "borderStart" to adhere to logical property naming.',
+        },
+        {
+          message:
+            'Use "borderInlineEnd" instead of legacy formats like "borderEnd" to adhere to logical property naming.',
+        },
+      ],
+    },
+    {
+      code: `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({
+        main: {
+          borderStart: 'none',
+        },
+      })
+    `,
+      output: `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({
+        main: {
+          borderInlineStart: 'none',
+        },
+      })
+    `,
+      errors: [
+        {
+          message:
+            'Use "borderInlineStart" instead of legacy formats like "borderStart" to adhere to logical property naming.',
+        },
+      ],
+    },
+    {
+      code: `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({
+        main: {
+          borderEnd: 'none',
+        },
+      })
+    `,
+      output: `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({
+        main: {
+          borderInlineEnd: 'none',
+        },
+      })
+    `,
+      errors: [
+        {
+          message:
+            'Use "borderInlineEnd" instead of legacy formats like "borderEnd" to adhere to logical property naming.',
+        },
+      ],
+    },
+    {
+      code: `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({
+        main: {
+          border: '1px solid'
+        },
+      })
+    `,
+      output: `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({
+        main: {
+          border: '1px solid'
+        },
+      })
+    `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "border: 1px solid" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    {
+      code: `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({
+        main: {
+          border: '1px solid rgba(0, 0, 0, 0.5)'
+        },
+      })
+    `,
+      output: `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({
+        main: {
+          borderWidth: '1px',
+          borderStyle: 'solid',
+          borderColor: 'rgba(0, 0, 0, 0.5)'
+        },
+      })
+    `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "border: 1px solid rgba(0, 0, 0, 0.5)" are not supported in StyleX. Separate into individual properties.',
+        },
+      ],
+    },
+    {
+      options: [{ allowImportant: true }],
+      code: `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({
+        main: {
+          border: '1px solid red !important'
+        },
+      })
+    `,
+      output: `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({
+        main: {
+          borderWidth: '1px !important',
+          borderStyle: 'solid !important',
+          borderColor: 'red !important'
+        },
+      })
+    `,
+      errors: [
+        {
+          message:
+            'Property shorthands using multiple values like "border: 1px solid red !important" are not supported in StyleX. Separate into individual properties.',
         },
       ],
     },

@@ -61,6 +61,34 @@ function transformWithInlineConsts(source, opts = {}) {
   return { code, metadata };
 }
 
+function transformWithAliasedInlineConsts(source, opts = {}) {
+  const fixtureDir = path.join(__dirname, '__fixtures__');
+
+  const { code, metadata } = transformSync(source, {
+    filename: path.join(fixtureDir, 'main.stylex.js'),
+    parserOpts: { sourceType: 'module' },
+    babelrc: false,
+    plugins: [
+      [
+        stylexPlugin,
+        {
+          ...opts,
+          aliases: {
+            '~fixture/*': [path.join(fixtureDir, '*')],
+            ...opts.aliases,
+          },
+          unstable_moduleResolution: opts.unstable_moduleResolution ?? {
+            rootDir: fixtureDir,
+            type: 'commonJS',
+          },
+        },
+      ],
+    ],
+  });
+
+  return { code, metadata };
+}
+
 describe('@stylexjs/babel-plugin', () => {
   describe('[transform] stylex.defineConsts()', () => {
     test('constants are unique', () => {
@@ -399,6 +427,80 @@ describe('@stylexjs/babel-plugin', () => {
           ],
         }
       `);
+    });
+
+    test('resolves /ROOT/ placeholder alias paths for defineConsts imports', () => {
+      const fixtureDir = path.join(__dirname, '__fixtures__');
+      const projectRoot = path.resolve(__dirname, '../../..');
+      const relativeFixturePath = path
+        .relative(projectRoot, fixtureDir)
+        .replace(/\\/g, '/');
+      const rootFixtureGlob = `/ROOT/${relativeFixturePath}/*`;
+
+      const { code, metadata } = transformWithAliasedInlineConsts(
+        `
+        import * as stylex from '@stylexjs/stylex';
+        import { breakpoints } from '~root-fixture/constants.stylex';
+
+        export const styles = stylex.create({
+          root: {
+            color: {
+              default: 'red',
+              [breakpoints.small]: 'blue',
+            },
+          },
+        });
+      `,
+        {
+          aliases: {
+            '~root-fixture/*': [rootFixtureGlob],
+          },
+          unstable_moduleResolution: {
+            rootDir: projectRoot,
+            type: 'commonJS',
+          },
+        },
+      );
+
+      expect(code).toContain('xbs0o1n');
+      expect(metadata.stylex).toEqual(
+        expect.arrayContaining([
+          expect.arrayContaining([
+            'xbs0o1n',
+            expect.objectContaining({
+              ltr: expect.stringContaining('color:blue'),
+            }),
+          ]),
+        ]),
+      );
+    });
+
+    test('resolves aliased absolute paths for defineConsts imports', () => {
+      const { code, metadata } = transformWithAliasedInlineConsts(`
+        import * as stylex from '@stylexjs/stylex';
+        import { breakpoints } from '~fixture/constants.stylex';
+
+        export const styles = stylex.create({
+          root: {
+            color: {
+              default: 'red',
+              [breakpoints.small]: 'blue',
+            },
+          },
+        });
+      `);
+
+      expect(code).toContain('xbs0o1n');
+      expect(metadata.stylex).toEqual(
+        expect.arrayContaining([
+          expect.arrayContaining([
+            'xbs0o1n',
+            expect.objectContaining({
+              ltr: expect.stringContaining('color:blue'),
+            }),
+          ]),
+        ]),
+      );
     });
 
     test.skip('works with firstThatWorks', () => {

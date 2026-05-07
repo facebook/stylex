@@ -10,10 +10,14 @@
 'use strict';
 
 import type {
+  CSSProperties,
   CompiledStyles,
   InlineStyles,
   Keyframes,
   MapNamespaces,
+  NestedConstsValue,
+  NestedStringValue,
+  NestedVarsValue,
   StaticStyles,
   StaticStylesWithout,
   StyleX$Create,
@@ -38,6 +42,7 @@ import type { ValueWithDefault } from './types/StyleXUtils';
 import * as Types from './types/VarTypes';
 
 export type {
+  CSSProperties,
   CompiledStyles,
   InlineStyles,
   Keyframes,
@@ -64,7 +69,7 @@ const errorForFn = (name: string) =>
 const errorForType = (key: keyof typeof types) => errorForFn(`types.${key}`);
 
 export const create: StyleX$Create = function stylexCreate<
-  const S: { +[string]: unknown },
+  const S extends { +[string]: unknown },
 >(_styles: S): MapNamespaces<S> {
   throw errorForFn('create');
 };
@@ -74,7 +79,7 @@ export const createTheme: StyleX$CreateTheme = (_baseTokens, _overrides) => {
 };
 
 export const defineConsts: StyleX$DefineConsts = function stylexDefineConsts<
-  const T: { +[string]: number | string },
+  const T extends { +[string]: number | string },
 >(_styles: T): T {
   throw errorForFn('defineConsts');
 };
@@ -85,11 +90,36 @@ export const defineVars: StyleX$DefineVars = function stylexDefineVars(
   throw errorForFn('defineVars');
 };
 
+export const unstable_conditional = function stylexConditional<
+  const T extends { +default: unknown, +[string]: unknown },
+>(_value: T): T {
+  throw errorForFn('unstable_conditional');
+};
+
+export const unstable_defineVarsNested = function stylexDefineVarsNested<
+  const T extends { +[string]: NestedVarsValue },
+>(_styles: T): T {
+  throw errorForFn('unstable_defineVarsNested');
+};
+
+export const unstable_defineConstsNested = function stylexDefineConstsNested<
+  const T extends { +[string]: NestedConstsValue },
+>(_styles: T): T {
+  throw errorForFn('unstable_defineConstsNested');
+};
+
+export const unstable_createThemeNested = (
+  _baseTokens: { +[string]: NestedStringValue },
+  _overrides: { +[string]: NestedVarsValue },
+): CompiledStyles => {
+  throw errorForFn('unstable_createThemeNested');
+};
+
 export const defineMarker: StyleX$DefineMarker = () => {
   throw errorForFn('defineMarker');
 };
 
-export const firstThatWorks = <T: string | number>(
+export const firstThatWorks = <T extends string | number>(
   ..._styles: ReadonlyArray<T>
 ): ReadonlyArray<T> => {
   throw errorForFn('firstThatWorks');
@@ -133,6 +163,45 @@ export function props(
   return result;
 }
 
+const toKebabCase = (str: string): string =>
+  str.replace(/([A-Z])/g, '-$1').toLowerCase();
+
+export function attrs(
+  this: ?unknown,
+  ...styles: ReadonlyArray<
+    StyleXArray<
+      ?CompiledStyles | boolean | Readonly<[CompiledStyles, InlineStyles]>,
+    >,
+  >
+): Readonly<{
+  class?: string,
+  'data-style-src'?: string,
+  style?: string,
+}> {
+  const {
+    className,
+    style,
+    'data-style-src': dataStyleSrc,
+  } = props.apply(this, styles);
+  const result: {
+    class?: string,
+    'data-style-src'?: string,
+    style?: string,
+  } = {};
+  if (className != null) {
+    result.class = className;
+  }
+  if (style != null) {
+    result.style = Object.entries(style)
+      .map(([key, value]) => `${toKebabCase(key)}:${value}`)
+      .join(';');
+  }
+  if (dataStyleSrc != null) {
+    result['data-style-src'] = dataStyleSrc;
+  }
+  return result;
+}
+
 export const viewTransitionClass = (
   _viewTransitionClass: ViewTransitionClass,
 ): string => {
@@ -168,57 +237,65 @@ export const when: StyleX$When = {
 export const env: StyleX$Env = Object.freeze({});
 
 export const types = {
-  angle: <T: string | 0 = string | 0>(
+  angle: <T extends string | 0 = string | 0>(
     _v: ValueWithDefault<T>,
   ): Types.Angle<T> => {
     throw errorForType('angle');
   },
-  color: <T: string = string>(_v: ValueWithDefault<T>): Types.Color<T> => {
+  color: <T extends string = string>(
+    _v: ValueWithDefault<T>,
+  ): Types.Color<T> => {
     throw errorForType('color');
   },
-  url: <T: string = string>(_v: ValueWithDefault<T>): Types.Url<T> => {
+  url: <T extends string = string>(_v: ValueWithDefault<T>): Types.Url<T> => {
     throw errorForType('url');
   },
-  image: <T: string = string>(_v: ValueWithDefault<T>): Types.Image<T> => {
+  image: <T extends string = string>(
+    _v: ValueWithDefault<T>,
+  ): Types.Image<T> => {
     throw errorForType('image');
   },
-  integer: <T: number = number>(_v: ValueWithDefault<T>): Types.Integer<T> => {
+  integer: <T extends number = number>(
+    _v: ValueWithDefault<T>,
+  ): Types.Integer<T> => {
     throw errorForType('integer');
   },
-  lengthPercentage: <T: number | string = number | string>(
+  lengthPercentage: <T extends number | string = number | string>(
     _v: ValueWithDefault<T>,
   ): Types.LengthPercentage<T> => {
     throw errorForType('lengthPercentage');
   },
-  length: <T: number | string = number | string>(
+  length: <T extends number | string = number | string>(
     _v: ValueWithDefault<T>,
   ): Types.Length<T> => {
     throw errorForType('length');
   },
-  percentage: <T: number | string = number | string>(
+  percentage: <T extends number | string = number | string>(
     _v: ValueWithDefault<T>,
   ): Types.Percentage<T> => {
     throw errorForType('percentage');
   },
-  number: <T: number = number>(_v: ValueWithDefault<T>): Types.Num<T> => {
+  number: <T extends number = number>(
+    _v: ValueWithDefault<T>,
+  ): Types.Num<T> => {
     throw errorForType('number');
   },
-  resolution: <T: string = string>(
+  resolution: <T extends string = string>(
     _v: ValueWithDefault<T>,
   ): Types.Resolution<T> => {
     throw errorForType('resolution');
   },
-  time: <T: string | 0 = string | 0>(
+  time: <T extends string | 0 = string | 0>(
     _v: ValueWithDefault<T>,
   ): Types.Time<T> => {
     throw errorForType('time');
   },
-  transformFunction: <T: string = string>(
+  transformFunction: <T extends string = string>(
     _v: ValueWithDefault<T>,
   ): Types.TransformFunction<T> => {
     throw errorForType('transformFunction');
   },
-  transformList: <T: string = string>(
+  transformList: <T extends string = string>(
     _v: ValueWithDefault<T>,
   ): Types.TransformList<T> => {
     throw errorForType('transformList');
@@ -242,7 +319,7 @@ type IStyleX = {
     }>,
   >,
   defineMarker: StyleX$DefineMarker,
-  firstThatWorks: <T: string | number>(
+  firstThatWorks: <T extends string | number>(
     ...v: ReadonlyArray<T>
   ) => ReadonlyArray<T>,
   keyframes: (keyframes: Keyframes) => string,
@@ -259,33 +336,68 @@ type IStyleX = {
     'data-style-src'?: string,
     style?: Readonly<{ [string]: string | number }>,
   }>,
+  attrs: (
+    this: ?unknown,
+    ...styles: ReadonlyArray<
+      StyleXArray<
+        ?CompiledStyles | boolean | Readonly<[CompiledStyles, InlineStyles]>,
+      >,
+    >
+  ) => Readonly<{
+    class?: string,
+    'data-style-src'?: string,
+    style?: string,
+  }>,
   viewTransitionClass: (viewTransitionClass: ViewTransitionClass) => string,
   types: typeof types,
   when: typeof when,
+  unstable_conditional: <
+    const T extends { +default: unknown, +[string]: unknown },
+  >(
+    value: T,
+  ) => T,
+  unstable_defineVarsNested: <const T extends { +[string]: NestedVarsValue }>(
+    tokens: T,
+  ) => T,
+  unstable_defineConstsNested: <
+    const T extends { +[string]: NestedConstsValue },
+  >(
+    tokens: T,
+  ) => T,
+  unstable_createThemeNested: (
+    baseTokens: { +[string]: NestedStringValue },
+    overrides: { +[string]: NestedVarsValue },
+  ) => CompiledStyles,
   __customProperties?: { [string]: unknown },
   ...
 };
 
-function _legacyMerge(
-  ...styles: ReadonlyArray<StyleXArray<?CompiledStyles | boolean>>
-): string {
-  const [className] = styleq(styles);
-  return className;
-}
+export const legacyMerge: IStyleX = /*@__PURE__*/ (function () {
+  function _legacyMerge(
+    ...styles: ReadonlyArray<StyleXArray<?CompiledStyles | boolean>>
+  ): string {
+    const [className] = styleq(styles);
+    return className;
+  }
 
-_legacyMerge.create = create;
-_legacyMerge.createTheme = createTheme;
-_legacyMerge.defineConsts = defineConsts;
-_legacyMerge.defineMarker = defineMarker;
-_legacyMerge.defineVars = defineVars;
-_legacyMerge.defaultMarker = defaultMarker;
-_legacyMerge.firstThatWorks = firstThatWorks;
-_legacyMerge.keyframes = keyframes;
-_legacyMerge.positionTry = positionTry;
-_legacyMerge.props = props;
-_legacyMerge.types = types;
-_legacyMerge.when = when;
-_legacyMerge.viewTransitionClass = viewTransitionClass;
-_legacyMerge.env = env;
-
-export const legacyMerge: IStyleX = _legacyMerge;
+  _legacyMerge.create = create;
+  _legacyMerge.createTheme = createTheme;
+  _legacyMerge.defineConsts = defineConsts;
+  _legacyMerge.defineMarker = defineMarker;
+  _legacyMerge.defineVars = defineVars;
+  _legacyMerge.defaultMarker = defaultMarker;
+  _legacyMerge.firstThatWorks = firstThatWorks;
+  _legacyMerge.keyframes = keyframes;
+  _legacyMerge.positionTry = positionTry;
+  _legacyMerge.props = props;
+  _legacyMerge.attrs = attrs;
+  _legacyMerge.types = types;
+  _legacyMerge.when = when;
+  _legacyMerge.viewTransitionClass = viewTransitionClass;
+  _legacyMerge.env = env;
+  _legacyMerge.unstable_conditional = unstable_conditional;
+  _legacyMerge.unstable_defineVarsNested = unstable_defineVarsNested;
+  _legacyMerge.unstable_defineConstsNested = unstable_defineConstsNested;
+  _legacyMerge.unstable_createThemeNested = unstable_createThemeNested;
+  return _legacyMerge;
+})();

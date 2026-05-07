@@ -29,64 +29,70 @@ export type CSSSyntax =
 type CSSSyntaxType = CSSSyntax;
 type InnerValue = null | string | number;
 
-interface ICSSType<+_T: InnerValue> {
+interface ICSSType<+_T extends InnerValue> {
   +value: ValueWithDefault<string>;
   +syntax: CSSSyntaxType;
 }
-declare export class Angle<+T: InnerValue> implements ICSSType<T> {
+declare export class Angle<+T extends InnerValue> implements ICSSType<T> {
   +value: ValueWithDefault<string>;
   +syntax: CSSSyntaxType;
 }
-declare export class Color<+T: InnerValue> implements ICSSType<T> {
+declare export class Color<+T extends InnerValue> implements ICSSType<T> {
   +value: ValueWithDefault<string>;
   +syntax: CSSSyntaxType;
 }
-declare export class Url<+T: InnerValue> implements ICSSType<T> {
+declare export class Url<+T extends InnerValue> implements ICSSType<T> {
   +value: ValueWithDefault<string>;
   +syntax: CSSSyntaxType;
 }
-declare export class Image<+T: InnerValue> implements ICSSType<T> {
+declare export class Image<+T extends InnerValue> implements ICSSType<T> {
   +value: ValueWithDefault<string>;
   +syntax: CSSSyntaxType;
 }
-declare export class Integer<+T: InnerValue> implements ICSSType<T> {
+declare export class Integer<+T extends InnerValue> implements ICSSType<T> {
   +value: ValueWithDefault<string>;
   +syntax: CSSSyntaxType;
 }
-declare export class LengthPercentage<+T: InnerValue> implements ICSSType<T> {
+declare export class LengthPercentage<+T extends InnerValue>
+  implements ICSSType<T>
+{
   +value: ValueWithDefault<string>;
   +syntax: CSSSyntaxType;
 }
-declare export class Length<+T: InnerValue> implements ICSSType<T> {
+declare export class Length<+T extends InnerValue> implements ICSSType<T> {
   +value: ValueWithDefault<string>;
   +syntax: CSSSyntaxType;
 }
-declare export class Percentage<+T: InnerValue> implements ICSSType<T> {
+declare export class Percentage<+T extends InnerValue> implements ICSSType<T> {
   +value: ValueWithDefault<string>;
   +syntax: CSSSyntaxType;
 }
-declare export class Num<+T: InnerValue> implements ICSSType<T> {
+declare export class Num<+T extends InnerValue> implements ICSSType<T> {
   +value: ValueWithDefault<string>;
   +syntax: CSSSyntaxType;
 }
-declare export class Resolution<+T: InnerValue> implements ICSSType<T> {
+declare export class Resolution<+T extends InnerValue> implements ICSSType<T> {
   +value: ValueWithDefault<string>;
   +syntax: CSSSyntaxType;
 }
-declare export class Time<+T: InnerValue> implements ICSSType<T> {
+declare export class Time<+T extends InnerValue> implements ICSSType<T> {
   +value: ValueWithDefault<string>;
   +syntax: CSSSyntaxType;
 }
-declare export class TransformFunction<+T: InnerValue> implements ICSSType<T> {
+declare export class TransformFunction<+T extends InnerValue>
+  implements ICSSType<T>
+{
   +value: ValueWithDefault<string>;
   +syntax: CSSSyntaxType;
 }
-declare export class TransformList<+T: InnerValue> implements ICSSType<T> {
+declare export class TransformList<+T extends InnerValue>
+  implements ICSSType<T>
+{
   +value: ValueWithDefault<string>;
   +syntax: CSSSyntaxType;
 }
 
-export type CSSType<+T: InnerValue> =
+export type CSSType<+T extends InnerValue> =
   | Angle<T>
   | Color<T>
   | Url<T>
