@@ -1065,6 +1065,358 @@ describe('@stylexjs/babel-plugin', () => {
       `);
     });
 
+    test('sorts min-width with screen and media type', () => {
+      const rules = [
+        [
+          'xLg',
+          { ltr: 'var(--xLgHash){.xLg.xLg{color:blue}}', rtl: null },
+          6000,
+        ],
+        [
+          'xSm',
+          { ltr: 'var(--xSmHash){.xSm.xSm{color:red}}', rtl: null },
+          6000,
+        ],
+        [
+          'xLgHash',
+          {
+            constKey: 'xLgHash',
+            constVal: '@media screen and (min-width: 1280px)',
+            ltr: '',
+            rtl: null,
+          },
+          0,
+        ],
+        [
+          'xSmHash',
+          {
+            constKey: 'xSmHash',
+            constVal: '@media screen and (min-width: 768px)',
+            ltr: '',
+            rtl: null,
+          },
+          0,
+        ],
+      ];
+
+      const css = stylexPlugin.processStylexRules(rules, {
+        useLayers: false,
+        legacyDisableLayers: true,
+      });
+
+      expect(css).toMatchInlineSnapshot(`
+        "@media screen and (min-width: 768px){.xSm.xSm{color:red}}
+        @media screen and (min-width: 1280px){.xLg.xLg{color:blue}}"
+      `);
+    });
+
+    test('does not misorder negated min-width media queries', () => {
+      // "@media (not (min-width: 1000px))" means the opposite of min-width — a
+      // user can produce this directly. We must not sort it as a positive
+      // min-width query; instead it falls through to the existing property sort.
+      const rules = [
+        [
+          'xNot',
+          { ltr: 'var(--xNotHash){.xNot.xNot{color:red}}', rtl: null },
+          6000,
+        ],
+        [
+          'xPos',
+          { ltr: 'var(--xPosHash){.xPos.xPos{color:blue}}', rtl: null },
+          6000,
+        ],
+        [
+          'xNotHash',
+          {
+            constKey: 'xNotHash',
+            constVal: '@media (not (min-width: 1000px))',
+            ltr: '',
+            rtl: null,
+          },
+          0,
+        ],
+        [
+          'xPosHash',
+          {
+            constKey: 'xPosHash',
+            constVal: '@media (min-width: 1000px)',
+            ltr: '',
+            rtl: null,
+          },
+          0,
+        ],
+      ];
+
+      const css = stylexPlugin.processStylexRules(rules, {
+        useLayers: false,
+        legacyDisableLayers: true,
+      });
+      expect(css).toMatchInlineSnapshot(`
+        "@media (min-width: 1000px){.xPos.xPos{color:blue}}
+        @media (not (min-width: 1000px)){.xNot.xNot{color:red}}"
+      `);
+    });
+
+    test('sorts max-width defineConsts breakpoints using real transform metadata', () => {
+      // Uses constants.mediaBig = '@media (max-width: 1000px)' and
+      // constants.mediaSmall = '@media (max-width: 500px)' from the test fixture.
+      // Two separate namespaces give them equal priority, catching the ordering bug.
+      const { metadata } = transform(`
+        import * as stylex from '@stylexjs/stylex';
+        export const styles = stylex.create({
+          a: { color: { [constants.mediaBig]: 'red' } },
+          b: { color: { [constants.mediaSmall]: 'blue' } },
+        });
+      `);
+
+      const css = stylexPlugin.processStylexRules(metadata, {
+        useLayers: false,
+        legacyDisableLayers: true,
+      });
+      expect(css).toMatchInlineSnapshot(`
+        ":root, .xsg933n{--blue-xpqh4lw:blue;--marginTokens-x8nt2k2:10px;--colorTokens-xkxfyv:red;}
+        :root, .xbiwvf9{--small-x19twipt:2px;--medium-xypjos2:4px;--large-x1ec7iuc:8px;}
+        @media (prefers-color-scheme: dark){:root, .xsg933n{--colorTokens-xkxfyv:lightblue;}}
+        @media (min-width: 600px){:root, .xsg933n{--marginTokens-x8nt2k2:20px;}}
+        @supports (color: oklab(0 0 0)){@media (prefers-color-scheme: dark){:root, .xsg933n{--colorTokens-xkxfyv:oklab(0.7 -0.3 -0.4);}}}
+        @media (max-width: 1000px){.color-xz4zmo0.color-xz4zmo0{color:red}}
+        @media (max-width: 500px){.color-x100plp.color-x100plp{color:blue}}"
+      `);
+    });
+
+    test('sorts min-width defineConsts breakpoints in ascending px order', () => {
+      const rules = [
+        // desktop (1500px) processed first — should appear AFTER tablet in CSS
+        [
+          'xDesktop',
+          {
+            ltr: 'var(--xDesktopHash){.xDesktop.xDesktop{width:200px}}',
+            rtl: null,
+          },
+          6000,
+        ],
+        [
+          'xTablet',
+          {
+            ltr: 'var(--xTabletHash){.xTablet.xTablet{width:500px}}',
+            rtl: null,
+          },
+          6000,
+        ],
+        [
+          'xDesktopHash',
+          {
+            constKey: 'xDesktopHash',
+            constVal: '@media (min-width: 1500px)',
+            ltr: '',
+            rtl: null,
+          },
+          0,
+        ],
+        [
+          'xTabletHash',
+          {
+            constKey: 'xTabletHash',
+            constVal: '@media (min-width: 1000px)',
+            ltr: '',
+            rtl: null,
+          },
+          0,
+        ],
+      ];
+
+      const css = stylexPlugin.processStylexRules(rules, {
+        useLayers: false,
+        legacyDisableLayers: true,
+      });
+      expect(css).toMatchInlineSnapshot(`
+        "@media (min-width: 1000px){.xTablet.xTablet{width:500px}}
+        @media (min-width: 1500px){.xDesktop.xDesktop{width:200px}}"
+      `);
+    });
+
+    test('sorts min-width breakpoints via template literal partial value', () => {
+      // defineConsts({ sm: '768px', lg: '1280px' }) used as @media (min-width: ${sm})
+      // produces ltr with var() inside the @media condition, not as the whole at-rule
+      const rules = [
+        [
+          'xLg',
+          {
+            ltr: '@media (min-width: var(--xLgHash)){.xLg.xLg{display:block}}',
+            rtl: null,
+          },
+          6000,
+        ],
+        [
+          'xSm',
+          {
+            ltr: '@media (min-width: var(--xSmHash)){.xSm.xSm{display:none}}',
+            rtl: null,
+          },
+          6000,
+        ],
+        [
+          'xLgHash',
+          { constKey: 'xLgHash', constVal: '1280px', ltr: '', rtl: null },
+          0,
+        ],
+        [
+          'xSmHash',
+          { constKey: 'xSmHash', constVal: '768px', ltr: '', rtl: null },
+          0,
+        ],
+      ];
+
+      const css = stylexPlugin.processStylexRules(rules, {
+        useLayers: false,
+        legacyDisableLayers: true,
+      });
+      expect(css).toMatchInlineSnapshot(`
+        "@media (min-width: 768px){.xSm.xSm{display:none}}
+        @media (min-width: 1280px){.xLg.xLg{display:block}}"
+      `);
+    });
+
+    test('sorts max-width defineConsts breakpoints in descending px order', () => {
+      const rules = [
+        // small (500px) processed first — should appear AFTER large in CSS
+        [
+          'xSmall',
+          { ltr: 'var(--xSmallHash){.xSmall.xSmall{color:blue}}', rtl: null },
+          6000,
+        ],
+        [
+          'xLarge',
+          { ltr: 'var(--xLargeHash){.xLarge.xLarge{color:red}}', rtl: null },
+          6000,
+        ],
+        [
+          'xSmallHash',
+          {
+            constKey: 'xSmallHash',
+            constVal: '@media (max-width: 500px)',
+            ltr: '',
+            rtl: null,
+          },
+          0,
+        ],
+        [
+          'xLargeHash',
+          {
+            constKey: 'xLargeHash',
+            constVal: '@media (max-width: 1000px)',
+            ltr: '',
+            rtl: null,
+          },
+          0,
+        ],
+      ];
+
+      const css = stylexPlugin.processStylexRules(rules, {
+        useLayers: false,
+        legacyDisableLayers: true,
+      });
+      expect(css).toMatchInlineSnapshot(`
+        "@media (max-width: 1000px){.xLarge.xLarge{color:red}}
+        @media (max-width: 500px){.xSmall.xSmall{color:blue}}"
+      `);
+    });
+
+    test('sorts CSS Level 4 range syntax (width >= Xpx) as min-width', () => {
+      // MediaQuery.parser normalises (width >= 768px) to min-width: 768px,
+      // so Level 4 range syntax gets sorted for free.
+      const rules = [
+        [
+          'xLg',
+          { ltr: 'var(--xLgHash){.xLg.xLg{color:red}}', rtl: null },
+          6000,
+        ],
+        [
+          'xSm',
+          { ltr: 'var(--xSmHash){.xSm.xSm{color:violet}}', rtl: null },
+          6000,
+        ],
+        [
+          'xLgHash',
+          {
+            constKey: 'xLgHash',
+            constVal: '@media (width >= 1280px)',
+            ltr: '',
+            rtl: null,
+          },
+          0,
+        ],
+        [
+          'xSmHash',
+          {
+            constKey: 'xSmHash',
+            constVal: '@media (width >= 768px)',
+            ltr: '',
+            rtl: null,
+          },
+          0,
+        ],
+      ];
+
+      const css = stylexPlugin.processStylexRules(rules, {
+        useLayers: false,
+        legacyDisableLayers: true,
+      });
+      expect(css).toMatchInlineSnapshot(`
+        "@media (width >= 768px){.xSm.xSm{color:violet}}
+        @media (width >= 1280px){.xLg.xLg{color:red}}"
+      `);
+    });
+
+    test('range queries (both min and max-width) fall through to existing sort', () => {
+      // Range queries like (768px <= width <= 1024px) parse as an and{min-width,
+      // max-width} pair. Sorting them alongside pure min/max-width queries would
+      // break comparator transitivity — a range can compare by min-width against
+      // one rule and by max-width against another, creating a cycle. They fall
+      // through to the existing property + rule comparison instead.
+      const rules = [
+        [
+          'xLg',
+          { ltr: 'var(--xLgHash){.xLg.xLg{color:blue}}', rtl: null },
+          6000,
+        ],
+        [
+          'xSm',
+          { ltr: 'var(--xSmHash){.xSm.xSm{color:violet}}', rtl: null },
+          6000,
+        ],
+        [
+          'xLgHash',
+          {
+            constKey: 'xLgHash',
+            constVal: '@media (1024px <= width <= 1280px)',
+            ltr: '',
+            rtl: null,
+          },
+          0,
+        ],
+        [
+          'xSmHash',
+          {
+            constKey: 'xSmHash',
+            constVal: '@media (768px <= width <= 1024px)',
+            ltr: '',
+            rtl: null,
+          },
+          0,
+        ],
+      ];
+
+      const css = stylexPlugin.processStylexRules(rules, {
+        useLayers: false,
+        legacyDisableLayers: true,
+      });
+      expect(css).toMatchInlineSnapshot(`
+        "@media (1024px <= width <= 1280px){.xLg.xLg{color:blue}}
+        @media (768px <= width <= 1024px){.xSm.xSm{color:violet}}"
+      `);
+    });
+
     test('sort is deterministic regardless of input order', () => {
       // These rules mix @media, @container, @starting-style, var()-wrapped,
       // and plain pseudo-element rules at the same priority.

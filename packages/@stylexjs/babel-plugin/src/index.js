@@ -12,6 +12,8 @@ import type { PluginObj } from '@babel/core';
 import type { StyleXOptions } from './utils/state-manager';
 
 import * as t from '@babel/types';
+import { MediaQuery } from 'style-value-parser';
+import type { MediaQueryRule } from 'style-value-parser';
 import StateManager from './utils/state-manager';
 import {
   EXTENSIONS,
@@ -455,6 +457,50 @@ function getLogicalFloatVars(rules: Array<Rule>): string {
     : '';
 }
 
+function findWidthPxInRule(rule: MediaQueryRule, type: string): number | null {
+  if (rule.type === 'pair' && rule.key === type) {
+    const v = rule.value;
+    if (
+      v != null &&
+      typeof v === 'object' &&
+      typeof v.value === 'number' &&
+      v.unit === 'px'
+    ) {
+      return v.value;
+    }
+    return null;
+  }
+  if (rule.type === 'and') {
+    // A negated media type (e.g. "not screen") inverts the whole expression
+    if (rule.rules.some((r) => r.type === 'media-keyword' && r.not)) {
+      return null;
+    }
+    for (const r of rule.rules) {
+      const found = findWidthPxInRule(r, type);
+      if (found !== null) return found;
+    }
+  }
+  // 'not' and 'or' are intentionally skipped — negated queries have inverted
+  // semantics and OR queries have no single value to sort by.
+  return null;
+}
+
+function extractMediaQueryWidthPx(
+  rule: string,
+  type: 'min-width' | 'max-width',
+): number | null {
+  const firstBrace = rule.indexOf('{');
+  if (firstBrace === -1) return null;
+  try {
+    const parsed = MediaQuery.parser.parseToEnd(
+      rule.slice(0, firstBrace).trimEnd(),
+    );
+    return findWidthPxInRule(parsed.queries, type);
+  } catch {
+    return null;
+  }
+}
+
 function processStylexRules(
   rules: Array<Rule>,
   config?:
@@ -539,57 +585,86 @@ function processStylexRules(
     constsMap.set(key, resolveConstant(value));
   }
 
-  const sortedRules = nonConstantRules.sort(
-    (
-      [classname1, { ltr: rule1 }, firstPriority]: [string, any, number],
-      [classname2, { ltr: rule2 }, secondPriority]: [string, any, number],
-    ) => {
-      const priorityComparison = firstPriority - secondPriority;
-      if (priorityComparison !== 0) return priorityComparison;
+  const sortedRules: Array<Rule> = nonConstantRules
+    .map(([key, { ...styleObj }, priority]): Rule => {
+      Object.keys(styleObj).forEach((dir) => {
+        let original = styleObj[dir];
+        for (const [varRef, constValue] of constsMap.entries()) {
+          if (typeof original !== 'string') continue;
+          const replacement = String(constValue);
+          original = original.replaceAll(varRef, replacement);
+          if (replacement.startsWith('var(') && replacement.endsWith(')')) {
+            const inside = replacement.slice(4, -1).trim();
+            const commaIdx = inside.indexOf(',');
+            const targetName = (
+              commaIdx >= 0 ? inside.slice(0, commaIdx) : inside
+            ).trim();
+            const constName = varRef.slice(4, -1);
+            original = original.replaceAll(`${constName}:`, `${targetName}:`);
+          }
+          styleObj[dir] = original;
+        }
+      });
+      return [key, styleObj, priority];
+    })
+    .sort(
+      (
+        [classname1, { ltr: rule1 }, firstPriority]: [string, any, number],
+        [classname2, { ltr: rule2 }, secondPriority]: [string, any, number],
+      ) => {
+        const priorityComparison = firstPriority - secondPriority;
+        if (priorityComparison !== 0) return priorityComparison;
 
-      if (useLegacyClassnamesSort) {
-        return classname1.localeCompare(classname2);
-      } else {
-        const property1 = rule1.slice(rule1.lastIndexOf('{'));
-        const property2 = rule2.slice(rule2.lastIndexOf('{'));
-        const propertyComparison = property1.localeCompare(property2);
-        if (propertyComparison !== 0) return propertyComparison;
-        return rule1.localeCompare(rule2);
-      }
-    },
-  );
+        if (useLegacyClassnamesSort) {
+          return classname1.localeCompare(classname2);
+        } else {
+          // Deterministic ordering for px min/max-width media queries.
+          // Sorts min-width ascending and max-width descending so that larger
+          // breakpoints appear later in the sheet and win the cascade.
+          // rem/em and negated/complex queries fall through to the existing
+          // property + rule comparison.
+          if (rule1.startsWith('@media ') && rule2.startsWith('@media ')) {
+            const minWidth1 = extractMediaQueryWidthPx(rule1, 'min-width');
+            const minWidth2 = extractMediaQueryWidthPx(rule2, 'min-width');
+            const maxWidth1 = extractMediaQueryWidthPx(rule1, 'max-width');
+            const maxWidth2 = extractMediaQueryWidthPx(rule2, 'max-width');
+            // Only sort queries of the same shape. Mixing pure min-width, pure
+            // max-width, and range queries (which have both) in a single
+            // comparator can produce non-transitive orderings — a range query
+            // can compare by min-width against one rule and by max-width against
+            // another, creating a cycle. Range queries fall through to the
+            // existing property + rule comparison.
+            if (
+              minWidth1 !== null &&
+              minWidth2 !== null &&
+              maxWidth1 === null &&
+              maxWidth2 === null
+            ) {
+              const mqComparison = minWidth1 - minWidth2;
+              if (mqComparison !== 0) return mqComparison;
+            } else if (
+              maxWidth1 !== null &&
+              maxWidth2 !== null &&
+              minWidth1 === null &&
+              minWidth2 === null
+            ) {
+              const mqComparison = maxWidth2 - maxWidth1;
+              if (mqComparison !== 0) return mqComparison;
+            }
+          }
+          const property1 = rule1.slice(rule1.lastIndexOf('{'));
+          const property2 = rule2.slice(rule2.lastIndexOf('{'));
+          const propertyComparison = property1.localeCompare(property2);
+          if (propertyComparison !== 0) return propertyComparison;
+          return rule1.localeCompare(rule2);
+        }
+      },
+    );
 
   let lastKPri = -1;
   const grouped = sortedRules.reduce((acc: Array<Array<Rule>>, rule) => {
-    const [key, { ...styleObj }, priority] = rule;
+    const [key, styleObj, priority] = rule;
     const priorityLevel = Math.floor(priority / 1000);
-
-    Object.keys(styleObj).forEach((dir) => {
-      let original = styleObj[dir];
-
-      for (const [varRef, constValue] of constsMap.entries()) {
-        if (typeof original !== 'string') continue;
-
-        const replacement = String(constValue);
-
-        original = original.replaceAll(varRef, replacement);
-
-        // When the replacement is a variable, we need to replace the key to allow variable overrides
-        if (replacement.startsWith('var(') && replacement.endsWith(')')) {
-          const inside = replacement.slice(4, -1).trim();
-          // Account for fallback variables
-          const commaIdx = inside.indexOf(',');
-          const targetName = (
-            commaIdx >= 0 ? inside.slice(0, commaIdx) : inside
-          ).trim();
-
-          const constName = varRef.slice(4, -1);
-          original = original.replaceAll(`${constName}:`, `${targetName}:`);
-        }
-
-        styleObj[dir] = original;
-      }
-    });
 
     if (priorityLevel === lastKPri) {
       acc[acc.length - 1].push([key, styleObj, priority]);
@@ -601,7 +676,7 @@ function processStylexRules(
     return acc;
   }, []);
 
-  const logicalFloatVars = getLogicalFloatVars(nonConstantRules);
+  const logicalFloatVars = getLogicalFloatVars(sortedRules);
 
   const layerName = (index: number): string =>
     layerPrefix
