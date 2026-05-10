@@ -61,4 +61,4 @@ export type StyleXTransformObj = Readonly<{
   processStylexRules: typeof processStylexRules;
 }>;
 declare const $$EXPORT_DEFAULT_DECLARATION$$: StyleXTransformObj;
-export default $$EXPORT_DEFAULT_DECLARATION$$;
+export = $$EXPORT_DEFAULT_DECLARATION$$;
