@@ -59,6 +59,7 @@ const configs: {
       '@stylexjs/no-unused': 'error',
       '@stylexjs/no-legacy-contextual-styles': 'error',
       '@stylexjs/sort-keys': 'warn',
+      '@stylexjs/no-nonstandard-styles': 'error',
     },
   },
 };
