@@ -204,6 +204,18 @@ const stylexValidShorthands = {
         return;
       }
 
+      if (
+        key === 'gap' &&
+        newValues.length === 2 &&
+        newValues.every(
+          ([, val]) =>
+            val === property.value.value ||
+            val === Number(property.value.value),
+        )
+      ) {
+        return;
+      }
+
       context.report({
         node: property,
         message: `Property shorthands using multiple values like "${key}: ${String(property.value.value)}" are not supported in StyleX. Separate into individual properties.`,

@@ -86,6 +86,7 @@ const showError =
 const shorthandExpansionMap: { [string]: string } = {
   animation: 'animation',
   font: 'font',
+  gap: 'gap',
   gridArea: 'grid-area',
   gridColumn: 'grid-column',
   gridRow: 'grid-row',
