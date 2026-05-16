@@ -603,6 +603,39 @@ const stylexValidStyles = {
         };
       }
     }
+    function isConditionalObject(node) {
+      if (node.type !== 'ObjectExpression') return false;
+
+      return node.properties.every((prop) => {
+        const key =
+          prop.key.type === 'Identifier' ? prop.key.name : prop.key.value;
+        return key === 'default' || key.startsWith('@') || key.startsWith(':');
+      });
+    }
+
+    function isStylexWhenKey(style) {
+      const key = style.key;
+      if (
+        !style.computed ||
+        key.type !== 'CallExpression' ||
+        key.callee.type !== 'MemberExpression'
+      ) {
+        return false;
+      }
+      const calleeObject = key.callee.object;
+      const calleeProperty = key.callee.property;
+      return (
+        (calleeObject.type === 'MemberExpression' &&
+          calleeObject.object.type === 'Identifier' &&
+          styleXDefaultImports.has(calleeObject.object.name) &&
+          calleeObject.property.type === 'Identifier' &&
+          calleeObject.property.name === 'when' &&
+          calleeProperty.type === 'Identifier') ||
+        (calleeObject.type === 'Identifier' &&
+          styleXWhenImports.has(calleeObject.name) &&
+          calleeProperty.type === 'Identifier')
+      );
+    }
     function checkStyleProperty(
       style: Node,
       level: number,
@@ -647,6 +680,17 @@ const stylexValidStyles = {
           if (isStylexResolvedVarsToken(key, stylexResolvedVarsTokenImports)) {
             return undefined;
           }
+          // stylex.when.*() computed key with object value - allow it!
+          if (isStylexWhenKey(style) && propName != null) {
+            return styleValue.properties.forEach((prop) =>
+              checkStyleProperty(
+                prop,
+                level + 1,
+                propName ?? keyName,
+                outerIsPseudoElement,
+              ),
+            );
+          }
           if (
             typeof keyName !== 'string' ||
             (key.type !== 'Literal' && key.type !== 'Identifier')
@@ -682,7 +726,10 @@ const stylexValidStyles = {
             } else {
               const ruleCheck = pseudoClassesAndAtRules(key, variables);
 
-              if (ruleCheck !== undefined) {
+              if (
+                ruleCheck !== undefined &&
+                !isConditionalObject(style.value)
+              ) {
                 return context.report({
                   node: style.value,
                   loc: style.value.loc,
