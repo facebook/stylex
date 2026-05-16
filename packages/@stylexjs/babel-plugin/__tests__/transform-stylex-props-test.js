@@ -308,6 +308,46 @@ describe('@stylexjs/babel-plugin', () => {
         `);
       });
 
+      test('sx prop can compile as stylex.attrs output', () => {
+        expect(
+          transform(
+            `
+            import stylex from 'stylex';
+            const styles = stylex.create({
+              red: {
+                color: 'red',
+              }
+            });
+            function Foo() {
+              return (
+                <>
+                  <div id="test" sx={styles.red}>Hello World</div>
+                  <div class="test" sx={styles.red} id="test">Hello World</div>
+                  <div id="test" sx={styles.red} class="test">Hello World</div>
+                </>
+              );
+            }
+          `,
+            { ...options, sxOutput: 'as-attrs' },
+          ),
+        ).toMatchInlineSnapshot(`
+          "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+          var _inject2 = _inject;
+          import stylex from 'stylex';
+          _inject2({
+            ltr: ".color-x1e2nbdu{color:red}",
+            priority: 3000
+          });
+          function Foo() {
+            return <>
+                            <div id="test" class="color-x1e2nbdu" data-style-src="npm-package:js/node_modules/npm-package/dist/components/Foo.react.js:4">Hello World</div>
+                            <div class="test" class="color-x1e2nbdu" data-style-src="npm-package:js/node_modules/npm-package/dist/components/Foo.react.js:4" id="test">Hello World</div>
+                            <div id="test" class="color-x1e2nbdu" data-style-src="npm-package:js/node_modules/npm-package/dist/components/Foo.react.js:4" class="test">Hello World</div>
+                          </>;
+          }"
+        `);
+      });
+
       test('local dynamic styles', () => {
         expect(
           transform(

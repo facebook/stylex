@@ -24,6 +24,7 @@ export const defaultOptions: StyleXOptions = {
   enableLogicalStylesPolyfill: false,
   enableLTRRTLComments: false,
   enableMinifiedKeys: true,
+  sxOutput: 'as-props',
   styleResolution: 'property-specificity',
   // runtimeInjection: false,
   importSources: [],
