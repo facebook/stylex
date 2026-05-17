@@ -23,10 +23,13 @@ import isPercentage from '../rules/isPercentage';
 import isAbsoluteLength from '../rules/isAbsoluteLength';
 import isRelativeLength from '../rules/isRelativeLength';
 import { borderSplitter } from '../utils/split-css-value';
+import formatPropertiesWithNodeIndentation from '../utils/formatPropertiesWithNodeIndentation';
+import getSourceCode from '../utils/getSourceCode';
 
 export type RuleResponse = void | {
   message: string,
   distance?: number,
+  fix?: Rule.ReportFixer,
   suggest?: {
     fix: Rule.ReportFixer,
     desc: string,
@@ -36,6 +39,7 @@ export type RuleCheck = (
   node: $ReadOnly<Expression | Pattern>,
   variables?: Variables,
   prop?: $ReadOnly<Property>,
+  context?: Rule.RuleContext,
 ) => RuleResponse;
 
 export type Variables = $ReadOnlyMap<string, Expression | 'ARG'>;
@@ -52,16 +56,27 @@ const isNamedColor: RuleCheck = makeUnionRule(
 
 const isLength: RuleCheck = makeUnionRule(isAbsoluteLength, isRelativeLength);
 
-const isNonNumericString: RuleCheck = (node: Node): RuleResponse => {
+const isNonNumericString: RuleCheck = (
+  node: Node,
+  _variables?: Variables,
+  _prop?: Property,
+): RuleResponse => {
   if (node.type === 'Literal' && typeof node.value === 'string') {
     if (/^[-+]?(?:\d+|\d*\.\d+)$/.test(node.value)) {
       if (node.value === '0') {
         return undefined;
       }
 
-      return {
+      const response: $NonMaybeType<RuleResponse> = {
         message: 'a non-numeric string',
       };
+      response.suggest = {
+        desc: `Replace string '${node.value}' with number ${Number(node.value)}?`,
+        fix: (fixer: Rule.RuleFixer): Rule.Fix | null => {
+          return fixer.replaceText(node, String(Number(node.value)));
+        },
+      };
+      return response;
     }
   }
   return undefined;
@@ -104,7 +119,7 @@ const borderImageSource: RuleCheck = makeUnionRule(
   makeLiteralRule('none'),
   isString,
 );
-const time: RuleCheck = isString;
+const time: RuleCheck = makeUnionRule(isNumber, isString);
 const animationDirection: RuleCheck = makeUnionRule(
   makeLiteralRule('normal'),
   makeLiteralRule('reverse'),
@@ -184,12 +199,14 @@ const backgroundPosition: RuleCheck = makeUnionRule(
   makeLiteralRule('center'),
 );
 const backgroundPositionX: RuleCheck = makeUnionRule(
+  isNumber,
   isString,
   makeLiteralRule('left'),
   makeLiteralRule('right'),
   makeLiteralRule('center'),
 );
 const backgroundPositionY: RuleCheck = makeUnionRule(
+  isNumber,
   isString,
   makeLiteralRule('top'),
   makeLiteralRule('bottom'),
@@ -226,6 +243,7 @@ const brStyle: RuleCheck = makeUnionRule(
   makeLiteralRule('outset'),
 );
 const CSSCursor: RuleCheck = makeUnionRule(
+  isCSSVariable,
   makeLiteralRule('auto'),
   makeLiteralRule('default'),
   makeLiteralRule('none'),
@@ -480,11 +498,55 @@ const backgroundOrigin: RuleCheck = box;
 const backgroundRepeat: RuleCheck = repeatStyle;
 const backgroundSize: RuleCheck = bgSize;
 const blockSize: RuleCheck = width;
-const quotedString = (val: number | string) =>
-  typeof val === 'string' ? `'${val}'` : val;
+const NUMERIC_LITERAL_VALUE_REGEX = /^[-+]?(?:\d+|\d*\.\d+)$/;
+
+const NUMERIC_LITERAL_PROPERTIES = new Set([
+  'lineHeight',
+  'fontWeight',
+  'animationIterationCount',
+  'borderWidth',
+  'borderTopWidth',
+  'borderRightWidth',
+  'borderBottomWidth',
+  'borderLeftWidth',
+  'borderInlineStartWidth',
+  'borderInlineEndWidth',
+  'borderBlockStartWidth',
+  'borderBlockEndWidth',
+]);
+
+const serializeValue = (propertyKey: string, val: number | string): string => {
+  if (typeof val === 'number') {
+    return String(val);
+  }
+  if (
+    NUMERIC_LITERAL_PROPERTIES.has(propertyKey) &&
+    NUMERIC_LITERAL_VALUE_REGEX.test(val)
+  ) {
+    return String(Number(val));
+  }
+  // Escape single quotes within the string
+  const escaped = val.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+  return `'${escaped}'`;
+};
+
+const formatReplacementProperties = (
+  prop: $ReadOnly<Property>,
+  properties: $ReadOnlyArray<string>,
+  context?: Rule.RuleContext,
+): string => {
+  const sourceCode = context != null ? getSourceCode(context) : undefined;
+  return formatPropertiesWithNodeIndentation(prop, properties, sourceCode);
+};
+
 const border =
   (suffix: string = ''): RuleCheck =>
-  (node: Expression | Pattern, _variables?: Variables, prop?: Property) => {
+  (
+    node: Expression | Pattern,
+    _variables?: Variables,
+    prop?: Property,
+    context?: Rule.RuleContext,
+  ) => {
     const response: $NonMaybeType<RuleResponse> = {
       message: `The 'border${suffix}' property is not supported. Use the 'border${suffix}Width', 'border${suffix}Style' and 'border${suffix}Color' properties instead.`,
     };
@@ -492,34 +554,47 @@ const border =
       return response;
     }
     if (typeof node.value === 'number') {
+      const fixFn = (fixer: Rule.RuleFixer): Rule.Fix | null => {
+        return fixer.replaceText(
+          prop,
+          `border${suffix}Width: ${String(node.value)}`,
+        );
+      };
+      response.fix = fixFn;
       response.suggest = {
         desc: `Replace 'border${suffix}' set to a number with 'border${suffix}Width' instead?`,
-        fix: (fixer: Rule.RuleFixer): Rule.Fix | null => {
-          return fixer.replaceText(
-            prop,
-            `border${suffix}Width: ${String(node.value)}`,
-          );
-        },
+        fix: fixFn,
       };
     }
     if (typeof node.value === 'string') {
       const [width, style, color] = borderSplitter(node.value);
       if (width != null || style != null || color != null) {
+        const fixFn = (fixer: Rule.RuleFixer): Rule.Fix | null => {
+          const newRules = [];
+          if (width != null) {
+            newRules.push(
+              `border${suffix}Width: ${serializeValue(`border${suffix}Width`, width)}`,
+            );
+          }
+          if (style != null) {
+            newRules.push(
+              `border${suffix}Style: ${serializeValue(`border${suffix}Style`, style)}`,
+            );
+          }
+          if (color != null) {
+            newRules.push(
+              `border${suffix}Color: ${serializeValue(`border${suffix}Color`, color)}`,
+            );
+          }
+          return fixer.replaceText(
+            prop,
+            formatReplacementProperties(prop, newRules, context),
+          );
+        };
+        response.fix = fixFn;
         response.suggest = {
           desc: `Replace 'border${suffix}' with 'border${suffix}Width', 'border${suffix}Style' and 'border${suffix}Color' instead?`,
-          fix: (fixer: Rule.RuleFixer): Rule.Fix | null => {
-            const newRules = [];
-            if (width != null) {
-              newRules.push(`border${suffix}Width: ${quotedString(width)}`);
-            }
-            if (style != null) {
-              newRules.push(`border${suffix}Style: ${quotedString(style)}`);
-            }
-            if (color != null) {
-              newRules.push(`border${suffix}Color: ${quotedString(color)}`);
-            }
-            return fixer.replaceText(prop, newRules.join(',\n    '));
-          },
+          fix: fixFn,
         };
       }
     }
@@ -1225,6 +1300,7 @@ const textUnderlinePosition: RuleCheck = makeUnionRule(
 );
 const textUnderlineOffset: RuleCheck = makeUnionRule(
   makeLiteralRule('auto'),
+  isNumber,
   isLength,
   isPercentage,
 );
@@ -1429,6 +1505,7 @@ const speakAs: RuleCheck = makeUnionRule(
 const stroke: RuleCheck = paint;
 const strokeDasharray: RuleCheck = makeUnionRule(
   makeLiteralRule('none'),
+  isNumber,
   isString,
 );
 const strokeDashoffset: RuleCheck = svgLength;
@@ -1515,6 +1592,7 @@ const SupportedVendorSpecificCSSProperties = {
     'content-box',
     'text',
   ) as RuleCheck,
+  WebkitAppRegion: makeUnionRule('drag', 'no-drag') as RuleCheck,
 };
 
 export const convertToStandardProperties: $ReadOnly<{
@@ -1986,7 +2064,7 @@ const CSSProperties = {
   orphans: orphans,
   outline: outline,
   outlineColor: color,
-  outlineOffset: isLength,
+  outlineOffset: makeUnionRule(isNumber, isLength) as RuleCheck,
   outlineStyle: makeUnionRule(
     'auto',
     'none',
@@ -1999,7 +2077,7 @@ const CSSProperties = {
     'inset',
     'outset',
   ) as RuleCheck,
-  outlineWidth: isLength,
+  outlineWidth: makeUnionRule(isNumber, isLength) as RuleCheck,
   blockOverflow: overflow, // TODO - Add support to Babel Plugin
   inlineOverflow: overflow, // TODO - Add support to Babel Plugin
   overflow: overflow,
@@ -2015,7 +2093,7 @@ const CSSProperties = {
   overscrollBehaviorY: overscrollBehavior,
   // Currently Unsupported
   // overscrollBehaviorBlock: overscrollBehaviorY,
-  overflowClipMargin: isString,
+  overflowClipMargin: makeUnionRule(isNumber, isString) as RuleCheck,
 
   paintOrder: makeUnionRule(
     'normal',
@@ -2141,7 +2219,7 @@ const CSSProperties = {
     'dashed',
     'wavy',
   ) as RuleCheck,
-  textDecorationThickness: isLength,
+  textDecorationThickness: makeUnionRule(isNumber, isLength) as RuleCheck,
 
   textEmphasis: textEmphasis,
   textEmphasisColor: textEmphasisColor,
@@ -2156,7 +2234,13 @@ const CSSProperties = {
   textTransform: textTransform,
   textUnderlineOffset: textUnderlineOffset,
   textUnderlinePosition: textUnderlinePosition,
-  textWrap: makeUnionRule('wrap', 'nowrap', 'balance', 'pretty') as RuleCheck,
+  textWrap: makeUnionRule(
+    'wrap',
+    'nowrap',
+    'balance',
+    'pretty',
+    'stable',
+  ) as RuleCheck,
 
   touchAction: touchAction,
   transform: transform,
@@ -2262,6 +2346,7 @@ export const pseudoClassesAndAtRules: RuleCheck = makeUnionRule(
   makeLiteralRule(':only-child'),
   makeLiteralRule(':nth-child'),
   makeLiteralRule(':nth-of-type'),
+  makeLiteralRule(':empty'),
   makeLiteralRule(':hover'),
   makeLiteralRule(':focus'),
   makeLiteralRule(':focus-visible'),

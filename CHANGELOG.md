@@ -1,12 +1,26 @@
 # Changelog
 
+## 0.18.3 (Apr 29, 2026)
+- Experimental nested APIs for `defineVars`, `defineConsts`, and `createTheme`.
+- Add recursive derivation support for `defineVars`.
+- ESLint auto-fixers for shorthand expansion, gated by `styleResolution` config.
+- Respect project `browserslist` config instead of hardcoding `>= 1%`.
+- Add `:empty` pseudo-class and unclosed string detection to the compiler.
+- StyleX DevTools extension now available in the Chrome Web Store.
+
+## 0.18.2 (Mar 23, 2026)
+- Bring back `stylex.attrs` for SSR and non-React frameworks.
+- Add `layersBefore`, `layersAfter`, and `layersPrefix` for `@layer` control.
+- Add `flex`, `grid`, and `animation` shorthand expansion to ESLint plugin.
+- ESLint fixes: bare number support, false positive fixes in `stylex.create`.
+
 ## 0.18.1 (Mar 5, 2026)
 - Add simple `sx={}` JSX prop syntax as an alternative to `stylex.props`.
 - Fix `unplugin` `generateBundle` hook to use `emitFile` instead of direct bundle assignment.
 
 ## 0.18.0 (Mar 3, 2026)
 - Add `stylex.env` API for compile-time constants and shareable design tokens.
-- New `create-stylex-app` CLI for scaffolding projects with `npx create-stylex-app`.
+- New `@stylexjs/create` CLI for scaffolding projects with `npm create @stylexjs`.
 - Add Bun support and improvements to the `unplugin` bundler plugin.
 - Support attribute selectors in `stylex.when` and conditional styles.
 - Fix priority calculation for compound pseudo selectors.

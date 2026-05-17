@@ -38,6 +38,14 @@ import {
   LOGICAL_FLOAT_END_VAR,
 } from './shared/preprocess-rules/legacy-expand-shorthands';
 import transformStyleXDefineMarker from './visitors/stylex-define-marker';
+import transformStyleXDefineVarsNested from './visitors/stylex-define-vars-nested';
+import transformStyleXDefineConstsNested from './visitors/stylex-define-consts-nested';
+import transformStyleXCreateThemeNested from './visitors/stylex-create-theme-nested';
+import { createUtilityStylesVisitor } from '@stylexjs/atoms/babel-transform';
+import { convertObjectToAST } from './utils/js-to-ast';
+import styleXCreateSet from './shared/stylex-create';
+import { hoistExpression } from './utils/ast-helpers';
+import { injectDevClassNames } from './utils/dev-classname';
 
 const NAME = 'stylex';
 
@@ -160,6 +168,17 @@ function styleXTransform(): PluginObj<> {
               skipStylexPropsChildren(path, state);
             },
           });
+          // Run atoms visitor first to transform x.prop.value patterns
+          // This runs BEFORE stylex.props so that atomic styles are already
+          // compiled when stylex.props processes them
+          const atomsVisitor = createUtilityStylesVisitor(state, {
+            styleXCreateSet,
+            convertObjectToAST,
+            hoistExpression,
+            injectDevClassNames,
+          });
+          path.traverse(atomsVisitor);
+
           path.traverse({
             CallExpression(path: NodePath<t.CallExpression>) {
               transformStylexCall(path, state);
@@ -359,6 +378,9 @@ function styleXTransform(): PluginObj<> {
         transformStyleXDefineVars(path, state);
         transformStyleXDefineConsts(path, state);
         transformStyleXCreateTheme(path, state);
+        transformStyleXDefineVarsNested(path, state);
+        transformStyleXDefineConstsNested(path, state);
+        transformStyleXCreateThemeNested(path, state);
         transformStyleXCreate(path, state);
       },
     },
@@ -438,19 +460,36 @@ function processStylexRules(
   config?:
     | boolean
     | {
-        useLayers?: boolean,
+        useLayers?:
+          | boolean
+          | $ReadOnly<{
+              before?: $ReadOnlyArray<string>,
+              after?: $ReadOnlyArray<string>,
+              prefix?: string,
+            }>,
         enableLTRRTLComments?: boolean,
         legacyDisableLayers?: boolean,
         useLegacyClassnamesSort?: boolean,
         ...
       },
 ): string {
+  const rawConfig =
+    typeof config === 'boolean' ? { useLayers: config } : (config ?? {});
   const {
-    useLayers = false,
     enableLTRRTLComments = false,
     legacyDisableLayers = false,
     useLegacyClassnamesSort = false,
-  } = typeof config === 'boolean' ? { useLayers: config } : (config ?? {});
+  } = rawConfig;
+
+  const rawUseLayers = rawConfig.useLayers ?? false;
+  const useLayers = rawUseLayers !== false;
+  const layersBefore =
+    typeof rawUseLayers === 'object' ? (rawUseLayers.before ?? []) : [];
+  const layersAfter =
+    typeof rawUseLayers === 'object' ? (rawUseLayers.after ?? []) : [];
+  const layerPrefix =
+    typeof rawUseLayers === 'object' ? (rawUseLayers.prefix ?? '') : '';
+
   if (rules.length === 0) {
     return '';
   }
@@ -511,16 +550,11 @@ function processStylexRules(
       if (useLegacyClassnamesSort) {
         return classname1.localeCompare(classname2);
       } else {
-        if (rule1.startsWith('@') && !rule2.startsWith('@')) {
-          const query1 = rule1.slice(0, rule1.indexOf('{'));
-          const query2 = rule2.slice(0, rule2.indexOf('{'));
-          if (query1 !== query2) {
-            return query1.localeCompare(query2);
-          }
-        }
         const property1 = rule1.slice(rule1.lastIndexOf('{'));
         const property2 = rule2.slice(rule2.lastIndexOf('{'));
-        return property1.localeCompare(property2);
+        const propertyComparison = property1.localeCompare(property2);
+        if (propertyComparison !== 0) return propertyComparison;
+        return rule1.localeCompare(rule2);
       }
     },
   );
@@ -569,9 +603,18 @@ function processStylexRules(
 
   const logicalFloatVars = getLogicalFloatVars(nonConstantRules);
 
+  const layerName = (index: number): string =>
+    layerPrefix
+      ? `${layerPrefix}.priority${index + 1}`
+      : `priority${index + 1}`;
+
   const header = useLayers
     ? '\n@layer ' +
-      grouped.map((_, index) => `priority${index + 1}`).join(', ') +
+      [
+        ...layersBefore,
+        ...grouped.map((_, index) => layerName(index)),
+        ...layersAfter,
+      ].join(', ') +
       ';\n'
     : '';
 
@@ -622,7 +665,7 @@ function processStylexRules(
 
       // Don't put @property, @keyframe, @position-try in layers
       return useLayers && pri > 0
-        ? `@layer priority${index + 1}{\n${collectedCSS}\n}`
+        ? `@layer ${layerName(index)}{\n${collectedCSS}\n}`
         : collectedCSS;
     })
     .join('\n');

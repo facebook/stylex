@@ -9,7 +9,7 @@
 
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import * as stylex from '@stylexjs/stylex';
 import Card from '@/components/Card';
 import {
@@ -26,7 +26,6 @@ const HOMEPAGE = 'https://stylexjs.com';
 export default function Home() {
   const [themeIndex, setThemeIndex] = useState(2);
   const [isDark, setIsDark] = useState(false);
-
   useEffect(() => {
     const mq = window.matchMedia('(prefers-color-scheme: dark)');
     setIsDark(mq.matches);
@@ -57,6 +56,20 @@ export default function Home() {
           themeIndex={themeIndex}
         />
       </div>
+
+      {/* Link to nested theming demos hub */}
+      <a {...stylex.props(style.nestedLink)} href="/theming-demos">
+        <span {...stylex.props(style.nestedLinkIcon)}>🎨</span>
+        <span>
+          <strong>Theming Demos</strong>
+          <br />
+          <span {...stylex.props(style.nestedLinkSub)}>
+            Experimental APIs for expressing nested design tokens · Design
+            system theming
+          </span>
+        </span>
+        <span {...stylex.props(style.nestedLinkArrow)}>→</span>
+      </a>
 
       <div {...stylex.props(style.grid)}>
         <Card
@@ -93,71 +106,114 @@ const style = stylex.create({
   main: {
     display: 'flex',
     flexDirection: 'column',
+    gap: spacing.xxxl,
     alignItems: 'center',
     justifyContent: 'center',
-    gap: spacing.xxxl,
     minHeight: '100vh',
+    paddingInline: spacing.md,
     paddingTop: spacing.xxxl,
     paddingBottom: {
-      default: spacing.xxl,
       [MEDIA_MOBILE]: spacing.lg,
+      default: spacing.xxl,
     },
-    paddingInline: spacing.md,
-    backgroundColor: $.surfaceBg,
     color: `rgba(${$.foregroundR}, ${$.foregroundG}, ${$.foregroundB}, 1)`,
+    backgroundColor: $.surfaceBg,
   },
   hero: {
     display: 'flex',
     flexDirection: 'column',
+    gap: spacing.lg,
     alignItems: 'center',
     justifyContent: 'center',
-    gap: spacing.lg,
     width: '100%',
     maxWidth: 480,
   },
   h1: {
-    fontSize: text.h1,
-    lineHeight: 1,
+    flexDirection: {
+      [MEDIA_MOBILE]: 'column',
+      default: 'row',
+    },
     fontFamily: $.fontSans,
+    fontSize: text.h1,
     fontWeight: 700,
+    lineHeight: 1,
     textAlign: 'center',
     letterSpacing: '-0.02em',
     whiteSpace: 'nowrap',
-    flexDirection: {
-      default: 'row',
-      [MEDIA_MOBILE]: 'column',
-    },
   },
   plus: {
     fontWeight: 300,
     color: colors.accent,
-    transitionProperty: 'color',
     transitionDuration: '300ms',
+    transitionProperty: 'color',
   },
   subtitle: {
+    maxWidth: '36ch',
+    fontFamily: $.fontSans,
     fontSize: text.p,
     lineHeight: 1.6,
-    fontFamily: $.fontSans,
-    textAlign: 'center',
     color: {
-      default: colors.gray5,
       [DARK]: colors.gray6,
+      default: colors.gray5,
     },
-    maxWidth: '36ch',
+    textAlign: 'center',
     textWrap: 'balance',
+  },
+  nestedLink: {
+    display: 'flex',
+    gap: spacing.md,
+    alignItems: 'center',
+    width: '100%',
+    maxWidth: 480,
+    paddingBlock: spacing.md,
+    paddingInline: spacing.lg,
+    fontFamily: $.fontSans,
+    fontSize: text.sm,
+    lineHeight: 1.4,
+    color: 'inherit',
+    textDecoration: 'none',
+    backgroundColor: {
+      default: colors.accentLight,
+      ':hover': colors.accentFaded,
+    },
+    borderColor: colors.accent,
+    borderStyle: 'solid',
+    borderWidth: 2,
+    borderRadius: spacing.sm,
+    transform: {
+      default: null,
+      ':hover': 'translateY(-2px)',
+    },
+    transitionDuration: '200ms',
+    transitionProperty: 'background-color, border-color, transform',
+  },
+  nestedLinkIcon: {
+    flexShrink: 0,
+    fontSize: text.h4,
+  },
+  nestedLinkSub: {
+    fontSize: text.xs,
+    opacity: 0.6,
+  },
+  nestedLinkArrow: {
+    marginLeft: 'auto',
+    fontSize: text.h5,
+    color: colors.accent,
+    transitionDuration: '200ms',
+    transitionProperty: 'transform',
   },
   grid: {
     display: 'grid',
     gridTemplateColumns: {
-      default: 'repeat(4, minmax(25%, auto))',
       [MEDIA_MOBILE]: '1fr',
       [MEDIA_TABLET]: 'repeat(2, 50%)',
+      default: 'repeat(4, minmax(25%, auto))',
     },
     gap: spacing.sm,
     width: $.maxWidth,
     maxWidth: {
-      default: '100%',
       [MEDIA_MOBILE]: 320,
+      default: '100%',
     },
     textAlign: { [MEDIA_MOBILE]: 'center' },
   },

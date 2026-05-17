@@ -289,6 +289,84 @@ function expandQuadValues(
   return [top, right, bottom, left];
 }
 
+const GRID_NON_CUSTOM_IDENT_KEYWORDS = new Set([
+  'auto',
+  'none',
+  'inherit',
+  'initial',
+  'unset',
+  'revert',
+  'revert-layer',
+]);
+
+function isCustomIdent(value: string): boolean {
+  if (/\s/.test(value)) return false;
+  const lower = value.toLowerCase();
+  if (GRID_NON_CUSTOM_IDENT_KEYWORDS.has(lower)) return false;
+  if (/^span\b/i.test(lower)) return false;
+  if (/^-?\d+$/.test(value)) return false;
+  return true;
+}
+
+function splitOnSlashGroups(parts: Array<ValuePart>): Array<string> {
+  const groups: Array<Array<string>> = [[]];
+  for (const part of parts) {
+    if (part.text === '/') {
+      groups.push([]);
+    } else {
+      groups[groups.length - 1].push(part.text);
+    }
+  }
+  return groups.map((g) => g.join(' ')).filter((g) => g !== '');
+}
+
+function expandGridAreaShorthand(
+  groups: Array<string>,
+  importantSuffix: string,
+): $ReadOnlyArray<$ReadOnly<[string, string]>> {
+  if (groups.length === 2) {
+    const firstIsCustom = isCustomIdent(groups[0]);
+    const secondIsCustom = isCustomIdent(groups[1]);
+    const entries: Array<[string, string]> = [
+      ['gridColumnStart', applyImportant(groups[1], importantSuffix)],
+      ['gridRowStart', applyImportant(groups[0], importantSuffix)],
+    ];
+    if (firstIsCustom) {
+      entries.push(['gridRowEnd', applyImportant(groups[0], importantSuffix)]);
+    }
+    if (secondIsCustom) {
+      entries.push([
+        'gridColumnEnd',
+        applyImportant(groups[1], importantSuffix),
+      ]);
+    }
+    return entries.sort(([a], [b]) => a.localeCompare(b));
+  }
+  if (groups.length === 3) {
+    const entries: Array<[string, string]> = [
+      ['gridColumnStart', applyImportant(groups[1], importantSuffix)],
+      ['gridRowEnd', applyImportant(groups[2], importantSuffix)],
+      ['gridRowStart', applyImportant(groups[0], importantSuffix)],
+    ];
+    if (isCustomIdent(groups[1])) {
+      entries.push([
+        'gridColumnEnd',
+        applyImportant(groups[1], importantSuffix),
+      ]);
+    }
+    return entries.sort(([a], [b]) => a.localeCompare(b));
+  }
+  if (groups.length === 4) {
+    return [
+      ['gridColumnEnd', applyImportant(groups[3], importantSuffix)],
+      ['gridColumnStart', applyImportant(groups[1], importantSuffix)],
+      ['gridRowEnd', applyImportant(groups[2], importantSuffix)],
+      ['gridRowStart', applyImportant(groups[0], importantSuffix)],
+    ];
+  }
+  return [];
+}
+
 function isColorValue(value: string): boolean {
   const lowerValue = value.toLowerCase();
   return (
@@ -466,6 +544,294 @@ function parseBorderParts(values: Array<string>): ?{
   }
 
   return { width, style, color };
+}
+
+const FLEX_BASIS_KEYWORDS = new Set([
+  'auto',
+  'content',
+  'min-content',
+  'max-content',
+  'fit-content',
+]);
+const FLEX_BASIS_FUNCTION_REGEX = /^(?:calc|min|max|clamp|fit-content)\(/i;
+const FLEX_NUMBER_REGEX = /^-?(?:\d+|\d*\.\d+)$/;
+const FLEX_UNITLESS_ZERO_REGEX = /^-?(?:0|0\.0+)$/;
+
+function isFlexNumberValue(value: string): boolean {
+  return FLEX_NUMBER_REGEX.test(value);
+}
+
+function isFlexBasisValue(
+  value: string,
+  options: { allowUnitlessZero?: boolean } = {},
+): boolean {
+  const lower = value.toLowerCase();
+  if (options.allowUnitlessZero && FLEX_UNITLESS_ZERO_REGEX.test(lower)) {
+    return true;
+  }
+  return (
+    FLEX_BASIS_KEYWORDS.has(lower) ||
+    FLEX_BASIS_FUNCTION_REGEX.test(lower) ||
+    lower.startsWith('var(') ||
+    /^-?(?:\d+|\d*\.\d+)(?:[a-z%]+)$/i.test(lower)
+  );
+}
+
+function expandFlexShorthand(
+  values: Array<string>,
+  importantSuffix: string,
+): ?$ReadOnlyArray<$ReadOnly<[string, string]>> {
+  if (values.length === 1) {
+    const val = values[0];
+    const lower = val.toLowerCase();
+    if (lower === 'auto') {
+      return [
+        ['flexGrow', applyImportant('1', importantSuffix)],
+        ['flexShrink', applyImportant('1', importantSuffix)],
+        ['flexBasis', applyImportant('auto', importantSuffix)],
+      ];
+    }
+    if (lower === 'none') {
+      return [
+        ['flexGrow', applyImportant('0', importantSuffix)],
+        ['flexShrink', applyImportant('0', importantSuffix)],
+        ['flexBasis', applyImportant('auto', importantSuffix)],
+      ];
+    }
+    if (lower === 'initial') {
+      return [
+        ['flexGrow', applyImportant('0', importantSuffix)],
+        ['flexShrink', applyImportant('1', importantSuffix)],
+        ['flexBasis', applyImportant('auto', importantSuffix)],
+      ];
+    }
+    if (isFlexNumberValue(val)) {
+      // Single unitless number = flex-grow
+      return [
+        ['flexGrow', applyImportant(val, importantSuffix)],
+        ['flexShrink', applyImportant('1', importantSuffix)],
+        ['flexBasis', applyImportant('0%', importantSuffix)],
+      ];
+    }
+    if (isFlexBasisValue(val)) {
+      return [
+        ['flexGrow', applyImportant('1', importantSuffix)],
+        ['flexShrink', applyImportant('1', importantSuffix)],
+        ['flexBasis', applyImportant(val, importantSuffix)],
+      ];
+    }
+    return null;
+  }
+
+  if (values.length === 2) {
+    const [first, second] = values;
+    if (!isFlexNumberValue(first)) {
+      return null;
+    }
+    if (isFlexNumberValue(second)) {
+      // <number> <number>
+      return [
+        ['flexGrow', applyImportant(first, importantSuffix)],
+        ['flexShrink', applyImportant(second, importantSuffix)],
+        ['flexBasis', applyImportant('0%', importantSuffix)],
+      ];
+    }
+    if (isFlexBasisValue(second)) {
+      // <number> <basis>
+      return [
+        ['flexGrow', applyImportant(first, importantSuffix)],
+        ['flexShrink', applyImportant('1', importantSuffix)],
+        ['flexBasis', applyImportant(second, importantSuffix)],
+      ];
+    }
+    return null;
+  }
+
+  if (values.length === 3) {
+    const [grow, shrink, basis] = values;
+    if (
+      !isFlexNumberValue(grow) ||
+      !isFlexNumberValue(shrink) ||
+      !isFlexBasisValue(basis, { allowUnitlessZero: true })
+    ) {
+      return null;
+    }
+    return [
+      ['flexGrow', applyImportant(grow, importantSuffix)],
+      ['flexShrink', applyImportant(shrink, importantSuffix)],
+      ['flexBasis', applyImportant(basis, importantSuffix)],
+    ];
+  }
+
+  return null;
+}
+
+const ANIMATION_DIRECTION_KEYWORDS = new Set([
+  'normal',
+  'reverse',
+  'alternate',
+  'alternate-reverse',
+]);
+const ANIMATION_FILL_MODE_KEYWORDS = new Set([
+  'none',
+  'forwards',
+  'backwards',
+  'both',
+]);
+const ANIMATION_PLAY_STATE_KEYWORDS = new Set(['running', 'paused']);
+const ANIMATION_TIMING_KEYWORDS = new Set([
+  'ease',
+  'ease-in',
+  'ease-out',
+  'ease-in-out',
+  'linear',
+  'step-start',
+  'step-end',
+]);
+const ANIMATION_TIMING_FUNCTION_REGEX = /^(?:cubic-bezier|steps|linear)\(/i;
+const TIME_REGEX = /^-?(?:\d+|\d*\.\d+)(?:s|ms)$/i;
+
+function isTimeValue(value: string): boolean {
+  return TIME_REGEX.test(value);
+}
+
+function isAnimationTimingFunction(value: string): boolean {
+  const lower = value.toLowerCase();
+  return (
+    ANIMATION_TIMING_KEYWORDS.has(lower) ||
+    ANIMATION_TIMING_FUNCTION_REGEX.test(lower)
+  );
+}
+
+function isAnimationIterationCount(value: string): boolean {
+  const lower = value.toLowerCase();
+  return lower === 'infinite' || /^(?:\d+|\d*\.\d+)$/.test(lower);
+}
+
+function expandAnimationShorthand(
+  parts: Array<ValuePart>,
+  hasTopLevelComma: boolean,
+  importantSuffix: string,
+): ?$ReadOnlyArray<$ReadOnly<[string, string]>> {
+  if (hasTopLevelComma) {
+    return null;
+  }
+
+  const values = parts.map((part) => part.text);
+
+  let duration = null;
+  let delay = null;
+  let timingFunction = null;
+  let iterationCount = null;
+  let direction = null;
+  let fillMode = null;
+  let playState = null;
+  let name = null;
+
+  for (const val of values) {
+    const lower = val.toLowerCase();
+
+    if (isTimeValue(val)) {
+      if (duration == null) {
+        duration = val;
+        continue;
+      }
+      if (delay == null) {
+        delay = val;
+        continue;
+      }
+      return null;
+    }
+
+    if (timingFunction == null && isAnimationTimingFunction(val)) {
+      timingFunction = val;
+      continue;
+    }
+
+    if (direction == null && ANIMATION_DIRECTION_KEYWORDS.has(lower)) {
+      direction = val;
+      continue;
+    }
+
+    if (fillMode == null && ANIMATION_FILL_MODE_KEYWORDS.has(lower)) {
+      fillMode = val;
+      continue;
+    }
+
+    if (playState == null && ANIMATION_PLAY_STATE_KEYWORDS.has(lower)) {
+      playState = val;
+      continue;
+    }
+
+    if (iterationCount == null && isAnimationIterationCount(val)) {
+      iterationCount = val;
+      continue;
+    }
+
+    if (name == null) {
+      name = val;
+      continue;
+    }
+
+    return null;
+  }
+
+  const entries: Array<[string, string]> = [];
+
+  if (duration != null) {
+    entries.push([
+      'animationDuration',
+      applyImportant(duration, importantSuffix),
+    ]);
+  }
+  if (timingFunction != null) {
+    entries.push([
+      'animationTimingFunction',
+      applyImportant(timingFunction, importantSuffix),
+    ]);
+  }
+  if (delay != null) {
+    entries.push(['animationDelay', applyImportant(delay, importantSuffix)]);
+  }
+  if (iterationCount != null) {
+    entries.push([
+      'animationIterationCount',
+      applyImportant(iterationCount, importantSuffix),
+    ]);
+  }
+  if (direction != null) {
+    entries.push([
+      'animationDirection',
+      applyImportant(direction, importantSuffix),
+    ]);
+  }
+  if (name == null && fillMode != null && fillMode.toLowerCase() === 'none') {
+    // "none" is ambiguous between fill-mode and name, but since
+    // "none" is the default fill-mode, treat it as animation-name only.
+    entries.push(['animationName', applyImportant(fillMode, importantSuffix)]);
+    fillMode = null;
+  }
+  if (fillMode != null) {
+    entries.push([
+      'animationFillMode',
+      applyImportant(fillMode, importantSuffix),
+    ]);
+  }
+  if (playState != null) {
+    entries.push([
+      'animationPlayState',
+      applyImportant(playState, importantSuffix),
+    ]);
+  }
+  if (name != null) {
+    entries.push(['animationName', applyImportant(name, importantSuffix)]);
+  }
+
+  if (entries.length === 0) {
+    return null;
+  }
+
+  return entries;
 }
 
 function expandBorderSideShorthand(
@@ -711,9 +1077,93 @@ export function splitSpecificShorthands(
     return expandedFont ?? [[toCamelCase(property), CANNOT_FIX]];
   }
 
+  if (property === 'grid-area') {
+    const gridSplit = splitTopLevelValueTokens(baseValue);
+    const groups = splitOnSlashGroups(gridSplit.parts);
+    if (groups.length === 1) {
+      if (isCustomIdent(groups[0])) {
+        return [
+          ['gridColumnEnd', applyImportant(groups[0], importantSuffix)],
+          ['gridColumnStart', applyImportant(groups[0], importantSuffix)],
+          ['gridRowEnd', applyImportant(groups[0], importantSuffix)],
+          ['gridRowStart', applyImportant(groups[0], importantSuffix)],
+        ];
+      }
+      return [['gridArea', isNumber ? Number(rawValue) : rawValue]];
+    }
+    const expanded = expandGridAreaShorthand(groups, importantSuffix);
+    return expanded.length > 0 ? expanded : [['gridArea', CANNOT_FIX]];
+  }
+
+  if (property === 'flex') {
+    const flexSplit = splitTopLevelValueTokens(baseValue);
+    if (flexSplit.hasTopLevelComma || flexSplit.hasTopLevelSlash) {
+      return [['flex', CANNOT_FIX]];
+    }
+    const flexValues = flexSplit.parts.map((part) => part.text);
+    const expandedFlex = expandFlexShorthand(flexValues, importantSuffix);
+    return expandedFlex ?? [['flex', CANNOT_FIX]];
+  }
+
+  if (property === 'gap') {
+    const gapSplit = splitTopLevelValueTokens(baseValue);
+    if (gapSplit.hasTopLevelComma || gapSplit.hasTopLevelSlash) {
+      return [['gap', CANNOT_FIX]];
+    }
+    const gapValues = gapSplit.parts.map((part) => part.text);
+    if (gapValues.length <= 1) {
+      const val = isNumber
+        ? Number(rawValue)
+        : applyImportant(gapValues[0] ?? rawValue, importantSuffix);
+      return [
+        ['rowGap', val],
+        ['columnGap', val],
+      ];
+    }
+    if (gapValues.length === 2) {
+      return [
+        ['rowGap', applyImportant(gapValues[0], importantSuffix)],
+        ['columnGap', applyImportant(gapValues[1], importantSuffix)],
+      ];
+    }
+    return [['gap', CANNOT_FIX]];
+  }
+
   const splitValues = splitTopLevelValueTokens(baseValue);
   if (splitValues.parts.length <= 1 && !splitValues.hasTopLevelSlash) {
     return [[toCamelCase(property), isNumber ? Number(rawValue) : rawValue]];
+  }
+
+  if (
+    property === 'grid-row' ||
+    property === 'grid-column' ||
+    property === 'grid-template'
+  ) {
+    if (!splitValues.hasTopLevelSlash) {
+      return [[toCamelCase(property), isNumber ? Number(rawValue) : rawValue]];
+    }
+    const groups = splitOnSlashGroups(splitValues.parts);
+    if (groups.length === 2) {
+      if (property === 'grid-row') {
+        return [
+          ['gridRowEnd', applyImportant(groups[1], importantSuffix)],
+          ['gridRowStart', applyImportant(groups[0], importantSuffix)],
+        ];
+      }
+      if (property === 'grid-column') {
+        return [
+          ['gridColumnEnd', applyImportant(groups[1], importantSuffix)],
+          ['gridColumnStart', applyImportant(groups[0], importantSuffix)],
+        ];
+      }
+      if (property === 'grid-template') {
+        return [
+          ['gridTemplateColumns', applyImportant(groups[1], importantSuffix)],
+          ['gridTemplateRows', applyImportant(groups[0], importantSuffix)],
+        ];
+      }
+    }
+    return [[toCamelCase(property), CANNOT_FIX]];
   }
 
   if (property === 'background') {
@@ -723,6 +1173,15 @@ export function splitSpecificShorthands(
       importantSuffix,
     );
     return expandedBackground ?? [[toCamelCase(property), CANNOT_FIX]];
+  }
+
+  if (property === 'animation') {
+    const expandedAnimation = expandAnimationShorthand(
+      splitValues.parts,
+      splitValues.hasTopLevelComma,
+      importantSuffix,
+    );
+    return expandedAnimation ?? [[toCamelCase(property), CANNOT_FIX]];
   }
 
   const values = splitValues.parts
@@ -837,6 +1296,18 @@ export function splitSpecificShorthands(
     }
 
     return entries;
+  }
+
+  if (property === 'border') {
+    if (splitValues.hasTopLevelComma || splitValues.hasTopLevelSlash) {
+      return [['border', CANNOT_FIX]];
+    }
+    const expandedBorder = expandBorderSideShorthand(
+      property,
+      values,
+      importantSuffix,
+    );
+    return expandedBorder ?? [['border', CANNOT_FIX]];
   }
 
   if (

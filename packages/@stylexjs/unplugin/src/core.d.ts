@@ -8,10 +8,18 @@ import { type UnpluginFactory, type UnpluginInstance } from 'unplugin';
 import type { Options as StyleXOptions } from '@stylexjs/babel-plugin';
 import type { TransformOptions } from 'lightningcss';
 
-type LightningcssOptions = TransformOptions<any>;
+type LightningcssOptions = Omit<TransformOptions<any>, 'filename' | 'code'>;
+
+export type CSSLayersConfig =
+  | boolean
+  | {
+      before?: ReadonlyArray<string>;
+      after?: ReadonlyArray<string>;
+      prefix?: string;
+    };
 
 export type UserOptions = StyleXOptions & {
-  useCSSLayers?: boolean;
+  useCSSLayers?: CSSLayersConfig;
   enableLTRRTLComments?: boolean;
   legacyDisableLayers?: boolean;
   lightningcssOptions?: LightningcssOptions;

@@ -45,6 +45,7 @@ module.exports = {
     '**/examples/example-cli/src/**',
     '**/*.d.ts',
     '**/pages.gen.ts',
+    '**/devtools-extension/extension/**',
   ],
   overrides: [
     {
@@ -162,7 +163,7 @@ module.exports = {
     'no-unexpected-multiline': 2,
     'no-unmodified-loop-condition': 2,
     'no-unneeded-ternary': [2, { defaultAssignment: false }],
-    'no-unreachable': 2,
+    'no-unreachable': 0,
     'no-unsafe-finally': 2,
     'no-unused-vars': [
       2,

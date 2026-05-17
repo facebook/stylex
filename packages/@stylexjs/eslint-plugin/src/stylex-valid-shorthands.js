@@ -9,15 +9,7 @@
 
 'use strict';
 
-import type {
-  CallExpression,
-  Node,
-  Property,
-  ObjectExpression,
-  Comment,
-} from 'estree';
-import type { SourceCode } from 'eslint/eslint-rule';
-import type { Token } from 'eslint/eslint-ast';
+import type { CallExpression, Node, Property, ObjectExpression } from 'estree';
 import {
   createBlockInlineTransformer,
   createSpecificTransformer,
@@ -25,6 +17,7 @@ import {
 } from './utils/splitShorthands.js';
 import { CANNOT_FIX } from './utils/splitShorthands.js';
 import getSourceCode from './utils/getSourceCode';
+import getNodeIndentation from './utils/getNodeIndentation';
 import createImportTracker from './utils/createImportTracker';
 /*:: import { Rule } from 'eslint'; */
 
@@ -37,6 +30,10 @@ const legacyNameMapping: $ReadOnly<{ [key: string]: ?string }> = {
   paddingEnd: 'paddingInlineEnd',
   paddingHorizontal: 'paddingInline',
   paddingVertical: 'paddingBlock',
+  gridColumnGap: 'columnGap',
+  gridRowGap: 'rowGap',
+  borderStart: 'borderInlineStart',
+  borderEnd: 'borderInlineEnd',
 };
 
 const shorthandAliases: $ReadOnly<{
@@ -50,10 +47,19 @@ const shorthandAliases: $ReadOnly<{
   borderTop: createSpecificTransformer('border-top'),
   borderRight: createSpecificTransformer('border-right'),
   borderBottom: createSpecificTransformer('border-bottom'),
+  border: createSpecificTransformer('border'),
   borderLeft: createSpecificTransformer('border-left'),
   borderRadius: createSpecificTransformer('border-radius'),
   cornerShape: createSpecificTransformer('corner-shape'),
+  gridArea: createSpecificTransformer('grid-area'),
+  gridColumn: createSpecificTransformer('grid-column'),
+  gridRow: createSpecificTransformer('grid-row'),
+  gridTemplate: createSpecificTransformer('grid-template'),
   outline: createSpecificTransformer('outline'),
+  animation: createSpecificTransformer('animation'),
+  flex: createSpecificTransformer('flex'),
+  gap: createSpecificTransformer('gap'),
+  gridGap: createSpecificTransformer('gap'),
   margin: createDirectionalTransformer('margin', 'Block', 'Inline'),
   padding: createDirectionalTransformer('padding', 'Block', 'Inline'),
   marginBlock: createBlockInlineTransformer('margin', 'Block'),
@@ -188,11 +194,24 @@ const stylexValidShorthands = {
 
       if (
         !newValues ||
-        (((newValues.length === 1 &&
-          newValues[0][1] === property.value.value) ||
-          newValues[0][1] === property.value?.value?.toString() ||
-          newValues[0][1] === parseInt(property.value?.value, 10)) &&
+        (newValues.length === 1 &&
+          newValues[0][0] === key &&
+          (newValues[0][1] === property.value.value ||
+            newValues[0][1] === property.value?.value?.toString() ||
+            newValues[0][1] === parseInt(property.value?.value, 10)) &&
           !isUnfixableError)
+      ) {
+        return;
+      }
+
+      if (
+        key === 'gap' &&
+        newValues.length === 2 &&
+        newValues.every(
+          ([, val]) =>
+            val === property.value.value ||
+            val === Number(property.value.value),
+        )
       ) {
         return;
       }
@@ -258,38 +277,5 @@ const stylexValidShorthands = {
     };
   },
 };
-
-function isSameLine(
-  aNode: Property | Comment | Token,
-  bNode: Property | Comment | Token,
-): boolean {
-  return Boolean(
-    aNode.loc && bNode.loc && aNode.loc?.start.line === bNode.loc?.start.line,
-  );
-}
-
-function getNodeIndentation(
-  sourceCode: SourceCode,
-  node: Property | Comment,
-): string {
-  const tokenBefore = sourceCode.getTokenBefore(node, {
-    includeComments: false,
-  });
-
-  const isTokenBeforeSameLineAsNode =
-    !!tokenBefore && isSameLine(tokenBefore, node);
-
-  const sliceStart =
-    isTokenBeforeSameLineAsNode && tokenBefore?.loc
-      ? tokenBefore.loc.end.column
-      : 0;
-
-  return node?.loc
-    ? sourceCode.lines[node.loc.start.line - 1].slice(
-        sliceStart,
-        node.loc.start.column,
-      )
-    : '';
-}
 
 export default stylexValidShorthands as typeof stylexValidShorthands;
