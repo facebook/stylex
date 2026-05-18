@@ -57,7 +57,7 @@
     "@rollup/plugin-json": "^6.1.0",
     "@rollup/plugin-node-resolve": "^15.3.0",
     "@rollup/plugin-replace": "^6.0.1",
-    "babel-plugin-syntax-hermes-parser": "^0.32.1",
+    "babel-plugin-syntax-hermes-parser": "^0.36.1",
     "cross-env": "^10.1.0",
     "rollup": "^4.59.0",
     "scripts": "0.18.3"
