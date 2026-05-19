@@ -44,7 +44,7 @@ import transformStyleXCreateThemeNested from './visitors/stylex-create-theme-nes
 import { createUtilityStylesVisitor } from '@stylexjs/atoms/babel-transform';
 import { convertObjectToAST } from './utils/js-to-ast';
 import styleXCreateSet from './shared/stylex-create';
-import { hoistExpression } from './utils/ast-helpers';
+import { getProgramPath, hoistExpression } from './utils/ast-helpers';
 import { injectDevClassNames } from './utils/dev-classname';
 
 const NAME = 'stylex';
@@ -409,7 +409,10 @@ function getStylexRuntimeBinding(
   path: NodePath<t.JSXOpeningElement>,
   state: StateManager,
 ): string {
-  const program = path.scope.getProgramParent().path;
+  const program = getProgramPath(path);
+  if (program == null) {
+    throw new Error('Unable to find program path for JSX element.');
+  }
 
   for (const localName of state.stylexImport) {
     const programBinding = program.scope.getBinding(localName);
