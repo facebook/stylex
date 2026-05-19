@@ -332,11 +332,12 @@ function styleXTransform(): PluginObj<> {
           if (value.isJSXEmptyExpression()) {
             continue;
           }
+          const stylexLocalName = getStylexRuntimeBinding(path, state);
           attr.replaceWith(
             t.jsxSpreadAttribute(
               t.callExpression(
                 t.memberExpression(
-                  t.identifier('stylex'),
+                  t.identifier(stylexLocalName),
                   t.identifier('props'),
                 ),
                 [value.node],
@@ -402,6 +403,50 @@ function isExported(path: null | NodePath<t.Node>): boolean {
     return true;
   }
   return isExported(path.parentPath);
+}
+
+function getStylexRuntimeBinding(
+  path: NodePath<t.JSXOpeningElement>,
+  state: StateManager,
+): string {
+  const program = path.scope.getProgramParent().path;
+
+  for (const localName of state.stylexImport) {
+    const programBinding = program.scope.getBinding(localName);
+    if (
+      programBinding != null &&
+      path.scope.getBinding(localName) === programBinding
+    ) {
+      return localName;
+    }
+  }
+
+  const existingImport = program.node.body.find(
+    (statement) =>
+      statement.type === 'ImportDeclaration' &&
+      state.importSources.includes(statement.source.value),
+  );
+  const existingImportSource =
+    existingImport?.type === 'ImportDeclaration'
+      ? existingImport.source.value
+      : null;
+  const importSource =
+    existingImportSource ?? state.importSources[2] ?? state.importSources[0];
+  const stylexLocalName =
+    existingImportSource != null || path.scope.hasBinding('stylex')
+      ? program.scope.generateUid('stylex')
+      : 'stylex';
+
+  const [importPath] = program.unshiftContainer(
+    'body',
+    t.importDeclaration(
+      [t.importNamespaceSpecifier(t.identifier(stylexLocalName))],
+      t.stringLiteral(importSource),
+    ),
+  );
+  program.scope.registerDeclaration(importPath);
+  state.stylexImport.add(stylexLocalName);
+  return stylexLocalName;
 }
 
 /**
