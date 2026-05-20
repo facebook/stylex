@@ -11653,9 +11653,9 @@ kysely-do@~0.0.1-rc.1:
   integrity sha512-sI9Pyga89eIkHkVCyBPgPVSuzv0JnmBlIusdLzJJvryG35QkWQElQ4TbPtMPT8l+ABnJL/ktZqlfcd5oKSocew==
 
 kysely@~0.28.2:
-  version "0.28.14"
-  resolved "https://registry.yarnpkg.com/kysely/-/kysely-0.28.14.tgz#94cb38767aea5dfa18ecea2137497560f276edf4"
-  integrity sha512-SU3lgh0rPvq7upc6vvdVrCsSMUG1h3ChvHVOY7wJ2fw4C9QEB7X3d5eyYEyULUX7UQtxZJtZXGuT6U2US72UYA==
+  version "0.28.17"
+  resolved "https://registry.yarnpkg.com/kysely/-/kysely-0.28.17.tgz#cb8c74696b911a43c595f752b653b90ed56d42b9"
+  integrity sha512-nbD8lB9EB3wNdMhOCdx5Li8DxnLbvKByylRLcJ1h+4SkrowVeECAyZlyiKMThF7xFdRz0jSQ2MoJr+wXux2y0Q==
 
 language-subtag-registry@^0.3.20:
   version "0.3.23"
