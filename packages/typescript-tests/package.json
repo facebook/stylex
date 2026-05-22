@@ -9,7 +9,8 @@
   "license": "MIT",
   "dependencies": {
     "@stylexjs/stylex": "0.18.3",
-    "@stylexjs/babel-plugin": "0.18.3"
+    "@stylexjs/babel-plugin": "0.18.3",
+    "@stylexjs/unplugin": "0.18.3"
   },
   "devDependencies": {
     "typescript": "^5.8.3",

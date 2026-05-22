@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type { UserOptions } from './core';
+import type { UserOptions } from './core.js';
 
 declare const plugin: (options?: Partial<UserOptions>) => any;
 

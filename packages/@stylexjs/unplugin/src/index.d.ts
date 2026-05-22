@@ -5,11 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type { UserOptions } from './core';
+import type { UserOptions } from './core.js';
 
-export { unpluginFactory } from './core';
-export type { UserOptions } from './core';
-export { createStylexBunPlugin } from './bun';
+export { unpluginFactory } from './core.js';
+export type { UserOptions } from './core.js';
+export { createStylexBunPlugin } from './bun.js';
 
 declare const stylex: {
   bun: (options?: Partial<UserOptions>) => any;
@@ -21,7 +21,7 @@ declare const stylex: {
   unloader: (options?: Partial<UserOptions>) => any;
   vite: (options?: Partial<UserOptions>) => any;
   webpack: (options?: Partial<UserOptions>) => any;
-  raw: typeof import('./core').unpluginFactory;
+  raw: typeof import('./core.js').unpluginFactory;
 };
 
 export const unplugin: typeof stylex;

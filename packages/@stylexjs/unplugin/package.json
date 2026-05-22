@@ -9,54 +9,104 @@
   "types": "./lib/index.d.ts",
   "exports": {
     ".": {
-      "import": "./lib/es/index.mjs",
-      "require": "./lib/index.js",
-      "types": "./lib/index.d.ts"
+      "import": {
+        "types": "./lib/es/index.d.ts",
+        "default": "./lib/es/index.mjs"
+      },
+      "require": {
+        "types": "./lib/index.d.ts",
+        "default": "./lib/index.js"
+      }
     },
     "./vite": {
-      "import": "./lib/es/vite.mjs",
-      "require": "./lib/vite.js",
-      "types": "./lib/vite.d.ts"
+      "import": {
+        "types": "./lib/es/vite.d.ts",
+        "default": "./lib/es/vite.mjs"
+      },
+      "require": {
+        "types": "./lib/vite.d.ts",
+        "default": "./lib/vite.js"
+      }
     },
     "./rollup": {
-      "import": "./lib/es/rollup.mjs",
-      "require": "./lib/rollup.js",
-      "types": "./lib/rollup.d.ts"
+      "import": {
+        "types": "./lib/es/rollup.d.ts",
+        "default": "./lib/es/rollup.mjs"
+      },
+      "require": {
+        "types": "./lib/rollup.d.ts",
+        "default": "./lib/rollup.js"
+      }
     },
     "./esbuild": {
-      "import": "./lib/es/esbuild.mjs",
-      "require": "./lib/esbuild.js",
-      "types": "./lib/esbuild.d.ts"
+      "import": {
+        "types": "./lib/es/esbuild.d.ts",
+        "default": "./lib/es/esbuild.mjs"
+      },
+      "require": {
+        "types": "./lib/esbuild.d.ts",
+        "default": "./lib/esbuild.js"
+      }
     },
     "./webpack": {
-      "import": "./lib/es/webpack.mjs",
-      "require": "./lib/webpack.js",
-      "types": "./lib/webpack.d.ts"
+      "import": {
+        "types": "./lib/es/webpack.d.ts",
+        "default": "./lib/es/webpack.mjs"
+      },
+      "require": {
+        "types": "./lib/webpack.d.ts",
+        "default": "./lib/webpack.js"
+      }
     },
     "./rspack": {
-      "import": "./lib/es/rspack.mjs",
-      "require": "./lib/rspack.js",
-      "types": "./lib/rspack.d.ts"
+      "import": {
+        "types": "./lib/es/rspack.d.ts",
+        "default": "./lib/es/rspack.mjs"
+      },
+      "require": {
+        "types": "./lib/rspack.d.ts",
+        "default": "./lib/rspack.js"
+      }
     },
     "./rolldown": {
-      "import": "./lib/es/rolldown.mjs",
-      "require": "./lib/rolldown.js",
-      "types": "./lib/rolldown.d.ts"
+      "import": {
+        "types": "./lib/es/rolldown.d.ts",
+        "default": "./lib/es/rolldown.mjs"
+      },
+      "require": {
+        "types": "./lib/rolldown.d.ts",
+        "default": "./lib/rolldown.js"
+      }
     },
     "./farm": {
-      "import": "./lib/es/farm.mjs",
-      "require": "./lib/farm.js",
-      "types": "./lib/farm.d.ts"
+      "import": {
+        "types": "./lib/es/farm.d.ts",
+        "default": "./lib/es/farm.mjs"
+      },
+      "require": {
+        "types": "./lib/farm.d.ts",
+        "default": "./lib/farm.js"
+      }
     },
     "./unloader": {
-      "import": "./lib/es/unloader.mjs",
-      "require": "./lib/unloader.js",
-      "types": "./lib/unloader.d.ts"
+      "import": {
+        "types": "./lib/es/unloader.d.ts",
+        "default": "./lib/es/unloader.mjs"
+      },
+      "require": {
+        "types": "./lib/unloader.d.ts",
+        "default": "./lib/unloader.js"
+      }
     },
     "./bun": {
-      "import": "./lib/es/bun.mjs",
-      "require": "./lib/bun.js",
-      "types": "./lib/bun.d.ts"
+      "import": {
+        "types": "./lib/es/bun.d.ts",
+        "default": "./lib/es/bun.mjs"
+      },
+      "require": {
+        "types": "./lib/bun.d.ts",
+        "default": "./lib/bun.js"
+      }
     }
   },
   "keywords": [
@@ -70,7 +120,7 @@
   ],
   "scripts": {
     "build:cjs": "cross-env BABEL_ENV=cjs babel src/ --out-dir lib/ --copy-files",
-    "build:esm": "cross-env BABEL_ENV=esm babel src/ --out-dir lib/es --out-file-extension .mjs",
+    "build:esm": "cross-env BABEL_ENV=esm babel src/ --out-dir lib/es --out-file-extension .mjs --copy-files && node -e \"require('fs').writeFileSync('lib/es/package.json', JSON.stringify({ type: 'module' }))\"",
     "build": "npm run build:cjs && npm run build:esm",
     "test": "jest"
   },
