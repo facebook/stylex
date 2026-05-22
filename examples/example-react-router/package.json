@@ -26,7 +26,7 @@
     "@types/react": "^19.2.6",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^4.5.2",
-    "@vitejs/plugin-rsc": "^0.5.24",
+    "@vitejs/plugin-rsc": "^0.5.26",
     "cross-env": "^10.1.0",
     "shx": "^0.4.0",
     "typescript": "^5.9.3",
