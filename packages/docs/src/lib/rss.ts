@@ -6,10 +6,11 @@
  */
 import { Feed } from 'feed';
 import { blogSource } from '@/lib/source';
-import logoUrl from '@/static/img/stylex-logo-small.svg?no-inline';
-import faviconUrl from '@/static/img/favicon.svg?no-inline';
 import { marked } from 'marked';
 import type { InferPageType } from 'fumadocs-core/source';
+
+const logoUrl = '/stylex-logo-small.svg';
+const faviconUrl = '/favicon.svg';
 
 const baseUrl = 'https://stylexjs.com';
 
