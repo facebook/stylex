@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.19.0 (May 29, 2026)
+- New `@stylexjs/atoms` package for inline atomic styles.
+- ESLint 10 compatibility.
+- Fix `sx` prop runtime stylex import injection.
+- Fix pseudo-element + pseudo-class selector ordering.
+- Fix aliased theme file resolution to absolute paths.
+
 ## 0.18.3 (Apr 29, 2026)
 - Experimental nested APIs for `defineVars`, `defineConsts`, and `createTheme`.
 - Add recursive derivation support for `defineVars`.
