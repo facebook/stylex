@@ -68,6 +68,7 @@ export default function Footer({
 }: {
   noBorderTop?: boolean;
 }) {
+
   return (
     <footer
       {...stylex.props(styles.footer, noBorderTop && styles.footerNoBorder)}
@@ -166,7 +167,7 @@ export default function Footer({
 
         <div {...stylex.props(styles.bottom)}>
           <span {...stylex.props(styles.copyright)}>
-            Copyright © 2026 Meta Platforms, Inc.
+            Copyright © {new Date().getFullYear()} Meta Platforms, Inc.
           </span>
 
           <div {...stylex.props(styles.bottomSpacer)} />
