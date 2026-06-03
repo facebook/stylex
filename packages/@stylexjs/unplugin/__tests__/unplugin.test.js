@@ -331,4 +331,228 @@ describe('@stylexjs/unplugin', () => {
       expect(css).toContain('.x1aif7nf');
     });
   });
+
+  describe('pre-compiled StyleX package warning (issue #1207)', () => {
+    /**
+     * Helper: creates a temporary directory that looks like a Next.js-style
+     * project consuming a StyleX-based design-system package.
+     *
+     * @param {object} depManifest - The package.json for the dependency.
+     * @returns {{ tempDir: string, cleanup: () => void, originalCwd: string }}
+     */
+    function makeProjectWithDep(depManifest) {
+      const tempDir = fs.mkdtempSync(
+        path.join(os.tmpdir(), 'stylex-warn-test-'),
+      );
+      const originalCwd = process.cwd();
+
+      const appPkg = {
+        dependencies: { [depManifest.name]: '1.0.0' },
+      };
+      fs.writeFileSync(
+        path.join(tempDir, 'package.json'),
+        JSON.stringify(appPkg),
+        'utf8',
+      );
+
+      const depDir = path.join(tempDir, 'node_modules', depManifest.name);
+      fs.mkdirSync(depDir, { recursive: true });
+      fs.writeFileSync(
+        path.join(depDir, 'package.json'),
+        JSON.stringify(depManifest),
+        'utf8',
+      );
+
+      process.chdir(tempDir);
+      return {
+        tempDir,
+        originalCwd,
+        cleanup() {
+          process.chdir(originalCwd);
+          fs.rmSync(tempDir, { recursive: true, force: true });
+        },
+      };
+    }
+
+    test('warns when a StyleX dep ships CSS via top-level "style" field', () => {
+      const { cleanup } = makeProjectWithDep({
+        name: 'my-design-system',
+        version: '1.0.0',
+        dependencies: { '@stylexjs/stylex': '^0.0.0' },
+        style: 'dist/index.css',
+      });
+      const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+      try {
+        unpluginFactory({ dev: false }, { framework: 'rollup' });
+        const calls = warnSpy.mock.calls.flat().join('\n');
+        expect(calls).toContain('my-design-system');
+        expect(calls).toContain('pre-compiled CSS');
+        expect(calls).toContain('transpilePackages');
+        expect(calls).toContain('useCSSLayers');
+      } finally {
+        warnSpy.mockRestore();
+        cleanup();
+      }
+    });
+
+    test('warns when a StyleX dep ships CSS via exports.style', () => {
+      const { cleanup } = makeProjectWithDep({
+        name: 'my-design-system',
+        version: '1.0.0',
+        dependencies: { '@stylexjs/stylex': '^0.0.0' },
+        exports: {
+          '.': {
+            style: 'dist/index.css',
+            import: 'dist/index.mjs',
+          },
+        },
+      });
+      const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+      try {
+        unpluginFactory({ dev: false }, { framework: 'rollup' });
+        const calls = warnSpy.mock.calls.flat().join('\n');
+        expect(calls).toContain('my-design-system');
+      } finally {
+        warnSpy.mockRestore();
+        cleanup();
+      }
+    });
+
+    test('warns when a StyleX dep ships CSS via exports.css', () => {
+      const { cleanup } = makeProjectWithDep({
+        name: 'my-design-system',
+        version: '1.0.0',
+        dependencies: { '@stylexjs/stylex': '^0.0.0' },
+        exports: {
+          '.': {
+            css: 'dist/index.css',
+            import: 'dist/index.mjs',
+          },
+        },
+      });
+      const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+      try {
+        unpluginFactory({ dev: false }, { framework: 'rollup' });
+        const calls = warnSpy.mock.calls.flat().join('\n');
+        expect(calls).toContain('my-design-system');
+      } finally {
+        warnSpy.mockRestore();
+        cleanup();
+      }
+    });
+
+    test('does NOT warn for a source-only StyleX dep (no CSS field)', () => {
+      const { cleanup } = makeProjectWithDep({
+        name: 'my-source-design-system',
+        version: '1.0.0',
+        // Has StyleX as a peer dep but ships no pre-compiled CSS
+        peerDependencies: { '@stylexjs/stylex': '^0.0.0' },
+        main: 'src/index.js',
+      });
+      const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+      try {
+        unpluginFactory({ dev: false }, { framework: 'rollup' });
+        const calls = warnSpy.mock.calls.flat().join('\n');
+        // The warning should not mention this package at all
+        expect(calls).not.toContain('my-source-design-system');
+        expect(calls).not.toContain('pre-compiled CSS');
+      } finally {
+        warnSpy.mockRestore();
+        cleanup();
+      }
+    });
+
+    test('does NOT warn for a dep that does not use StyleX at all', () => {
+      const { cleanup } = makeProjectWithDep({
+        name: 'unrelated-package',
+        version: '1.0.0',
+        style: 'dist/index.css', // has a CSS file but no StyleX dep
+      });
+      const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+      try {
+        unpluginFactory({ dev: false }, { framework: 'rollup' });
+        const calls = warnSpy.mock.calls.flat().join('\n');
+        expect(calls).not.toContain('unrelated-package');
+      } finally {
+        warnSpy.mockRestore();
+        cleanup();
+      }
+    });
+  });
+
+  describe('runtimeInjection + Next.js App Router guard (issue #1207)', () => {
+    const NEXT_ENV_VARS = ['NEXT_RUNTIME', 'NEXT_PHASE'];
+
+    afterEach(() => {
+      // Clean up any env vars set during tests
+      for (const v of NEXT_ENV_VARS) {
+        delete process.env[v];
+      }
+    });
+
+    test('console.error in dev when runtimeInjection is used with NEXT_RUNTIME', () => {
+      process.env.NEXT_RUNTIME = 'nodejs';
+      const errorSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => {});
+      try {
+        unpluginFactory(
+          { dev: true, runtimeInjection: true },
+          { framework: 'webpack' },
+        );
+        const calls = errorSpy.mock.calls.flat().join('\n');
+        expect(calls).toContain('runtimeInjection');
+        expect(calls).toContain('App Router');
+      } finally {
+        errorSpy.mockRestore();
+      }
+    });
+
+    test('throws in production when runtimeInjection is used with NEXT_RUNTIME', () => {
+      process.env.NEXT_RUNTIME = 'nodejs';
+      expect(() => {
+        unpluginFactory(
+          { dev: false, runtimeInjection: true },
+          { framework: 'webpack' },
+        );
+      }).toThrow(/runtimeInjection/);
+    });
+
+    test('does NOT throw or error when runtimeInjection is false in Next.js', () => {
+      process.env.NEXT_RUNTIME = 'nodejs';
+      const errorSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => {});
+      try {
+        expect(() => {
+          unpluginFactory(
+            { dev: false, runtimeInjection: false },
+            { framework: 'webpack' },
+          );
+        }).not.toThrow();
+        expect(errorSpy).not.toHaveBeenCalled();
+      } finally {
+        errorSpy.mockRestore();
+      }
+    });
+
+    test('does NOT throw or error when runtimeInjection is true in non-Next.js env', () => {
+      // Make sure no Next.js env vars are set
+      for (const v of NEXT_ENV_VARS) delete process.env[v];
+      const errorSpy = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => {});
+      try {
+        expect(() => {
+          unpluginFactory(
+            { dev: false, runtimeInjection: true },
+            { framework: 'rollup' },
+          );
+        }).not.toThrow();
+        expect(errorSpy).not.toHaveBeenCalled();
+      } finally {
+        errorSpy.mockRestore();
+      }
+    });
+  });
 });
