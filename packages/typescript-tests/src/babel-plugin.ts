@@ -5,8 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-/* eslint-disable no-unused-vars */
-
 import stylexBabelPlugin from '@stylexjs/babel-plugin';
 
 const css = stylexBabelPlugin.processStylexRules([]);
+console.log(css);
