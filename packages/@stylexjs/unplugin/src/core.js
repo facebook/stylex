@@ -171,19 +171,20 @@ function hasPrecompiledCss(manifest) {
 
   const { exports } = manifest;
   if (exports && typeof exports === 'object') {
-    const conditions = [
-      exports['.'],
-      ...Object.values(exports).filter(
-        (v) => v !== null && typeof v === 'object',
-      ),
-    ];
-    for (const cond of conditions) {
-      if (!cond || typeof cond !== 'object') continue;
-      if (
-        (typeof cond.style === 'string' && cond.style.endsWith('.css')) ||
-        (typeof cond.css === 'string' && cond.css.endsWith('.css'))
-      ) {
-        return true;
+    if (
+      (typeof exports.style === 'string' && exports.style.endsWith('.css')) ||
+      (typeof exports.css === 'string' && exports.css.endsWith('.css'))
+    ) {
+      return true;
+    }
+    for (const val of Object.values(exports)) {
+      if (val && typeof val === 'object' && !Array.isArray(val)) {
+        if (
+          (typeof val.style === 'string' && val.style.endsWith('.css')) ||
+          (typeof val.css === 'string' && val.css.endsWith('.css'))
+        ) {
+          return true;
+        }
       }
     }
   }
@@ -208,26 +209,29 @@ function discoverStylexPackages({
       .concat(['@stylexjs/stylex']),
   );
 
-  const found = new Map((explicitPackages || []).map((name) => [name, false]));
+  const found = new Map();
+  const explicitSet = new Set(explicitPackages || []);
+  const deps = new Set(explicitPackages || []);
 
   const pkgJsonPath = findNearestPackageJson(rootDir);
-  if (!pkgJsonPath) return mapToPackageInfos(found);
-  const pkgDir = path.dirname(pkgJsonPath);
-  const pkgJson = readJSON(pkgJsonPath);
-  if (!pkgJson) return mapToPackageInfos(found);
-
-  const depFields = [
-    'dependencies',
-    'devDependencies',
-    'peerDependencies',
-    'optionalDependencies',
-  ];
-  const deps = new Set();
-  for (const field of depFields) {
-    const entries = pkgJson[field];
-    if (!entries || typeof entries !== 'object') continue;
-    for (const name of Object.keys(entries)) deps.add(name);
+  const pkgDir = pkgJsonPath ? path.dirname(pkgJsonPath) : rootDir;
+  if (pkgJsonPath) {
+    const pkgJson = readJSON(pkgJsonPath);
+    if (pkgJson) {
+      const depFields = [
+        'dependencies',
+        'devDependencies',
+        'peerDependencies',
+        'optionalDependencies',
+      ];
+      for (const field of depFields) {
+        const entries = pkgJson[field];
+        if (!entries || typeof entries !== 'object') continue;
+        for (const name of Object.keys(entries)) deps.add(name);
+      }
+    }
   }
+
   for (const dep of deps) {
     let manifestPath = null;
     try {
@@ -251,9 +255,15 @@ function discoverStylexPackages({
       }
     }
 
-    if (!manifestPath) continue;
+    if (!manifestPath) {
+      if (explicitSet.has(dep)) {
+        found.set(dep, false);
+      }
+      continue;
+    }
+
     const manifest = readJSON(manifestPath);
-    if (hasStylexDependency(manifest, targetPackages)) {
+    if (explicitSet.has(dep) || hasStylexDependency(manifest, targetPackages)) {
       found.set(dep, hasPrecompiledCss(manifest));
     }
   }
@@ -317,8 +327,16 @@ export const unpluginFactory = (userOptions = {}, metaOptions) => {
     .map((p) => p.name);
 
   if (precompiledPackages.length > 0) {
-    const packageList = precompiledPackages.map((p) => `  • ${p}`).join('\n');
-    console.warn(`
+    const warnedSet = (globalThis.__stylex_warned_packages =
+      globalThis.__stylex_warned_packages || new Set());
+    const newWarnPackages = precompiledPackages.filter(
+      (name) => !warnedSet.has(name),
+    );
+
+    if (newWarnPackages.length > 0) {
+      newWarnPackages.forEach((name) => warnedSet.add(name));
+      const packageList = newWarnPackages.map((p) => `  • ${p}`).join('\n');
+      console.warn(`
 [StyleX] ⚠️  Potential CSS ordering issue detected.
 
 The following packages use StyleX and ship pre-compiled CSS:
@@ -338,6 +356,7 @@ Recommended fixes (pick one):
   3. Ensure the library <link> appears after your app <link> in <head>
      (workaround only — this is fragile and not recommended long-term).
 `);
+    }
   }
 
   const isNextAppRouter =

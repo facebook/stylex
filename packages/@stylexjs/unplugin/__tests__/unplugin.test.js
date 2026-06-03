@@ -333,6 +333,10 @@ describe('@stylexjs/unplugin', () => {
   });
 
   describe('pre-compiled StyleX package warning (issue #1207)', () => {
+    beforeEach(() => {
+      delete globalThis.__stylex_warned_packages;
+    });
+
     /**
      * Helper: creates a temporary directory that looks like a Next.js-style
      * project consuming a StyleX-based design-system package.
@@ -473,6 +477,53 @@ describe('@stylexjs/unplugin', () => {
         unpluginFactory({ dev: false }, { framework: 'rollup' });
         const calls = warnSpy.mock.calls.flat().join('\n');
         expect(calls).not.toContain('unrelated-package');
+      } finally {
+        warnSpy.mockRestore();
+        cleanup();
+      }
+    });
+
+    test('warns when a StyleX dep is only in explicitPackages (not in package.json dependencies)', () => {
+      const { cleanup } = makeProjectWithDep({
+        name: 'my-explicit-only-design-system',
+        version: '1.0.0',
+        dependencies: { '@stylexjs/stylex': '^0.0.0' },
+        style: 'dist/index.css',
+      });
+      fs.writeFileSync(
+        path.join(process.cwd(), 'package.json'),
+        JSON.stringify({ dependencies: {} }),
+        'utf8',
+      );
+      const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+      try {
+        unpluginFactory(
+          { dev: false, externalPackages: ['my-explicit-only-design-system'] },
+          { framework: 'rollup' },
+        );
+        const calls = warnSpy.mock.calls.flat().join('\n');
+        expect(calls).toContain('my-explicit-only-design-system');
+        expect(calls).toContain('pre-compiled CSS');
+      } finally {
+        warnSpy.mockRestore();
+        cleanup();
+      }
+    });
+
+    test('only warns once per package per process (deduplication)', () => {
+      const { cleanup } = makeProjectWithDep({
+        name: 'my-design-system',
+        version: '1.0.0',
+        dependencies: { '@stylexjs/stylex': '^0.0.0' },
+        style: 'dist/index.css',
+      });
+      const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+      try {
+        unpluginFactory({ dev: false }, { framework: 'rollup' });
+        expect(warnSpy).toHaveBeenCalledTimes(1);
+
+        unpluginFactory({ dev: false }, { framework: 'rollup' });
+        expect(warnSpy).toHaveBeenCalledTimes(1);
       } finally {
         warnSpy.mockRestore();
         cleanup();
