@@ -445,6 +445,50 @@ describe('@stylexjs/unplugin', () => {
       }
     });
 
+    test('warns when a StyleX dep ships CSS via subpath export pointing to a .css string', () => {
+      const { cleanup } = makeProjectWithDep({
+        name: 'my-design-system',
+        version: '1.0.0',
+        dependencies: { '@stylexjs/stylex': '^0.0.0' },
+        exports: {
+          './styles.css': './dist/styles.css',
+        },
+      });
+      const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+      try {
+        unpluginFactory({ dev: false }, { framework: 'rollup' });
+        const calls = warnSpy.mock.calls.flat().join('\n');
+        expect(calls).toContain('my-design-system');
+      } finally {
+        warnSpy.mockRestore();
+        cleanup();
+      }
+    });
+
+    test('warns when a StyleX dep ships CSS via a deep nested conditional export', () => {
+      const { cleanup } = makeProjectWithDep({
+        name: 'my-design-system',
+        version: '1.0.0',
+        dependencies: { '@stylexjs/stylex': '^0.0.0' },
+        exports: {
+          '.': {
+            import: {
+              style: './dist/index.css',
+            },
+          },
+        },
+      });
+      const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+      try {
+        unpluginFactory({ dev: false }, { framework: 'rollup' });
+        const calls = warnSpy.mock.calls.flat().join('\n');
+        expect(calls).toContain('my-design-system');
+      } finally {
+        warnSpy.mockRestore();
+        cleanup();
+      }
+    });
+
     test('does NOT warn for a source-only StyleX dep (no CSS field)', () => {
       const { cleanup } = makeProjectWithDep({
         name: 'my-source-design-system',
@@ -553,7 +597,7 @@ describe('@stylexjs/unplugin', () => {
         );
         const calls = errorSpy.mock.calls.flat().join('\n');
         expect(calls).toContain('runtimeInjection');
-        expect(calls).toContain('App Router');
+        expect(calls).toContain('Next.js');
       } finally {
         errorSpy.mockRestore();
       }

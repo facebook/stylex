@@ -170,26 +170,39 @@ function hasPrecompiledCss(manifest) {
   }
 
   const { exports } = manifest;
-  if (exports && typeof exports === 'object') {
-    if (
-      (typeof exports.style === 'string' && exports.style.endsWith('.css')) ||
-      (typeof exports.css === 'string' && exports.css.endsWith('.css'))
-    ) {
-      return true;
-    }
-    for (const val of Object.values(exports)) {
-      if (val && typeof val === 'object' && !Array.isArray(val)) {
-        if (
-          (typeof val.style === 'string' && val.style.endsWith('.css')) ||
-          (typeof val.css === 'string' && val.css.endsWith('.css'))
-        ) {
-          return true;
-        }
-      }
-    }
+  if (exports === undefined) {
+    return false;
   }
 
-  return false;
+  const visited = new Set();
+  function scan(val) {
+    if (val === null || val === undefined) return false;
+    if (typeof val === 'string') {
+      return val.endsWith('.css');
+    }
+    if (typeof val === 'object') {
+      if (visited.has(val)) return false;
+      visited.add(val);
+      if (Array.isArray(val)) {
+        for (const item of val) {
+          if (scan(item)) return true;
+        }
+        return false;
+      }
+      if (
+        (typeof val.style === 'string' && val.style.endsWith('.css')) ||
+        (typeof val.css === 'string' && val.css.endsWith('.css'))
+      ) {
+        return true;
+      }
+      for (const key of Object.keys(val)) {
+        if (scan(val[key])) return true;
+      }
+    }
+    return false;
+  }
+
+  return scan(exports);
 }
 
 function mapToPackageInfos(map) {
@@ -359,7 +372,7 @@ Recommended fixes (pick one):
     }
   }
 
-  const isNextAppRouter =
+  const isNext =
     !!process.env.NEXT_RUNTIME ||
     !!process.env.NEXT_PHASE ||
     (framework === 'webpack' &&
@@ -368,10 +381,10 @@ Recommended fixes (pick one):
         process.env.npm_package_devDependencies_next
       ));
 
-  if (userOptions.runtimeInjection && isNextAppRouter) {
-    const msg = `[StyleX] ❌  \`runtimeInjection\` must not be used with the Next.js App Router.
+  if (userOptions.runtimeInjection && isNext) {
+    const msg = `[StyleX] ❌  \`runtimeInjection\` must not be used in Next.js.
 
-The App Router renders on the server and hydrates on the client. Styles
+Next.js renders on the server and hydrates on the client. Styles
 injected at runtime are appended after the static stylesheet, so they always
 override static rules — including styles from third-party StyleX libraries.
 They also appear as empty <style> tags in browser DevTools.
