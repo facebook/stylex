@@ -1,31 +1,32 @@
 {
   "private": true,
   "name": "example-nextjs",
-  "version": "0.17.2",
+  "version": "0.18.3",
   "scripts": {
-    "clean": "rimraf .next",
+    "clean": "shx rm -rf .next",
     "example:build": "next build",
     "example:dev": "next dev",
     "example:lint": "next lint",
     "example:start": "next start"
   },
   "dependencies": {
-    "@stylexjs/stylex": "0.17.2",
-    "next": "^16.0.6",
+    "@stylexjs/stylex": "0.18.3",
+    "next": "^16.2.6",
     "react": "^19.0.0-rc-de68d2f4-20241204",
     "react-dom": "^19.0.0-rc-de68d2f4-20241204"
   },
   "devDependencies": {
-    "@stylexjs/eslint-plugin": "0.17.2",
-    "@stylexjs/postcss-plugin": "0.17.2",
+    "autoprefixer": "^10.4.20",
+    "@stylexjs/eslint-plugin": "0.18.3",
+    "@stylexjs/postcss-plugin": "0.18.3",
     "@types/json-schema": "^7.0.15",
     "@types/node": "^22.7.6",
-    "@types/react": "^18.3.0",
-    "@types/react-dom": "^18.3.0",
+    "@types/react": "^19.2.6",
+    "@types/react-dom": "^19.2.3",
     "@typescript-eslint/parser": "^8.48.1",
     "eslint": "^9.39.1",
     "eslint-config-next": "^16.0.6",
-    "rimraf": "^6.1.2",
+    "shx": "^0.4.0",
     "typescript": "^5.9.3",
     "client-only": "0.0.1"
   }

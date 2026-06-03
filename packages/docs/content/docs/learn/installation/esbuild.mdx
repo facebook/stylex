@@ -1,0 +1,42 @@
+---
+title: 'Esbuild'
+---
+
+[`examples/example-esbuild`](https://github.com/facebook/stylex/tree/main/examples/example-esbuild)
+bundles a React app with esbuild and compiles StyleX via `@stylexjs/unplugin`.
+The unplugin extracts StyleX styles, aggregates them, and appends the output to
+the CSS asset produced by esbuild.
+
+## Install
+
+<DevInstallExample dev={[`@stylexjs/unplugin`]} />
+
+## Configure the build
+
+Wire the unplugin into your esbuild script:
+
+```js
+import esbuild from 'esbuild';
+import stylex from '@stylexjs/unplugin';
+
+esbuild.build({
+  entryPoints: ['src/App.jsx'],
+  bundle: true,
+  metafile: true, // lets StyleX find the emitted CSS asset
+  plugins: [
+    stylex.esbuild({
+      useCSSLayers: true,
+      importSources: ['@stylexjs/stylex'],
+      unstable_moduleResolution: { type: 'commonJS' },
+      // ... other StyleX configuration
+    }),
+  ],
+});
+```
+
+Ensure `metafile: true` so the plugin can locate the CSS output.
+
+## CSS entrypoint
+
+Ensure that there is one CSS file that is imported from your root layout
+component or JS entry point.

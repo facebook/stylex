@@ -71,7 +71,10 @@ describe('Evaluation of imported values works based on configuration', () => {
         import stylex from 'stylex';
         import 'otherFile.stylex';
         import { MyTheme } from 'otherFile.stylex';
-        _inject2(".__hashed_var__1r7rkhg{color:var(--__hashed_var__1jqb1tb)}", 3000);
+        _inject2({
+          ltr: ".__hashed_var__1r7rkhg{color:var(--__hashed_var__1jqb1tb)}",
+          priority: 3000
+        });
         "__hashed_var__1r7rkhg";"
       `);
       expect(transformation.metadata.stylex).toMatchInlineSnapshot(`
@@ -109,7 +112,10 @@ describe('Evaluation of imported values works based on configuration', () => {
         import stylex from 'stylex';
         import 'otherFile.stylex';
         import { MyTheme } from 'otherFile.stylex';
-        _inject2(".__hashed_var__1yh36a2{color:__hashed_var__jvfbhb}", 3000);
+        _inject2({
+          ltr: ".__hashed_var__1yh36a2{color:__hashed_var__jvfbhb}",
+          priority: 3000
+        });
         "__hashed_var__1yh36a2";"
       `);
       expect(transformation.metadata.stylex).toMatchInlineSnapshot(`
@@ -146,7 +152,10 @@ describe('Evaluation of imported values works based on configuration', () => {
         import stylex from 'stylex';
         import 'otherFile.stylex';
         import { MyTheme } from 'otherFile.stylex';
-        _inject2(".__hashed_var__11jfisy{color:var(--foreground)}", 3000);
+        _inject2({
+          ltr: ".__hashed_var__11jfisy{color:var(--foreground)}",
+          priority: 3000
+        });
         "__hashed_var__11jfisy";"
       `);
       expect(transformation.metadata.stylex).toMatchInlineSnapshot(`
@@ -192,9 +201,15 @@ describe('Evaluation of imported values works based on configuration', () => {
         import stylex from 'stylex';
         import 'otherFile.stylex';
         import { MyTheme } from 'otherFile.stylex';
-        _inject2("@keyframes __hashed_var__1cb153o-B{from{color:var(--__hashed_var__1jqb1tb);}}", 0);
+        _inject2({
+          ltr: "@keyframes __hashed_var__1cb153o-B{from{color:var(--__hashed_var__1jqb1tb);}}",
+          priority: 0
+        });
         const fade = "__hashed_var__1cb153o-B";
-        _inject2(".__hashed_var__1xwo6t1{animation-name:__hashed_var__1cb153o-B}", 3000);
+        _inject2({
+          ltr: ".__hashed_var__1xwo6t1{animation-name:__hashed_var__1cb153o-B}",
+          priority: 3000
+        });
         "__hashed_var__1xwo6t1";"
       `);
       expect(transformation.metadata.stylex).toMatchInlineSnapshot(`
@@ -243,7 +258,10 @@ describe('Evaluation of imported values works based on configuration', () => {
         import stylex from 'stylex';
         import 'otherFile.stylex.js';
         import { MyTheme } from 'otherFile.stylex.js';
-        _inject2(".__hashed_var__1r7rkhg{color:var(--__hashed_var__1jqb1tb)}", 3000);
+        _inject2({
+          ltr: ".__hashed_var__1r7rkhg{color:var(--__hashed_var__1jqb1tb)}",
+          priority: 3000
+        });
         "__hashed_var__1r7rkhg";"
       `);
       expect(transformation.metadata.stylex).toMatchInlineSnapshot(`
@@ -283,7 +301,10 @@ describe('Evaluation of imported values works based on configuration', () => {
         import stylex from 'stylex';
         import 'otherFile.stylex.js';
         import { MyTheme as mt } from 'otherFile.stylex.js';
-        _inject2(".__hashed_var__1r7rkhg{color:var(--__hashed_var__1jqb1tb)}", 3000);
+        _inject2({
+          ltr: ".__hashed_var__1r7rkhg{color:var(--__hashed_var__1jqb1tb)}",
+          priority: 3000
+        });
         "__hashed_var__1r7rkhg";"
       `);
       expect(transformation.metadata.stylex).toMatchInlineSnapshot(`
@@ -333,7 +354,10 @@ describe('Evaluation of imported values works based on configuration', () => {
         import stylex from 'stylex';
         import 'otherFile.stylex';
         import { MyTheme } from 'otherFile.stylex';
-        _inject2(".__hashed_var__1g7q0my{--__hashed_var__1jqb1tb:red}", 1);
+        _inject2({
+          ltr: ".__hashed_var__1g7q0my{--__hashed_var__1jqb1tb:red}",
+          priority: 1
+        });
         "__hashed_var__1g7q0my";"
       `);
       expect(transformation.metadata.stylex).toMatchInlineSnapshot(`
@@ -368,8 +392,14 @@ describe('Evaluation of imported values works based on configuration', () => {
         import stylex from 'stylex';
         import 'otherFile.stylex';
         import { MyTheme } from 'otherFile.stylex';
-        _inject2(".__hashed_var__1w8wjxo{--__hashed_var__1jqb1tb:var(--x---__hashed_var__1jqb1tb)}", 1);
-        _inject2("@property --x---__hashed_var__1jqb1tb { syntax: \\"*\\"; inherits: false;}", 0);
+        _inject2({
+          ltr: ".__hashed_var__1w8wjxo{--__hashed_var__1jqb1tb:var(--x---__hashed_var__1jqb1tb)}",
+          priority: 1
+        });
+        _inject2({
+          ltr: "@property --x---__hashed_var__1jqb1tb { syntax: \\"*\\"; inherits: false;}",
+          priority: 0
+        });
         const styles = {
           color: color => [{
             "--__hashed_var__1jqb1tb": color != null ? "__hashed_var__1w8wjxo" : color,
@@ -438,7 +468,10 @@ describe('Evaluation of imported values works based on configuration', () => {
         import stylex from 'stylex';
         import './otherFile.stylex.js';
         import { MyTheme } from './otherFile.stylex.js';
-        _inject2(".xoh8dld{color:xb897f7}", 3000);
+        _inject2({
+          ltr: ".xoh8dld{color:xb897f7}",
+          priority: 3000
+        });
         "xoh8dld";"
       `);
     });

@@ -58,4 +58,76 @@ const config = {
   ],
 };
 
-export default config;
+const browserConfig = {
+  input: './src/index.js',
+  output: {
+    file: './lib/index.browser.js',
+    format: 'esm',
+  },
+  external: ['@babel/standalone', '@stylexjs/stylex', 'postcss-value-parser'],
+  plugins: [
+    {
+      name: 'stub-modules',
+      resolveId(source, importer) {
+        switch (source) {
+          case 'node:path':
+            return this.resolve('path-browserify', importer);
+          case 'node:fs':
+          case 'node:url':
+          case 'assert':
+          case '@dual-bundle/import-meta-resolve':
+          case '@babel/core':
+          case '@babel/traverse':
+          case '@babel/types':
+            return source;
+          default:
+            return null;
+        }
+      },
+      load(id) {
+        switch (id) {
+          case 'node:fs':
+          case 'node:url':
+            return 'export default {};';
+          case 'assert':
+            return 'export default function assert(condition, message) { if (!condition) throw new Error(message || "Assertion failed"); }';
+          case '@dual-bundle/import-meta-resolve':
+            return 'export function moduleResolve() {}';
+          case '@babel/core':
+            return "import { packages } from '@babel/standalone'; export const parseSync = packages.parser.parse;";
+          case '@babel/traverse':
+            return "import { packages } from '@babel/standalone'; export default packages.traverse.default;";
+          case '@babel/types':
+            return `import { packages } from '@babel/standalone';
+export const {
+  arrayExpression, arrowFunctionExpression, binaryExpression, booleanLiteral,
+  callExpression, conditionalExpression, expressionStatement, identifier,
+  importDeclaration, isAssignmentExpression, isBinaryExpression, isBooleanLiteral,
+  isCallExpression, isClass, isConditionalExpression, isExpression,
+  isExpressionStatement, isFunction, isIdentifier, isImportDeclaration,
+  isLogicalExpression, isMemberExpression, isNode, isNullLiteral,
+  isNumericLiteral, isObjectExpression, isObjectProperty, isPrivateName,
+  isSpreadElement, isStringLiteral, isTemplateLiteral, isUnaryExpression,
+  isUpdateExpression, isValidIdentifier, isVariableDeclaration, jsxAttribute,
+  jsxIdentifier, jsxSpreadAttribute, memberExpression, nullLiteral, numericLiteral, objectExpression,
+  objectProperty, stringLiteral, unaryExpression, variableDeclaration, variableDeclarator
+} = packages.types;`;
+          default:
+            return null;
+        }
+      },
+    },
+    babel({ babelHelpers: 'bundled', extensions, include: ['./src/**/*'] }),
+    nodeResolve({
+      preferBuiltins: false,
+      extensions,
+      allowExportsFolderMapping: true,
+      rootDir,
+      browser: true,
+    }),
+    commonjs(),
+    json(),
+  ],
+};
+
+export default [config, browserConfig];

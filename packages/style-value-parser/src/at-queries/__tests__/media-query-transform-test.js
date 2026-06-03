@@ -256,6 +256,21 @@ describe('Media Query Transformer', () => {
     expect(JSON.stringify(result)).toBe(JSON.stringify(expectedStyles));
   });
 
+  test('handles only screen media queries without parenthesizing the media type', () => {
+    const originalStyles = {
+      color: {
+        default: null,
+        '@media only screen and (max-width: 600px)': 'red',
+        '@media only screen and (max-width: 400px)': 'blue',
+      },
+    };
+
+    const result = lastMediaQueryWinsTransform(originalStyles);
+    const resultStr = JSON.stringify(result);
+    expect(resultStr).not.toContain('only (screen)');
+    expect(resultStr).toContain('only screen');
+  });
+
   test('handles comma-separated (or) media queries', () => {
     const originalStyles = {
       width: {

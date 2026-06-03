@@ -671,6 +671,84 @@ describe('@stylexjs/babel-plugin', () => {
         }).toThrow(messages.LINT_UNCLOSED_FUNCTION);
       });
 
+      test('invalid value: unclosed double-quoted string', () => {
+        expect(() => {
+          transform(`
+            import * as stylex from '@stylexjs/stylex';
+            const styles = stylex.create({
+              root: {
+                fontFamily: '"Helvetica Neue'
+              }
+            });
+          `);
+        }).toThrow(messages.LINT_UNCLOSED_STRING);
+      });
+
+      test('invalid value: unclosed single-quoted string', () => {
+        expect(() => {
+          transform(`
+            import * as stylex from '@stylexjs/stylex';
+            const styles = stylex.create({
+              root: {
+                fontFamily: "'Helvetica Neue"
+              }
+            });
+          `);
+        }).toThrow(messages.LINT_UNCLOSED_STRING);
+      });
+
+      test('invalid value: unclosed string in multi-value property', () => {
+        expect(() => {
+          transform(`
+            import * as stylex from '@stylexjs/stylex';
+            const styles = stylex.create({
+              root: {
+                fontFamily: '"Helvetica Neue, sans-serif'
+              }
+            });
+          `);
+        }).toThrow(messages.LINT_UNCLOSED_STRING);
+      });
+
+      test('invalid value: stray apostrophe in font-family list', () => {
+        expect(() => {
+          transform(`
+            import * as stylex from '@stylexjs/stylex';
+            const styles = stylex.create({
+              root: {
+                fontFamily: "'SF Pro Text', 'SF Pro Icons', Helvetica Neue', 'Helvetica', sans-serif",
+              }
+            });
+          `);
+        }).toThrow(messages.LINT_UNCLOSED_STRING);
+      });
+
+      test('valid value: properly closed strings do not throw', () => {
+        expect(() => {
+          transform(`
+            import * as stylex from '@stylexjs/stylex';
+            const styles = stylex.create({
+              root: {
+                fontFamily: '"Helvetica Neue", sans-serif',
+              }
+            });
+          `);
+        }).not.toThrow();
+      });
+
+      test('valid value: properly closed single-quoted string', () => {
+        expect(() => {
+          transform(`
+            import * as stylex from '@stylexjs/stylex';
+            const styles = stylex.create({
+              root: {
+                fontFamily: "'Helvetica Neue', sans-serif",
+              }
+            });
+          `);
+        }).not.toThrow();
+      });
+
       test('invalid CSS variable: unprefixed custom property', () => {
         const options = { definedStylexCSSVariables: { foo: 1 } };
         expect(() => {
@@ -844,6 +922,129 @@ describe('@stylexjs/babel-plugin', () => {
           `);
         }).toThrow(messages.ILLEGAL_PROP_VALUE);
       });
+    });
+  });
+
+  describe('[validation] propertyValidationMode config', () => {
+    test('does not throw by default for disallowed properties (silent mode)', () => {
+      const consoleSpy = jest
+        .spyOn(console, 'warn')
+        .mockImplementation(() => {});
+
+      expect(() => {
+        transform(`
+          import * as stylex from '@stylexjs/stylex';
+          const styles = stylex.create({
+            root: {
+              border: '1px solid red',
+            },
+          });
+        `);
+      }).not.toThrow();
+
+      // Should not log any warning in silent mode (default)
+      expect(consoleSpy).not.toHaveBeenCalled();
+
+      consoleSpy.mockRestore();
+    });
+
+    test('throws error when propertyValidationMode is "throw"', () => {
+      expect(() => {
+        transform(
+          `
+          import * as stylex from '@stylexjs/stylex';
+          const styles = stylex.create({
+            root: {
+              border: '1px solid red',
+            },
+          });
+        `,
+          { propertyValidationMode: 'throw' },
+        );
+      }).toThrow('border is not supported');
+    });
+
+    test('does not throw when propertyValidationMode is "warn"', () => {
+      const consoleSpy = jest
+        .spyOn(console, 'warn')
+        .mockImplementation(() => {});
+
+      expect(() => {
+        transform(
+          `
+          import * as stylex from '@stylexjs/stylex';
+          const styles = stylex.create({
+            root: {
+              border: '1px solid red',
+            },
+          });
+        `,
+          { propertyValidationMode: 'warn' },
+        );
+      }).not.toThrow();
+
+      expect(consoleSpy).toHaveBeenCalledWith(
+        expect.stringContaining('border is not supported'),
+      );
+
+      consoleSpy.mockRestore();
+    });
+
+    test('does not throw when propertyValidationMode is "silent"', () => {
+      const consoleSpy = jest
+        .spyOn(console, 'warn')
+        .mockImplementation(() => {});
+
+      expect(() => {
+        transform(
+          `
+          import * as stylex from '@stylexjs/stylex';
+          const styles = stylex.create({
+            root: {
+              border: '1px solid red',
+            },
+          });
+        `,
+          { propertyValidationMode: 'silent' },
+        );
+      }).not.toThrow();
+
+      // Should not log any warning in silent mode
+      expect(consoleSpy).not.toHaveBeenCalled();
+
+      consoleSpy.mockRestore();
+    });
+
+    test('works with background property', () => {
+      expect(() => {
+        transform(
+          `
+          import * as stylex from '@stylexjs/stylex';
+          const styles = stylex.create({
+            root: {
+              background: 'red',
+            },
+          });
+        `,
+          { propertyValidationMode: 'silent' },
+        );
+      }).not.toThrow();
+    });
+
+    test('works with animation property', () => {
+      expect(() => {
+        transform(
+          `
+          import * as stylex from '@stylexjs/stylex';
+          const styles = stylex.create({
+            root: {
+              animation: 'spin 1s',
+            },
+          });
+        `,
+          { propertyValidationMode: 'silent' },
+        );
+      }).not.toThrow();
     });
   });
 });

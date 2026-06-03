@@ -1,3 +1,9 @@
+/**
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
 'use client';
 
 import * as stylex from '@stylexjs/stylex';
@@ -5,7 +11,7 @@ import { useState } from 'react';
 import { Button } from '@stylexjs/shared-ui';
 import { tokens } from '@stylexjs/shared-ui/tokens.stylex';
 
-export const Counter = () => {
+export function Counter() {
   const [count, setCount] = useState(0);
 
   const handleIncrement = () => setCount((c) => c + 1);
@@ -18,10 +24,7 @@ export const Counter = () => {
       </Button>
     </section>
   );
-};
-
-const opacity = (color: string, percentage: number) =>
-  `color-mix(in oklab, ${color} ${percentage}%, transparent)`;
+}
 
 const styles = stylex.create({
   wrapper: {
@@ -30,7 +33,7 @@ const styles = stylex.create({
     borderWidth: 1,
     borderStyle: 'dashed',
     borderColor: '#60a5fa',
-    backgroundColor: opacity(tokens.primaryColor, 5),
+    backgroundColor: `color-mix(in oklab, ${tokens.primaryColor} 5%, transparent)`,
     borderRadius: 6,
     padding: '1rem',
   },

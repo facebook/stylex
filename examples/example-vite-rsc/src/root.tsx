@@ -1,63 +1,26 @@
+/**
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
 import './index.css'; // keep minimal to ensure CSS asset exists in build
 import viteLogo from '/vite.svg';
+import { DevStyleXInject } from './DevStyleXInject';
 import { getServerCounter, updateServerCounter } from './action.tsx';
 import reactLogo from './assets/react.svg';
 import { ClientCounter } from './client.tsx';
 import * as stylex from '@stylexjs/stylex';
-
-const styles = stylex.create({
-  root: {
-    margin: 0,
-    minHeight: '100vh',
-    display: 'grid',
-    placeItems: 'center',
-    textAlign: 'center',
-  },
-  logo: {
-    height: '6em',
-    padding: '1.5em',
-    willChange: 'filter',
-    transitionProperty: 'filter',
-    transitionDuration: '300ms',
-    filter_hover: { ':hover': 'drop-shadow(0 0 2em #646cffaa)' },
-  },
-  reactLogo: { filter_hover: { ':hover': 'drop-shadow(0 0 2em #61dafbaa)' } },
-  card: { padding: '2em' },
-  readTheDocs: { color: '#888' },
-  h1: { fontSize: '3.2em', lineHeight: '1.1' },
-  link: { fontWeight: 500, color: '#646cff', textDecoration: 'none' },
-  linkHover: { color: { ':hover': '#535bf2' } },
-  button: {
-    borderRadius: 8,
-    borderWidth: 1,
-    borderStyle: 'solid',
-    borderColor: 'transparent',
-    padding: '0.6em 1.2em',
-    fontSize: '1em',
-    fontWeight: 500,
-    fontFamily: 'inherit',
-    backgroundColor: 'green',
-    color: 'white',
-    cursor: 'pointer',
-    transitionProperty: 'border-color',
-    transitionDuration: '250ms',
-  },
-});
 
 export function Root(props: { url: URL }) {
   return (
     <html lang="en">
       <head>
         <meta charSet="UTF-8" />
-        <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link href="/vite.svg" rel="icon" type="image/svg+xml" />
+        <meta content="width=device-width, initial-scale=1.0" name="viewport" />
         <title>Vite + RSC + StyleX</title>
-        {import.meta.env.DEV ? (
-          <>
-            <script type="module" src="/@id/virtual:stylex:runtime" />
-            <link rel="stylesheet" href="/virtual:stylex.css" />
-          </>
-        ) : null}
+        <DevStyleXInject cssHref="/stylex.css" />
       </head>
       <body>
         <App {...props} />
@@ -75,7 +38,7 @@ function App(props: { url: URL }) {
           target="_blank"
           {...stylex.props(styles.link, styles.linkHover)}
         >
-          <img src={viteLogo} alt="Vite logo" {...stylex.props(styles.logo)} />
+          <img alt="Vite logo" src={viteLogo} {...stylex.props(styles.logo)} />
         </a>
         <a
           href="https://react.dev/reference/rsc/server-components"
@@ -83,8 +46,8 @@ function App(props: { url: URL }) {
           {...stylex.props(styles.link, styles.linkHover)}
         >
           <img
-            src={reactLogo}
             alt="React logo"
+            src={reactLogo}
             {...stylex.props(styles.logo, styles.reactLogo)}
           />
         </a>
@@ -126,3 +89,50 @@ function App(props: { url: URL }) {
     </div>
   );
 }
+
+const styles = stylex.create({
+  root: {
+    margin: 0,
+    minHeight: '100vh',
+    display: 'grid',
+    placeItems: 'center',
+    textAlign: 'center',
+  },
+  logo: {
+    height: '6em',
+    padding: '1.5em',
+    willChange: 'filter',
+    transitionProperty: 'filter',
+    transitionDuration: '300ms',
+    filter: {
+      default: null,
+      ':hover': 'drop-shadow(0 0 2em #646cffaa)',
+    },
+  },
+  reactLogo: {
+    filter: {
+      default: null,
+      ':hover': 'drop-shadow(0 0 2em #61dafbaa)',
+    },
+  },
+  card: { padding: '2em' },
+  readTheDocs: { color: '#888' },
+  h1: { fontSize: '3.2em', lineHeight: 1.1 },
+  link: { fontWeight: 500, color: '#646cff', textDecoration: 'none' },
+  linkHover: { color: { ':hover': '#535bf2' } },
+  button: {
+    borderRadius: 8,
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: 'transparent',
+    padding: '0.6em 1.2em',
+    fontSize: '1em',
+    fontWeight: 500,
+    fontFamily: 'inherit',
+    backgroundColor: 'green',
+    color: 'white',
+    cursor: 'pointer',
+    transitionProperty: 'border-color',
+    transitionDuration: '250ms',
+  },
+});

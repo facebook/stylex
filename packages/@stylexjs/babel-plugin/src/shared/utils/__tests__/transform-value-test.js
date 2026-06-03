@@ -74,4 +74,20 @@ describe('transformValue content property tests', () => {
       expect(transformValue('content', input, {})).toBe(expected);
     });
   });
+
+  test('preserve units in zero values CSS variables', () => {
+    const variables = [
+      ['--test', '0px', '0px'],
+      ['--test', '0vdh', '0vdh'],
+      ['transform', '0rad', '0deg'],
+      ['animation-duration', '0ms', '0s'],
+      ['grid-template-rows', '0fr', '0fr'],
+      ['width', '0%', '0%'],
+      ['margin', '0px', '0'],
+    ];
+
+    variables.forEach(([key, value, expected]) => {
+      expect(transformValue(key, value, {})).toBe(expected);
+    });
+  });
 });

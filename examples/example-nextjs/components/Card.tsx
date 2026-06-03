@@ -43,66 +43,78 @@ type TMobile = '@media (max-width: 700px)';
 const MOBILE: TMobile = '@media (max-width: 700px)' as TMobile;
 const REDUCE_MOTION = '@media (prefers-reduced-motion: reduce)' as const;
 
-const bgDefault = `rgba(${$.cardR}, ${$.cardG}, ${$.cardB}, 0)` as const;
+const DARK = '@media (prefers-color-scheme: dark)' as const;
 
 const styles = stylex.create({
   link: {
     display: {
-      default: 'flex',
       [MOBILE]: 'block',
+      default: 'flex',
     },
+    flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'flex-start',
-    flexDirection: 'column',
-    borderRadius: spacing.xs,
-    backgroundColor: {
-      default: bgDefault,
-      ':hover': `rgba(${$.cardR}, ${$.cardG}, ${$.cardB}, 0.1)`,
-    },
-    borderWidth: 1,
-    borderStyle: 'solid',
-    borderColor: {
-      default: `rgba(${$.cardBorderR}, ${$.cardBorderG}, ${$.cardBorderB}, 0)`,
-      ':hover': `rgba(${$.cardBorderR}, ${$.cardBorderG}, ${$.cardBorderB}, 0.1)`,
-    },
-    color: 'inherit',
+    padding: spacing.md,
     fontFamily: $.fontSans,
-    padding: spacing.sm,
-    transitionProperty: 'background-color, border-color',
-    transitionDuration: '400ms',
+    color: 'inherit',
     textAlign: 'center',
     textDecoration: 'none',
+    backgroundColor: {
+      default: 'transparent',
+      ':hover': $.surfaceHover,
+    },
+    borderColor: {
+      [DARK]: {
+        default: colors.gray8,
+        ':hover': colors.accent,
+      },
+      default: colors.gray2,
+      ':hover': colors.accent,
+    },
+    borderStyle: 'solid',
+    borderWidth: 1,
+    borderRadius: spacing.sm,
+    boxShadow: {
+      default: 'none',
+      ':hover': '0 4px 16px rgba(0, 0, 0, 0.08)',
+    },
+    transform: {
+      default: null,
+      ':hover': 'translateY(-2px)',
+    },
+    transitionDuration: '300ms',
+    transitionProperty: 'background-color, border-color, transform, box-shadow',
   },
   h2: {
-    color: colors.blue3,
+    marginBottom: {
+      [MOBILE]: spacing.xxs,
+      default: spacing.xs,
+    },
     fontSize: text.h4,
     fontWeight: 600,
-    marginBottom: {
-      default: spacing.xs,
-      [MOBILE]: spacing.xxs,
-    },
+    color: colors.accent,
+    transitionDuration: '300ms',
+    transitionProperty: 'color',
   },
   span: {
     display: 'inline-block',
-    transitionProperty: 'transform',
     transform: {
       default: null,
       [stylex.when.ancestor(':hover', cardMarker)]: 'translateX(10px)',
       [stylex.when.ancestor(':hover', headingMarker)]: 'translateX(4px)',
     },
     transitionDuration: {
-      default: '200ms',
       [REDUCE_MOTION]: '0s',
+      default: '200ms',
     },
+    transitionProperty: 'transform',
   },
   p: {
-    margin: 0,
-    opacity: 0.6,
-    fontSize: text.p,
-    textWrap: 'balance',
-    lineHeight: 1.5,
     maxWidth: '30ch',
+    margin: 0,
+    fontSize: text.p,
+    lineHeight: 1.5,
+    textWrap: 'balance',
+    opacity: 0.6,
   },
-  color: (color: string) => ({ color }),
-  width: (width: string) => ({ width }),
 });

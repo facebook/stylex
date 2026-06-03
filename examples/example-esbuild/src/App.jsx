@@ -11,28 +11,28 @@
 
 import './global.css';
 import * as React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import * as stylex from '@stylexjs/stylex';
 import { colors, fonts, sizes } from './globalTokens.stylex';
 
 const styles = stylex.create({
   main: {
-    width: '100vw',
-    height: '100vh',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+    width: '100vw',
+    height: '100vh',
     backgroundColor: colors.pink7,
   },
   card: {
-    backgroundColor: colors.blue9,
-    padding: sizes.spacing5,
-    borderRadius: sizes.spacing2,
-    justifyContent: 'center',
     display: 'flex',
     alignItems: 'center',
-    color: colors.gray0,
+    justifyContent: 'center',
+    padding: sizes.spacing5,
     fontFamily: fonts.mono,
+    color: colors.gray0,
+    backgroundColor: colors.blue9,
+    borderRadius: sizes.spacing2,
   },
 });
 
@@ -46,4 +46,4 @@ function App() {
   );
 }
 
-ReactDOM.render(<App />, document.getElementById('root'));
+createRoot(document.getElementById('root')).render(<App />);

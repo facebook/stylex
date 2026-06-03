@@ -1,3 +1,9 @@
+/**
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
 import {
   createFromReadableStream,
   createFromFetch,
@@ -13,7 +19,7 @@ import type { RscPayload } from './entry.rsc';
 async function main() {
   // stash `setPayload` function to trigger re-rendering
   // from outside of `BrowserRoot` component (e.g. server function call, navigation, hmr)
-  let setPayload: (v: RscPayload) => void;
+  let setPayload: (_v: RscPayload) => void;
 
   // deserialize RSC stream back to React VDOM for CSR
   const initialPayload = await createFromReadableStream<RscPayload>(
@@ -101,7 +107,7 @@ function listenNavigation(onNavigation: () => void) {
   };
 
   function onClick(e: MouseEvent) {
-    let link = (e.target as Element).closest('a');
+    const link = (e.target as Element).closest('a');
     if (
       link &&
       link instanceof HTMLAnchorElement &&

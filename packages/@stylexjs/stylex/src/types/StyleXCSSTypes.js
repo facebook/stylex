@@ -165,6 +165,20 @@ type borderRightColor = color;
 type borderRightStyle = brStyle;
 type borderRightWidth = borderWidth;
 type borderRadius = lengthPercentage;
+
+type cornerShape =
+  | 'round'
+  | 'scoop'
+  | 'bevel'
+  | 'notch'
+  | 'square'
+  | 'squircle'
+  // | StringPrefix<'superellipse('>
+  | string;
+type cornerTopLeftShape = cornerShape;
+type cornerTopRightShape = cornerShape;
+type cornerBottomLeftShape = cornerShape;
+type cornerBottomRightShape = cornerShape;
 type borderSpacing = number | string;
 type borderStyle = brStyle;
 type borderTopLeftRadius = lengthPercentage;
@@ -941,14 +955,14 @@ type top = number | string;
 
 type OptionalArray<T> = Array<T> | T;
 
-export type SupportedVendorSpecificCSSProperties = $ReadOnly<{
+export type SupportedVendorSpecificCSSProperties = Readonly<{
   MozOsxFontSmoothing?: null | 'grayscale',
   WebkitAppearance?: null | appearance,
   WebkitFontSmoothing?: null | 'antialiased',
   WebkitTapHighlightColor?: null | color,
 }>;
 
-export type CSSProperties = $ReadOnly<{
+export type CSSProperties = Readonly<{
   // NOTE: adding a non-CSS property here for support themes in Stylex.
   theme?: all | string,
 
@@ -1096,6 +1110,16 @@ export type CSSProperties = $ReadOnly<{
   borderTopRightRadius?: all | borderTopRightRadius,
   borderBottomLeftRadius?: all | borderBottomLeftRadius,
   borderBottomRightRadius?: all | borderBottomRightRadius,
+
+  cornerShape?: all | cornerShape,
+  cornerStartStartShape?: all | cornerTopLeftShape,
+  cornerStartEndShape?: all | cornerTopRightShape,
+  cornerEndStartShape?: all | cornerBottomLeftShape,
+  cornerEndEndShape?: all | cornerBottomRightShape,
+  cornerTopLeftShape?: all | cornerTopLeftShape,
+  cornerTopRightShape?: all | cornerTopRightShape,
+  cornerBottomLeftShape?: all | cornerBottomLeftShape,
+  cornerBottomRightShape?: all | cornerBottomRightShape,
 
   borderTopStyle?: all | borderTopStyle,
   borderTopWidth?: all | borderTopWidth,
@@ -1526,7 +1550,7 @@ export type CSSProperties = $ReadOnly<{
   textTransform?: all | textTransform,
   textUnderlineOffset?: all | number | string,
   textUnderlinePosition?: all | textUnderlinePosition,
-  textWrap?: all | 'wrap' | 'nowrap' | 'balance',
+  textWrap?: all | 'wrap' | 'nowrap' | 'balance' | 'pretty' | 'stable',
 
   timelineScope?: all | string,
   top?: all | top,

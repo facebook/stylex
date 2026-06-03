@@ -1,0 +1,137 @@
+---
+title: 'Theme overrides'
+---
+
+StyleX provides several patterns for sharing design tokens across your codebase
+and creating themes that build on each other.
+
+## Shareable tokens with `stylex.env`
+
+Use `stylex.env` to define design tokens once in your babel config and
+use them across your entire codebase. This avoids repeating token values in
+every file.
+
+```js title="babel.config.js"
+module.exports = {
+  plugins: [
+    ['@stylexjs/babel-plugin', {
+      env: {
+        tokens: {
+          colors: {
+            primary: 'blue',
+            secondary: 'green',
+            background: 'white',
+            text: 'black',
+            border: 'gray',
+          },
+          spacing: {
+            small: '4px',
+            medium: '8px',
+            large: '16px',
+          },
+          radii: {
+            small: '4px',
+            medium: '8px',
+          },
+        },
+      },
+    }],
+  ],
+};
+```
+
+These tokens can then be used in `defineVars`, `createTheme`, or `create` calls:
+
+```tsx title="tokens.stylex.js"
+import * as stylex from '@stylexjs/stylex';
+
+export const colors = stylex.defineVars(stylex.env.tokens.colors);
+export const spacing = stylex.defineVars(stylex.env.tokens.spacing);
+export const radii = stylex.defineVars(stylex.env.tokens.radii);
+```
+
+## Partial overrides
+
+`createTheme` accepts partial overrides. Tokens you don't specify are not
+included in the generated CSS, so they inherit from the original `VarGroup`.
+
+```tsx title="themes.js"
+import * as stylex from '@stylexjs/stylex';
+import { colors } from './tokens.stylex';
+
+// Dark theme — only override what changes
+export const darkTheme = stylex.createTheme(colors, {
+  background: '#1a1a1a',
+  text: 'white',
+});
+
+// High contrast — only override what changes
+export const highContrastTheme = stylex.createTheme(colors, {
+  primary: 'yellow',
+  border: 'white',
+});
+```
+
+Apply themes by nesting. Child themes inherit unspecified tokens from their
+parent:
+
+```tsx title="App.js"
+import * as stylex from '@stylexjs/stylex';
+import { darkTheme, highContrastTheme } from './themes';
+
+// High contrast inherits background and text from dark
+<div {...stylex.props(darkTheme)}>
+  <div {...stylex.props(highContrastTheme)}>
+    {children}
+  </div>
+</div>
+```
+
+## Composing theme overrides with `stylex.env` functions
+
+For themes that share a common base, define a shareable `env` function to merge overrides. This avoids repeating the full token set in every theme.
+
+```js title="babel.config.js"
+module.exports = {
+  plugins: [
+    ['@stylexjs/babel-plugin', {
+      env: {
+        tokens: {
+          colors: {
+            primary: 'blue',
+            secondary: 'green',
+            background: 'white',
+            text: 'black',
+            border: 'gray',
+          },
+        },
+        override: (base, overrides) => ({ ...base, ...overrides }),
+      },
+    }],
+  ],
+};
+```
+
+```tsx title="themes.js"
+import * as stylex from '@stylexjs/stylex';
+import { colors } from './tokens.stylex';
+
+// Each theme specifies only its changes
+export const darkTheme = stylex.createTheme(colors,
+  stylex.env.override(stylex.env.tokens.colors, {
+    background: '#1a1a1a',
+    text: 'white',
+  })
+);
+
+export const draculaTheme = stylex.createTheme(colors,
+  stylex.env.override(stylex.env.tokens.colors, {
+    primary: 'purple',
+    secondary: 'pink',
+    background: '#282a36',
+    text: '#f8f8f2',
+  })
+);
+```
+
+The `override` function merges the base tokens with your changes through the function set in your config.

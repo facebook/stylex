@@ -7,9 +7,9 @@
  * @flow strict
  */
 
-export type ValueWithDefault<+T> =
+export type ValueWithDefault<out T> =
   | T
-  | $ReadOnly<{
+  | Readonly<{
       default: ValueWithDefault<T>,
       [string]: ValueWithDefault<T>,
     }>;

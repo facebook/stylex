@@ -3,8 +3,6 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- *
  */
 
 import type { PluginObj } from '@babel/core';
@@ -32,16 +30,7 @@ declare namespace styleXTransform {
    *
    * End-users can choose to not use this function and use their own logic instead.
    */
-  export type Rule = [
-    string,
-    {
-      ltr: string;
-      rtl?: null | string;
-      constKey?: string;
-      constVal?: string | number;
-    },
-    number,
-  ];
+  export type Rule = [string, { ltr: string; rtl?: null | string }, number];
 
   export function withOptions(
     options: Partial<StyleXOptions>,
@@ -52,10 +41,15 @@ declare namespace styleXTransform {
     config?:
       | boolean
       | {
-          useLayers?: boolean;
+          useLayers?:
+            | boolean
+            | {
+                before?: ReadonlyArray<string>;
+                after?: ReadonlyArray<string>;
+                prefix?: string;
+              };
           enableLTRRTLComments?: boolean;
           legacyDisableLayers?: boolean;
-          useLegacyClassnamesSort?: boolean;
         },
   ): string;
 }

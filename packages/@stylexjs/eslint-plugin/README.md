@@ -252,3 +252,24 @@ specifications.
   "validImports": ["stylex", "@stylexjs/stylex"]
 }
 ```
+
+### `@stylexjs/no-conflicting-props`
+
+This rule disallows using `className` or `style` props on elements that spread
+`stylex.props()` to avoid conflicts and unexpected behavior.
+
+#### Invalid examples
+
+```jsx
+<div {...stylex.props(styles.foo)} className="extra" />
+
+<div {...stylex.props(styles.foo)} style={{ color: 'red' }} />
+```
+
+#### Config options
+
+```json
+{
+  "validImports": ["stylex", "@stylexjs/stylex"]
+}
+```

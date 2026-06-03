@@ -1,0 +1,57 @@
+---
+title: 'SvelteKit'
+---
+
+[`examples/example-sveltekit`](https://github.com/facebook/stylex/tree/main/examples/example-sveltekit)
+uses SvelteKit with StyleX compiled by `@stylexjs/unplugin`.
+
+## Vite configuration
+
+```ts title="vite.config.ts"
+import { sveltekit } from '@sveltejs/kit/vite';
+import { defineConfig } from 'vite';
+import stylex from '@stylexjs/unplugin';
+
+export default defineConfig({
+  plugins: [
+    sveltekit(),
+    {
+      ...stylex.vite({
+        useCSSLayers: true,
+      }),
+      enforce: undefined,
+    },
+  ],
+});
+```
+
+## CSS entrypoint
+
+Ensure that there is one CSS file that is imported from your root layout
+component.
+
+## CSS Link and Hot Reloading during development
+
+Ensure that the virtual CSS file and script for hot reloading styles are part of
+your bundle to enable hot reloading during development.
+
+In your root `+layout.svelte` file, add the following to the script tag and `<svelte:head>`:
+
+```svelte title="src/routes/+layout.svelte"
+<script>
+  import "../app.css";
+  if (import.meta.env.DEV) {
+    $effect(() => import('virtual:stylex:runtime'))
+  }
+
+  let { children } = $props();
+</script>
+
+<svelte:head>
+  {#if import.meta.env.DEV}
+    <link rel="stylesheet" href="/virtual:stylex.css" />
+  {/if}
+</svelte:head>
+
+{@render children()}
+```

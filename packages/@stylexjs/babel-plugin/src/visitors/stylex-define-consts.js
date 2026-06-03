@@ -8,12 +8,14 @@
  */
 
 import type { NodePath } from '@babel/traverse';
+import type { FunctionConfig } from '../utils/evaluate-path';
 
 import * as t from '@babel/types';
 import { evaluate } from '../utils/evaluate-path';
 import { utils, defineConsts as styleXDefineConsts, messages } from '../shared';
 import { convertObjectToAST } from '../utils/js-to-ast';
 import StateManager from '../utils/state-manager';
+import { isVariableNamedExported } from '../utils/ast-helpers';
 
 /// This function looks for `stylex.defineConsts` calls and transforms them.
 /// 1. It finds and validates the first argument to `stylex.defineConsts`.
@@ -49,7 +51,18 @@ export default function transformStyleXDefineConsts(
     const args = callExpressionPath.get('arguments');
     const firstArg = args[0];
 
-    const { confident, value } = evaluate(firstArg, state);
+    const evaluatePathFnConfig: FunctionConfig = {
+      identifiers: {},
+      memberExpressions: {},
+      disableImports: true,
+    };
+    state.applyStylexEnv(evaluatePathFnConfig.identifiers);
+
+    const { confident, value } = evaluate(
+      firstArg,
+      state,
+      evaluatePathFnConfig,
+    );
     if (!confident) {
       throw callExpressionPath.buildCodeFrameError(
         messages.nonStaticValue('defineConsts'),
@@ -97,8 +110,6 @@ function validateStyleXDefineConsts(
   callExpressionPath: NodePath<t.CallExpression>,
 ) {
   const variableDeclaratorPath = callExpressionPath.parentPath;
-  const exportNamedDeclarationPath =
-    variableDeclaratorPath.parentPath?.parentPath;
 
   if (
     variableDeclaratorPath == null ||
@@ -111,10 +122,7 @@ function validateStyleXDefineConsts(
     );
   }
 
-  if (
-    exportNamedDeclarationPath == null ||
-    !exportNamedDeclarationPath.isExportNamedDeclaration()
-  ) {
+  if (!isVariableNamedExported(variableDeclaratorPath)) {
     throw callExpressionPath.buildCodeFrameError(
       messages.nonExportNamedDeclaration('defineConsts'),
       SyntaxError,

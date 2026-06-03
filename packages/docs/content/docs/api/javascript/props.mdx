@@ -1,0 +1,81 @@
+---
+title: 'stylex.props'
+---
+
+Takes a StyleX style or array of StyleX styles, and returns a props object.
+Values can also be `null`, `undefined`, or `false`.
+
+The return value should be spread onto an element to apply the styles directly.
+
+```ts
+function props(...styles: StyleXStyles[]): {
+  className: string;
+  style: { [key: string]: string };
+};
+```
+
+### Example use:
+
+```jsx
+import * as stylex from '@stylexjs/stylex';
+
+const styles = stylex.create({
+  root: {
+    backgroundColor: 'red',
+    padding: '1rem',
+    paddingInlineStart: '2rem',
+  },
+  conditional: {
+    backgroundColor: 'blue',
+  },
+  dynamic: (opacity) => ({
+    opacity,
+  }),
+});
+
+<div
+  {...stylex.props(
+    styles.root,
+    condition && styles.conditional,
+    props.style,
+    styles.dynamic(state.opacity),
+  )}
+/>;
+```
+
+## `sx={}` on JSX elements
+
+When using the compiler, JSX host elements can also use an `sx` prop as a
+shorter alternative to `stylex.props`:
+
+```tsx
+<button sx={styles.root}>Save</button>
+```
+
+This compiles to the same output as:
+
+```tsx
+<button {...stylex.props(styles.root)}>Save</button>
+```
+
+The JSX shorthand only applies to lowercase DOM elements such as `div`,
+`button`, or `span`. For custom components, continue passing the result of
+`stylex.props` explicitly.
+
+You can rename or disable this syntax with the
+[`sxPropName`](/docs/api/configuration/babel-plugin#sxpropname) compiler option.
+
+### Not using React?
+
+<Callout type="tip" title="For Solid, Svelte, Qwik, Vue">
+
+Use [`stylex.attrs()`](/docs/api/javascript/attrs) to get `class` and a string
+`style` value directly.
+
+Example use:
+
+```js
+<div {...stylex.attrs(styles.root, condition && styles.active)} />
+```
+
+</Callout>

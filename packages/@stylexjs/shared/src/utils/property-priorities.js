@@ -126,6 +126,16 @@ longHandPhysical.add('border-top-right-radius');
 longHandPhysical.add('border-bottom-left-radius');
 longHandPhysical.add('border-bottom-right-radius');
 
+shorthandsOfLonghands.add('corner-shape');
+longHandLogical.add('corner-start-start-shape'); // Logical Properties
+longHandLogical.add('corner-start-end-shape'); // Logical Properties
+longHandLogical.add('corner-end-start-shape'); // Logical Properties
+longHandLogical.add('corner-end-end-shape'); // Logical Properties
+longHandPhysical.add('corner-top-left-shape');
+longHandPhysical.add('corner-top-right-shape');
+longHandPhysical.add('corner-bottom-left-shape');
+longHandPhysical.add('corner-bottom-right-shape');
+
 longHandLogical.add('box-shadow');
 
 // CSS Basic User Interface
@@ -724,6 +734,24 @@ const RELATIONAL_SELECTORS = {
     /^:where\(\.[0-9a-zA-Z_-]+(:[a-zA-Z-]+)\s+~\s+\*,\s+:has\(~\s\.[0-9a-zA-Z_-]+(:[a-zA-Z-]+)\)\)$/,
 };
 
+const PSEUDO_PART_REGEX = /::[a-zA-Z-]+|:[a-zA-Z-]+(?:\([^)]*\))?/g;
+
+// We only handle chains of simple pseudo-classes and pseudo-elements and opt out of functional pseudo-classes
+function getCompoundPseudoPriority(key: string): number | void {
+  const parts = key.match(PSEUDO_PART_REGEX);
+  if (!parts || parts.length <= 1 || parts.some((p) => p.includes('('))) return;
+
+  let total = 0;
+
+  for (const part of parts) {
+    total += part.startsWith('::')
+      ? PSEUDO_ELEMENT_PRIORITY
+      : (PSEUDO_CLASS_PRIORITIES[part] ?? 40);
+  }
+
+  return total;
+}
+
 export function getAtRulePriority(key: string): number | void {
   if (key.startsWith('--')) {
     return 1;
@@ -780,10 +808,7 @@ export function getPseudoClassPriority(key: string): number | void {
   }
 
   if (key.startsWith(':')) {
-    const prop =
-      key.startsWith(':') && key.includes('(')
-        ? key.slice(0, key.indexOf('('))
-        : key;
+    const prop = key.split('(')[0];
 
     return PSEUDO_CLASS_PRIORITIES[prop] ?? 40;
   }
@@ -807,6 +832,9 @@ export function getDefaultPriority(key: string): number | void {
 export default function getPriority(key: string): number {
   const atRulePriority = getAtRulePriority(key);
   if (atRulePriority) return atRulePriority;
+
+  const compoundPriority = getCompoundPseudoPriority(key);
+  if (compoundPriority != null) return compoundPriority;
 
   const pseudoElementPriority = getPseudoElementPriority(key);
   if (pseudoElementPriority) return pseudoElementPriority;

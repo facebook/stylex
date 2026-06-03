@@ -29,6 +29,7 @@ import * as t from '@babel/types';
 import StateManager from './state-manager';
 import { utils } from '../shared';
 import * as errMsgs from './evaluation-errors';
+import fs from 'node:fs';
 
 // This file contains Babels metainterpreter that can evaluate static code.
 
@@ -155,6 +156,87 @@ type Result =
       resolved: false,
       reason: string,
     };
+
+type VarGroupProxyOptions = {
+  fileName: string,
+  exportName: string,
+  traversalState: StateManager,
+  onAccess?: (key: string) => void,
+};
+
+function getVarGroupHash(
+  fileName: string,
+  exportName: string,
+  traversalState: StateManager,
+): string {
+  return (
+    traversalState.options.classNamePrefix +
+    utils.hash(utils.genFileBasedIdentifier({ fileName, exportName }))
+  );
+}
+
+function resolveVarGroupKey(
+  key: string,
+  fileName: string,
+  exportName: string,
+  traversalState: StateManager,
+): string {
+  if (key.startsWith('--')) {
+    return `var(${key})`;
+  }
+
+  const strToHash = utils.genFileBasedIdentifier({ fileName, exportName, key });
+  const { debug, enableDebugClassNames, classNamePrefix } =
+    traversalState.options;
+
+  const varSafeKey = (key[0] >= '0' && key[0] <= '9' ? `_${key}` : key).replace(
+    /[^a-zA-Z0-9]/g,
+    '_',
+  );
+
+  const varName =
+    debug && enableDebugClassNames
+      ? `${varSafeKey}-${classNamePrefix}${utils.hash(strToHash)}`
+      : classNamePrefix + utils.hash(strToHash);
+
+  return `var(--${varName})`;
+}
+
+export function createVarGroupProxy({
+  fileName,
+  exportName,
+  traversalState,
+  onAccess,
+}: VarGroupProxyOptions): { [string]: string } {
+  const varGroupHash = getVarGroupHash(fileName, exportName, traversalState);
+
+  return new Proxy(
+    {},
+    {
+      get(_, key: string | symbol) {
+        if (typeof key !== 'string') {
+          return undefined;
+        }
+        if (key === '__IS_PROXY') {
+          return true;
+        }
+        if (key === 'toString') {
+          return () => varGroupHash;
+        }
+        if (key === '__varGroupHash__') {
+          return varGroupHash;
+        }
+        onAccess?.(key);
+        return resolveVarGroupKey(key, fileName, exportName, traversalState);
+      },
+      set(_, key: string, value: string) {
+        throw new Error(
+          `Cannot set value ${value} to key ${key} in theme ${fileName}`,
+        );
+      },
+    },
+  );
+}
 /**
  * Deopts the evaluation
  */
@@ -171,7 +253,6 @@ function evaluateImportedFile(
   state: State,
   bindingPath: NodePath<>,
 ): any {
-  const fs = require('node:fs');
   const fileContents = fs.readFileSync(filePath, 'utf8');
   // It's safe to use `.babelrc` here because we're only
   // interested in the JS runtime, and not the CSS.
@@ -234,63 +315,11 @@ function evaluateThemeRef(
   exportName: string,
   state: State,
 ): { [key: string]: string } {
-  const resolveKey = (key: string) => {
-    if (key.startsWith('--')) {
-      return `var(${key})`;
-    }
-
-    const strToHash =
-      key === '__varGroupHash__'
-        ? utils.genFileBasedIdentifier({ fileName, exportName })
-        : utils.genFileBasedIdentifier({ fileName, exportName, key });
-
-    const { debug, enableDebugClassNames } = state.traversalState.options;
-
-    const varSafeKey =
-      key === '__varGroupHash__'
-        ? ''
-        : (key[0] >= '0' && key[0] <= '9' ? `_${key}` : key).replace(
-            /[^a-zA-Z0-9]/g,
-            '_',
-          ) + '-';
-
-    const varName =
-      debug && enableDebugClassNames
-        ? varSafeKey +
-          state.traversalState.options.classNamePrefix +
-          utils.hash(strToHash)
-        : state.traversalState.options.classNamePrefix + utils.hash(strToHash);
-
-    if (key === '__varGroupHash__') {
-      return varName;
-    }
-    return `var(--${varName})`;
-  };
-
-  // A JS proxy that uses the key to generate a string value using the `resolveKey` function
-  const proxy = new Proxy(
-    {},
-    {
-      get(_, key: string) {
-        if (key === '__IS_PROXY') {
-          return true;
-        }
-        if (key === 'toString') {
-          return () =>
-            state.traversalState.options.classNamePrefix +
-            utils.hash(utils.genFileBasedIdentifier({ fileName, exportName }));
-        }
-        return resolveKey(key);
-      },
-      set(_, key: string, value: string) {
-        throw new Error(
-          `Cannot set value ${value} to key ${key} in theme ${fileName}`,
-        );
-      },
-    },
-  );
-
-  return proxy;
+  return createVarGroupProxy({
+    fileName,
+    exportName,
+    traversalState: state.traversalState,
+  });
 }
 
 /**
@@ -349,19 +378,27 @@ function _evaluate(path: NodePath<>, state: State): any {
         ): param is NodePath<t.Identifier> => param.isIdentifier(),
       )
       .map((paramPath) => paramPath.node.name);
+
     if (body.isExpression() && identParams.length === params.length) {
-      const expr: NodePath<t.Expression> = body;
-      return (...args) => {
+      const evaluatedExpr: NodePath<t.Expression> = body;
+      const evaluatedFn: any = (...args: Array<any>) => {
         const identifierEntries = identParams.map(
           (ident, index): [string, any] => [ident, args[index]],
         );
         const identifiersObj = Object.fromEntries(identifierEntries);
-        const result = evaluate(expr, state.traversalState, {
+        const result = evaluate(evaluatedExpr, state.traversalState, {
           ...state.functions,
           identifiers: { ...state.functions.identifiers, ...identifiersObj },
         });
+        if (!result.confident) {
+          throw new Error(result.reason ?? errMsgs.NON_CONSTANT);
+        }
         return result.value;
       };
+      Object.defineProperty(evaluatedFn, '__stylexParamCount', {
+        value: identParams.length,
+      });
+      return evaluatedFn;
     }
   }
 
@@ -442,11 +479,95 @@ function _evaluate(path: NodePath<>, state: State): any {
     return evaluateCached(path.get('expression'), state);
   }
 
+  /**
+   * Collects the full member expression chain for cross-file nested token resolution.
+   *
+   * When tokens are imported from another .stylex.js file, the plugin creates a
+   * themeNameRef proxy that only handles single-level access. Multi-level access like
+   * tokens.button.primary.background would fail because proxy['button'] returns a
+   * string, and "var(--hash)"['primary'] is undefined.
+   *
+   * This function walks the MemberExpression AST chain from outermost to innermost,
+   * collecting all property names. The caller can then resolve the full dotted key
+   * against the proxy in one shot: proxy['button.primary.background'].
+   *
+   * Example:
+   *   AST for tokens.button.primary.background
+   *   → { basePath: <Identifier:tokens>, parts: ['button', 'primary', 'background'] }
+   *
+   * Returns null for:
+   *   - Single-level access (no benefit from path collection)
+   *   - Dynamic computed properties that can't be resolved statically
+   *
+   * @param memberPath - The outermost MemberExpression NodePath
+   * @returns { basePath, parts } or null
+   */
+  function getFullMemberPath(
+    memberPath: NodePath<t.MemberExpression>,
+  ): ?{ basePath: NodePath<>, parts: Array<string> } {
+    const parts: Array<string> = [];
+    let current: NodePath<> = memberPath;
+
+    while (current.isMemberExpression()) {
+      const propPath = current.get('property');
+      if (current.node.computed) {
+        // Only handle static computed properties (string/number literals)
+        if (propPath.isStringLiteral()) {
+          parts.unshift(propPath.node.value);
+        } else if (propPath.isNumericLiteral()) {
+          parts.unshift(String(propPath.node.value));
+        } else {
+          return null; // Dynamic computed property — can't collect statically
+        }
+      } else if (propPath.isIdentifier()) {
+        parts.unshift(propPath.node.name);
+      } else {
+        return null;
+      }
+      current = current.get('object');
+    }
+
+    if (parts.length < 2) {
+      return null; // Single-level access — no benefit from collecting path
+    }
+
+    return { basePath: current, parts };
+  }
+
   // "foo".length
   if (
     path.isMemberExpression() &&
     !path.parentPath.isCallExpression({ callee: path.node })
   ) {
+    // Cross-file nested token resolution:
+    // When tokens are imported from another .stylex.js file, the evaluator creates
+    // a themeNameRef proxy. For flat tokens (tokens.color), single-level proxy access
+    // works fine. For nested tokens (tokens.button.primary.background), multi-level
+    // access fails because proxy['button'] returns "var(--hash)" (a string) and
+    // "var(--hash)"['primary'] is undefined.
+    //
+    // Fix: collect the full member chain ['button', 'primary', 'background'] and
+    // resolve it as a single dotted key: proxy['button.primary.background'].
+    // The dotted key produces the same hash as defineVarsNested compilation
+    // (which internally flattens to the same dotted key).
+    const fullPath = getFullMemberPath(path);
+    if (fullPath != null) {
+      const { basePath, parts } = fullPath;
+      const baseObject = evaluateCached(basePath, state);
+      if (!state.confident) {
+        return;
+      }
+      if (
+        baseObject != null &&
+        typeof baseObject === 'object' &&
+        baseObject.__IS_PROXY === true
+      ) {
+        // Resolve the full dotted path at once against the proxy
+        return baseObject[parts.join('.')];
+      }
+      // Not a proxy — fall through to standard recursive evaluation
+    }
+
     const object = evaluateCached(path.get('object'), state);
     if (!state.confident) {
       return;

@@ -10,7 +10,7 @@
 type Groups = { [key: number]: { start: ?number, rules: Array<string> } };
 type SeenRules = { [key: string]: boolean };
 
-export type OrderedCSSStyleSheet = $ReadOnly<{
+export type OrderedCSSStyleSheet = Readonly<{
   getTextContent: () => string,
   insert: (cssText: string, groupValue: number) => void,
   update: (oldCssText: string, newCssText: string, groupValue: number) => void,

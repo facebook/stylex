@@ -55,5 +55,64 @@ describe('@stylexjs/babel-plugin', () => {
         `);
       }).toThrow(messages.illegalArgumentLength('defineMarker', 0));
     });
+
+    test('valid export: direct named export', () => {
+      expect(() => {
+        transform(`
+          import * as stylex from '@stylexjs/stylex';
+          export const marker = stylex.defineMarker();
+        `);
+      }).not.toThrow();
+    });
+
+    test('valid export: separate const and export statement', () => {
+      expect(() => {
+        transform(`
+          import * as stylex from '@stylexjs/stylex';
+          const marker = stylex.defineMarker();
+          export { marker };
+        `);
+      }).not.toThrow();
+    });
+
+    test('invalid export: re-export from another file does not count', () => {
+      expect(() => {
+        transform(`
+          import * as stylex from '@stylexjs/stylex';
+          const marker = stylex.defineMarker();
+          export { marker } from './other.stylex.js';
+        `);
+      }).toThrow(messages.nonExportNamedDeclaration('defineMarker'));
+    });
+
+    test('invalid export: renamed re-export from another file does not count', () => {
+      expect(() => {
+        transform(`
+          import * as stylex from '@stylexjs/stylex';
+          const marker = stylex.defineMarker();
+          export { marker as otherMarker } from './other.stylex.js';
+        `);
+      }).toThrow(messages.nonExportNamedDeclaration('defineMarker'));
+    });
+
+    test('invalid export: default export does not count', () => {
+      expect(() => {
+        transform(`
+          import * as stylex from '@stylexjs/stylex';
+          const marker = stylex.defineMarker();
+          export default marker;
+        `);
+      }).toThrow(messages.nonExportNamedDeclaration('defineMarker'));
+    });
+
+    test('invalid export: renamed export with as syntax', () => {
+      expect(() => {
+        transform(`
+          import * as stylex from '@stylexjs/stylex';
+          const marker = stylex.defineMarker();
+          export { marker as themeMarker };
+        `);
+      }).toThrow(messages.nonExportNamedDeclaration('defineMarker'));
+    });
   });
 });

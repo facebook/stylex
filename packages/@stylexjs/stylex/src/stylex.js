@@ -10,10 +10,14 @@
 'use strict';
 
 import type {
+  CSSProperties,
   CompiledStyles,
   InlineStyles,
   Keyframes,
   MapNamespaces,
+  NestedConstsValue,
+  NestedStringValue,
+  NestedVarsValue,
   StaticStyles,
   StaticStylesWithout,
   StyleX$Create,
@@ -32,11 +36,13 @@ import type {
   StyleX$When,
   MapNamespace,
   StyleX$DefineMarker,
+  StyleX$Env,
 } from './types/StyleXTypes';
 import type { ValueWithDefault } from './types/StyleXUtils';
 import * as Types from './types/VarTypes';
 
 export type {
+  CSSProperties,
   CompiledStyles,
   InlineStyles,
   Keyframes,
@@ -60,10 +66,10 @@ const errorForFn = (name: string) =>
   new Error(
     `Unexpected 'stylex.${name}' call at runtime. Styles must be compiled by '@stylexjs/babel-plugin'.`,
   );
-const errorForType = (key: $Keys<typeof types>) => errorForFn(`types.${key}`);
+const errorForType = (key: keyof typeof types) => errorForFn(`types.${key}`);
 
 export const create: StyleX$Create = function stylexCreate<
-  const S: { +[string]: mixed },
+  const S extends { readonly [string]: unknown },
 >(_styles: S): MapNamespaces<S> {
   throw errorForFn('create');
 };
@@ -73,7 +79,7 @@ export const createTheme: StyleX$CreateTheme = (_baseTokens, _overrides) => {
 };
 
 export const defineConsts: StyleX$DefineConsts = function stylexDefineConsts<
-  const T: { +[string]: number | string },
+  const T extends { readonly [string]: number | string },
 >(_styles: T): T {
   throw errorForFn('defineConsts');
 };
@@ -84,13 +90,38 @@ export const defineVars: StyleX$DefineVars = function stylexDefineVars(
   throw errorForFn('defineVars');
 };
 
+export const unstable_conditional = function stylexConditional<
+  const T extends { readonly default: unknown, readonly [string]: unknown },
+>(_value: T): T {
+  throw errorForFn('unstable_conditional');
+};
+
+export const unstable_defineVarsNested = function stylexDefineVarsNested<
+  const T extends { readonly [string]: NestedVarsValue },
+>(_styles: T): T {
+  throw errorForFn('unstable_defineVarsNested');
+};
+
+export const unstable_defineConstsNested = function stylexDefineConstsNested<
+  const T extends { readonly [string]: NestedConstsValue },
+>(_styles: T): T {
+  throw errorForFn('unstable_defineConstsNested');
+};
+
+export const unstable_createThemeNested = (
+  _baseTokens: { readonly [string]: NestedStringValue },
+  _overrides: { readonly [string]: NestedVarsValue },
+): CompiledStyles => {
+  throw errorForFn('unstable_createThemeNested');
+};
+
 export const defineMarker: StyleX$DefineMarker = () => {
   throw errorForFn('defineMarker');
 };
 
-export const firstThatWorks = <T: string | number>(
-  ..._styles: $ReadOnlyArray<T>
-): $ReadOnlyArray<T> => {
+export const firstThatWorks = <T extends string | number>(
+  ..._styles: ReadonlyArray<T>
+): ReadonlyArray<T> => {
   throw errorForFn('firstThatWorks');
 };
 
@@ -103,22 +134,22 @@ export const positionTry = (_positionTry: PositionTry): string => {
 };
 
 export function props(
-  this: ?mixed,
-  ...styles: $ReadOnlyArray<
+  this: ?unknown,
+  ...styles: ReadonlyArray<
     StyleXArray<
-      ?CompiledStyles | boolean | $ReadOnly<[CompiledStyles, InlineStyles]>,
+      ?CompiledStyles | boolean | Readonly<[CompiledStyles, InlineStyles]>,
     >,
   >
-): $ReadOnly<{
+): Readonly<{
   className?: string,
   'data-style-src'?: string,
-  style?: $ReadOnly<{ [string]: string | number }>,
+  style?: Readonly<{ [string]: string | number }>,
 }> {
   const [className, style, dataStyleSrc] = styleq(styles);
   const result: {
     className?: string,
     'data-style-src'?: string,
-    style?: $ReadOnly<{ [string]: string | number }>,
+    style?: Readonly<{ [string]: string | number }>,
   } = {};
   if (className != null && className !== '') {
     result.className = className;
@@ -132,6 +163,45 @@ export function props(
   return result;
 }
 
+const toKebabCase = (str: string): string =>
+  str.replace(/([A-Z])/g, '-$1').toLowerCase();
+
+export function attrs(
+  this: ?unknown,
+  ...styles: ReadonlyArray<
+    StyleXArray<
+      ?CompiledStyles | boolean | Readonly<[CompiledStyles, InlineStyles]>,
+    >,
+  >
+): Readonly<{
+  class?: string,
+  'data-style-src'?: string,
+  style?: string,
+}> {
+  const {
+    className,
+    style,
+    'data-style-src': dataStyleSrc,
+  } = props.apply(this, styles);
+  const result: {
+    class?: string,
+    'data-style-src'?: string,
+    style?: string,
+  } = {};
+  if (className != null) {
+    result.class = className;
+  }
+  if (style != null) {
+    result.style = Object.entries(style)
+      .map(([key, value]) => `${toKebabCase(key)}:${value}`)
+      .join(';');
+  }
+  if (dataStyleSrc != null) {
+    result['data-style-src'] = dataStyleSrc;
+  }
+  return result;
+}
+
 export const viewTransitionClass = (
   _viewTransitionClass: ViewTransitionClass,
 ): string => {
@@ -139,7 +209,7 @@ export const viewTransitionClass = (
 };
 
 export const defaultMarker = (): MapNamespace<
-  $ReadOnly<{
+  Readonly<{
     marker: 'default-marker',
   }>,
 > => {
@@ -164,58 +234,68 @@ export const when: StyleX$When = {
   },
 };
 
+export const env: StyleX$Env = Object.freeze({});
+
 export const types = {
-  angle: <T: string | 0 = string | 0>(
+  angle: <T extends string | 0 = string | 0>(
     _v: ValueWithDefault<T>,
   ): Types.Angle<T> => {
     throw errorForType('angle');
   },
-  color: <T: string = string>(_v: ValueWithDefault<T>): Types.Color<T> => {
+  color: <T extends string = string>(
+    _v: ValueWithDefault<T>,
+  ): Types.Color<T> => {
     throw errorForType('color');
   },
-  url: <T: string = string>(_v: ValueWithDefault<T>): Types.Url<T> => {
+  url: <T extends string = string>(_v: ValueWithDefault<T>): Types.Url<T> => {
     throw errorForType('url');
   },
-  image: <T: string = string>(_v: ValueWithDefault<T>): Types.Image<T> => {
+  image: <T extends string = string>(
+    _v: ValueWithDefault<T>,
+  ): Types.Image<T> => {
     throw errorForType('image');
   },
-  integer: <T: number = number>(_v: ValueWithDefault<T>): Types.Integer<T> => {
+  integer: <T extends number = number>(
+    _v: ValueWithDefault<T>,
+  ): Types.Integer<T> => {
     throw errorForType('integer');
   },
-  lengthPercentage: <T: number | string = number | string>(
+  lengthPercentage: <T extends number | string = number | string>(
     _v: ValueWithDefault<T>,
   ): Types.LengthPercentage<T> => {
     throw errorForType('lengthPercentage');
   },
-  length: <T: number | string = number | string>(
+  length: <T extends number | string = number | string>(
     _v: ValueWithDefault<T>,
   ): Types.Length<T> => {
     throw errorForType('length');
   },
-  percentage: <T: number | string = number | string>(
+  percentage: <T extends number | string = number | string>(
     _v: ValueWithDefault<T>,
   ): Types.Percentage<T> => {
     throw errorForType('percentage');
   },
-  number: <T: number = number>(_v: ValueWithDefault<T>): Types.Num<T> => {
+  number: <T extends number = number>(
+    _v: ValueWithDefault<T>,
+  ): Types.Num<T> => {
     throw errorForType('number');
   },
-  resolution: <T: string = string>(
+  resolution: <T extends string = string>(
     _v: ValueWithDefault<T>,
   ): Types.Resolution<T> => {
     throw errorForType('resolution');
   },
-  time: <T: string | 0 = string | 0>(
+  time: <T extends string | 0 = string | 0>(
     _v: ValueWithDefault<T>,
   ): Types.Time<T> => {
     throw errorForType('time');
   },
-  transformFunction: <T: string = string>(
+  transformFunction: <T extends string = string>(
     _v: ValueWithDefault<T>,
   ): Types.TransformFunction<T> => {
     throw errorForType('transformFunction');
   },
-  transformList: <T: string = string>(
+  transformList: <T extends string = string>(
     _v: ValueWithDefault<T>,
   ): Types.TransformList<T> => {
     throw errorForType('transformList');
@@ -227,60 +307,99 @@ export const types = {
  */
 
 type IStyleX = {
-  (...styles: $ReadOnlyArray<StyleXArray<?CompiledStyles | boolean>>): string,
+  (...styles: ReadonlyArray<StyleXArray<?CompiledStyles | boolean>>): string,
   create: StyleX$Create,
   createTheme: StyleX$CreateTheme,
   defineConsts: StyleX$DefineConsts,
   defineVars: StyleX$DefineVars,
+  env: StyleX$Env,
   defaultMarker: () => MapNamespace<
-    $ReadOnly<{
+    Readonly<{
       marker: 'default-marker',
     }>,
   >,
   defineMarker: StyleX$DefineMarker,
-  firstThatWorks: <T: string | number>(
-    ...v: $ReadOnlyArray<T>
-  ) => $ReadOnlyArray<T>,
+  firstThatWorks: <T extends string | number>(
+    ...v: ReadonlyArray<T>
+  ) => ReadonlyArray<T>,
   keyframes: (keyframes: Keyframes) => string,
   positionTry: (positionTry: PositionTry) => string,
   props: (
-    this: ?mixed,
-    ...styles: $ReadOnlyArray<
+    this: ?unknown,
+    ...styles: ReadonlyArray<
       StyleXArray<
-        ?CompiledStyles | boolean | $ReadOnly<[CompiledStyles, InlineStyles]>,
+        ?CompiledStyles | boolean | Readonly<[CompiledStyles, InlineStyles]>,
       >,
     >
-  ) => $ReadOnly<{
+  ) => Readonly<{
     className?: string,
     'data-style-src'?: string,
-    style?: $ReadOnly<{ [string]: string | number }>,
+    style?: Readonly<{ [string]: string | number }>,
+  }>,
+  attrs: (
+    this: ?unknown,
+    ...styles: ReadonlyArray<
+      StyleXArray<
+        ?CompiledStyles | boolean | Readonly<[CompiledStyles, InlineStyles]>,
+      >,
+    >
+  ) => Readonly<{
+    class?: string,
+    'data-style-src'?: string,
+    style?: string,
   }>,
   viewTransitionClass: (viewTransitionClass: ViewTransitionClass) => string,
   types: typeof types,
   when: typeof when,
-  __customProperties?: { [string]: mixed },
+  unstable_conditional: <
+    const T extends { readonly default: unknown, readonly [string]: unknown },
+  >(
+    value: T,
+  ) => T,
+  unstable_defineVarsNested: <
+    const T extends { readonly [string]: NestedVarsValue },
+  >(
+    tokens: T,
+  ) => T,
+  unstable_defineConstsNested: <
+    const T extends { readonly [string]: NestedConstsValue },
+  >(
+    tokens: T,
+  ) => T,
+  unstable_createThemeNested: (
+    baseTokens: { readonly [string]: NestedStringValue },
+    overrides: { readonly [string]: NestedVarsValue },
+  ) => CompiledStyles,
+  __customProperties?: { [string]: unknown },
   ...
 };
 
-function _legacyMerge(
-  ...styles: $ReadOnlyArray<StyleXArray<?CompiledStyles | boolean>>
-): string {
-  const [className] = styleq(styles);
-  return className;
-}
+export const legacyMerge: IStyleX = /*@__PURE__*/ (function () {
+  function _legacyMerge(
+    ...styles: ReadonlyArray<StyleXArray<?CompiledStyles | boolean>>
+  ): string {
+    const [className] = styleq(styles);
+    return className;
+  }
 
-_legacyMerge.create = create;
-_legacyMerge.createTheme = createTheme;
-_legacyMerge.defineConsts = defineConsts;
-_legacyMerge.defineMarker = defineMarker;
-_legacyMerge.defineVars = defineVars;
-_legacyMerge.defaultMarker = defaultMarker;
-_legacyMerge.firstThatWorks = firstThatWorks;
-_legacyMerge.keyframes = keyframes;
-_legacyMerge.positionTry = positionTry;
-_legacyMerge.props = props;
-_legacyMerge.types = types;
-_legacyMerge.when = when;
-_legacyMerge.viewTransitionClass = viewTransitionClass;
-
-export const legacyMerge: IStyleX = _legacyMerge;
+  _legacyMerge.create = create;
+  _legacyMerge.createTheme = createTheme;
+  _legacyMerge.defineConsts = defineConsts;
+  _legacyMerge.defineMarker = defineMarker;
+  _legacyMerge.defineVars = defineVars;
+  _legacyMerge.defaultMarker = defaultMarker;
+  _legacyMerge.firstThatWorks = firstThatWorks;
+  _legacyMerge.keyframes = keyframes;
+  _legacyMerge.positionTry = positionTry;
+  _legacyMerge.props = props;
+  _legacyMerge.attrs = attrs;
+  _legacyMerge.types = types;
+  _legacyMerge.when = when;
+  _legacyMerge.viewTransitionClass = viewTransitionClass;
+  _legacyMerge.env = env;
+  _legacyMerge.unstable_conditional = unstable_conditional;
+  _legacyMerge.unstable_defineVarsNested = unstable_defineVarsNested;
+  _legacyMerge.unstable_defineConstsNested = unstable_defineConstsNested;
+  _legacyMerge.unstable_createThemeNested = unstable_createThemeNested;
+  return _legacyMerge;
+})();

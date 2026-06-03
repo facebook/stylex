@@ -1,5 +1,48 @@
 # Changelog
 
+## 0.18.3 (Apr 29, 2026)
+- Experimental nested APIs for `defineVars`, `defineConsts`, and `createTheme`.
+- Add recursive derivation support for `defineVars`.
+- ESLint auto-fixers for shorthand expansion, gated by `styleResolution` config.
+- Respect project `browserslist` config instead of hardcoding `>= 1%`.
+- Add `:empty` pseudo-class and unclosed string detection to the compiler.
+- StyleX DevTools extension now available in the Chrome Web Store.
+
+## 0.18.2 (Mar 23, 2026)
+- Bring back `stylex.attrs` for SSR and non-React frameworks.
+- Add `layersBefore`, `layersAfter`, and `layersPrefix` for `@layer` control.
+- Add `flex`, `grid`, and `animation` shorthand expansion to ESLint plugin.
+- ESLint fixes: bare number support, false positive fixes in `stylex.create`.
+
+## 0.18.1 (Mar 5, 2026)
+- Add simple `sx={}` JSX prop syntax as an alternative to `stylex.props`.
+- Fix `unplugin` `generateBundle` hook to use `emitFile` instead of direct bundle assignment.
+
+## 0.18.0 (Mar 3, 2026)
+- Add `stylex.env` API for compile-time constants and shareable design tokens.
+- New `@stylexjs/create` CLI for scaffolding projects with `npm create @stylexjs`.
+- Add Bun support and improvements to the `unplugin` bundler plugin.
+- Support attribute selectors in `stylex.when` and conditional styles.
+- Fix priority calculation for compound pseudo selectors.
+
+## 0.17.5 (Jan 12. 2026)
+- New `no-conflicting-props` lint rule.
+- Add `disallowedPropertiesValidation` config to disable property compiler errors by default.
+- Preserve units in zero values for CSS variables.
+- Fix `unplugin` cache invalidation on style changes.
+- Add `env` compiler option to expose `stylex.env` compile-time constants.
+
+## 0.17.4 (Dec 18. 2025)
+- New playground within the docs website.
+- Fix named exports detection on Turbopack.
+
+## 0.17.3 (Dec 12, 2025)
+
+- Add docs for setup instructions.
+- Improve AST detection for `.stylex` named exports
+- Add browser rollup bundle.
+- Fix unplugin file suffix parsing.
+
 ## 0.17.2 (Dec 1, 2025)
 
 - Pass importSources to babel plugin in `unplugin` plugin.
@@ -19,9 +62,11 @@
 
 - Add docs for ESLint rules and `stylex.when` API.
 - Add `defineMarker()` for custom markers for selector combinators.
-- New unplugin bundler plugin implementation for various bundlers (Vite, Webpack, Rspack, Rollup, etc.).
+- New unplugin bundler plugin implementation for various bundlers (Vite,
+  Webpack, Rspack, Rollup, etc.).
 - Enhance `stylex.props` to precompile more often for better performance.
-- Order pseudo-classes and `stylex.when` selectors according to priorities in `sort-keys.
+- Order pseudo-classes and `stylex.when` selectors according to priorities in
+  `sort-keys.
 - Add support for ternary and logical expressions in `valid-styles`.
 - Bump specificity of `stylex.when` selectors over defaults.
 - Add polyfill for logical float values in legacy mode.

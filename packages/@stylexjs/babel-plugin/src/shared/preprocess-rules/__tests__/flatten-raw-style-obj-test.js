@@ -483,6 +483,27 @@ describe('Flatten Style Object with legacy shorthand expansion', () => {
         ],
       ]);
     });
+    test('Attribute selector conditions', () => {
+      expect(
+        flattenRawStyleObject(
+          {
+            color: {
+              default: 'blue',
+              '[data-panel-state="open"]': 'red',
+            },
+          },
+          options,
+        ),
+      ).toEqual([
+        [
+          'color',
+          PreRuleSet.create([
+            new PreRule('color', 'blue', ['color', 'default']),
+            new PreRule('color', 'red', ['color', '[data-panel-state="open"]']),
+          ]),
+        ],
+      ]);
+    });
   });
   describe('Multiple levels of nesting', () => {
     test('Fallback styles within nested objects', () => {

@@ -24,6 +24,15 @@ export const unboundCallValue = (fn: string): string =>
   `${fn}() calls must be bound to a bare variable.`;
 export const cannotGenerateHash = (fn: string): string =>
   `Unable to generate hash for ${fn}(). Check that the file has a valid extension and that unstable_moduleResolution is configured.`;
+export const invalidDefineVarsFunctionValue = (): string =>
+  'Function values in defineVars() must be zero-argument and return a static value supported by defineVars().';
+export const cyclicDefineVarsReference = (cycle: string): string =>
+  `Cyclic same-group references in defineVars() are not allowed: ${cycle}.`;
+export const unknownDefineVarsReference = (
+  key: string,
+  dependency: string,
+): string =>
+  `Unknown same-group reference "${dependency}" found while resolving "${key}" in defineVars().`;
 
 export const DUPLICATE_CONDITIONAL =
   'The same pseudo selector or at-rule cannot be used more than once.';
@@ -35,12 +44,11 @@ export const ILLEGAL_PROP_VALUE =
 export const ILLEGAL_PROP_ARRAY_VALUE =
   'A style array value can only contain strings or numbers.';
 export const ILLEGAL_NAMESPACE_VALUE = 'A StyleX namespace must be an object.';
-export const INVALID_CONST_KEY =
-  'Keys in defineConsts() cannot start with "--".';
 export const INVALID_PSEUDO = 'Invalid pseudo selector, not on the whitelist.';
 export const INVALID_PSEUDO_OR_AT_RULE = 'Invalid pseudo or at-rule.';
 export const INVALID_MEDIA_QUERY_SYNTAX = 'Invalid media query syntax.';
 export const LINT_UNCLOSED_FUNCTION = 'Rule contains an unclosed function';
+export const LINT_UNCLOSED_STRING = 'Rule contains an unclosed string';
 export const LOCAL_ONLY =
   'The return value of create() should not be exported.';
 export const NON_OBJECT_KEYFRAME =

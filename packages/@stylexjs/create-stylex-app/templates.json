@@ -1,0 +1,198 @@
+{
+  "version": 1,
+  "templates": [
+    {
+      "id": "nextjs",
+      "name": "Next.js (App Router)",
+      "description": "Full-stack React framework with server components",
+      "features": ["SSR", "App Router", "TypeScript"],
+      "recommended": true,
+      "exampleSource": "example-nextjs",
+      "excludeFiles": [
+        "node_modules",
+        ".next",
+        "package-lock.json",
+        "yarn.lock",
+        "pnpm-lock.yaml"
+      ]
+    },
+    {
+      "id": "vite-react",
+      "name": "Vite + React",
+      "description": "Fast development with instant HMR",
+      "features": ["React", "TypeScript", "Fast HMR"],
+      "exampleSource": "example-vite-react",
+      "usesSharedUI": true,
+      "excludeFiles": [
+        "node_modules",
+        "dist",
+        ".vite",
+        "package-lock.json",
+        "yarn.lock",
+        "pnpm-lock.yaml"
+      ]
+    },
+    {
+      "id": "vite",
+      "name": "Vite (Vanilla)",
+      "description": "Lightweight setup without a framework",
+      "features": ["Vanilla TS", "Fast HMR", "Minimal"],
+      "exampleSource": "example-vite",
+      "usesSharedUI": true,
+      "excludeFiles": [
+        "node_modules",
+        "dist",
+        ".vite",
+        "package-lock.json",
+        "yarn.lock",
+        "pnpm-lock.yaml"
+      ]
+    },
+    {
+      "id": "webpack",
+      "name": "Webpack + React",
+      "description": "StyleX with Webpack via @stylexjs/unplugin",
+      "features": ["Webpack", "React", "HMR"],
+      "exampleSource": "example-webpack",
+      "excludeFiles": [
+        "node_modules",
+        "dist",
+        "package-lock.json",
+        "yarn.lock",
+        "pnpm-lock.yaml"
+      ]
+    },
+    {
+      "id": "rollup",
+      "name": "Rollup + React",
+      "description": "StyleX with Rollup bundler",
+      "features": ["Rollup", "React"],
+      "exampleSource": "example-rollup",
+      "excludeFiles": [
+        "node_modules",
+        "dist",
+        "package-lock.json",
+        "yarn.lock",
+        "pnpm-lock.yaml"
+      ]
+    },
+    {
+      "id": "esbuild",
+      "name": "esbuild + React",
+      "description": "StyleX with esbuild via @stylexjs/unplugin",
+      "features": ["esbuild", "React", "Fast builds"],
+      "exampleSource": "example-esbuild",
+      "excludeFiles": [
+        "node_modules",
+        "dist",
+        "package-lock.json",
+        "yarn.lock",
+        "pnpm-lock.yaml"
+      ]
+    },
+    {
+      "id": "rspack",
+      "name": "Rspack + React",
+      "description": "StyleX with Rspack via @stylexjs/unplugin",
+      "features": ["Rspack", "React", "Fast builds"],
+      "exampleSource": "example-rspack",
+      "excludeFiles": [
+        "node_modules",
+        "dist",
+        "package-lock.json",
+        "yarn.lock",
+        "pnpm-lock.yaml"
+      ]
+    },
+    {
+      "id": "react-router",
+      "name": "React Router",
+      "description": "React Router with RSC support",
+      "features": ["React Router", "RSC", "TypeScript"],
+      "exampleSource": "example-react-router",
+      "usesSharedUI": true,
+      "excludeFiles": [
+        "node_modules",
+        "dist",
+        "package-lock.json",
+        "yarn.lock",
+        "pnpm-lock.yaml"
+      ]
+    },
+    {
+      "id": "waku",
+      "name": "Waku",
+      "description": "Minimal React framework with RSC",
+      "features": ["Waku", "RSC", "TypeScript"],
+      "exampleSource": "example-waku",
+      "usesSharedUI": true,
+      "excludeFiles": [
+        "node_modules",
+        "dist",
+        "package-lock.json",
+        "yarn.lock",
+        "pnpm-lock.yaml"
+      ]
+    },
+    {
+      "id": "vite-rsc",
+      "name": "Vite + RSC",
+      "description": "Vite with React Server Components",
+      "features": ["Vite", "RSC", "TypeScript"],
+      "exampleSource": "example-vite-rsc",
+      "usesSharedUI": true,
+      "excludeFiles": [
+        "node_modules",
+        "dist",
+        ".vite",
+        "package-lock.json",
+        "yarn.lock",
+        "pnpm-lock.yaml"
+      ]
+    },
+    {
+      "id": "redwoodsdk",
+      "name": "RedwoodSDK",
+      "description": "RedwoodSDK with Cloudflare Workers",
+      "features": ["RedwoodSDK", "Cloudflare", "RSC"],
+      "exampleSource": "example-redwoodsdk",
+      "usesSharedUI": true,
+      "excludeFiles": [
+        "node_modules",
+        "dist",
+        "package-lock.json",
+        "yarn.lock",
+        "pnpm-lock.yaml"
+      ]
+    },
+    {
+      "id": "storybook",
+      "name": "Storybook",
+      "description": "Component development with Storybook",
+      "features": ["Storybook", "Vite", "Testing"],
+      "exampleSource": "example-storybook",
+      "excludeFiles": [
+        "node_modules",
+        "dist",
+        "storybook-static",
+        "package-lock.json",
+        "yarn.lock",
+        "pnpm-lock.yaml"
+      ]
+    },
+    {
+      "id": "cli",
+      "name": "CLI (Standalone)",
+      "description": "Use StyleX CLI for standalone compilation",
+      "features": ["CLI", "TypeScript"],
+      "exampleSource": "example-cli",
+      "excludeFiles": [
+        "node_modules",
+        "dist",
+        "package-lock.json",
+        "yarn.lock",
+        "pnpm-lock.yaml"
+      ]
+    }
+  ]
+}

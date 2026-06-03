@@ -1,10 +1,14 @@
-import { initClient } from "rwsdk/client";
+/**
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+import { initClient } from 'rwsdk/client';
+
+initClient();
 
 if (import.meta.env.DEV) {
-  // Minimal StyleX CSS HMR: listen for stylex:css-update and bust the CSS link
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   import('virtual:stylex:css-only');
 }
-
-initClient();

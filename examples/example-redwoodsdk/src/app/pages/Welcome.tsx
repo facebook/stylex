@@ -1,14 +1,14 @@
-'use client';
 /**
- * This is a minimal welcome page for the starter.
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
  *
- * _Feel free to delete this file_
- **/
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
 
-import { useState } from 'react';
 import * as stylex from '@stylexjs/stylex';
 import { Button } from '@stylexjs/shared-ui';
 import { tokens } from '@stylexjs/shared-ui/tokens.stylex';
+import { Copy } from '../components/Copy';
 
 export const Welcome = () => {
   return (
@@ -28,8 +28,8 @@ export const Welcome = () => {
               Read the{' '}
               <a
                 href="https://docs.rwsdk.com/getting-started/quick-start/"
-                target="_blank"
                 rel="noreferrer"
+                target="_blank"
                 {...stylex.props(styles.link)}
               >
                 Quick Start
@@ -40,8 +40,8 @@ export const Welcome = () => {
               Explore React Server Components and Server Functions in the{' '}
               <a
                 href="https://docs.rwsdk.com/"
-                target="_blank"
                 rel="noreferrer"
+                target="_blank"
                 {...stylex.props(styles.link)}
               >
                 Docs
@@ -70,8 +70,8 @@ export const Welcome = () => {
             Need more detail? Read the{' '}
             <a
               href="https://docs.rwsdk.com/core/hosting/"
-              target="_blank"
               rel="noreferrer"
+              target="_blank"
               {...stylex.props(styles.link)}
             >
               Cloudflare deployment guide
@@ -86,26 +86,6 @@ export const Welcome = () => {
     </div>
   );
 };
-
-const Copy = ({ textToCopy }: { textToCopy: string }) => {
-  const [copied, setCopied] = useState(false);
-
-  const handleCopy = () => {
-    navigator.clipboard.writeText(textToCopy).then(() => {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    });
-  };
-
-  return (
-    <button onClick={handleCopy} {...stylex.props(styles.copyButton)}>
-      {copied ? 'Copied!' : 'Copy'}
-    </button>
-  );
-};
-
-const opacity = (color: string, percentage: number) =>
-  `color-mix(in oklab, ${color} ${percentage}%, transparent)`;
 
 const styles = stylex.create({
   container: {
@@ -148,10 +128,12 @@ const styles = stylex.create({
   },
   listItem: { marginBottom: 12 },
   link: {
-    color: '#f47238',
+    color: {
+      default: '#f47238',
+      ':hover': '#ffad48',
+    },
     fontWeight: 700,
     textDecorationLine: 'none',
-    ':hover': { color: '#ffad48' },
   },
   codeBlock: {
     backgroundColor: '#1b1b1b',
@@ -168,22 +150,10 @@ const styles = stylex.create({
   },
   codePrompt: { color: '#f47238' },
   code: { flexGrow: 1 },
-  copyButton: {
-    backgroundColor: 'transparent',
-    color: '#ffad48',
-    borderWidth: 0,
-    borderRadius: 4,
-    paddingBlock: 4,
-    paddingInline: 12,
-    cursor: 'pointer',
-    fontSize: 16,
-    fontWeight: 700,
-    ':hover': { backgroundColor: 'rgba(255,255,255,0.1)' },
-  },
   btn: {
     backgroundColor: {
-      default: opacity(tokens.primaryColor, 50),
-      ':hover': opacity(tokens.primaryColor, 95),
+      default: `color-mix(in oklab, ${tokens.primaryColor} 50%, transparent)`,
+      ':hover': `color-mix(in oklab, ${tokens.primaryColor} 95%, transparent)`,
     },
     transform: {
       default: null,

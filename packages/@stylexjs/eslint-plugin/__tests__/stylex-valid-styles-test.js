@@ -392,6 +392,13 @@ eslintTester.run('stylex-valid-styles', rule.default, {
          paddingInlineEnd: Math.round(x / 2),
        },
      })`,
+    // test for WebkitAppearance with 'none'
+    `import * as stylex from '@stylexjs/stylex';
+     stylex.create({
+       default: {
+         'WebkitAppearance': 'none',
+       },
+     })`,
     // test for Search
     `import * as stylex from '@stylexjs/stylex';
      stylex.create({
@@ -665,6 +672,28 @@ eslintTester.run('stylex-valid-styles', rule.default, {
       })
     })
     `,
+    // test using member expressions on function params in dynamic styles
+    `
+    import * as stylex from 'stylex';
+    stylex.create({
+      badge: (props) => ({
+        backgroundColor: props.badgeColor,
+        color: props.color,
+      })
+    })
+    `,
+    // test member expressions on function params with pseudo-classes
+    `
+    import * as stylex from 'stylex';
+    stylex.create({
+      root: (props) => ({
+        color: {
+          default: props.textColor,
+          ':hover': props.hoverColor,
+        },
+      })
+    })
+    `,
     // test importing vars from paths including theme file extension
     `
     import * as stylex from '@stylexjs/stylex';
@@ -871,6 +900,54 @@ eslintTester.run('stylex-valid-styles', rule.default, {
             zIndex: zIndexConst ?? 10,
             width: isMobile ? (widthConst || "100%") : (widthConst2 ?? "200%"),
           }
+        });
+      `,
+    },
+    // bare numbers for px-related properties
+    `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({
+        default: {
+          backgroundPositionX: 10,
+          backgroundPositionY: 20,
+          outlineWidth: 2,
+          textDecorationThickness: 3,
+          textUnderlineOffset: 4,
+          overflowClipMargin: 5,
+        }
+      });
+    `,
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          foo: {
+            outlineOffset: 2,
+          },
+        });
+      `,
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          foo: {
+            strokeDasharray: 100,
+          },
+        });
+      `,
+    },
+    // bare numbers for time-based properties
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          foo: {
+            animationDelay: 200,
+            animationDuration: 300,
+            transitionDelay: 100,
+            transitionDuration: 500,
+          },
         });
       `,
     },
@@ -1181,6 +1258,17 @@ revert`,
           }
         });
       `,
+      options: [{ styleResolution: 'legacy-expand-shorthands' }],
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          default: {
+            borderWidth: '1px',
+            borderStyle: 'solid',
+            borderColor: 'blue',
+          }
+        });
+      `,
       errors: [
         {
           message:
@@ -1193,8 +1281,8 @@ revert`,
         const styles = stylex.create({
           default: {
             borderWidth: '1px',
-    borderStyle: 'solid',
-    borderColor: 'blue',
+            borderStyle: 'solid',
+            borderColor: 'blue',
           }
         });
       `,
@@ -1212,6 +1300,17 @@ revert`,
           }
         });
       `,
+      options: [{ styleResolution: 'legacy-expand-shorthands' }],
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          default: {
+            borderWidth: '1px',
+            borderStyle: 'solid',
+            borderColor: 'rgba(var(--black), 0.0975)',
+          }
+        });
+      `,
       errors: [
         {
           message:
@@ -1224,8 +1323,8 @@ revert`,
         const styles = stylex.create({
           default: {
             borderWidth: '1px',
-    borderStyle: 'solid',
-    borderColor: 'rgba(var(--black), 0.0975)',
+            borderStyle: 'solid',
+            borderColor: 'rgba(var(--black), 0.0975)',
           }
         });
       `,
@@ -1243,6 +1342,17 @@ revert`,
           }
         });
       `,
+      options: [{ styleResolution: 'legacy-expand-shorthands' }],
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          default: {
+            borderWidth: '1px',
+            borderStyle: 'solid',
+            borderColor: 'blue',
+          }
+        });
+      `,
       errors: [
         {
           message:
@@ -1255,8 +1365,8 @@ revert`,
         const styles = stylex.create({
           default: {
             borderWidth: '1px',
-    borderStyle: 'solid',
-    borderColor: 'blue',
+            borderStyle: 'solid',
+            borderColor: 'blue',
           }
         });
       `,
@@ -1274,6 +1384,17 @@ revert`,
           }
         });
       `,
+      options: [{ styleResolution: 'legacy-expand-shorthands' }],
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          default: {
+            borderWidth: '1px',
+            borderStyle: 'solid',
+            borderColor: 'blue',
+          }
+        });
+      `,
       errors: [
         {
           message:
@@ -1286,8 +1407,8 @@ revert`,
         const styles = stylex.create({
           default: {
             borderWidth: '1px',
-    borderStyle: 'solid',
-    borderColor: 'blue',
+            borderStyle: 'solid',
+            borderColor: 'blue',
           }
         });
       `,
@@ -1305,6 +1426,17 @@ revert`,
           }
         });
       `,
+      options: [{ styleResolution: 'legacy-expand-shorthands' }],
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          default: {
+            borderWidth: '1px',
+            borderStyle: 'solid',
+            borderColor: 'blue',
+          }
+        });
+      `,
       errors: [
         {
           message:
@@ -1317,8 +1449,8 @@ revert`,
         const styles = stylex.create({
           default: {
             borderWidth: '1px',
-    borderStyle: 'solid',
-    borderColor: 'blue',
+            borderStyle: 'solid',
+            borderColor: 'blue',
           }
         });
       `,
@@ -1336,6 +1468,16 @@ revert`,
           }
         });
       `,
+      options: [{ styleResolution: 'legacy-expand-shorthands' }],
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          default: {
+            borderWidth: '1px',
+            borderStyle: 'solid',
+          }
+        });
+      `,
       errors: [
         {
           message:
@@ -1348,7 +1490,7 @@ revert`,
         const styles = stylex.create({
           default: {
             borderWidth: '1px',
-    borderStyle: 'solid',
+            borderStyle: 'solid',
           }
         });
       `,
@@ -1366,6 +1508,16 @@ revert`,
           }
         });
       `,
+      options: [{ styleResolution: 'legacy-expand-shorthands' }],
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          default: {
+            borderWidth: '1px',
+            borderColor: 'var(--foo)',
+          }
+        });
+      `,
       errors: [
         {
           message:
@@ -1378,7 +1530,7 @@ revert`,
         const styles = stylex.create({
           default: {
             borderWidth: '1px',
-    borderColor: 'var(--foo)',
+            borderColor: 'var(--foo)',
           }
         });
       `,
@@ -1393,6 +1545,15 @@ revert`,
         const styles = stylex.create({
           default: {
             border: "1px",
+          }
+        });
+      `,
+      options: [{ styleResolution: 'legacy-expand-shorthands' }],
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          default: {
+            borderWidth: '1px',
           }
         });
       `,
@@ -1425,6 +1586,15 @@ revert`,
           }
         });
       `,
+      options: [{ styleResolution: 'legacy-expand-shorthands' }],
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          default: {
+            borderStyle: 'none',
+          }
+        });
+      `,
       errors: [
         {
           message:
@@ -1451,6 +1621,15 @@ revert`,
         const styles = stylex.create({
           default: {
             border: 0,
+          }
+        });
+      `,
+      options: [{ styleResolution: 'legacy-expand-shorthands' }],
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          default: {
+            borderWidth: 0,
           }
         });
       `,
@@ -1483,6 +1662,15 @@ revert`,
           }
         });
       `,
+      options: [{ styleResolution: 'legacy-expand-shorthands' }],
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          default: {
+            borderWidth: 4,
+          }
+        });
+      `,
       errors: [
         {
           message:
@@ -1512,7 +1700,20 @@ revert`,
           }
         });
       `,
-      options: [{ validImports: ['custom-import'] }],
+      output: `
+        import * as stylex from 'custom-import';
+        const styles = stylex.create({
+          default: {
+            borderWidth: 4,
+          }
+        });
+      `,
+      options: [
+        {
+          validImports: ['custom-import'],
+          styleResolution: 'legacy-expand-shorthands',
+        },
+      ],
       errors: [
         {
           message:
@@ -1776,7 +1977,8 @@ revert`,
           message: /^fontSize value must be one of:\n/,
         },
         {
-          message: 'The empty string is not allowed by Stylex.',
+          message:
+            'The empty string is not allowed by Stylex. Use `null` to reset a style.',
         },
         {
           message: /^zIndex value must be one of:\n/,
@@ -2132,7 +2334,8 @@ This property is not supported in legacy StyleX resolution.`,
     `,
       errors: [
         {
-          message: 'The empty string is not allowed by Stylex.',
+          message:
+            'The empty string is not allowed by Stylex. Use `null` to reset a style.',
         },
       ],
     },
@@ -2149,6 +2352,7 @@ This property is not supported in legacy StyleX resolution.`,
         {
           message: `textUnderlineOffset value must be one of:
 auto
+a number literal or math expression
 a number ending in px, mm, in, pc, pt
 a number ending in ch, em, ex, ic, rem, vh, vw, vmin, vmax, svh, dvh, lvh, svw, dvw, ldw, cqw, cqh, cqmin, cqmax
 A string literal representing a percentage (e.g. 100%)
@@ -2172,7 +2376,8 @@ revert`,
       options: [{ validImports: [{ from: 'a', as: 'css' }] }],
       errors: [
         {
-          message: 'The empty string is not allowed by Stylex.',
+          message:
+            'The empty string is not allowed by Stylex. Use `null` to reset a style.',
         },
       ],
     },
@@ -2563,6 +2768,523 @@ revert`,
         },
         {
           message: 'Keys must be strings',
+        },
+      ],
+    },
+  ],
+});
+
+eslintTester.run('stylex-valid-styles [autofixers]', rule.default, {
+  valid: [
+    // Grid longhands should be allowed under banPropsForLegacy
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          default: {
+            display: 'grid',
+            gridTemplateColumns: 'repeat(3, 1fr)',
+            gridTemplateRows: 'auto',
+            gridRowStart: '1',
+            gridRowEnd: '3',
+            gridColumnStart: '1',
+            gridColumnEnd: '3',
+            gridAutoFlow: 'row',
+            gridAutoColumns: 'auto',
+            gridAutoRows: 'minmax(100px, auto)',
+            gridTemplateAreas: '"header header" "sidebar main"',
+          }
+        });
+      `,
+      options: [{ banPropsForLegacy: true }],
+    },
+  ],
+  invalid: [
+    // gridArea auto-fix under banPropsForLegacy
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          default: {
+            gridArea: '1 / 2 / 3 / 4',
+          }
+        });
+      `,
+      options: [{ banPropsForLegacy: true }],
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          default: {
+            gridColumnEnd: '4',
+            gridColumnStart: '2',
+            gridRowEnd: '3',
+            gridRowStart: '1',
+          }
+        });
+      `,
+      errors: [
+        {
+          message:
+            'gridArea value must be one of:\nThis property is not supported in legacy StyleX resolution.',
+          suggestions: [
+            {
+              desc: "Split 'gridArea' shorthand into individual longhand properties?",
+              output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          default: {
+            gridColumnEnd: '4',
+            gridColumnStart: '2',
+            gridRowEnd: '3',
+            gridRowStart: '1',
+          }
+        });
+      `,
+            },
+          ],
+        },
+      ],
+    },
+    // gridColumn auto-fix under banPropsForLegacy
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          default: {
+            gridColumn: '1 / 3',
+          }
+        });
+      `,
+      options: [{ banPropsForLegacy: true }],
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          default: {
+            gridColumnEnd: '3',
+            gridColumnStart: '1',
+          }
+        });
+      `,
+      errors: [
+        {
+          message:
+            'gridColumn value must be one of:\nThis property is not supported in legacy StyleX resolution.',
+        },
+      ],
+    },
+    // gridRow auto-fix under banPropsForLegacy
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          default: {
+            gridRow: '1 / 3',
+          }
+        });
+      `,
+      options: [{ banPropsForLegacy: true }],
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          default: {
+            gridRowEnd: '3',
+            gridRowStart: '1',
+          }
+        });
+      `,
+      errors: [
+        {
+          message:
+            'gridRow value must be one of:\nThis property is not supported in legacy StyleX resolution.',
+        },
+      ],
+    },
+    // gridTemplate auto-fix under banPropsForLegacy
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          default: {
+            gridTemplate: 'auto 1fr / 120px 1fr',
+          }
+        });
+      `,
+      options: [{ banPropsForLegacy: true }],
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          default: {
+            gridTemplateColumns: '120px 1fr',
+            gridTemplateRows: 'auto 1fr',
+          }
+        });
+      `,
+      errors: [
+        {
+          message:
+            'gridTemplate value must be one of:\nThis property is not supported in legacy StyleX resolution.',
+        },
+      ],
+    },
+    // gridGap auto-fix under banPropsForLegacy
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          default: {
+            gridGap: '10px 20px',
+          }
+        });
+      `,
+      options: [{ banPropsForLegacy: true }],
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          default: {
+            rowGap: '10px',
+            columnGap: '20px',
+          }
+        });
+      `,
+      errors: [
+        {
+          message:
+            'gridGap value must be one of:\nThis property is not supported in legacy StyleX resolution.',
+        },
+      ],
+    },
+    // gridGap numeric value auto-fix under banPropsForLegacy
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          default: {
+            gridGap: '10',
+          }
+        });
+      `,
+      options: [{ banPropsForLegacy: true }],
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          default: {
+            rowGap: 10,
+            columnGap: 10,
+          }
+        });
+      `,
+      errors: [
+        {
+          message:
+            'gridGap value must be one of:\nThis property is not supported in legacy StyleX resolution.',
+        },
+      ],
+    },
+    // grid shorthand without fix (too complex for deterministic expansion)
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          default: {
+            grid: 'repeat(3, 80px) / auto-flow',
+          }
+        });
+      `,
+      options: [{ banPropsForLegacy: true }],
+      errors: [
+        {
+          message:
+            'grid value must be one of:\nThis property is not supported in legacy StyleX resolution.',
+        },
+      ],
+    },
+    // gridArea with single ident (custom ident expansion)
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          default: {
+            gridArea: 'header',
+          }
+        });
+      `,
+      options: [{ banPropsForLegacy: true }],
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          default: {
+            gridColumnEnd: 'header',
+            gridColumnStart: 'header',
+            gridRowEnd: 'header',
+            gridRowStart: 'header',
+          }
+        });
+      `,
+      errors: [
+        {
+          message:
+            'gridArea value must be one of:\nThis property is not supported in legacy StyleX resolution.',
+        },
+      ],
+    },
+    // animation suggest-fix (suggest-only because animationName needs
+    // a keyframes() reference, not a string literal)
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          default: {
+            animation: 'fadeIn 1s ease-in',
+          }
+        });
+      `,
+      options: [{ styleResolution: 'legacy-expand-shorthands' }],
+      errors: [
+        {
+          message:
+            /^animation value must be one of:\n`animation` is not recommended/,
+          suggestions: [
+            {
+              desc: "Split 'animation' shorthand into individual longhand properties?",
+              output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          default: {
+            animationDuration: '1s',
+            animationTimingFunction: 'ease-in',
+            animationName: 'fadeIn',
+          }
+        });
+      `,
+            },
+          ],
+        },
+      ],
+    },
+    // font auto-fix
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          default: {
+            font: 'bold 16px/1.5 Arial',
+          }
+        });
+      `,
+      options: [{ styleResolution: 'legacy-expand-shorthands' }],
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          default: {
+            fontFamily: 'Arial',
+            fontWeight: 'bold',
+            fontSize: '16px',
+            lineHeight: 1.5,
+          }
+        });
+      `,
+      errors: [
+        {
+          message: /^font value must be one of:\n`font` is not recommended/,
+        },
+      ],
+    },
+    // font auto-fix emits numeric fontWeight as a number literal
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          default: {
+            font: '700 16px Arial',
+          }
+        });
+      `,
+      options: [{ styleResolution: 'legacy-expand-shorthands' }],
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          default: {
+            fontFamily: 'Arial',
+            fontWeight: 700,
+            fontSize: '16px',
+          }
+        });
+      `,
+      errors: [
+        {
+          message: /^font value must be one of:\n`font` is not recommended/,
+        },
+      ],
+    },
+    // animation/font/border autofixes are only enabled in legacy-expand-shorthands mode
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          default: {
+            animation: 'fadeIn 1s ease-in',
+          }
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          default: {
+            animation: 'fadeIn 1s ease-in',
+          }
+        });
+      `,
+      errors: [
+        {
+          message:
+            /^animation value must be one of:\n`animation` is not recommended/,
+          suggestions: [],
+        },
+      ],
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          default: {
+            font: 'bold 16px/1.5 Arial',
+          }
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          default: {
+            font: 'bold 16px/1.5 Arial',
+          }
+        });
+      `,
+      errors: [
+        {
+          message: /^font value must be one of:\n`font` is not recommended/,
+          suggestions: [],
+        },
+      ],
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          default: {
+            border: '1px solid blue',
+          }
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          default: {
+            border: '1px solid blue',
+          }
+        });
+      `,
+      errors: [
+        {
+          message:
+            "The 'border' property is not supported. Use the 'borderWidth', 'borderStyle' and 'borderColor' properties instead.",
+          suggestions: [
+            {
+              desc: "Replace 'border' with 'borderWidth', 'borderStyle' and 'borderColor' instead?",
+              output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          default: {
+            borderWidth: '1px',
+            borderStyle: 'solid',
+            borderColor: 'blue',
+          }
+        });
+      `,
+            },
+          ],
+        },
+      ],
+    },
+    // animation with no expansion (single value)
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          default: {
+            animation: 'none',
+          }
+        });
+      `,
+      errors: [
+        {
+          message:
+            /^animation value must be one of:\n`animation` is not recommended/,
+        },
+      ],
+    },
+    // empty string suggest-fix
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          default: {
+            color: '',
+          }
+        });
+      `,
+      errors: [
+        {
+          message:
+            'The empty string is not allowed by Stylex. Use `null` to reset a style.',
+          suggestions: [
+            {
+              desc: 'Replace empty string with `null`?',
+              output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          default: {
+            color: null,
+          }
+        });
+      `,
+            },
+          ],
+        },
+      ],
+    },
+    // grid shorthand with propLimits (user-defined, not banPropsForLegacy)
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          default: {
+            gridArea: '1 / 2',
+          }
+        });
+      `,
+      options: [
+        {
+          propLimits: {
+            gridArea: {
+              limit: null,
+              reason: 'gridArea shorthand is banned',
+            },
+          },
+        },
+      ],
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          default: {
+            gridColumnStart: '2',
+            gridRowStart: '1',
+          }
+        });
+      `,
+      errors: [
+        {
+          message:
+            'gridArea value must be one of:\ngridArea shorthand is banned',
         },
       ],
     },

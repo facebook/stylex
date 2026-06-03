@@ -11,3 +11,4 @@ extend-exclude = [
 [default.extend-words]
 # Ignore false-positives
 stylex = "stylex"
+nd = "nd"

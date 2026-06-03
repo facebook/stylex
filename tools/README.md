@@ -4,7 +4,9 @@ Tools used to manage monorepo tasks like pre-commit hooks and npm releases.
 
 ## How to create a release
 
-The release script (run from the monorepo root) must be used to create and publish releases. All releases must follow semver versioning standards, e.g., `0.20.1`.
+The release script (run from the monorepo root) must be used to create and
+publish releases. All releases must follow semver versioning standards, e.g.,
+`0.20.1`.
 
 Checkout a release branch from latest `main`:
 
@@ -20,7 +22,7 @@ You can perform a dry run by only specifying the new version for a release:
 npm run release -- --pkg-version <version>
 ```
 
-To commit the release:
+Modify the CHANGELOG.md with new changes. Then commit the release:
 
 ```shell
 npm run release -- --pkg-version <version> --commit

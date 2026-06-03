@@ -39,6 +39,18 @@ export default function makeVariableCheckingRule(rule: RuleCheck): RuleCheck {
         return varCheckingRule(existingVar, variables, prop, context);
       }
     }
+    if (node.type === 'MemberExpression' && variables != null) {
+      let obj = node.object;
+      while (obj.type === 'MemberExpression') {
+        obj = obj.object;
+      }
+      if (obj.type === 'Identifier') {
+        const existingVar = variables.get(obj.name);
+        if (existingVar === 'ARG') {
+          return undefined;
+        }
+      }
+    }
     return rule(node, variables, prop, context);
   };
 

@@ -96,7 +96,41 @@ describe('style-value-parser/at-queries', () => {
           }
         `);
         expect(parsed.toString()).toMatchInlineSnapshot(
-          '"@media only (print) and (color)"',
+          '"@media only print and (color)"',
+        );
+      });
+
+      test('@media only screen and (max-width: 38em)', () => {
+        const parsed = MediaQuery.parser.parseToEnd(
+          '@media only screen and (max-width: 38em)',
+        );
+        expect(parsed).toMatchInlineSnapshot(`
+          MediaQuery {
+            "queries": {
+              "rules": [
+                {
+                  "key": "screen",
+                  "not": false,
+                  "only": true,
+                  "type": "media-keyword",
+                },
+                {
+                  "key": "max-width",
+                  "type": "pair",
+                  "value": {
+                    "signCharacter": undefined,
+                    "type": "integer",
+                    "unit": "em",
+                    "value": 38,
+                  },
+                },
+              ],
+              "type": "and",
+            },
+          }
+        `);
+        expect(parsed.toString()).toMatchInlineSnapshot(
+          '"@media only screen and (max-width: 38em)"',
         );
       });
 
@@ -139,7 +173,7 @@ describe('style-value-parser/at-queries', () => {
           }
         `);
         expect(parsed.toString()).toMatchInlineSnapshot(
-          '"@media not (all) and (monochrome)"',
+          '"@media not all and (monochrome)"',
         );
       });
     });
@@ -940,7 +974,7 @@ describe('style-value-parser/at-queries', () => {
           }
         `);
         expect(parsed.toString()).toMatchInlineSnapshot(
-          '"@media not (all) and (monochrome)"',
+          '"@media not all and (monochrome)"',
         );
       });
 
@@ -2050,7 +2084,7 @@ describe('style-value-parser/at-queries', () => {
           }
         `);
         expect(parsed.toString()).toMatchInlineSnapshot(
-          '"@media not (all) and (monochrome) and (min-width: 600px)"',
+          '"@media not all and (monochrome) and (min-width: 600px)"',
         );
       });
 

@@ -59,7 +59,9 @@ export class PreRule implements IPreRule {
   }
 
   get pseudos(): $ReadOnlyArray<string> {
-    const unsortedPseudos = this.keyPath.filter((key) => key.startsWith(':'));
+    const unsortedPseudos = this.keyPath.filter(
+      (key) => key.startsWith(':') || key.startsWith('['),
+    );
     return sortPseudos(unsortedPseudos);
   }
 

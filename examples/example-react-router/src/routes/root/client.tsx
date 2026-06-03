@@ -1,3 +1,9 @@
+/**
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
 'use client';
 
 import * as stylex from '@stylexjs/stylex';
@@ -12,6 +18,7 @@ import {
 } from 'react-router';
 
 import MainArticle from '../../components/MainArticle';
+import { DevStyleXInject } from './DevStyleXInject';
 
 export function Layout({ children }: { children: React.ReactNode }) {
   const navigation = useNavigation();
@@ -19,15 +26,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
     <html lang="en">
       <head>
         <meta charSet="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-        {import.meta.env.DEV ? (
-          <>
-            <script type="module" src="/@id/virtual:stylex:runtime" />
-            <link rel="stylesheet" href="/virtual:stylex.css" />
-          </>
-        ) : null}
-        <meta charSet="utf-8"></meta>
+        <meta content="width=device-width, initial-scale=1" name="viewport" />
+        <link href="/favicon.ico" rel="icon" type="image/x-icon" />
+        {import.meta.env.DEV ? <DevStyleXInject /> : null}
+        <meta charSet="utf-8" />
       </head>
       <body {...stylex.props(layoutStyles.body)}>
         <header {...stylex.props(layoutStyles.header)}>
@@ -40,8 +42,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
               <ul {...stylex.props(layoutStyles.navList)}>
                 <li>
                   <NavLink
-                    to="/"
-                    end
                     className={({ isActive }) =>
                       stylex.props(
                         layoutStyles.navLink,
@@ -49,13 +49,14 @@ export function Layout({ children }: { children: React.ReactNode }) {
                         isActive && layoutStyles.navLinkActive,
                       ).className
                     }
+                    end
+                    to="/"
                   >
                     Home
                   </NavLink>
                 </li>
                 <li>
                   <NavLink
-                    to="/about"
                     className={({ isActive }) =>
                       stylex.props(
                         layoutStyles.navLink,
@@ -63,6 +64,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
                         isActive && layoutStyles.navLinkActive,
                       ).className
                     }
+                    to="/about"
                   >
                     About
                   </NavLink>

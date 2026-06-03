@@ -102,6 +102,7 @@ export default function transformStyleXViewTransitionClass(
       memberExpressions[name].firstThatWorks = { fn: stylexFirstThatWorks };
       memberExpressions[name].keyframes = { fn: keyframes };
     });
+    state.applyStylexEnv(identifiers);
 
     const { confident, value } = evaluate(firstArgPath, state, {
       identifiers,

@@ -1,0 +1,10 @@
+{
+    "title": "Types",
+    "pages": [
+        "./StyleXStyles.mdx",
+        "./StyleXStylesWithout.mdx",
+        "./StaticStyles.mdx",
+        "./Theme.mdx",
+        "./VarGroup.mdx"
+    ]
+}

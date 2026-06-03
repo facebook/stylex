@@ -46,17 +46,23 @@ function getDefaultMarkerClassName(
   return `${prefix}default-marker`;
 }
 
+type WhenSelector = StringPrefix<':'> | StringPrefix<'['>;
+
 /**
- * Validates that a pseudo selector starts with ':' but not '::'
+ * Validates that a pseudo selector starts with ':' but not '::',
+ * or is an attribute selector that starts with '[' and ends with ']'
  */
 function validatePseudoSelector(pseudo: string): void {
-  if (!pseudo.startsWith(':')) {
-    throw new Error('Pseudo selector must start with ":"');
+  if (!(pseudo.startsWith(':') || pseudo.startsWith('['))) {
+    throw new Error('Pseudo selector must start with ":" or "["');
   }
   if (pseudo.startsWith('::')) {
     throw new Error(
       'Pseudo selector cannot start with "::" (pseudo-elements are not supported)',
     );
+  }
+  if (pseudo.startsWith('[') && !pseudo.endsWith(']')) {
+    throw new Error('Attribute selector must end with "]"');
   }
 }
 /**
@@ -68,7 +74,7 @@ function validatePseudoSelector(pseudo: string): void {
  * @returns A :where() clause for the ancestor observer
  */
 export function ancestor(
-  pseudo: StringPrefix<':'>,
+  pseudo: WhenSelector,
   options: string | StyleXOptions = defaultOptions,
 ): string {
   validatePseudoSelector(pseudo);
@@ -86,7 +92,7 @@ export function ancestor(
  * @returns A :has() clause for the descendant observer
  */
 export function descendant(
-  pseudo: StringPrefix<':'>,
+  pseudo: WhenSelector,
   options: string | StyleXOptions = defaultOptions,
 ): string {
   validatePseudoSelector(pseudo);
@@ -104,7 +110,7 @@ export function descendant(
  * @returns A :where() clause for the previous sibling observer
  */
 export function siblingBefore(
-  pseudo: StringPrefix<':'>,
+  pseudo: WhenSelector,
   options: string | StyleXOptions = defaultOptions,
 ): string {
   validatePseudoSelector(pseudo);
@@ -122,7 +128,7 @@ export function siblingBefore(
  * @returns A :has() clause for the next sibling observer
  */
 export function siblingAfter(
-  pseudo: StringPrefix<':'>,
+  pseudo: WhenSelector,
   options: string | StyleXOptions = defaultOptions,
 ): string {
   validatePseudoSelector(pseudo);
@@ -140,7 +146,7 @@ export function siblingAfter(
  * @returns A :where() clause for the any sibling observer
  */
 export function anySibling(
-  pseudo: StringPrefix<':'>,
+  pseudo: WhenSelector,
   options: string | StyleXOptions = defaultOptions,
 ): string {
   validatePseudoSelector(pseudo);

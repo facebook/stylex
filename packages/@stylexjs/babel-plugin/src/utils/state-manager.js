@@ -14,6 +14,7 @@ import type {
   StyleXOptions as RuntimeOptions,
 } from '../shared';
 import type { Check } from './validate';
+import type { FunctionConfig } from './evaluate-path';
 
 import * as t from '@babel/types';
 import { name } from '@stylexjs/stylex/package.json';
@@ -93,6 +94,7 @@ const CheckModuleResolution: Check<ModuleResolution> = z.unionOf4(
 export type StyleXOptions = $ReadOnly<{
   ...RuntimeOptions,
   aliases?: ?$ReadOnly<{ [string]: string | $ReadOnlyArray<string> }>,
+  propertyValidationMode?: 'throw' | 'warn' | 'silent',
   enableDebugClassNames?: boolean,
   enableDebugDataProp?: boolean,
   enableDevClassNames?: boolean,
@@ -102,6 +104,7 @@ export type StyleXOptions = $ReadOnly<{
   enableLogicalStylesPolyfill?: boolean,
   enableLTRRTLComments?: boolean,
   enableMinifiedKeys?: boolean,
+  sxPropName?: string | false,
   importSources: $ReadOnlyArray<
     string | $ReadOnly<{ from: string, as: string }>,
   >,
@@ -115,6 +118,7 @@ export type StyleXOptions = $ReadOnly<{
 
 type StyleXStateOptions = $ReadOnly<{
   ...StyleXOptions,
+  env: $ReadOnly<{ [string]: any }>,
   runtimeInjection: ?string | $ReadOnly<{ from: string, as: ?string }>,
   aliases?: ?$ReadOnly<{ [string]: $ReadOnlyArray<string> }>,
   rewriteAliases: boolean,
@@ -141,6 +145,20 @@ const checkRuntimeInjection: Check<StyleXOptions['runtimeInjection']> =
     }),
   );
 
+const checkEnvOption: Check<$ReadOnly<{ [string]: mixed }>> = (
+  value,
+  name = 'options.env',
+) => {
+  if (typeof value !== 'object' || value == null || Array.isArray(value)) {
+    return new Error(
+      `Expected (${name}) to be an object, but got \`${String(
+        JSON.stringify(value),
+      )}\`.`,
+    );
+  }
+  return value;
+};
+
 const DEFAULT_INJECT_PATH = '@stylexjs/stylex/lib/stylex-inject';
 
 export default class StateManager {
@@ -164,6 +182,15 @@ export default class StateManager {
   +stylexViewTransitionClassImport: Set<string> = new Set();
   +stylexDefaultMarkerImport: Set<string> = new Set();
   +stylexWhenImport: Set<string> = new Set();
+  +stylexEnvImport: Set<string> = new Set();
+
+  +stylexDefineVarsNestedImport: Set<string> = new Set();
+  +stylexDefineConstsNestedImport: Set<string> = new Set();
+  +stylexCreateThemeNestedImport: Set<string> = new Set();
+  +stylexConditionalImport: Set<string> = new Set();
+  // Map of local identifier -> imported name.
+  // For namespace/default imports we store '*'.
+  +atomImports: Map<string, string> = new Map();
 
   injectImportInserted: ?t.Identifier = null;
 
@@ -284,6 +311,13 @@ export default class StateManager {
         'options.enableLTRRTLComments',
       );
 
+    const sxPropName: StyleXStateOptions['sxPropName'] = z.logAndDefault(
+      z.unionOf(z.string(), z.literal(false)),
+      options.sxPropName ?? 'sx',
+      'sx',
+      'options.sxPropName',
+    );
+
     const test: StyleXStateOptions['test'] = z.logAndDefault(
       z.boolean(),
       options.test ?? defaultOptions.test,
@@ -339,6 +373,14 @@ export default class StateManager {
         'options.styleResolution',
       );
 
+    const propertyValidationMode: StyleXStateOptions['propertyValidationMode'] =
+      z.logAndDefault(
+        z.unionOf3(z.literal('throw'), z.literal('warn'), z.literal('silent')),
+        options.propertyValidationMode ?? defaultOptions.propertyValidationMode,
+        'silent',
+        'options.propertyValidationMode',
+      );
+
     const unstable_moduleResolution: StyleXStateOptions['unstable_moduleResolution'] =
       z.logAndDefault(
         z.unionOf(z.nullish(), CheckModuleResolution),
@@ -354,6 +396,17 @@ export default class StateManager {
         false,
         'options.treeshakeCompensation',
       );
+
+    const envInput: StyleXStateOptions['env'] = z.logAndDefault(
+      checkEnvOption,
+      options.env ?? {},
+      {},
+      'options.env',
+    );
+
+    const env: StyleXStateOptions['env'] = Object.freeze({
+      ...envInput,
+    });
 
     const aliasesOption: StyleXOptions['aliases'] = z.logAndDefault(
       z.unionOf(
@@ -390,6 +443,8 @@ export default class StateManager {
       debug,
       definedStylexCSSVariables: {},
       dev,
+      propertyValidationMode,
+      env,
       enableDebugClassNames,
       enableDebugDataProp,
       enableDevClassNames,
@@ -400,6 +455,7 @@ export default class StateManager {
       enableLegacyValueFlipping,
       enableLogicalStylesPolyfill,
       enableLTRRTLComments,
+      sxPropName,
       importSources,
       rewriteAliases:
         typeof options.rewriteAliases === 'boolean'
@@ -439,6 +495,29 @@ export default class StateManager {
       }
     }
     return null;
+  }
+
+  applyStylexEnv(identifiers: FunctionConfig['identifiers']): void {
+    const env = this.options.env;
+    this.stylexImport.forEach((importName) => {
+      const current = identifiers[importName];
+      if (
+        current != null &&
+        typeof current === 'object' &&
+        !Array.isArray(current)
+      ) {
+        if ('fn' in current) {
+          identifiers[importName] = { env };
+        } else {
+          identifiers[importName] = { ...current, env };
+        }
+        return;
+      }
+      identifiers[importName] = { env };
+    });
+    this.stylexEnvImport.forEach((importName) => {
+      identifiers[importName] = env;
+    });
   }
 
   get canReferenceTheme(): boolean {
@@ -591,6 +670,7 @@ export default class StateManager {
           importPath,
           sourceFilePath,
           aliases,
+          this.options.unstable_moduleResolution?.rootDir,
         );
         return resolvedFilePath
           ? ['themeNameRef', this.getCanonicalFilePath(resolvedFilePath)]
@@ -617,6 +697,7 @@ export default class StateManager {
           importPath,
           sourceFilePath,
           aliases,
+          this.options.unstable_moduleResolution?.rootDir,
         );
         return resolvedFilePath ? ['filePath', resolvedFilePath] : false;
       }
@@ -699,24 +780,41 @@ export default class StateManager {
     }
     for (const [_key, styleObj, priority] of styles) {
       const { ltr, rtl } = styleObj;
-      const args = [
-        t.stringLiteral(ltr),
-        t.numericLiteral(priority),
-        ...(rtl != null ? [t.stringLiteral(rtl)] : []),
-      ];
 
-      if ('constKey' in styleObj && 'constVal' in styleObj) {
-        const { constKey, constVal } = styleObj;
-        args.push(
-          t.stringLiteral(constKey),
-          typeof constVal === 'number'
-            ? t.numericLiteral(constVal)
-            : t.stringLiteral(String(constVal)),
-        );
+      let constKey = null;
+      let constVal = null;
+
+      if (styleObj.constKey != null && styleObj.constVal != null) {
+        constKey = styleObj.constKey;
+        constVal = styleObj.constVal;
       }
 
+      const properties: Array<t.ObjectProperty> = [
+        t.objectProperty(t.identifier('ltr'), t.stringLiteral(ltr)),
+        ...(rtl != null
+          ? [t.objectProperty(t.identifier('rtl'), t.stringLiteral(rtl))]
+          : []),
+        t.objectProperty(t.identifier('priority'), t.numericLiteral(priority)),
+        ...(constKey != null
+          ? [
+              t.objectProperty(
+                t.identifier('constKey'),
+                t.stringLiteral(constKey),
+              ),
+              t.objectProperty(
+                t.identifier('constVal'),
+                typeof constVal === 'number'
+                  ? t.numericLiteral(constVal)
+                  : t.stringLiteral(String(constVal)),
+              ),
+            ]
+          : []),
+      ];
+
       statementPath.insertBefore(
-        t.expressionStatement(t.callExpression(injectName, args)),
+        t.expressionStatement(
+          t.callExpression(injectName, [t.objectExpression(properties)]),
+        ),
       );
     }
   }
@@ -777,6 +875,7 @@ export const filePathResolver = (
   relativeFilePath: string,
   sourceFilePath: string,
   aliases: StyleXStateOptions['aliases'],
+  rootDir?: ?string,
 ): ?string => {
   for (const importPathStr of getPossibleFilePaths(relativeFilePath)) {
     // Try to resolve relative paths as is
@@ -793,6 +892,31 @@ export const filePathResolver = (
     // Otherwise, try to resolve the path with aliases
     const allAliases = possibleAliasedPaths(importPathStr, aliases);
     for (const possiblePath of allAliases) {
+      // Handle /ROOT/ placeholder paths (used by Turbopack).
+      // Replace /ROOT/ with the configured rootDir.
+      if (possiblePath.startsWith('/ROOT/') && rootDir != null) {
+        const realPath = path.join(
+          rootDir,
+          possiblePath.slice('/ROOT/'.length),
+        );
+        for (const candidate of getPossibleFilePaths(realPath)) {
+          if (fs.existsSync(candidate)) {
+            return candidate;
+          }
+        }
+        continue;
+      }
+      // If the alias expanded to an absolute path, resolve it directly
+      // rather than going through moduleResolve which expects relative
+      // or module-style paths.
+      if (path.isAbsolute(possiblePath)) {
+        for (const candidate of getPossibleFilePaths(possiblePath)) {
+          if (fs.existsSync(candidate)) {
+            return candidate;
+          }
+        }
+        continue;
+      }
       try {
         return url.fileURLToPath(
           moduleResolve(possiblePath, url.pathToFileURL(sourceFilePath)),

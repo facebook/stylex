@@ -87,6 +87,13 @@ workspaces.forEach(({ packageJson, packageJsonPath }) => {
     if (packageJson.devDependencies && packageJson.devDependencies[name]) {
       packageJson.devDependencies[name] = pkgVersion;
     }
+    if (
+      packageJson.peerDependencies &&
+      packageJson.peerDependencies[name] &&
+      packageJson.peerDependencies[name] !== '*'
+    ) {
+      packageJson.peerDependencies[name] = pkgVersion;
+    }
   });
 
   fs.writeFileSync(

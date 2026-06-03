@@ -43,6 +43,27 @@ module.exports = {
     '**/__mocks__/snapshot*',
     '**/storybook-static/**',
     '**/examples/example-cli/src/**',
+    '**/*.d.ts',
+    '**/pages.gen.ts',
+    '**/devtools-extension/extension/**',
+  ],
+  overrides: [
+    {
+      files: ['*.ts', '*.tsx'],
+      parser: '@typescript-eslint/parser',
+      parserOptions: {
+        ecmaVersion: 'latest',
+        sourceType: 'module',
+        ecmaFeatures: {
+          jsx: true,
+        },
+      },
+      rules: {
+        'ft-flow/space-after-type-colon': 'off',
+        'ft-flow/generic-spacing': 'off',
+        'ft-flow/no-types-missing-file-annotation': 'off',
+      },
+    },
   ],
   globals: {
     $Call: 'readonly',
@@ -142,7 +163,7 @@ module.exports = {
     'no-unexpected-multiline': 2,
     'no-unmodified-loop-condition': 2,
     'no-unneeded-ternary': [2, { defaultAssignment: false }],
-    'no-unreachable': 2,
+    'no-unreachable': 0,
     'no-unsafe-finally': 2,
     'no-unused-vars': [
       2,
