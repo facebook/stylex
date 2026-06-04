@@ -1183,6 +1183,12 @@ const scrollSnapType: RuleCheck = makeUnionRule(
   makeLiteralRule('x mandatory'),
   makeLiteralRule('y mandatory'),
 );
+const scrollTimelineAxis: RuleCheck = makeUnionRule(
+  makeLiteralRule('block'),
+  makeLiteralRule('inline'),
+  makeLiteralRule('x'),
+  makeLiteralRule('y'),
+);
 const shapeImageThreshold: RuleCheck = isStringOrNumber;
 const shapeOutside: RuleCheck = makeUnionRule(
   makeLiteralRule('none'),
@@ -2161,6 +2167,9 @@ const CSSProperties = {
   scrollSnapAlign: scrollSnapAlign,
   scrollSnapType: scrollSnapType,
   scrollSnapStop: makeUnionRule('normal', 'always') as RuleCheck,
+  scrollTimeline: isString,
+  scrollTimelineAxis: scrollTimelineAxis,
+  scrollTimelineName: isString,
 
   // scrollMargin: makeUnionRule(isNumber, isString),
   scrollMarginBlockEnd: makeUnionRule(isNumber, isString) as RuleCheck,
