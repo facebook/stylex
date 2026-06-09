@@ -235,6 +235,20 @@ export type StyleXStylesWithout<CSS extends UserAuthoredStyles> = StyleXStyles<
   Omit<CSSPropertiesWithExtras, keyof CSS>
 >;
 
+export type StyleXSxProp = StyleXArray<
+  | null
+  | undefined
+  | boolean
+  | CompiledStyles
+  | Readonly<[CompiledStyles, InlineStyles]>
+>;
+
+declare module 'react' {
+  interface DOMAttributes<T> {
+    sx?: StyleXSxProp;
+  }
+}
+
 declare const StyleXVarGroupTag: unique symbol;
 export type VarGroup<
   Tokens extends { [key: string]: any },
