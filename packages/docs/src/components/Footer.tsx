@@ -68,7 +68,6 @@ export default function Footer({
 }: {
   noBorderTop?: boolean;
 }) {
-
   return (
     <footer
       {...stylex.props(styles.footer, noBorderTop && styles.footerNoBorder)}
