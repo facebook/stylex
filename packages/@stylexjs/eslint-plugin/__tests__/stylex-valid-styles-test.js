@@ -937,6 +937,47 @@ eslintTester.run('stylex-valid-styles', rule.default, {
         });
       `,
     },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          supportedPropertyAllowlist: {
+            borderBlock: 'solid',
+            borderInline: 2,
+            container: 'card / inline-size',
+            fill: 'currentColor',
+            fillOpacity: 0.5,
+            fillRule: 'evenodd',
+            overflowBlock: 'auto',
+            overscrollBehaviorBlock: 'contain',
+            overscrollBehaviorInline: 'none',
+            scrollMargin: 4,
+            scrollMarginBlock: '1rem',
+            scrollMarginInline: 8,
+            scrollPadding: '2px',
+            scrollPaddingBlock: 10,
+            scrollPaddingInline: 'var(--space)',
+            scrollTimeline: '--main block',
+            scrollTimelineAxis: 'block',
+            scrollTimelineName: '--main',
+            stroke: 'none',
+            strokeDasharray: '4 2',
+            strokeDashoffset: 1,
+            strokeLinecap: 'round',
+            strokeLinejoin: 'bevel',
+            strokeMiterlimit: 4,
+            strokeOpacity: '0.5',
+            strokeWidth: 2,
+            textJustify: 'inter-word',
+            timelineScope: '--main',
+            viewTimeline: '--view inline',
+            viewTimelineAxis: 'inline',
+            viewTimelineInset: '20%',
+            viewTimelineName: '--view',
+          },
+        });
+      `,
+    },
     // bare numbers for time-based properties
     {
       code: `
@@ -972,6 +1013,106 @@ eslintTester.run('stylex-valid-styles', rule.default, {
       errors: [
         {
           message: 'You cannot nest styles more than one level deep',
+        },
+      ],
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          invalidAllowlistValues: {
+            scrollTimelineAxis: 'horizontal',
+            viewTimelineAxis: 'vertical',
+            textJustify: 'justify',
+            overscrollBehaviorInline: 'scroll',
+            overflowBlock: 'overlay',
+            fillRule: 'non-zero',
+            strokeLinecap: 'flat',
+          },
+        });
+      `,
+      errors: [
+        {
+          message: `scrollTimelineAxis value must be one of:
+block
+inline
+x
+y
+null
+initial
+inherit
+unset
+revert`,
+        },
+        {
+          message: `viewTimelineAxis value must be one of:
+block
+inline
+x
+y
+null
+initial
+inherit
+unset
+revert`,
+        },
+        {
+          message: `textJustify value must be one of:
+none
+auto
+inter-word
+inter-character
+distribute
+null
+initial
+inherit
+unset
+revert`,
+        },
+        {
+          message: `overscrollBehaviorInline value must be one of:
+none
+contain
+auto
+null
+initial
+inherit
+unset
+revert`,
+        },
+        {
+          message: `overflowBlock value must be one of:
+visible
+hidden
+clip
+scroll
+auto
+null
+initial
+inherit
+unset
+revert`,
+        },
+        {
+          message: `fillRule value must be one of:
+nonzero
+evenodd
+null
+initial
+inherit
+unset
+revert`,
+        },
+        {
+          message: `strokeLinecap value must be one of:
+butt
+round
+square
+null
+initial
+inherit
+unset
+revert`,
         },
       ],
     },
