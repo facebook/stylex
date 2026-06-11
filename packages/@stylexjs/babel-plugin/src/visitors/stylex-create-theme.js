@@ -68,13 +68,15 @@ export default function transformStyleXCreateTheme(
     const firstArg = args[0];
     const secondArg = args[1];
 
-    const { confident: confident1, value: variables } = evaluate(
-      firstArg,
-      state,
-    );
+    const {
+      confident: confident1,
+      value: variables,
+      reason: reason1,
+      deopt: deopt1,
+    } = evaluate(firstArg, state);
     if (!confident1) {
-      throw callExpressionPath.buildCodeFrameError(
-        messages.nonStaticValue('createTheme'),
+      throw (deopt1 ?? callExpressionPath).buildCodeFrameError(
+        reason1 ?? messages.nonStaticValue('createTheme'),
         SyntaxError,
       );
     }
@@ -143,17 +145,18 @@ export default function transformStyleXCreateTheme(
 
     state.applyStylexEnv(identifiers);
 
-    const { confident: confident2, value: overrides } = evaluate(
-      secondArg,
-      state,
-      {
-        identifiers,
-        memberExpressions,
-      },
-    );
+    const {
+      confident: confident2,
+      value: overrides,
+      reason: reason2,
+      deopt: deopt2,
+    } = evaluate(secondArg, state, {
+      identifiers,
+      memberExpressions,
+    });
     if (!confident2) {
-      throw callExpressionPath.buildCodeFrameError(
-        messages.nonStaticValue('createTheme'),
+      throw (deopt2 ?? callExpressionPath).buildCodeFrameError(
+        reason2 ?? messages.nonStaticValue('createTheme'),
         SyntaxError,
       );
     }

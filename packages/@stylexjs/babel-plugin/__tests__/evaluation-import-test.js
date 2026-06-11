@@ -476,4 +476,133 @@ describe('Evaluation of imported values works based on configuration', () => {
       `);
     });
   });
+
+  describe('Arithmetic on imported tokens compiles to calc()', () => {
+    const varName = (key) =>
+      `var(--${options.classNamePrefix}${hash(
+        `otherFile.stylex.js//MyTheme.${key}`,
+      )})`;
+
+    const transformStyle = (value) =>
+      transform(`
+        import stylex from 'stylex';
+        import { MyTheme } from 'otherFile.stylex';
+        const styles = stylex.create({
+          box: {
+            zIndex: ${value},
+          }
+        });
+        stylex(styles.box);
+      `).code;
+
+    test('token + token', () => {
+      expect(transformStyle('MyTheme.a + MyTheme.b')).toContain(
+        `calc(${varName('a')} + ${varName('b')})`,
+      );
+    });
+
+    test('token + number and number + token', () => {
+      expect(transformStyle('MyTheme.a + 4')).toContain(
+        `calc(${varName('a')} + 4)`,
+      );
+      expect(transformStyle('4 + MyTheme.a')).toContain(
+        `calc(4 + ${varName('a')})`,
+      );
+    });
+
+    test('token - number, token * number, token / number', () => {
+      expect(transformStyle('MyTheme.a - 1')).toContain(
+        `calc(${varName('a')} - 1)`,
+      );
+      expect(transformStyle('MyTheme.a * 2')).toContain(
+        `calc(${varName('a')} * 2)`,
+      );
+      expect(transformStyle('MyTheme.a / 2')).toContain(
+        `calc(${varName('a')} / 2)`,
+      );
+    });
+
+    test('unary minus on a token', () => {
+      expect(transformStyle('-MyTheme.a')).toContain(
+        `calc(-1 * ${varName('a')})`,
+      );
+    });
+
+    test('nested arithmetic flattens to parens', () => {
+      expect(transformStyle('(MyTheme.a + MyTheme.b) * 2')).toContain(
+        `calc((${varName('a')} + ${varName('b')}) * 2)`,
+      );
+    });
+
+    test('token + unit string', () => {
+      expect(transformStyle("MyTheme.a + '10px'")).toContain(
+        `calc(${varName('a')} + 10px)`,
+      );
+    });
+
+    test('string concatenation with non-numeric strings is preserved', () => {
+      const code = transform(`
+        import stylex from 'stylex';
+        import { MyTheme } from 'otherFile.stylex';
+        const styles = stylex.create({
+          box: {
+            fontFamily: 'Arial, ' + MyTheme.font,
+          }
+        });
+        stylex(styles.box);
+      `).code;
+      // The whitespace normalizer removes the space after the comma.
+      expect(code).toContain(`Arial,${varName('font')}`);
+      expect(code).not.toContain('calc');
+    });
+
+    test('template literal interpolation is preserved', () => {
+      const code = transform(`
+        import stylex from 'stylex';
+        import { MyTheme } from 'otherFile.stylex';
+        const styles = stylex.create({
+          box: {
+            width: \`\${MyTheme.a}px\`,
+          }
+        });
+        stylex(styles.box);
+      `).code;
+      expect(code).toContain(`${varName('a')}px`);
+      expect(code).not.toContain('calc');
+    });
+
+    test('unsupported operators throw a compile error', () => {
+      const unsupported = [
+        'MyTheme.a % 2',
+        'MyTheme.a ** 2',
+        'MyTheme.a & 1',
+        '~MyTheme.a',
+        '!MyTheme.a',
+        '+MyTheme.a',
+      ];
+      for (const value of unsupported) {
+        expect(() => transformStyle(value)).toThrow(
+          /cannot be applied to a StyleX variable or constant/,
+        );
+      }
+    });
+
+    test('comparisons on tokens throw a compile error', () => {
+      expect(() => transformStyle('MyTheme.a > MyTheme.b ? 1 : 2')).toThrow(
+        /cannot be applied to a StyleX variable or constant/,
+      );
+      expect(() => transformStyle("MyTheme.a === 'red' ? 1 : 2")).toThrow(
+        /cannot be applied to a StyleX variable or constant/,
+      );
+    });
+
+    test('arithmetic with a non-numeric operand throws a compile error', () => {
+      expect(() => transformStyle("MyTheme.a - 'foo'")).toThrow(
+        /requires the other operand/,
+      );
+      expect(() => transformStyle("MyTheme.a * 'auto'")).toThrow(
+        /requires the other operand/,
+      );
+    });
+  });
 });

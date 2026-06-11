@@ -29,6 +29,12 @@ import * as t from '@babel/types';
 import StateManager from './state-manager';
 import { utils } from '../shared';
 import * as errMsgs from './evaluation-errors';
+import {
+  isCssVarOrCalc,
+  isCalcTerm,
+  buildBinaryCalc,
+  buildUnaryMinusCalc,
+} from './css-calc';
 import fs from 'node:fs';
 
 // This file contains Babels metainterpreter that can evaluate static code.
@@ -707,6 +713,18 @@ function _evaluate(path: NodePath<>, state: State): any {
 
     const arg = evaluateCached(argument, state);
     if (!state.confident) return;
+    if (isCssVarOrCalc(arg)) {
+      if (path.node.operator === '-') {
+        return buildUnaryMinusCalc(arg);
+      }
+      if (['!', '+', '~'].includes(path.node.operator)) {
+        return deopt(
+          path,
+          state,
+          errMsgs.UNSUPPORTED_CSS_VAR_OPERATOR(path.node.operator),
+        );
+      }
+    }
     switch (path.node.operator) {
       case '!':
         return !arg;
@@ -891,6 +909,22 @@ function _evaluate(path: NodePath<>, state: State): any {
     if (!state.confident) return;
     const right = evaluateCached(path.get('right'), state);
     if (!state.confident) return;
+
+    if (isCssVarOrCalc(left) || isCssVarOrCalc(right)) {
+      const op = path.node.operator;
+      if (op === '+' || op === '-' || op === '*' || op === '/') {
+        if (isCalcTerm(left) && isCalcTerm(right)) {
+          return buildBinaryCalc(left, op, right);
+        }
+        // '+' with a non-numeric operand stays plain string concatenation,
+        // e.g. `'solid ' + colors.border`.
+        if (op !== '+') {
+          return deopt(path, state, errMsgs.INVALID_CALC_OPERAND(op));
+        }
+      } else {
+        return deopt(path, state, errMsgs.UNSUPPORTED_CSS_VAR_OPERATOR(op));
+      }
+    }
 
     switch (path.node.operator) {
       case '-':

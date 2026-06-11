@@ -597,6 +597,20 @@ describe('@stylexjs/babel-plugin', () => {
       `);
     });
 
+    test('arithmetic on same-group references compiles to calc()', () => {
+      const { metadata } = transform(`
+        import * as stylex from '@stylexjs/stylex';
+        export const layout = stylex.defineVars({
+          gap: '8px',
+          doubleGap: () => layout.gap * 2,
+        });
+      `);
+
+      expect(metadata.stylex[0][1].ltr).toContain(
+        '--x1gpkec6:calc(var(--x1kbodq4) * 2)',
+      );
+    });
+
     test('same-group references can point to later keys', () => {
       const { code, metadata } = transform(`
         import * as stylex from '@stylexjs/stylex';

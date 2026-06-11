@@ -52,6 +52,15 @@ export const UNDEFINED_CONST = 'Referenced constant is not defined.';
 export const UNSUPPORTED_OPERATOR = (op: string): string =>
   `Unsupported operator: ${op}\n\n`;
 
+export const UNSUPPORTED_CSS_VAR_OPERATOR = (op: string): string =>
+  `The "${op}" operator cannot be applied to a StyleX variable or constant.
+Only +, -, * and / are supported and compile to a CSS calc() expression.\n\n`;
+
+export const INVALID_CALC_OPERAND = (op: string): string =>
+  `Arithmetic ("${op}") on a StyleX variable or constant requires the other operand
+to be a number, a numeric string with a CSS unit (e.g. '10px'), or another
+variable or constant, so it can compile to a CSS calc() expression.\n\n`;
+
 export const OBJECT_METHOD = 'Unsupported object method.\n\n';
 
 export const UNSUPPORTED_EXPRESSION = (type: string): string =>
