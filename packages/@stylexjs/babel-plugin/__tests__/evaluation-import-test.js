@@ -534,10 +534,26 @@ describe('Evaluation of imported values works based on configuration', () => {
       );
     });
 
-    test('token + unit string', () => {
-      expect(transformStyle("MyTheme.a + '10px'")).toContain(
-        `calc(${varName('a')} + 10px)`,
+    test('token + jammed string throws instead of emitting broken CSS', () => {
+      // A unit-string operand is excluded from calc() addition on purpose:
+      // `token + '4px'` vs `token + ' 4px'` (list shorthand) must not
+      // silently mean different things. And since the concatenation
+      // 'var(--x)10px' is invalid CSS, it fails instead.
+      expect(() => transformStyle("MyTheme.a + '10px'")).toThrow(
+        /would\s+produce invalid CSS/,
       );
+      expect(() => transformStyle("MyTheme.a + 'px'")).toThrow(
+        /would\s+produce invalid CSS/,
+      );
+      expect(() => transformStyle("'10px' + MyTheme.a")).toThrow(
+        /would\s+produce invalid CSS/,
+      );
+    });
+
+    test('token + separated string stays list concatenation', () => {
+      const code = transformStyle("MyTheme.a + ' 4px'");
+      expect(code).not.toContain('calc');
+      expect(code).toContain(`${varName('a')} 4px`);
     });
 
     test('string concatenation with non-numeric strings is preserved', () => {
@@ -589,11 +605,68 @@ describe('Evaluation of imported values works based on configuration', () => {
 
     test('comparisons on tokens throw a compile error', () => {
       expect(() => transformStyle('MyTheme.a > MyTheme.b ? 1 : 2')).toThrow(
-        /cannot be applied to a StyleX variable or constant/,
+        /cannot be compared with ">" at compile time/,
       );
       expect(() => transformStyle("MyTheme.a === 'red' ? 1 : 2")).toThrow(
-        /cannot be applied to a StyleX variable or constant/,
+        /cannot be compared with "===" at compile time/,
       );
+    });
+
+    test('null and undefined guards on tokens still compile', () => {
+      expect(transformStyle('MyTheme.a != null ? 5 : 7')).toContain(
+        'z-index:5',
+      );
+      expect(transformStyle('MyTheme.a === undefined ? 5 : 7')).toContain(
+        'z-index:7',
+      );
+      expect(transformStyle('MyTheme.a ?? 7')).toContain(
+        `z-index:${varName('a')}`,
+      );
+    });
+
+    test('arithmetic in a computed style key throws a compile error', () => {
+      expect(() =>
+        transform(`
+        import stylex from 'stylex';
+        import { MyTheme } from 'otherFile.stylex';
+        const styles = stylex.create({
+          box: {
+            [MyTheme.a + MyTheme.b]: 'red',
+          }
+        });
+        stylex(styles.box);
+      `),
+      ).toThrow(/cannot be used as a style property key/);
+    });
+
+    test('token misuse inside a dynamic style throws instead of degrading', () => {
+      expect(() =>
+        transform(`
+        import stylex from 'stylex';
+        import { MyTheme } from 'otherFile.stylex';
+        const styles = stylex.create({
+          box: (opacity) => ({
+            opacity,
+            zIndex: MyTheme.a === 'big' ? 1 : 2,
+          }),
+        });
+        stylex.props(styles.box(0.5));
+      `),
+      ).toThrow(/cannot be compared with "===" at compile time/);
+    });
+
+    test('unicode custom property keys work with arithmetic', () => {
+      const { metadata } = transform(`
+        import stylex from 'stylex';
+        import { MyTheme } from 'otherFile.stylex';
+        const styles = stylex.create({
+          box: {
+            zIndex: MyTheme['--größe'] * 2,
+          }
+        });
+        stylex(styles.box);
+      `);
+      expect(metadata.stylex[0][1].ltr).toContain('calc(var(--größe) * 2)');
     });
 
     test('arithmetic with a non-numeric operand throws a compile error', () => {

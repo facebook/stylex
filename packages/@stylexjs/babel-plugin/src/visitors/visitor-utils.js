@@ -6,12 +6,11 @@
  *
  * @flow strict
  *
- * Shared visitor helpers for the unstable_defineVarsNested / unstable_defineConstsNested /
- * unstable_createThemeNested visitors. These extract common patterns (call detection,
- * validation, eval config setup) to avoid duplication across the 3 nested visitors.
- *
- * NOTE: These helpers only serve the NEW nested visitors. The existing flat visitors
- * (stylex-define-vars.js, stylex-define-consts.js, stylex-create-theme.js) are untouched.
+ * Shared visitor helpers. `isCallTo`, `validateDefineCall`, and
+ * `buildEvalConfig` extract common patterns across the 3 nested visitors
+ * (unstable_defineVarsNested / unstable_defineConstsNested /
+ * unstable_createThemeNested); `evaluationError` is shared by all visitors
+ * that evaluate their arguments statically.
  */
 
 import type { NodePath } from '@babel/traverse';
@@ -27,6 +26,23 @@ import {
   types as stylexTypes,
 } from '../shared';
 import { isVariableNamedExported } from '../utils/ast-helpers';
+
+/**
+ * Builds the error to throw when a StyleX API argument fails static
+ * evaluation: prefers the evaluator's specific deopt reason and location,
+ * falling back to the generic message at the API call site.
+ */
+export function evaluationError(
+  deopt: ?NodePath<>,
+  reason: ?string,
+  fallbackPath: NodePath<>,
+  fallbackMessage: string,
+): Error {
+  return (deopt ?? fallbackPath).buildCodeFrameError(
+    reason ?? fallbackMessage,
+    SyntaxError,
+  );
+}
 
 /**
  * Detects if a CallExpression matches a StyleX API call.

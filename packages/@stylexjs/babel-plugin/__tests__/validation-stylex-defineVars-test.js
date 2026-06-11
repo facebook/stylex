@@ -257,7 +257,7 @@ describe('@stylexjs/babel-plugin', () => {
             textMuted: () => getColor(colors.text),
           });
         `);
-      }).toThrow(messages.nonStaticValue('defineVars'));
+      }).toThrow('Referenced constant is not defined.');
     });
 
     test('valid function value: returns stylex.types', () => {
