@@ -1230,4 +1230,98 @@ describe('@stylexjs/babel-plugin', () => {
       `);
     });
   });
+
+  describe('[transform] arithmetic on imported defineConsts (#1597)', () => {
+    function transformCrossFile(mainSource) {
+      const pluginOpts = {
+        unstable_moduleResolution: { type: 'haste' },
+      };
+
+      const tokens = transformSync(
+        `
+        import * as stylex from '@stylexjs/stylex';
+        export const consts = stylex.defineConsts({
+          A: 26,
+          B: 14,
+          D: 6,
+          gutter: '16px',
+        });
+        export const vars = stylex.defineVars({
+          gap: '8px',
+        });
+        `,
+        {
+          filename: '/src/app/constants.stylex.js',
+          parserOpts: { flow: 'all' },
+          babelrc: false,
+          plugins: [[stylexPlugin, pluginOpts]],
+        },
+      );
+
+      const main = transformSync(mainSource, {
+        filename: '/src/app/main.js',
+        parserOpts: { flow: 'all' },
+        babelrc: false,
+        plugins: [[stylexPlugin, pluginOpts]],
+      });
+
+      return [
+        ...(tokens.metadata.stylex || []),
+        ...(main.metadata.stylex || []),
+      ];
+    }
+
+    test('numeric const arithmetic resolves to calc() with literal values', () => {
+      const metadata = transformCrossFile(`
+        import * as stylex from '@stylexjs/stylex';
+        import { consts } from 'constants.stylex';
+        export const styles = stylex.create({
+          box: {
+            zIndex: consts.A + consts.B - consts.D,
+            opacity: consts.A / 4,
+          },
+        });
+      `);
+
+      const css = stylexPlugin.processStylexRules(metadata, {
+        useLayers: false,
+      });
+      expect(css).toContain('z-index:calc((26 + 14) - 6)');
+      expect(css).toContain('opacity:calc(26 / 4)');
+    });
+
+    test('unit const arithmetic stays as calc() with substituted values', () => {
+      const metadata = transformCrossFile(`
+        import * as stylex from '@stylexjs/stylex';
+        import { consts } from 'constants.stylex';
+        export const styles = stylex.create({
+          box: {
+            paddingTop: consts.gutter * 2,
+          },
+        });
+      `);
+
+      const css = stylexPlugin.processStylexRules(metadata, {
+        useLayers: false,
+      });
+      expect(css).toContain('padding-top:calc(16px * 2)');
+    });
+
+    test('mixed const and defineVars arithmetic keeps the var() in calc()', () => {
+      const metadata = transformCrossFile(`
+        import * as stylex from '@stylexjs/stylex';
+        import { consts, vars } from 'constants.stylex';
+        export const styles = stylex.create({
+          box: {
+            marginTop: consts.A * vars.gap,
+          },
+        });
+      `);
+
+      const css = stylexPlugin.processStylexRules(metadata, {
+        useLayers: false,
+      });
+      expect(css).toMatch(/margin-top:calc\(26 \* var\(--[a-z0-9]+\)\)/);
+    });
+  });
 });

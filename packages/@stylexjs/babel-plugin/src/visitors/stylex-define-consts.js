@@ -58,14 +58,14 @@ export default function transformStyleXDefineConsts(
     };
     state.applyStylexEnv(evaluatePathFnConfig.identifiers);
 
-    const { confident, value } = evaluate(
+    const { confident, value, reason, deopt } = evaluate(
       firstArg,
       state,
       evaluatePathFnConfig,
     );
     if (!confident) {
-      throw callExpressionPath.buildCodeFrameError(
-        messages.nonStaticValue('defineConsts'),
+      throw (deopt ?? callExpressionPath).buildCodeFrameError(
+        reason ?? messages.nonStaticValue('defineConsts'),
         SyntaxError,
       );
     }

@@ -171,13 +171,13 @@ export default function transformStyleXDefineVars(
       },
     });
 
-    const { confident, value } = evaluate(firstArg, state, {
+    const { confident, value, reason, deopt } = evaluate(firstArg, state, {
       identifiers,
       memberExpressions,
     });
     if (!confident) {
-      throw callExpressionPath.buildCodeFrameError(
-        messages.nonStaticValue('defineVars'),
+      throw (deopt ?? callExpressionPath).buildCodeFrameError(
+        reason ?? messages.nonStaticValue('defineVars'),
         SyntaxError,
       );
     }
