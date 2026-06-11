@@ -14,6 +14,10 @@ import type { FunctionConfig } from '../utils/evaluate-path';
 import * as t from '@babel/types';
 import StateManager from '../utils/state-manager';
 import { evaluate } from '../utils/evaluate-path';
+import {
+  isCssVarTokenError,
+  INVALID_CALC_KEY,
+} from '../utils/evaluation-errors';
 import { create, utils } from '../shared';
 import { messages } from '../shared';
 import {
@@ -149,7 +153,12 @@ function evaluatePartialObjectRecursively(
     if (prop.isObjectProperty()) {
       const keyResult = evaluateObjKey(prop, traversalState, functions);
       if (!keyResult.confident) {
-        return { confident: false, deopt: keyResult.deopt, value: null };
+        return {
+          confident: false,
+          deopt: keyResult.deopt,
+          reason: keyResult.reason,
+          value: null,
+        };
       }
       let key = keyResult.value;
 
@@ -172,7 +181,12 @@ function evaluatePartialObjectRecursively(
           [...keyPath, key],
         );
         if (!result.confident) {
-          return { confident: false, deopt: result.deopt, value: null };
+          return {
+            confident: false,
+            deopt: result.deopt,
+            reason: result.reason,
+            value: null,
+          };
         }
         obj[key] = result.value;
         // $FlowFixMe[unsafe-object-assign]
@@ -180,6 +194,17 @@ function evaluatePartialObjectRecursively(
       } else {
         const result = evaluate(valuePath, traversalState, functions);
         if (!result.confident) {
+          // A misused token reference (unsupported operator or operand) is a
+          // hard error in static styles; erroring here too keeps dynamic
+          // styles from silently degrading to runtime evaluation against the
+          // literal 'var(--hash)' string.
+          const deoptReason = result.reason;
+          if (deoptReason != null && isCssVarTokenError(deoptReason)) {
+            throw (result.deopt ?? valuePath).buildCodeFrameError(
+              deoptReason,
+              SyntaxError,
+            );
+          }
           const fullKeyPath = [...keyPath, key];
           const varName =
             '--x-' +
@@ -257,7 +282,7 @@ function evaluatePartialObjectRecursively(
 
 type KeyResult =
   | { confident: true, value: string }
-  | { confident: false, deopt?: null | NodePath<> };
+  | { confident: false, deopt?: null | NodePath<>, reason?: string };
 
 function evaluateObjKey(
   prop: NodePath<t.ObjectProperty>,
@@ -269,7 +294,12 @@ function evaluateObjKey(
   if ((prop.node as t.ObjectProperty).computed) {
     const result = evaluate(keyPath, traversalState, functions);
     if (!result.confident) {
-      return { confident: false, deopt: result.deopt };
+      return { confident: false, deopt: result.deopt, reason: result.reason };
+    }
+    if (typeof result.value === 'string' && result.value.startsWith('calc(')) {
+      // var() keys are meaningful (custom property overrides), but a calc()
+      // expression can never be a valid style key.
+      throw keyPath.buildCodeFrameError(INVALID_CALC_KEY, SyntaxError);
     }
     key = result.value;
   } else if (keyPath.isIdentifier()) {

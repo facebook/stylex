@@ -32,6 +32,7 @@ import * as errMsgs from './evaluation-errors';
 import {
   isCssVarOrCalc,
   isCalcTerm,
+  isStrictCalcTerm,
   buildBinaryCalc,
   buildUnaryMinusCalc,
 } from './css-calc';
@@ -713,26 +714,27 @@ function _evaluate(path: NodePath<>, state: State): any {
 
     const arg = evaluateCached(argument, state);
     if (!state.confident) return;
-    if (isCssVarOrCalc(arg)) {
-      if (path.node.operator === '-') {
-        return buildUnaryMinusCalc(arg);
-      }
-      if (['!', '+', '~'].includes(path.node.operator)) {
-        return deopt(
-          path,
-          state,
-          errMsgs.UNSUPPORTED_CSS_VAR_OPERATOR(path.node.operator),
-        );
-      }
-    }
+    const argIsCssRef = isCssVarOrCalc(arg);
     switch (path.node.operator) {
       case '!':
+        if (argIsCssRef) {
+          return deopt(path, state, errMsgs.UNSUPPORTED_CSS_VAR_OPERATOR('!'));
+        }
         return !arg;
       case '+':
+        if (argIsCssRef) {
+          return deopt(path, state, errMsgs.UNSUPPORTED_CSS_VAR_OPERATOR('+'));
+        }
         return +arg;
       case '-':
+        if (argIsCssRef) {
+          return buildUnaryMinusCalc(arg);
+        }
         return -arg;
       case '~':
+        if (argIsCssRef) {
+          return deopt(path, state, errMsgs.UNSUPPORTED_CSS_VAR_OPERATOR('~'));
+        }
         return ~arg;
       case 'typeof':
         return typeof arg;
@@ -803,6 +805,11 @@ function _evaluate(path: NodePath<>, state: State): any {
             resultDeopt &&
               deopt(resultDeopt, state, deoptReason ?? 'unknown error');
             return;
+          }
+          if (typeof value === 'string' && value.startsWith('calc(')) {
+            // var() keys are meaningful (custom property overrides), but a
+            // calc() expression can never be a valid style key.
+            return deopt(keyPath, state, errMsgs.INVALID_CALC_KEY);
           }
           key = value;
         } else if (keyPath.isIdentifier()) {
@@ -912,17 +919,54 @@ function _evaluate(path: NodePath<>, state: State): any {
 
     if (isCssVarOrCalc(left) || isCssVarOrCalc(right)) {
       const op = path.node.operator;
-      if (op === '+' || op === '-' || op === '*' || op === '/') {
-        if (isCalcTerm(left) && isCalcTerm(right)) {
-          return buildBinaryCalc(left, op, right);
+      switch (op) {
+        case '+': {
+          // Only numbers and var()/calc() refs become calc() addition. A
+          // unit string operand ('4px') is excluded because `+` on strings
+          // also expresses list concatenation, and `token + '4px'` vs
+          // `token + ' 4px'` must not silently mean different things.
+          if (isStrictCalcTerm(left) && isStrictCalcTerm(right)) {
+            return buildBinaryCalc(left, op, right);
+          }
+          // String concatenation is only allowed when a separator keeps the
+          // ref apart from the neighboring text, e.g. `'solid ' + token` or
+          // `'rgba(' + token`. A jammed junction ('var(--x)10px') would be
+          // invalid CSS, so it fails instead.
+          const refOnLeft = isCssVarOrCalc(left);
+          const other = refOnLeft ? right : left;
+          const separated =
+            typeof other === 'string' &&
+            (other === '' ||
+              (refOnLeft ? /^[\s,)]/.test(other) : /[\s,(]$/.test(other)));
+          if (!separated) {
+            return deopt(path, state, errMsgs.INVALID_CSS_VAR_CONCAT);
+          }
+          break;
         }
-        // '+' with a non-numeric operand stays plain string concatenation,
-        // e.g. `'solid ' + colors.border`.
-        if (op !== '+') {
+        case '-':
+        case '*':
+        case '/':
+          if (isCalcTerm(left) && isCalcTerm(right)) {
+            return buildBinaryCalc(left, op, right);
+          }
           return deopt(path, state, errMsgs.INVALID_CALC_OPERAND(op));
-        }
-      } else {
-        return deopt(path, state, errMsgs.UNSUPPORTED_CSS_VAR_OPERATOR(op));
+        case '==':
+        case '!=':
+        case '===':
+        case '!==':
+          // Guards against null/undefined have well-defined results for
+          // token references and are commonly used defensively.
+          if (left == null || right == null) {
+            break;
+          }
+          return deopt(path, state, errMsgs.UNSUPPORTED_CSS_VAR_COMPARISON(op));
+        case '<':
+        case '>':
+        case '<=':
+        case '>=':
+          return deopt(path, state, errMsgs.UNSUPPORTED_CSS_VAR_COMPARISON(op));
+        default:
+          return deopt(path, state, errMsgs.UNSUPPORTED_CSS_VAR_OPERATOR(op));
       }
     }
 

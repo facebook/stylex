@@ -22,6 +22,7 @@ import {
 } from '../shared';
 import { convertObjectToAST } from '../utils/js-to-ast';
 import { evaluate } from '../utils/evaluate-path';
+import { evaluationError } from './visitor-utils';
 import path from 'node:path';
 
 /// This function looks for `stylex.createTheme` calls and transforms them.
@@ -75,9 +76,11 @@ export default function transformStyleXCreateTheme(
       deopt: deopt1,
     } = evaluate(firstArg, state);
     if (!confident1) {
-      throw (deopt1 ?? callExpressionPath).buildCodeFrameError(
-        reason1 ?? messages.nonStaticValue('createTheme'),
-        SyntaxError,
+      throw evaluationError(
+        deopt1,
+        reason1,
+        callExpressionPath,
+        messages.nonStaticValue('createTheme'),
       );
     }
 
@@ -155,9 +158,11 @@ export default function transformStyleXCreateTheme(
       memberExpressions,
     });
     if (!confident2) {
-      throw (deopt2 ?? callExpressionPath).buildCodeFrameError(
-        reason2 ?? messages.nonStaticValue('createTheme'),
-        SyntaxError,
+      throw evaluationError(
+        deopt2,
+        reason2,
+        callExpressionPath,
+        messages.nonStaticValue('createTheme'),
       );
     }
     if (typeof overrides !== 'object' || overrides == null) {

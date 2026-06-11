@@ -29,6 +29,7 @@ import {
 import { convertObjectToAST } from '../utils/js-to-ast';
 import { messages } from '../shared';
 import { evaluateStyleXCreateArg } from './parse-stylex-create-arg';
+import { evaluationError } from './visitor-utils';
 import flatMapExpandedShorthands from '../shared/preprocess-rules';
 import { hoistExpression, pathReplaceHoisted } from '../utils/ast-helpers';
 
@@ -217,9 +218,11 @@ export default function transformStyleXCreate(
     );
 
     if (!confident) {
-      throw (deopt ?? path).buildCodeFrameError(
-        reason ?? messages.nonStaticValue('create'),
-        SyntaxError,
+      throw evaluationError(
+        deopt,
+        reason,
+        path,
+        messages.nonStaticValue('create'),
       );
     }
     const plainObject = value;

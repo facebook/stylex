@@ -56,10 +56,31 @@ export const UNSUPPORTED_CSS_VAR_OPERATOR = (op: string): string =>
   `The "${op}" operator cannot be applied to a StyleX variable or constant.
 Only +, -, * and / are supported and compile to a CSS calc() expression.\n\n`;
 
+export const UNSUPPORTED_CSS_VAR_COMPARISON = (op: string): string =>
+  `A StyleX variable or constant cannot be compared with "${op}" at compile time.
+Its value is a CSS variable reference that is only resolved in the browser.
+Branch on a plain JavaScript value instead. (Comparing against null or
+undefined is allowed.)\n\n`;
+
+export const INVALID_CALC_KEY =
+  'Arithmetic on a StyleX variable or constant cannot be used as a style property key.\n\n';
+
 export const INVALID_CALC_OPERAND = (op: string): string =>
   `Arithmetic ("${op}") on a StyleX variable or constant requires the other operand
 to be a number, a numeric string with a CSS unit (e.g. '10px'), or another
 variable or constant, so it can compile to a CSS calc() expression.\n\n`;
+
+export const INVALID_CSS_VAR_CONCAT = `Joining a StyleX variable or constant directly to other text with "+" would
+produce invalid CSS. For arithmetic, use numbers or other variables or
+constants (compiles to a CSS calc() expression). For a list of values,
+include an explicit separator, e.g. 'solid ' + token.\n\n`;
+
+// Used by callers that must distinguish a misused token reference (a hard
+// user error worth surfacing) from an ordinary non-static value (which may
+// legitimately fall back to a dynamic style).
+export function isCssVarTokenError(reason: ?string): boolean {
+  return reason != null && reason.includes('StyleX variable or constant');
+}
 
 export const OBJECT_METHOD = 'Unsupported object method.\n\n';
 
