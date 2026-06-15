@@ -107,12 +107,22 @@ console.log('Package manifest update complete');
 // Change working directory to the repo root
 process.chdir(path.join(__dirname, '../..'));
 
-execSync('npm install', { stdio: 'inherit' });
+// This repo uses yarn (see `packageManager` and CI). Running `npm install`
+// here would generate a stray `package-lock.json`, so install with yarn.
+execSync('yarn install', { stdio: 'inherit' });
 
 // Commit changes
 if (commit) {
-  // add changes
-  execSync('git add .', { stdio: 'inherit' });
+  // Stage only the files this release is expected to touch: the workspace
+  // manifests plus the yarn lockfile. Using an explicit pathspec instead of
+  // `git add .` avoids committing unrelated or stray artifacts (e.g. a
+  // `package-lock.json` if npm was ever run, or build output).
+  const manifestPaths = workspaces.map(({ packageJsonPath }) =>
+    path.relative(repoRoot, packageJsonPath),
+  );
+  execSync(`git add ${manifestPaths.map((p) => `"${p}"`).join(' ')} yarn.lock`, {
+    stdio: 'inherit',
+  });
   // commit
   execSync(`git commit -m "${pkgVersion}" --no-verify`, { stdio: 'inherit' });
   // tag
