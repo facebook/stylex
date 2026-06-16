@@ -130,7 +130,14 @@ if (commit) {
 }
 
 if (publish) {
-  const publishCmd = otp == null ? 'npm publish' : `npm publish --otp ${otp}`;
+  // Scoped packages (@stylexjs/*) default to restricted access on first
+  // publish, which fails with E402 unless you have a paid plan. All stylex
+  // packages are public, so always publish with `--access public`. This is a
+  // no-op for packages that are already public.
+  const publishCmd =
+    otp == null
+      ? 'npm publish --access public'
+      : `npm publish --access public --otp ${otp}`;
   // publish public packages
   workspaces.forEach(({ directory, packageJson }) => {
     if (!packageJson.private) {
@@ -143,10 +150,19 @@ if (publish) {
           `Skipping ${packageName} as version ${version} has already been published`,
         );
       } catch (error) {
-        // If the version has not been published, proceed with publishing
-        execSync(`cd ${directory} && ${publishCmd}`, {
-          stdio: 'inherit',
-        });
+        // If the version has not been published, proceed with publishing.
+        // Don't let a single failure (e.g. a package the current user lacks
+        // publish rights for) abort the whole release — log it and continue
+        // so the remaining packages still get published.
+        try {
+          execSync(`cd ${directory} && ${publishCmd}`, {
+            stdio: 'inherit',
+          });
+        } catch (publishError) {
+          console.error(
+            `Failed to publish ${packageName}@${version} — skipping. ${publishError.message}`,
+          );
+        }
       }
     }
   });
