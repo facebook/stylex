@@ -61,11 +61,36 @@ function copyStatic({ outDir, targets }) {
     src: path.resolve(rootDir, src),
     dest: path.resolve(outDir, dest),
   }));
-  async function copyAll() {
+  // The StyleX unplugin merges its CSS into the `.css` asset and may rename it
+  // (e.g. `style.css` -> `style2.css`) to avoid collisions. It rewrites
+  // references inside bundled JS, but these HTML files are copied verbatim and
+  // are not part of the bundle, so their `<link href>` must be rewritten to the
+  // actual emitted CSS filename — otherwise the panel loads with no styles.
+  async function copyAll(bundle) {
+    const cssAsset = bundle
+      ? Object.values(bundle).find(
+          (item) =>
+            item != null &&
+            item.type === 'asset' &&
+            typeof item.fileName === 'string' &&
+            item.fileName.endsWith('.css'),
+        )
+      : null;
+    const cssHref = cssAsset ? `./${cssAsset.fileName}` : null;
+
     await fs.mkdir(outDir, { recursive: true });
     await Promise.all(
       resolved.map(async ({ src, dest }) => {
         await fs.mkdir(path.dirname(dest), { recursive: true });
+        if (cssHref != null && dest.endsWith('.html')) {
+          const html = await fs.readFile(src, 'utf8');
+          const rewritten = html.replace(
+            /(<link\b[^>]*\bhref=")[^"]*\.css(")/g,
+            `$1${cssHref}$2`,
+          );
+          await fs.writeFile(dest, rewritten);
+          return;
+        }
         await fs.copyFile(src, dest);
       }),
     );
@@ -77,8 +102,8 @@ function copyStatic({ outDir, targets }) {
         this.addWatchFile(src);
       }
     },
-    async generateBundle() {
-      await copyAll();
+    async generateBundle(_opts, bundle) {
+      await copyAll(bundle);
     },
   };
 }
