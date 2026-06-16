@@ -756,13 +756,15 @@ export function collectStylexDebugData(
         const seen = existingSeen != null ? existingSeen : new Set<string>();
         if (existingSeen == null) seenDeclKeys.set(cls, seen);
         for (const decl of declsWithCondition) {
-          const dedupKey = [
+          // JSON encoding (rather than a delimiter join) so values that contain
+          // the delimiter — e.g. `pseudoElement: '::before'` — cannot collide.
+          const dedupKey = JSON.stringify([
             decl.property,
             decl.value,
-            decl.important ? '!' : '',
-            decl.condition ?? '',
-            decl.pseudoElement ?? '',
-          ].join('::');
+            decl.important,
+            decl.condition ?? null,
+            decl.pseudoElement ?? null,
+          ]);
           if (seen.has(dedupKey)) continue;
           seen.add(dedupKey);
           declList.push(decl);

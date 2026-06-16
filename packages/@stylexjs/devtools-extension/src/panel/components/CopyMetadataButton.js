@@ -10,7 +10,7 @@
 'use strict';
 
 import * as React from 'react';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import type { StylexDebugData } from '../../types.js';
 import { exportMetadata } from '../../utils/exportMetadata.js';
 import { Button } from './Button';
@@ -56,6 +56,17 @@ export function CopyMetadataButton({
 }): React.Node {
   const [label, setLabel] = useState('Copy metadata');
   const timeoutRef = useRef<?TimeoutID>(null);
+
+  // The panel re-mounts on refresh (its `key` changes), so clear any pending
+  // label-reset timeout on unmount to avoid a state update after unmount.
+  useEffect(
+    () => () => {
+      if (timeoutRef.current != null) {
+        clearTimeout(timeoutRef.current);
+      }
+    },
+    [],
+  );
 
   const handleClick = useCallback(async () => {
     if (timeoutRef.current != null) {
