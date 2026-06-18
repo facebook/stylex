@@ -65,7 +65,7 @@ async function createFeed(): Promise<Feed> {
     const url = `${baseUrl}/blog/${page.data.slug}`;
 
     // Parse date from the path (format: YYYY-MM-DD-title)
-    const pathMatch = page.path.match(/\/(\d{4}-\d{2}-\d{2})/);
+    const pathMatch = page.path.match(/^(\d{4}-\d{2}-\d{2})/);
     const dateStr = pathMatch?.[1];
     const date = dateStr ? new Date(dateStr) : new Date();
 
