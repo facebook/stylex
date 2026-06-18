@@ -10,7 +10,6 @@
 import type { NodePath } from '@babel/traverse';
 import type { FunctionConfig } from '../utils/evaluate-path';
 import type { InjectableStyle } from '../shared';
-import type { CSSType } from '../shared/types';
 
 import * as t from '@babel/types';
 import StateManager from '../utils/state-manager';
@@ -22,21 +21,9 @@ import {
   positionTry as stylexPositionTry,
   types as stylexTypes,
 } from '../shared';
-import { isCSSType } from '../shared/types';
 import { convertObjectToAST } from '../utils/js-to-ast';
-import { createVarGroupProxy, evaluate } from '../utils/evaluate-path';
+import { evaluate } from '../utils/evaluate-path';
 import { isVariableNamedExported } from '../utils/ast-helpers';
-
-class DefineVarsValueError extends Error {}
-
-type NormalizedDefineVarsLeaf = string | number | null;
-type NormalizedDefineVarsValue =
-  | NormalizedDefineVarsLeaf
-  | CSSType<>
-  | { [string]: NormalizedDefineVarsValue };
-type EvaluatedDefineVarsFunction = (() => mixed) & {
-  __stylexParamCount?: number,
-};
 
 /// This function looks for `stylex.defineVars` calls and transforms them.
 /// 1. It finds the first argument to `stylex.defineVars` and validates it.
@@ -155,22 +142,6 @@ export default function transformStyleXDefineVars(
 
     state.applyStylexEnv(identifiers);
 
-    const fileName = state.fileNameForHashing;
-    if (fileName == null) {
-      throw new Error(messages.cannotGenerateHash('defineVars'));
-    }
-
-    const exportName = varId.name;
-    let currentDependencies: Set<string> | null = null;
-    const selfReferenceProxy = createVarGroupProxy({
-      fileName,
-      exportName,
-      traversalState: state,
-      onAccess: (key) => {
-        currentDependencies?.add(key);
-      },
-    });
-
     const { confident, value } = evaluate(firstArg, state, {
       identifiers,
       memberExpressions,
@@ -188,27 +159,15 @@ export default function transformStyleXDefineVars(
       );
     }
 
-    identifiers[varId.name] = selfReferenceProxy;
-
-    let normalizedValue;
-    try {
-      normalizedValue = normalizeDefineVarsObject(value, {
-        getCurrentDependencies: () => currentDependencies,
-        setCurrentDependencies: (deps) => {
-          currentDependencies = deps;
-        },
-      });
-    } catch (error) {
-      throw callExpressionPath.buildCodeFrameError(
-        error instanceof Error
-          ? error.message
-          : messages.nonStaticValue('defineVars'),
-        SyntaxError,
-      );
+    const fileName = state.fileNameForHashing;
+    if (fileName == null) {
+      throw new Error(messages.cannotGenerateHash('defineVars'));
     }
 
+    const exportName = varId.name;
+
     const [variablesObj, injectedStylesSansKeyframes] = stylexDefineVars(
-      normalizedValue as any,
+      value,
       {
         ...state.options,
         exportId: utils.genFileBasedIdentifier({ fileName, exportName }),
@@ -228,180 +187,6 @@ export default function transformStyleXDefineVars(
     );
 
     state.registerStyles(listOfStyles, variableDeclaratorPath);
-  }
-}
-
-function normalizeDefineVarsObject(
-  variables: { [string]: mixed },
-  dependencyState: {
-    getCurrentDependencies: () => Set<string> | null,
-    setCurrentDependencies: (deps: Set<string> | null) => void,
-  },
-): { [string]: NormalizedDefineVarsValue } {
-  const normalizedVariables: { [string]: NormalizedDefineVarsValue } = {};
-  const dependencyMap: Map<string, Set<string>> = new Map();
-
-  for (const [key, value] of Object.entries(variables)) {
-    const deps: Set<string> = new Set();
-    dependencyMap.set(key, deps);
-    normalizedVariables[key] = normalizeDefineVarsValue(
-      value,
-      key,
-      dependencyState,
-      deps,
-      true,
-    );
-  }
-
-  const keys: Set<string> = new Set(Object.keys(normalizedVariables));
-  for (const [key, deps] of dependencyMap.entries()) {
-    deps.delete('__varGroupHash__');
-    for (const dependency of deps) {
-      if (!keys.has(dependency)) {
-        throw new DefineVarsValueError(
-          messages.unknownDefineVarsReference(key, dependency),
-        );
-      }
-    }
-  }
-
-  assertNoDefineVarsCycles(dependencyMap);
-  return normalizedVariables;
-}
-
-function normalizeDefineVarsValue(
-  value: mixed,
-  rootKey: string,
-  dependencyState: {
-    getCurrentDependencies: () => Set<string> | null,
-    setCurrentDependencies: (deps: Set<string> | null) => void,
-  },
-  dependencies: Set<string>,
-  allowCSSType: boolean = false,
-): NormalizedDefineVarsValue {
-  if (typeof value === 'function') {
-    return evaluateDefineVarsFunction(
-      value as any as EvaluatedDefineVarsFunction,
-      rootKey,
-      dependencyState,
-      dependencies,
-    );
-  }
-
-  if (
-    typeof value === 'string' ||
-    typeof value === 'number' ||
-    value === null
-  ) {
-    return value;
-  }
-
-  if (Array.isArray(value)) {
-    throw new DefineVarsValueError('Array is not supported in defineVars');
-  }
-
-  if (isCSSType(value)) {
-    if (allowCSSType) {
-      return value;
-    }
-    throw new DefineVarsValueError(messages.invalidDefineVarsFunctionValue());
-  }
-
-  if (typeof value === 'object' && value != null) {
-    if (value.default === undefined) {
-      throw new DefineVarsValueError(
-        'Default value is not defined for ' + rootKey + ' variable.',
-      );
-    }
-
-    const normalizedValue: { [string]: NormalizedDefineVarsValue } = {};
-    for (const [nestedKey, nestedValue] of Object.entries(value)) {
-      normalizedValue[nestedKey] = normalizeDefineVarsValue(
-        nestedValue,
-        rootKey,
-        dependencyState,
-        dependencies,
-      );
-    }
-    return normalizedValue;
-  }
-
-  throw new DefineVarsValueError('Invalid value in defineVars');
-}
-
-function evaluateDefineVarsFunction(
-  fn: EvaluatedDefineVarsFunction,
-  rootKey: string,
-  dependencyState: {
-    getCurrentDependencies: () => Set<string> | null,
-    setCurrentDependencies: (deps: Set<string> | null) => void,
-  },
-  dependencies: Set<string>,
-): NormalizedDefineVarsValue {
-  if ((fn.__stylexParamCount ?? fn.length) !== 0) {
-    throw new DefineVarsValueError(messages.invalidDefineVarsFunctionValue());
-  }
-
-  const prevDependencies = dependencyState.getCurrentDependencies();
-  dependencyState.setCurrentDependencies(dependencies);
-
-  let result;
-  try {
-    result = fn();
-  } catch {
-    throw new DefineVarsValueError(messages.nonStaticValue('defineVars'));
-  } finally {
-    dependencyState.setCurrentDependencies(prevDependencies);
-  }
-  if (typeof result === 'function') {
-    throw new DefineVarsValueError(messages.invalidDefineVarsFunctionValue());
-  }
-  if (isCSSType(result)) {
-    return result;
-  }
-
-  return normalizeDefineVarsValue(
-    result,
-    rootKey,
-    dependencyState,
-    dependencies,
-  );
-}
-
-function assertNoDefineVarsCycles(
-  dependencyMap: Map<string, Set<string>>,
-): void {
-  const visited: Set<string> = new Set();
-  const inStack: Set<string> = new Set();
-  const stack: Array<string> = [];
-
-  function visit(key: string): void {
-    if (inStack.has(key)) {
-      const cycleStart = stack.indexOf(key);
-      const cycle = [...stack.slice(cycleStart), key].join(' -> ');
-      throw new DefineVarsValueError(messages.cyclicDefineVarsReference(cycle));
-    }
-    if (visited.has(key)) {
-      return;
-    }
-
-    visited.add(key);
-    inStack.add(key);
-    stack.push(key);
-
-    for (const dependency of dependencyMap.get(key) ?? []) {
-      if (!dependencyMap.has(dependency)) {
-        continue;
-      }
-      visit(dependency);
-    }
-
-    stack.pop();
-    inStack.delete(key);
-  }
-
-  for (const key of dependencyMap.keys()) {
-    visit(key);
   }
 }
 

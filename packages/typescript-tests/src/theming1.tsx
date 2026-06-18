@@ -159,18 +159,6 @@ const themeC = stylex.createTheme(varsC, {
   varC1: 'green',
 });
 
-const functionVars: stylex.VarGroup<{
-  text: string;
-  textMuted: string;
-}> = stylex.defineVars({
-  text: 'black',
-  textMuted: () => `color-mix(${functionVars.text}, transparent 50%)`,
-});
-
-functionVars.textMuted satisfies StyleXVar<string>;
-// @ts-expect-error - defineVars output values are CSS vars, not functions.
-functionVars.textMuted();
-
 const typedTokens = stylex.defineVars({
   bgColor: stylex.types.color<string>({
     default: 'cyan',

@@ -156,87 +156,6 @@ type Result =
       resolved: false,
       reason: string,
     };
-
-type VarGroupProxyOptions = {
-  fileName: string,
-  exportName: string,
-  traversalState: StateManager,
-  onAccess?: (key: string) => void,
-};
-
-function getVarGroupHash(
-  fileName: string,
-  exportName: string,
-  traversalState: StateManager,
-): string {
-  return (
-    traversalState.options.classNamePrefix +
-    utils.hash(utils.genFileBasedIdentifier({ fileName, exportName }))
-  );
-}
-
-function resolveVarGroupKey(
-  key: string,
-  fileName: string,
-  exportName: string,
-  traversalState: StateManager,
-): string {
-  if (key.startsWith('--')) {
-    return `var(${key})`;
-  }
-
-  const strToHash = utils.genFileBasedIdentifier({ fileName, exportName, key });
-  const { debug, enableDebugClassNames, classNamePrefix } =
-    traversalState.options;
-
-  const varSafeKey = (key[0] >= '0' && key[0] <= '9' ? `_${key}` : key).replace(
-    /[^a-zA-Z0-9]/g,
-    '_',
-  );
-
-  const varName =
-    debug && enableDebugClassNames
-      ? `${varSafeKey}-${classNamePrefix}${utils.hash(strToHash)}`
-      : classNamePrefix + utils.hash(strToHash);
-
-  return `var(--${varName})`;
-}
-
-export function createVarGroupProxy({
-  fileName,
-  exportName,
-  traversalState,
-  onAccess,
-}: VarGroupProxyOptions): { [string]: string } {
-  const varGroupHash = getVarGroupHash(fileName, exportName, traversalState);
-
-  return new Proxy(
-    {},
-    {
-      get(_, key: string | symbol) {
-        if (typeof key !== 'string') {
-          return undefined;
-        }
-        if (key === '__IS_PROXY') {
-          return true;
-        }
-        if (key === 'toString') {
-          return () => varGroupHash;
-        }
-        if (key === '__varGroupHash__') {
-          return varGroupHash;
-        }
-        onAccess?.(key);
-        return resolveVarGroupKey(key, fileName, exportName, traversalState);
-      },
-      set(_, key: string, value: string) {
-        throw new Error(
-          `Cannot set value ${value} to key ${key} in theme ${fileName}`,
-        );
-      },
-    },
-  );
-}
 /**
  * Deopts the evaluation
  */
@@ -315,11 +234,63 @@ function evaluateThemeRef(
   exportName: string,
   state: State,
 ): { [key: string]: string } {
-  return createVarGroupProxy({
-    fileName,
-    exportName,
-    traversalState: state.traversalState,
-  });
+  const resolveKey = (key: string) => {
+    if (key.startsWith('--')) {
+      return `var(${key})`;
+    }
+
+    const strToHash =
+      key === '__varGroupHash__'
+        ? utils.genFileBasedIdentifier({ fileName, exportName })
+        : utils.genFileBasedIdentifier({ fileName, exportName, key });
+
+    const { debug, enableDebugClassNames } = state.traversalState.options;
+
+    const varSafeKey =
+      key === '__varGroupHash__'
+        ? ''
+        : (key[0] >= '0' && key[0] <= '9' ? `_${key}` : key).replace(
+            /[^a-zA-Z0-9]/g,
+            '_',
+          ) + '-';
+
+    const varName =
+      debug && enableDebugClassNames
+        ? varSafeKey +
+          state.traversalState.options.classNamePrefix +
+          utils.hash(strToHash)
+        : state.traversalState.options.classNamePrefix + utils.hash(strToHash);
+
+    if (key === '__varGroupHash__') {
+      return varName;
+    }
+    return `var(--${varName})`;
+  };
+
+  // A JS proxy that uses the key to generate a string value using the `resolveKey` function
+  const proxy = new Proxy(
+    {},
+    {
+      get(_, key: string) {
+        if (key === '__IS_PROXY') {
+          return true;
+        }
+        if (key === 'toString') {
+          return () =>
+            state.traversalState.options.classNamePrefix +
+            utils.hash(utils.genFileBasedIdentifier({ fileName, exportName }));
+        }
+        return resolveKey(key);
+      },
+      set(_, key: string, value: string) {
+        throw new Error(
+          `Cannot set value ${value} to key ${key} in theme ${fileName}`,
+        );
+      },
+    },
+  );
+
+  return proxy;
 }
 
 /**
@@ -378,27 +349,19 @@ function _evaluate(path: NodePath<>, state: State): any {
         ): param is NodePath<t.Identifier> => param.isIdentifier(),
       )
       .map((paramPath) => paramPath.node.name);
-
     if (body.isExpression() && identParams.length === params.length) {
-      const evaluatedExpr: NodePath<t.Expression> = body;
-      const evaluatedFn: any = (...args: Array<any>) => {
+      const expr: NodePath<t.Expression> = body;
+      return (...args) => {
         const identifierEntries = identParams.map(
           (ident, index): [string, any] => [ident, args[index]],
         );
         const identifiersObj = Object.fromEntries(identifierEntries);
-        const result = evaluate(evaluatedExpr, state.traversalState, {
+        const result = evaluate(expr, state.traversalState, {
           ...state.functions,
           identifiers: { ...state.functions.identifiers, ...identifiersObj },
         });
-        if (!result.confident) {
-          throw new Error(result.reason ?? errMsgs.NON_CONSTANT);
-        }
         return result.value;
       };
-      Object.defineProperty(evaluatedFn, '__stylexParamCount', {
-        value: identParams.length,
-      });
-      return evaluatedFn;
     }
   }
 

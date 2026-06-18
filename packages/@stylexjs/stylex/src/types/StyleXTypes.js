@@ -213,7 +213,6 @@ type IDFromVarGroup<out T extends VarGroup<{ readonly [string]: unknown }>> =
 
 type NestedVarObject<out T> =
   | T
-  | (() => T)
   | Readonly<{
       default: NestedVarObject<T>,
       [string]: NestedVarObject<T>,
@@ -221,9 +220,8 @@ type NestedVarObject<out T> =
 
 type TTokens = Readonly<{
   [string]:
-    | NestedVarObject<
-        null | string | number | StyleXVar<null | string | number>,
-      >
+    | NestedVarObject<null | string | number>
+    | StyleXVar<null | string | number>
     | CSSType<null | string | number>,
 }>;
 
@@ -241,11 +239,7 @@ export type NestedStringValue =
   | string
   | { readonly [string]: NestedStringValue };
 
-type UnwrapVar<out T> = T extends () => infer U
-  ? UnwrapVar<U>
-  : T extends StyleXVar<infer U>
-    ? U
-    : T;
+type UnwrapVar<out T> = T extends StyleXVar<infer U> ? U : T;
 
 export type FlattenTokens<out T extends TTokens> = {
   readonly [Key in keyof T]: T[Key] extends CSSType<string | number>

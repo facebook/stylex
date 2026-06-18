@@ -24,15 +24,6 @@ export const unboundCallValue = (fn: string): string =>
   `${fn}() calls must be bound to a bare variable.`;
 export const cannotGenerateHash = (fn: string): string =>
   `Unable to generate hash for ${fn}(). Check that the file has a valid extension and that unstable_moduleResolution is configured.`;
-export const invalidDefineVarsFunctionValue = (): string =>
-  'Function values in defineVars() must be zero-argument and return a static value supported by defineVars().';
-export const cyclicDefineVarsReference = (cycle: string): string =>
-  `Cyclic same-group references in defineVars() are not allowed: ${cycle}.`;
-export const unknownDefineVarsReference = (
-  key: string,
-  dependency: string,
-): string =>
-  `Unknown same-group reference "${dependency}" found while resolving "${key}" in defineVars().`;
 
 export const DUPLICATE_CONDITIONAL =
   'The same pseudo selector or at-rule cannot be used more than once.';
