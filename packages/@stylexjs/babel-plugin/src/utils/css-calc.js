@@ -9,6 +9,7 @@
 
 import parser from 'postcss-value-parser';
 import { roundForCss } from '../shared/utils/transform-value';
+import * as errMsgs from './evaluation-errors';
 
 // Custom property names may contain any character except ')' — including
 // unicode identifiers, which `defineVars`/`defineConsts` pass through
@@ -87,7 +88,7 @@ function isBalancedCalc(value: string): boolean {
   return false;
 }
 
-export function isCssVarOrCalc(value: mixed): boolean {
+export function isCssVarOrCalc(value: mixed): implies value is string {
   return (
     typeof value === 'string' &&
     (CSS_VAR_PATTERN.test(value) || isBalancedCalc(value))
@@ -97,7 +98,9 @@ export function isCssVarOrCalc(value: mixed): boolean {
 // A finite number or a var()/calc() reference. The only operand kinds
 // allowed for '+', where a unit string would be ambiguous with the
 // space-separated list concatenation that `+` also expresses.
-export function isStrictCalcTerm(value: mixed): boolean {
+export function isStrictCalcTerm(
+  value: mixed,
+): implies value is number | string {
   if (typeof value === 'number') {
     return Number.isFinite(value);
   }
@@ -107,7 +110,7 @@ export function isStrictCalcTerm(value: mixed): boolean {
 // A strict calc term, or a numeric string with a known CSS unit ('10px',
 // '1.5rem', '50%'). Used for '-', '*', and '/', which have no
 // string-concatenation reading to preserve.
-export function isCalcTerm(value: mixed): boolean {
+export function isCalcTerm(value: mixed): implies value is number | string {
   if (isStrictCalcTerm(value)) {
     return true;
   }
@@ -143,4 +146,151 @@ export function buildBinaryCalc(
 
 export function buildUnaryMinusCalc(arg: number | string): string {
   return `calc(-1 * ${calcOperandToString(arg)})`;
+}
+
+export type CssTokenEvaluationResult =
+  | { type: 'unhandled' }
+  | { type: 'value', value: mixed }
+  | { type: 'deopt', reason: string };
+
+function value(value: mixed): CssTokenEvaluationResult {
+  return { type: 'value', value };
+}
+
+function deopt(reason: string): CssTokenEvaluationResult {
+  return { type: 'deopt', reason };
+}
+
+const unhandled: CssTokenEvaluationResult = { type: 'unhandled' };
+
+function isSeparatedCssTokenConcat(left: mixed, right: mixed): boolean {
+  const leftIsRef = isCssVarOrCalc(left);
+  const rightIsRef = isCssVarOrCalc(right);
+  if (!leftIsRef && !rightIsRef) {
+    return true;
+  }
+
+  const other = leftIsRef ? right : left;
+  if (typeof other !== 'string') {
+    return false;
+  }
+  if (other === '') {
+    return true;
+  }
+  return leftIsRef ? /^[\s,)]/.test(other) : /[\s,(]$/.test(other);
+}
+
+export function evaluateCssTokenConcat(
+  left: mixed,
+  right: mixed,
+): CssTokenEvaluationResult {
+  if (!isSeparatedCssTokenConcat(left, right)) {
+    return deopt(errMsgs.INVALID_CSS_VAR_CONCAT);
+  }
+  return value(String(left) + String(right));
+}
+
+export function evaluateCssTokenUnary(
+  operator: string,
+  arg: mixed,
+): CssTokenEvaluationResult {
+  if (!isCssVarOrCalc(arg)) {
+    return unhandled;
+  }
+
+  switch (operator) {
+    case '-':
+      return value(buildUnaryMinusCalc(arg));
+    case '!':
+    case '+':
+    case '~':
+      return deopt(errMsgs.UNSUPPORTED_CSS_VAR_OPERATOR(operator));
+    default:
+      return unhandled;
+  }
+}
+
+export function evaluateCssTokenBinary(
+  operator: string,
+  left: mixed,
+  right: mixed,
+): CssTokenEvaluationResult {
+  if (!isCssVarOrCalc(left) && !isCssVarOrCalc(right)) {
+    return unhandled;
+  }
+
+  switch (operator) {
+    case '+':
+      // Only numbers and var()/calc() refs become calc() addition. A unit
+      // string operand is excluded because `+` on strings also expresses list
+      // concatenation, and `token + '4px'` vs `token + ' 4px'` must not
+      // silently mean different things.
+      if (isStrictCalcTerm(left) && isStrictCalcTerm(right)) {
+        return value(buildBinaryCalc(left, operator, right));
+      }
+      return evaluateCssTokenConcat(left, right);
+    case '-':
+    case '*':
+    case '/':
+      if (isCalcTerm(left) && isCalcTerm(right)) {
+        return value(buildBinaryCalc(left, operator, right));
+      }
+      return deopt(errMsgs.INVALID_CALC_OPERAND(operator));
+    case '==':
+      if (left == null || right == null) {
+        return value(left == right); // eslint-disable-line eqeqeq
+      }
+      return deopt(errMsgs.UNSUPPORTED_CSS_VAR_COMPARISON(operator));
+    case '!=':
+      if (left == null || right == null) {
+        return value(left != right); // eslint-disable-line eqeqeq
+      }
+      return deopt(errMsgs.UNSUPPORTED_CSS_VAR_COMPARISON(operator));
+    case '===':
+      if (left == null || right == null) {
+        return value(left === right);
+      }
+      return deopt(errMsgs.UNSUPPORTED_CSS_VAR_COMPARISON(operator));
+    case '!==':
+      if (left == null || right == null) {
+        return value(left !== right);
+      }
+      return deopt(errMsgs.UNSUPPORTED_CSS_VAR_COMPARISON(operator));
+    case '<':
+    case '>':
+    case '<=':
+    case '>=':
+      return deopt(errMsgs.UNSUPPORTED_CSS_VAR_COMPARISON(operator));
+    default:
+      return deopt(errMsgs.UNSUPPORTED_CSS_VAR_OPERATOR(operator));
+  }
+}
+
+export function evaluateCssTokenCall(
+  calleeName: ?string,
+  args: $ReadOnlyArray<mixed>,
+): CssTokenEvaluationResult {
+  const cssArgIndex = args.findIndex((arg) => isCssVarOrCalc(arg));
+  if (calleeName == null || cssArgIndex === -1) {
+    return unhandled;
+  }
+
+  if (calleeName === 'Number' && cssArgIndex === 0 && args.length > 0) {
+    return value(args[0]);
+  }
+
+  if (calleeName === 'String') {
+    return unhandled;
+  }
+
+  return deopt(errMsgs.UNSUPPORTED_CSS_VAR_FUNCTION(calleeName));
+}
+
+export function evaluateCssTokenObjectKey(
+  key: mixed,
+): CssTokenEvaluationResult {
+  if (typeof key === 'string' && key.startsWith('calc(')) {
+    return deopt(errMsgs.INVALID_CALC_KEY);
+  }
+  return unhandled;
 }

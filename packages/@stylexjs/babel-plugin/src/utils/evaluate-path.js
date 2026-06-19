@@ -28,13 +28,15 @@ import traverse from '@babel/traverse';
 import * as t from '@babel/types';
 import StateManager from './state-manager';
 import { utils } from '../shared';
+import type { EvaluationErrorKind } from './evaluation-errors';
 import * as errMsgs from './evaluation-errors';
 import {
-  isCssVarOrCalc,
-  isCalcTerm,
-  isStrictCalcTerm,
-  buildBinaryCalc,
-  buildUnaryMinusCalc,
+  type CssTokenEvaluationResult,
+  evaluateCssTokenBinary,
+  evaluateCssTokenCall,
+  evaluateCssTokenConcat,
+  evaluateCssTokenObjectKey,
+  evaluateCssTokenUnary,
 } from './css-calc';
 import fs from 'node:fs';
 
@@ -148,6 +150,7 @@ type State = {
   confident: boolean,
   deoptPath: NodePath<> | null,
   deoptReason?: string,
+  deoptReasonKind?: EvaluationErrorKind,
   seen: Map<t.Node, Result>,
   addedImports: Set<string>,
   functions: FunctionConfig,
@@ -162,6 +165,7 @@ type Result =
   | {
       resolved: false,
       reason: string,
+      reasonKind?: EvaluationErrorKind,
     };
 
 type VarGroupProxyOptions = {
@@ -247,11 +251,68 @@ export function createVarGroupProxy({
 /**
  * Deopts the evaluation
  */
-function deopt(path: NodePath<>, state: State, reason: string): void {
+function deopt(
+  path: NodePath<>,
+  state: State,
+  reason: string,
+  reasonKind?: EvaluationErrorKind,
+): void {
   if (!state.confident) return;
   state.deoptPath = path;
   state.confident = false;
   state.deoptReason = reason;
+  state.deoptReasonKind = reasonKind;
+}
+
+function applyCssTokenEvaluation(
+  result: CssTokenEvaluationResult,
+  path: NodePath<>,
+  state: State,
+): mixed {
+  if (result.type === 'value') {
+    return result.value;
+  }
+  if (result.type === 'deopt') {
+    return deopt(path, state, result.reason, errMsgs.CSS_TOKEN_ERROR);
+  }
+  return undefined;
+}
+
+type EvaluationDeopt = {
+  +deopt?: null | NodePath<>,
+  +reason?: string,
+  +reasonKind?: EvaluationErrorKind,
+  ...
+};
+
+function deoptFromEvaluation(result: EvaluationDeopt, state: State): void {
+  if (result.deopt != null) {
+    deopt(
+      result.deopt,
+      state,
+      result.reason ?? 'unknown error',
+      result.reasonKind,
+    );
+  }
+}
+
+type StateDeopt = {
+  +deoptReason?: string,
+  +deoptReasonKind?: EvaluationErrorKind,
+  ...
+};
+
+function deoptFromState(
+  path: NodePath<>,
+  state: State,
+  deoptState: StateDeopt,
+): void {
+  deopt(
+    path,
+    state,
+    deoptState.deoptReason ?? 'unknown error',
+    deoptState.deoptReasonKind,
+  );
 }
 
 function evaluateImportedFile(
@@ -346,7 +407,7 @@ function evaluateCached(path: NodePath<>, state: State): any {
     if (existing.resolved) {
       return existing.value;
     } else {
-      deopt(path, state, existing.reason);
+      deopt(path, state, existing.reason, existing.reasonKind);
       return;
     }
   } else {
@@ -714,27 +775,18 @@ function _evaluate(path: NodePath<>, state: State): any {
 
     const arg = evaluateCached(argument, state);
     if (!state.confident) return;
-    const argIsCssRef = isCssVarOrCalc(arg);
+    const cssTokenResult = evaluateCssTokenUnary(path.node.operator, arg);
+    if (cssTokenResult.type !== 'unhandled') {
+      return applyCssTokenEvaluation(cssTokenResult, path, state);
+    }
     switch (path.node.operator) {
       case '!':
-        if (argIsCssRef) {
-          return deopt(path, state, errMsgs.UNSUPPORTED_CSS_VAR_OPERATOR('!'));
-        }
         return !arg;
       case '+':
-        if (argIsCssRef) {
-          return deopt(path, state, errMsgs.UNSUPPORTED_CSS_VAR_OPERATOR('+'));
-        }
         return +arg;
       case '-':
-        if (argIsCssRef) {
-          return buildUnaryMinusCalc(arg);
-        }
         return -arg;
       case '~':
-        if (argIsCssRef) {
-          return deopt(path, state, errMsgs.UNSUPPORTED_CSS_VAR_OPERATOR('~'));
-        }
         return ~arg;
       case 'typeof':
         return typeof arg;
@@ -759,8 +811,7 @@ function _evaluate(path: NodePath<>, state: State): any {
       if (elemValue.confident) {
         arr.push(elemValue.value);
       } else {
-        elemValue.deopt &&
-          deopt(elemValue.deopt, state, elemValue.reason ?? 'unknown error');
+        deoptFromEvaluation(elemValue, state);
         return;
       }
     }
@@ -779,7 +830,7 @@ function _evaluate(path: NodePath<>, state: State): any {
       if (prop.isSpreadElement()) {
         const spreadExpression = evaluateCached(prop.get('argument'), state);
         if (!state.confident) {
-          return deopt(prop, state, state.deoptReason ?? 'unknown error');
+          return deoptFromState(prop, state, state);
         }
         // $FlowFixMe[unsafe-object-assign]
         Object.assign(obj, spreadExpression);
@@ -789,29 +840,22 @@ function _evaluate(path: NodePath<>, state: State): any {
         const keyPath: NodePath<t.ObjectProperty['key']> = prop.get('key');
         let key: string | number | boolean;
         if (prop.node.computed) {
-          const {
-            confident,
-            deopt: resultDeopt,
-            reason: deoptReason,
-            value,
-          } = evaluate(
+          const result = evaluate(
             keyPath,
             state.traversalState,
             state.functions,
             state.seen,
           );
 
-          if (!confident) {
-            resultDeopt &&
-              deopt(resultDeopt, state, deoptReason ?? 'unknown error');
+          if (!result.confident) {
+            deoptFromEvaluation(result, state);
             return;
           }
-          if (typeof value === 'string' && value.startsWith('calc(')) {
-            // var() keys are meaningful (custom property overrides), but a
-            // calc() expression can never be a valid style key.
-            return deopt(keyPath, state, errMsgs.INVALID_CALC_KEY);
+          const cssTokenResult = evaluateCssTokenObjectKey(result.value);
+          if (cssTokenResult.type !== 'unhandled') {
+            return applyCssTokenEvaluation(cssTokenResult, keyPath, state);
           }
-          key = value;
+          key = result.value;
         } else if (keyPath.isIdentifier()) {
           key = keyPath.node.name;
         } else {
@@ -827,8 +871,7 @@ function _evaluate(path: NodePath<>, state: State): any {
           state.seen,
         );
         if (!value.confident) {
-          value.deopt &&
-            deopt(value.deopt, state, value.reason ?? 'unknown error');
+          deoptFromEvaluation(value, state);
           return;
         }
         value = value.value;
@@ -863,11 +906,11 @@ function _evaluate(path: NodePath<>, state: State): any {
           return left || right;
         }
         if (!leftConfident) {
-          deopt(leftPath, state, stateForLeft.deoptReason ?? 'unknown error');
+          deoptFromState(leftPath, state, stateForLeft);
           return;
         }
         if (!rightConfident) {
-          deopt(rightPath, state, stateForRight.deoptReason ?? 'unknown error');
+          deoptFromState(rightPath, state, stateForRight);
           return;
         }
 
@@ -879,11 +922,11 @@ function _evaluate(path: NodePath<>, state: State): any {
           return left && right;
         }
         if (!leftConfident) {
-          deopt(leftPath, state, stateForLeft.deoptReason ?? 'unknown error');
+          deoptFromState(leftPath, state, stateForLeft);
           return;
         }
         if (!rightConfident) {
-          deopt(rightPath, state, stateForRight.deoptReason ?? 'unknown error');
+          deoptFromState(rightPath, state, stateForRight);
           return;
         }
 
@@ -895,11 +938,11 @@ function _evaluate(path: NodePath<>, state: State): any {
           return left ?? right;
         }
         if (!leftConfident) {
-          deopt(leftPath, state, stateForLeft.deoptReason ?? 'unknown error');
+          deoptFromState(leftPath, state, stateForLeft);
           return;
         }
         if (!rightConfident) {
-          deopt(rightPath, state, stateForRight.deoptReason ?? 'unknown error');
+          deoptFromState(rightPath, state, stateForRight);
           return;
         }
 
@@ -917,57 +960,13 @@ function _evaluate(path: NodePath<>, state: State): any {
     const right = evaluateCached(path.get('right'), state);
     if (!state.confident) return;
 
-    if (isCssVarOrCalc(left) || isCssVarOrCalc(right)) {
-      const op = path.node.operator;
-      switch (op) {
-        case '+': {
-          // Only numbers and var()/calc() refs become calc() addition. A
-          // unit string operand ('4px') is excluded because `+` on strings
-          // also expresses list concatenation, and `token + '4px'` vs
-          // `token + ' 4px'` must not silently mean different things.
-          if (isStrictCalcTerm(left) && isStrictCalcTerm(right)) {
-            return buildBinaryCalc(left, op, right);
-          }
-          // String concatenation is only allowed when a separator keeps the
-          // ref apart from the neighboring text, e.g. `'solid ' + token` or
-          // `'rgba(' + token`. A jammed junction ('var(--x)10px') would be
-          // invalid CSS, so it fails instead.
-          const refOnLeft = isCssVarOrCalc(left);
-          const other = refOnLeft ? right : left;
-          const separated =
-            typeof other === 'string' &&
-            (other === '' ||
-              (refOnLeft ? /^[\s,)]/.test(other) : /[\s,(]$/.test(other)));
-          if (!separated) {
-            return deopt(path, state, errMsgs.INVALID_CSS_VAR_CONCAT);
-          }
-          break;
-        }
-        case '-':
-        case '*':
-        case '/':
-          if (isCalcTerm(left) && isCalcTerm(right)) {
-            return buildBinaryCalc(left, op, right);
-          }
-          return deopt(path, state, errMsgs.INVALID_CALC_OPERAND(op));
-        case '==':
-        case '!=':
-        case '===':
-        case '!==':
-          // Guards against null/undefined have well-defined results for
-          // token references and are commonly used defensively.
-          if (left == null || right == null) {
-            break;
-          }
-          return deopt(path, state, errMsgs.UNSUPPORTED_CSS_VAR_COMPARISON(op));
-        case '<':
-        case '>':
-        case '<=':
-        case '>=':
-          return deopt(path, state, errMsgs.UNSUPPORTED_CSS_VAR_COMPARISON(op));
-        default:
-          return deopt(path, state, errMsgs.UNSUPPORTED_CSS_VAR_OPERATOR(op));
-      }
+    const cssTokenResult = evaluateCssTokenBinary(
+      path.node.operator,
+      left,
+      right,
+    );
+    if (cssTokenResult.type !== 'unhandled') {
+      return applyCssTokenEvaluation(cssTokenResult, path, state);
     }
 
     switch (path.node.operator) {
@@ -1124,24 +1123,9 @@ function _evaluate(path: NodePath<>, state: State): any {
           );
         if (!state.confident) return;
 
-        const cssArgIndex = args.findIndex((arg) => isCssVarOrCalc(arg));
-        if (
-          globalCalleeName === 'Number' &&
-          cssArgIndex === 0 &&
-          args.length > 0
-        ) {
-          return args[0];
-        }
-        if (
-          globalCalleeName != null &&
-          globalCalleeName !== 'String' &&
-          cssArgIndex !== -1
-        ) {
-          return deopt(
-            path,
-            state,
-            errMsgs.UNSUPPORTED_CSS_VAR_FUNCTION(globalCalleeName),
-          );
+        const cssTokenResult = evaluateCssTokenCall(globalCalleeName, args);
+        if (cssTokenResult.type !== 'unhandled') {
+          return applyCssTokenEvaluation(cssTokenResult, path, state);
         }
 
         if (func.fn) {
@@ -1164,6 +1148,15 @@ function evaluateQuasis(
 ) {
   let str = '';
 
+  const append = (nextValue: mixed, nextPath: NodePath<>): void => {
+    const result = evaluateCssTokenConcat(str, nextValue);
+    if (result.type === 'deopt') {
+      deopt(nextPath, state, result.reason, errMsgs.CSS_TOKEN_ERROR);
+    } else if (result.type === 'value') {
+      str = String(result.value);
+    }
+  };
+
   let i = 0;
   const exprs: $ReadOnlyArray<NodePath<>> = path.isTemplateLiteral()
     ? path.get('expressions')
@@ -1182,11 +1175,16 @@ function evaluateQuasis(
     if (!state.confident) break;
 
     // add on element
-    str += raw ? elem.value.raw : elem.value.cooked;
+    append(raw ? elem.value.raw : elem.value.cooked, path);
+    if (!state.confident) break;
 
     // add on interpolated expression if it's present
     const expr = exprs[i++];
-    if (expr) str += String(evaluateCached(expr, state));
+    if (expr) {
+      const exprValue = evaluateCached(expr, state);
+      if (!state.confident) break;
+      append(exprValue, expr);
+    }
   }
 
   if (!state.confident) return;
@@ -1228,6 +1226,7 @@ export function evaluate(
   value: any,
   deopt?: null | NodePath<>,
   reason?: string,
+  reasonKind?: EvaluationErrorKind,
 }> {
   const addedImports = importsForState.get(traversalState) ?? new Set();
   importsForState.set(traversalState, addedImports);
@@ -1247,6 +1246,7 @@ export function evaluate(
     confident: state.confident,
     deopt: state.deoptPath,
     reason: state.deoptReason,
+    reasonKind: state.deoptReasonKind,
     value: value,
   };
 }

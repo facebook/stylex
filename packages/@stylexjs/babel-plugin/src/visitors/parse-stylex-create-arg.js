@@ -10,14 +10,13 @@
 /* eslint-disable no-unused-vars */
 import type { NodePath } from '@babel/traverse';
 import type { FunctionConfig } from '../utils/evaluate-path';
+import type { EvaluationErrorKind } from '../utils/evaluation-errors';
 
 import * as t from '@babel/types';
 import StateManager from '../utils/state-manager';
 import { evaluate } from '../utils/evaluate-path';
-import {
-  isCssVarTokenError,
-  INVALID_CALC_KEY,
-} from '../utils/evaluation-errors';
+import { isCssTokenErrorKind } from '../utils/evaluation-errors';
+import { evaluateCssTokenObjectKey } from '../utils/css-calc';
 import { create, utils } from '../shared';
 import { messages } from '../shared';
 import {
@@ -51,6 +50,7 @@ export function evaluateStyleXCreateArg(
   value: any,
   deopt?: null | NodePath<>,
   reason?: string,
+  reasonKind?: EvaluationErrorKind,
   fns?: DynamicFns,
 }> {
   if (!path.isObjectExpression()) {
@@ -67,7 +67,13 @@ export function evaluateStyleXCreateArg(
     const objPropPath: NodePath<t.ObjectProperty> = prop;
     const keyResult = evaluateObjKey(objPropPath, traversalState, functions);
     if (!keyResult.confident) {
-      return { confident: false, deopt: keyResult.deopt, value: null };
+      return {
+        confident: false,
+        deopt: keyResult.deopt,
+        reason: keyResult.reason,
+        reasonKind: keyResult.reasonKind,
+        value: null,
+      };
     }
     const key = keyResult.value;
 
@@ -109,8 +115,8 @@ export function evaluateStyleXCreateArg(
     );
 
     if (!evalResult.confident) {
-      const { confident, value: v, deopt } = evalResult;
-      return { confident, value: v, deopt };
+      const { confident, value: v, deopt, reason, reasonKind } = evalResult;
+      return { confident, value: v, deopt, reason, reasonKind };
     }
     const { value: v, inlineStyles } = evalResult;
     value[key] = v;
@@ -130,6 +136,7 @@ function evaluatePartialObjectRecursively(
   value: any,
   deopt?: null | NodePath<>,
   reason?: string,
+  reasonKind?: EvaluationErrorKind,
   inlineStyles?: $ReadOnly<TInlineStyles>,
 }> {
   const obj: { [string]: mixed } = {};
@@ -157,6 +164,7 @@ function evaluatePartialObjectRecursively(
           confident: false,
           deopt: keyResult.deopt,
           reason: keyResult.reason,
+          reasonKind: keyResult.reasonKind,
           value: null,
         };
       }
@@ -185,6 +193,7 @@ function evaluatePartialObjectRecursively(
             confident: false,
             deopt: result.deopt,
             reason: result.reason,
+            reasonKind: result.reasonKind,
             value: null,
           };
         }
@@ -198,10 +207,9 @@ function evaluatePartialObjectRecursively(
           // hard error in static styles; erroring here too keeps dynamic
           // styles from silently degrading to runtime evaluation against the
           // literal 'var(--hash)' string.
-          const deoptReason = result.reason;
-          if (deoptReason != null && isCssVarTokenError(deoptReason)) {
+          if (isCssTokenErrorKind(result.reasonKind)) {
             throw (result.deopt ?? valuePath).buildCodeFrameError(
-              deoptReason,
+              result.reason ?? 'unknown error',
               SyntaxError,
             );
           }
@@ -282,7 +290,12 @@ function evaluatePartialObjectRecursively(
 
 type KeyResult =
   | { confident: true, value: string }
-  | { confident: false, deopt?: null | NodePath<>, reason?: string };
+  | {
+      confident: false,
+      deopt?: null | NodePath<>,
+      reason?: string,
+      reasonKind?: EvaluationErrorKind,
+    };
 
 function evaluateObjKey(
   prop: NodePath<t.ObjectProperty>,
@@ -294,12 +307,16 @@ function evaluateObjKey(
   if ((prop.node as t.ObjectProperty).computed) {
     const result = evaluate(keyPath, traversalState, functions);
     if (!result.confident) {
-      return { confident: false, deopt: result.deopt, reason: result.reason };
+      return {
+        confident: false,
+        deopt: result.deopt,
+        reason: result.reason,
+        reasonKind: result.reasonKind,
+      };
     }
-    if (typeof result.value === 'string' && result.value.startsWith('calc(')) {
-      // var() keys are meaningful (custom property overrides), but a calc()
-      // expression can never be a valid style key.
-      throw keyPath.buildCodeFrameError(INVALID_CALC_KEY, SyntaxError);
+    const keyEvaluation = evaluateCssTokenObjectKey(result.value);
+    if (keyEvaluation.type === 'deopt') {
+      throw keyPath.buildCodeFrameError(keyEvaluation.reason, SyntaxError);
     }
     key = result.value;
   } else if (keyPath.isIdentifier()) {
