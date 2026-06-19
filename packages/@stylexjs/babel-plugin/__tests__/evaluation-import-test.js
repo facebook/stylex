@@ -595,8 +595,9 @@ describe('Evaluation of imported values works based on configuration', () => {
       expect(code).not.toContain('calc');
     });
 
-    test('template literal interpolation is preserved', () => {
-      const code = transform(`
+    test('template literal interpolation uses the same concat rules', () => {
+      expect(() =>
+        transform(`
         import stylex from 'stylex';
         import { MyTheme } from 'otherFile.stylex';
         const styles = stylex.create({
@@ -605,8 +606,20 @@ describe('Evaluation of imported values works based on configuration', () => {
           }
         });
         stylex(styles.box);
+      `),
+      ).toThrow(/would\s+produce invalid CSS/);
+
+      const code = transform(`
+        import stylex from 'stylex';
+        import { MyTheme } from 'otherFile.stylex';
+        const styles = stylex.create({
+          box: {
+            margin: \`\${MyTheme.a} 4px\`,
+          }
+        });
+        stylex(styles.box);
       `).code;
-      expect(code).toContain(`${varName('a')}px`);
+      expect(code).toContain(`${varName('a')} 4px`);
       expect(code).not.toContain('calc');
     });
 
