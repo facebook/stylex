@@ -1024,6 +1024,7 @@ function _evaluate(path: NodePath<>, state: State): any {
     const callee = path.get('callee');
     let context;
     let func;
+    let globalCalleeName: null | string = null;
 
     // Number(1);
     if (
@@ -1031,6 +1032,7 @@ function _evaluate(path: NodePath<>, state: State): any {
       !path.scope.getBinding(callee.node.name) &&
       isValidCallee(callee.node.name)
     ) {
+      globalCalleeName = callee.node.name;
       func = global[callee.node.name];
     } else if (
       callee.isIdentifier() &&
@@ -1056,6 +1058,7 @@ function _evaluate(path: NodePath<>, state: State): any {
           isValidCallee(object.node.name) &&
           !isInvalidMethod(property.node.name)
         ) {
+          globalCalleeName = `${object.node.name}.${property.node.name}`;
           context = global[object.node.name];
           // @ts-expect-error property may not exist in context object
           func = context[property.node.name];
@@ -1120,6 +1123,26 @@ function _evaluate(path: NodePath<>, state: State): any {
             evaluateCached(arg, state),
           );
         if (!state.confident) return;
+
+        const cssArgIndex = args.findIndex((arg) => isCssVarOrCalc(arg));
+        if (
+          globalCalleeName === 'Number' &&
+          cssArgIndex === 0 &&
+          args.length > 0
+        ) {
+          return args[0];
+        }
+        if (
+          globalCalleeName != null &&
+          globalCalleeName !== 'String' &&
+          cssArgIndex !== -1
+        ) {
+          return deopt(
+            path,
+            state,
+            errMsgs.UNSUPPORTED_CSS_VAR_FUNCTION(globalCalleeName),
+          );
+        }
 
         if (func.fn) {
           return func.fn.apply(context, args);

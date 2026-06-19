@@ -62,6 +62,11 @@ Its value is a CSS variable reference that is only resolved in the browser.
 Branch on a plain JavaScript value instead. (Comparing against null or
 undefined is allowed.)\n\n`;
 
+export const UNSUPPORTED_CSS_VAR_FUNCTION = (fnName: string): string =>
+  `The "${fnName}" function cannot be applied to a StyleX variable or constant at compile time.
+Its value is a CSS variable reference that is only resolved in the browser.
+Use CSS calc() arithmetic directly instead.\n\n`;
+
 export const INVALID_CALC_KEY =
   'Arithmetic on a StyleX variable or constant cannot be used as a style property key.\n\n';
 
