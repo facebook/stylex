@@ -1323,5 +1323,23 @@ describe('@stylexjs/babel-plugin', () => {
       });
       expect(css).toMatch(/margin-top:calc\(26 \* var\(--[a-z0-9]+\)\)/);
     });
+
+    test('Number() wrapped const arithmetic in a local constant resolves to calc()', () => {
+      const metadata = transformCrossFile(`
+        import * as stylex from '@stylexjs/stylex';
+        import { consts } from 'constants.stylex';
+        const PRESENTER_Z_INDEX = Number(consts.A) + 1;
+        export const styles = stylex.create({
+          box: {
+            zIndex: PRESENTER_Z_INDEX,
+          },
+        });
+      `);
+
+      const css = stylexPlugin.processStylexRules(metadata, {
+        useLayers: false,
+      });
+      expect(css).toContain('z-index:calc(26 + 1)');
+    });
   });
 });

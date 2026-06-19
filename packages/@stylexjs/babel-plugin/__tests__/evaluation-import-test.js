@@ -529,8 +529,16 @@ describe('Evaluation of imported values works based on configuration', () => {
     });
 
     test('nested arithmetic flattens to parens', () => {
+      expect(transformStyle('MyTheme.a + MyTheme.b * MyTheme.c')).toContain(
+        `calc(${varName('a')} + (${varName('b')} * ${varName('c')}))`,
+      );
       expect(transformStyle('(MyTheme.a + MyTheme.b) * 2')).toContain(
         `calc((${varName('a')} + ${varName('b')}) * 2)`,
+      );
+      expect(
+        transformStyle('(MyTheme.a + (MyTheme.b - MyTheme.c)) / 2'),
+      ).toContain(
+        `calc((${varName('a')} + (${varName('b')} - ${varName('c')})) / 2)`,
       );
     });
 
@@ -569,6 +577,21 @@ describe('Evaluation of imported values works based on configuration', () => {
       `).code;
       // The whitespace normalizer removes the space after the comma.
       expect(code).toContain(`Arial,${varName('font')}`);
+      expect(code).not.toContain('calc');
+    });
+
+    test('function-like string concatenation around a token is preserved', () => {
+      const code = transform(`
+        import stylex from 'stylex';
+        import { MyTheme } from 'otherFile.stylex';
+        const styles = stylex.create({
+          box: {
+            transform: 'translateX(' + MyTheme.a + ')',
+          }
+        });
+        stylex(styles.box);
+      `).code;
+      expect(code).toContain(`translateX(${varName('a')})`);
       expect(code).not.toContain('calc');
     });
 
@@ -675,6 +698,28 @@ describe('Evaluation of imported values works based on configuration', () => {
       );
       expect(() => transformStyle("MyTheme.a * 'auto'")).toThrow(
         /requires the other operand/,
+      );
+    });
+
+    test('Number() wrapped token arithmetic in a local constant compiles to calc()', () => {
+      const code = transform(`
+        import stylex from 'stylex';
+        import { MyTheme } from 'otherFile.stylex';
+        const PRESENTER_Z_INDEX = Number(MyTheme.dialog) + 1;
+        const styles = stylex.create({
+          box: {
+            zIndex: PRESENTER_Z_INDEX,
+          }
+        });
+        stylex(styles.box);
+      `).code;
+
+      expect(code).toContain(`calc(${varName('dialog')} + 1)`);
+    });
+
+    test('global numeric functions on tokens throw instead of coercing to NaN', () => {
+      expect(() => transformStyle('Math.round(MyTheme.a) + 1')).toThrow(
+        /"Math.round" function cannot be applied/,
       );
     });
   });
