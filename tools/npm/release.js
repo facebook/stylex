@@ -12,7 +12,7 @@ const fs = require('fs');
 const glob = require('glob');
 const path = require('path');
 const yargs = require('yargs/yargs');
-const { execSync } = require('child_process');
+const { execSync, execFileSync } = require('child_process');
 const { hideBin } = require('yargs/helpers');
 
 const args = yargs(hideBin(process.argv))
@@ -107,39 +107,86 @@ console.log('Package manifest update complete');
 // Change working directory to the repo root
 process.chdir(path.join(__dirname, '../..'));
 
-execSync('npm install', { stdio: 'inherit' });
+// This repo uses yarn (see `packageManager` and CI). Running `npm install`
+// here would generate a stray `package-lock.json`, so install with yarn.
+execSync('yarn install', { stdio: 'inherit' });
 
 // Commit changes
 if (commit) {
-  // add changes
-  execSync('git add .', { stdio: 'inherit' });
+  // Stage only the files this release is expected to touch: the workspace
+  // manifests plus the yarn lockfile. Using an explicit pathspec instead of
+  // `git add .` avoids committing unrelated or stray artifacts (e.g. a
+  // `package-lock.json` if npm was ever run, or build output).
+  const manifestPaths = workspaces.map(({ packageJsonPath }) =>
+    path.relative(repoRoot, packageJsonPath),
+  );
+  // Pass args as an array (execFileSync, no shell) so paths can't be
+  // interpreted by the shell.
+  execFileSync('git', ['add', ...manifestPaths, 'yarn.lock'], {
+    stdio: 'inherit',
+  });
   // commit
-  execSync(`git commit -m "${pkgVersion}" --no-verify`, { stdio: 'inherit' });
+  execFileSync('git', ['commit', '-m', pkgVersion, '--no-verify'], {
+    stdio: 'inherit',
+  });
   // tag
-  // execSync(`git tag -fam ${pkgVersion} "${pkgVersion}"`, { stdio: 'inherit' });
+  // execFileSync('git', ['tag', '-f', '-a', '-m', pkgVersion, pkgVersion], { stdio: 'inherit' });
 }
 
 if (publish) {
-  const publishCmd = otp == null ? 'npm publish' : `npm publish --otp ${otp}`;
+  // Scoped packages (@stylexjs/*) default to restricted access on first
+  // publish, which fails with E402 unless you have a paid plan. All stylex
+  // packages are public, so always publish with `--access public`. This is a
+  // no-op for packages that are already public.
+  const publishArgs = ['publish', '--access', 'public'];
+  if (otp != null) {
+    publishArgs.push('--otp', otp);
+  }
   // publish public packages
+  const failed = [];
   workspaces.forEach(({ directory, packageJson }) => {
     if (!packageJson.private) {
       const version = packageJson.version;
       const packageName = packageJson.name;
       try {
         // Check if the version has already been published
-        execSync(`npm view --silent ${packageName}@${version} version`);
+        execFileSync(
+          'npm',
+          ['view', '--silent', `${packageName}@${version}`, 'version'],
+          { stdio: 'ignore' },
+        );
         console.log(
           `Skipping ${packageName} as version ${version} has already been published`,
         );
       } catch (error) {
-        // If the version has not been published, proceed with publishing
-        execSync(`cd ${directory} && ${publishCmd}`, {
-          stdio: 'inherit',
-        });
+        // If the version has not been published, proceed with publishing.
+        // Don't let a single failure (e.g. a package the current user lacks
+        // publish rights for) abort the whole release — log it and continue
+        // so the remaining packages still get published. Run in the package
+        // directory via `cwd` (no shell) instead of `cd <dir> && ...`.
+        try {
+          execFileSync('npm', publishArgs, {
+            cwd: directory,
+            stdio: 'inherit',
+          });
+        } catch (publishError) {
+          console.error(
+            `Failed to publish ${packageName}@${version} — skipping. ${publishError.message}`,
+          );
+          failed.push(`${packageName}@${version}`);
+        }
       }
     }
   });
+  // Surface a non-zero exit if any package failed, so the release isn't
+  // reported as successful when packages were silently skipped. Use
+  // `exitCode` (not `exit`) so every package is still attempted first.
+  if (failed.length > 0) {
+    console.error(
+      `\n${failed.length} package(s) failed to publish: ${failed.join(', ')}`,
+    );
+    process.exitCode = 1;
+  }
   // push changes
   // execSync('git push --tags origin main', { stdio: 'inherit' });
 }
