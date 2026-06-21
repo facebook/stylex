@@ -49,7 +49,7 @@
     "@types/react-dom": "^19.2.3",
     "typescript": "^5.9.3",
     "unplugin": "^2.3.10",
-    "vite": "^7.3.2",
+    "vite": "^7.3.5",
     "vite-tsconfig-paths": "^5.1.4"
   }
 }
