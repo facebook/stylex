@@ -16,7 +16,7 @@
     "react-dom": "^19.2.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.18.2",
+    "@babel/core": "^7.29.6",
     "@babel/preset-env": "^7.18.2",
     "@babel/preset-flow": "^7.27.1",
     "@babel/preset-react": "^7.17.12",
