@@ -421,7 +421,7 @@ export default function transformStyleXCreate(
                       t.conditionalExpression(
                         t.binaryExpression('!=', expr, t.nullLiteral()),
                         t.stringLiteral(clsWithSpace),
-                        expr,
+                        t.stringLiteral(''),
                       ),
                     );
                   } else {
