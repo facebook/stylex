@@ -10,12 +10,14 @@ import StylexAnimatedLogo from '@/components/StylexAnimatedLogo';
 import CtaButton from '@/components/CtaButton';
 import TypingWord from '@/components/TypingWord';
 import Footer from '@/components/Footer';
+import { Seo } from '@/components/Seo';
 import { vars } from '@/theming/vars.stylex';
 
 export default function Home() {
   return (
     <>
       <title>StyleX — styling system for ambitious interfaces</title>
+      <Seo />
       <main {...stylex.props(styles.main)}>
         <section {...stylex.props(styles.hero)}>
           <h1 {...stylex.props(styles.title)}>

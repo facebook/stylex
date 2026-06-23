@@ -14,6 +14,7 @@ import {
   DocsTitle,
 } from '@/components/layout/page';
 import { baseOptions } from '@/lib/layout.shared';
+import { Seo } from '@/components/Seo';
 import { mdxComponents } from '@/components/mdx';
 import nmnImage from '@/static/img/nmn.jpg';
 import necolasImage from '@/static/img/necolas.jpg';
@@ -52,6 +53,10 @@ export default function BlogPage({ slugs }: PageProps<'/blog/[...slugs]'>) {
       // breadcrumb={{ enabled: true }}
     >
       <title>{`${page.data.title} | StyleX`}</title>
+      <Seo
+        title={page.data.title}
+        description={page.data.description || undefined}
+      />
       <DocsTitle>
         {page.data.title}{' '}
         {/* <code>

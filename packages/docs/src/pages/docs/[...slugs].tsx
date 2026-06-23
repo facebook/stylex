@@ -13,6 +13,7 @@ import {
   DocsTitle,
 } from '@/components/layout/page';
 import { mdxComponents } from '@/components/mdx';
+import { Seo } from '@/components/Seo';
 import * as stylex from '@stylexjs/stylex';
 import { vars } from '@/theming/vars.stylex';
 
@@ -34,6 +35,10 @@ export default function DocPage({ slugs }: PageProps<'/docs/[...slugs]'>) {
   return (
     <DocsPage toc={page.data.toc}>
       <title>{`${page.data.title} | StyleX`}</title>
+      <Seo
+        title={page.data.title}
+        description={page.data.description || undefined}
+      />
       <DocsTitle>
         {slugs.length > 1 && slugs[0] === 'api' ? (
           <code {...stylex.props(styles.codeTitle)}>{page.data.title}</code>

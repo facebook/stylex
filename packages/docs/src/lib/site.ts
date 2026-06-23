@@ -10,3 +10,10 @@
 // Graph, Twitter/X cards) require absolute image and page URLs — a bundler
 // relative path like "/assets/…png" does not resolve in link previews.
 export const SITE_URL = 'https://stylexjs.com';
+
+export const SITE_NAME = 'StyleX';
+
+// Fallback title/description for pages that don't provide their own.
+export const DEFAULT_TITLE =
+  'StyleX — The styling system for ambitious interfaces';
+export const DEFAULT_DESCRIPTION = 'The styling system that powers Meta.';
