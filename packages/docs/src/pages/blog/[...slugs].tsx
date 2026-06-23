@@ -44,6 +44,16 @@ export default function BlogPage({ slugs }: PageProps<'/blog/[...slugs]'>) {
     (author) => AUTHORS[author as keyof typeof AUTHORS],
   );
 
+  const pathMatch = page.path.match(/^(\d{4}-\d{2}-\d{2})/);
+  const dateStr = pathMatch?.[1];
+  const formattedDate = dateStr
+    ? new Date(dateStr + 'T00:00:00').toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      })
+    : null;
+
   return (
     <DocsPage
       {...baseOptions()}
@@ -59,16 +69,30 @@ export default function BlogPage({ slugs }: PageProps<'/blog/[...slugs]'>) {
           {slugs.length === 1 && slugs[0] === page.data.slug ? 'true' : 'false'}
         </code> */}
       </DocsTitle>
-      <div {...stylex.props(styles.authors)}>
-        {authors.map((author) => (
-          <a href={author.url} target="_blank" {...stylex.props(styles.author)}>
-            <img {...stylex.props(styles.authorImage)} src={author.image_url} />
-            <div {...stylex.props(styles.authorInfo)}>
-              <div {...stylex.props(styles.authorName)}>{author.name}</div>
-              <div {...stylex.props(styles.authorTitle)}>{author.title}</div>
-            </div>
-          </a>
-        ))}
+      <div {...stylex.props(styles.metadata)}>
+        <div {...stylex.props(styles.authors)}>
+          {authors.map((author) => (
+            <a
+              href={author.url}
+              target="_blank"
+              {...stylex.props(styles.author)}
+            >
+              <img
+                {...stylex.props(styles.authorImage)}
+                src={author.image_url}
+              />
+              <div {...stylex.props(styles.authorInfo)}>
+                <div {...stylex.props(styles.authorName)}>{author.name}</div>
+                <div {...stylex.props(styles.authorTitle)}>{author.title}</div>
+              </div>
+            </a>
+          ))}
+        </div>
+        {formattedDate && (
+          <time {...stylex.props(styles.date)} dateTime={dateStr}>
+            {formattedDate}
+          </time>
+        )}
       </div>
       <DocsDescription>{page.data.description}</DocsDescription>
       <DocsBody>
@@ -108,6 +132,11 @@ const styles = stylex.create({
   fallbackDescription: {
     color: `${vars['--color-fd-muted-foreground']}`,
   },
+  metadata: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 8,
+  },
   authors: {
     display: 'flex',
     gap: 32,
@@ -132,6 +161,10 @@ const styles = stylex.create({
     color: `${vars['--color-fd-primary']}`,
   },
   authorTitle: {
+    fontSize: 14,
+    color: `${vars['--color-fd-muted-foreground']}`,
+  },
+  date: {
     fontSize: 14,
     color: `${vars['--color-fd-muted-foreground']}`,
   },
