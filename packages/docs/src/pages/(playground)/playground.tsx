@@ -16,8 +16,8 @@ export default function PlaygroundPage() {
     <>
       <title>Playground | StyleX</title>
       <Seo
-        title="Playground"
         description="Try StyleX in your browser — edit styles and see the compiled output live."
+        title="Playground"
       />
       <main {...stylex.props(styles.main)}>
         <Playground />

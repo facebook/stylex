@@ -36,8 +36,8 @@ export default function DocPage({ slugs }: PageProps<'/docs/[...slugs]'>) {
     <DocsPage toc={page.data.toc}>
       <title>{`${page.data.title} | StyleX`}</title>
       <Seo
-        title={page.data.title}
         description={page.data.description || undefined}
+        title={page.data.title}
       />
       <DocsTitle>
         {slugs.length > 1 && slugs[0] === 'api' ? (
