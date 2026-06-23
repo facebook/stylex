@@ -8,12 +8,17 @@
 import * as stylex from '@stylexjs/stylex';
 import { Playground } from '@/components/Playground/DynamicPlayground';
 import Footer from '@/components/Footer';
+import { Seo } from '@/components/Seo';
 import { vars } from '@/theming/vars.stylex';
 
 export default function PlaygroundPage() {
   return (
     <>
       <title>Playground | StyleX</title>
+      <Seo
+        description="Try StyleX in your browser — edit styles and see the compiled output live."
+        title="Playground"
+      />
       <main {...stylex.props(styles.main)}>
         <Playground />
       </main>
