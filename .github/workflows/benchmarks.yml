@@ -2,6 +2,9 @@ name: benchmarks
 
 on: [pull_request]
 
+permissions:
+  contents: read
+
 jobs:
   perf:
     runs-on: ubuntu-latest
