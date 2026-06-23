@@ -6,13 +6,14 @@
  */
 import { Feed } from 'feed';
 import { blogSource } from '@/lib/source';
+import { SITE_URL } from '@/lib/site';
 import { marked } from 'marked';
 import type { InferPageType } from 'fumadocs-core/source';
 
 const logoUrl = '/stylex-logo-small.svg';
 const faviconUrl = '/favicon.svg';
 
-const baseUrl = 'https://stylexjs.com';
+const baseUrl = SITE_URL;
 
 const AUTHORS: Record<string, { name: string; link: string }> = {
   mellyeliu: {
@@ -44,8 +45,8 @@ async function createFeed(): Promise<Feed> {
   const feed = new Feed({
     title: 'StyleX Blog',
     description: 'The latest news and updates about StyleX.',
-    id: `https://stylexjs.com/blog`,
-    link: `https://stylexjs.com/blog`,
+    id: `${baseUrl}/blog`,
+    link: `${baseUrl}/blog`,
     language: 'en',
     image: `${baseUrl}${logoUrl}`,
     favicon: `${baseUrl}${faviconUrl}`,
@@ -107,4 +108,3 @@ export async function getAtom(): Promise<string> {
   const feed = await getFeed();
   return feed.atom1();
 }
-
