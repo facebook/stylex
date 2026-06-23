@@ -386,6 +386,11 @@ export const unpluginFactory = (userOptions = {}, metaOptions) => {
 
   const plugin = {
     name: '@stylexjs/unplugin',
+    // Only transform JS-like files to avoid corrupting binary files (WASM, images, etc.)
+    transformInclude(id) {
+      const JS_LIKE_RE = /\.[cm]?[jt]sx?(\?|$)/;
+      return JS_LIKE_RE.test(id);
+    },
     apply: (config, env) => {
       try {
         const command =
