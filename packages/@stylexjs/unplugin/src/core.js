@@ -162,6 +162,53 @@ function hasStylexDependency(manifest, targetPackages) {
   return false;
 }
 
+function hasPrecompiledCss(manifest) {
+  if (!manifest || typeof manifest !== 'object') return false;
+
+  if (typeof manifest.style === 'string' && manifest.style.endsWith('.css')) {
+    return true;
+  }
+
+  const { exports } = manifest;
+  if (exports === undefined) {
+    return false;
+  }
+
+  const visited = new Set();
+  function scan(val) {
+    if (val === null || val === undefined) return false;
+    if (typeof val === 'string') {
+      return val.endsWith('.css');
+    }
+    if (typeof val === 'object') {
+      if (visited.has(val)) return false;
+      visited.add(val);
+      if (Array.isArray(val)) {
+        for (const item of val) {
+          if (scan(item)) return true;
+        }
+        return false;
+      }
+      if (
+        (typeof val.style === 'string' && val.style.endsWith('.css')) ||
+        (typeof val.css === 'string' && val.css.endsWith('.css'))
+      ) {
+        return true;
+      }
+      for (const key of Object.keys(val)) {
+        if (scan(val[key])) return true;
+      }
+    }
+    return false;
+  }
+
+  return scan(exports);
+}
+
+function mapToPackageInfos(map) {
+  return Array.from(map, ([name, precompiled]) => ({ name, precompiled }));
+}
+
 function discoverStylexPackages({
   importSources,
   explicitPackages,
@@ -174,38 +221,67 @@ function discoverStylexPackages({
       .filter(Boolean)
       .concat(['@stylexjs/stylex']),
   );
-  const found = new Set(explicitPackages || []);
+
+  const found = new Map();
+  const explicitSet = new Set(explicitPackages || []);
+  const deps = new Set(explicitPackages || []);
+
   const pkgJsonPath = findNearestPackageJson(rootDir);
-  if (!pkgJsonPath) return Array.from(found);
-  const pkgDir = path.dirname(pkgJsonPath);
-  const pkgJson = readJSON(pkgJsonPath);
-  if (!pkgJson) return Array.from(found);
-  const depFields = [
-    'dependencies',
-    'devDependencies',
-    'peerDependencies',
-    'optionalDependencies',
-  ];
-  const deps = new Set();
-  for (const field of depFields) {
-    const entries = pkgJson[field];
-    if (!entries || typeof entries !== 'object') continue;
-    for (const name of Object.keys(entries)) deps.add(name);
+  const pkgDir = pkgJsonPath ? path.dirname(pkgJsonPath) : rootDir;
+  if (pkgJsonPath) {
+    const pkgJson = readJSON(pkgJsonPath);
+    if (pkgJson) {
+      const depFields = [
+        'dependencies',
+        'devDependencies',
+        'peerDependencies',
+        'optionalDependencies',
+      ];
+      for (const field of depFields) {
+        const entries = pkgJson[field];
+        if (!entries || typeof entries !== 'object') continue;
+        for (const name of Object.keys(entries)) deps.add(name);
+      }
+    }
   }
+
   for (const dep of deps) {
     let manifestPath = null;
     try {
       manifestPath = resolver.resolve(`${dep}/package.json`, {
         paths: [pkgDir],
       });
-    } catch {}
-    if (!manifestPath) continue;
+    } catch {
+      try {
+        const entry = resolver.resolve(dep, { paths: [pkgDir] });
+        manifestPath = findNearestPackageJson(path.dirname(entry));
+      } catch {}
+
+      if (!manifestPath) {
+        const candidate = path.join(
+          pkgDir,
+          'node_modules',
+          dep,
+          'package.json',
+        );
+        if (fs.existsSync(candidate)) manifestPath = candidate;
+      }
+    }
+
+    if (!manifestPath) {
+      if (explicitSet.has(dep)) {
+        found.set(dep, false);
+      }
+      continue;
+    }
+
     const manifest = readJSON(manifestPath);
-    if (hasStylexDependency(manifest, targetPackages)) {
-      found.add(dep);
+    if (explicitSet.has(dep) || hasStylexDependency(manifest, targetPackages)) {
+      found.set(dep, hasPrecompiledCss(manifest));
     }
   }
-  return Array.from(found);
+
+  return mapToPackageInfos(found);
 }
 
 const JS_LIKE_RE = /\.[cm]?[jt]sx?(\?|$)/;
@@ -252,12 +328,78 @@ export const unpluginFactory = (userOptions = {}, metaOptions) => {
   const requireFromCwd = nearestPkgJson
     ? createRequire(nearestPkgJson)
     : createRequire(path.join(process.cwd(), 'package.json'));
-  const stylexPackages = discoverStylexPackages({
+  const stylexPackageInfos = discoverStylexPackages({
     importSources,
     explicitPackages: externalPackages,
     rootDir: nearestPkgJson ? path.dirname(nearestPkgJson) : process.cwd(),
     resolver: requireFromCwd,
   });
+
+  const precompiledPackages = stylexPackageInfos
+    .filter((p) => p.precompiled)
+    .map((p) => p.name);
+
+  if (precompiledPackages.length > 0) {
+    const warnedSet = (globalThis.__stylex_warned_packages =
+      globalThis.__stylex_warned_packages || new Set());
+    const newWarnPackages = precompiledPackages.filter(
+      (name) => !warnedSet.has(name),
+    );
+
+    if (newWarnPackages.length > 0) {
+      newWarnPackages.forEach((name) => warnedSet.add(name));
+      const packageList = newWarnPackages.map((p) => `  • ${p}`).join('\n');
+      console.warn(`
+[StyleX] ⚠️  Potential CSS ordering issue detected.
+
+The following packages use StyleX and ship pre-compiled CSS:
+${packageList}
+
+Because these packages are not being re-compiled by the StyleX plugin, both
+the library CSS and your app-local CSS are emitted as separate files. They
+share the same atomic class names (e.g. .xuxw1ft for white-space:nowrap) but
+your app's CSS is loaded last and therefore unconditionally overrides the
+library's CSS for any colliding rule — regardless of intended priority.
+
+Recommended fixes (pick one):
+  1. Publish the library without pre-compiled CSS and add it to Next.js
+     \`transpilePackages\` so a single compiler handles everything.
+  2. Enable \`useCSSLayers: true\` in BOTH the library build and this plugin
+     so @layer order governs priority instead of stylesheet load order.
+  3. Ensure the library <link> appears after your app <link> in <head>
+     (workaround only — this is fragile and not recommended long-term).
+`);
+    }
+  }
+
+  const isNext =
+    !!process.env.NEXT_RUNTIME ||
+    !!process.env.NEXT_PHASE ||
+    (framework === 'webpack' &&
+      !!(
+        process.env.npm_package_dependencies_next ||
+        process.env.npm_package_devDependencies_next
+      ));
+
+  if (userOptions.runtimeInjection && isNext) {
+    const msg = `[StyleX] ❌  \`runtimeInjection\` must not be used in Next.js.
+
+Next.js renders on the server and hydrates on the client. Styles
+injected at runtime are appended after the static stylesheet, so they always
+override static rules — including styles from third-party StyleX libraries.
+They also appear as empty <style> tags in browser DevTools.
+
+Remove \`runtimeInjection: true\` from your StyleX plugin config.
+`;
+    if (!dev) {
+      throw new Error(msg);
+    } else {
+      console.error(msg);
+    }
+  }
+
+  const stylexPackages = stylexPackageInfos.map((p) => p.name);
+
   // Resolve nearest node_modules and cache under node_modules/.stylex/rules.json
   function findNearestNodeModules(startDir) {
     let dir = startDir;
