@@ -22,6 +22,20 @@ const eslintTester = new ESLintTester({
 
 eslintTester.run('stylex-valid-styles', rule.default, {
   valid: [
+    // issue #1701 — numeric values are valid for grid line properties
+    `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({
+        foo: {
+          gridColumn: 1,
+          gridColumnStart: 1,
+          gridColumnEnd: 3,
+          gridRow: 2,
+          gridRowStart: -1,
+          gridRowEnd: 4,
+        }
+      });
+    `,
     // test for local static variables
     `
       import * as stylex from '@stylexjs/stylex';
