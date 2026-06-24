@@ -543,7 +543,7 @@ describe('@stylexjs/babel-plugin', () => {
         };
         export const styles = {
           node: padding => [_temp, {
-            kmVPX3: padding != null ? "x1fozly0" : padding,
+            kmVPX3: padding != null ? "x1fozly0" : "",
             $$css: true
           }, {
             "--x-padding": (val => typeof val === "number" ? val + "px" : val != null ? val : undefined)(padding)
@@ -603,7 +603,7 @@ describe('@stylexjs/babel-plugin', () => {
         import { breakpoints } from './constants.stylex';
         export const styles = {
           node: color => [{
-            kMwMTN: "xbs0o1n " + (color != null ? "x3d248p" : color),
+            kMwMTN: "xbs0o1n " + (color != null ? "x3d248p" : ""),
             $$css: true
           }, {
             "--x-4xs81a": color != null ? color : undefined
