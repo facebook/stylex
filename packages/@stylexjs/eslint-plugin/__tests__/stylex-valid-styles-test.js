@@ -2425,6 +2425,62 @@ revert`,
       ],
     },
     {
+      // A leading comma must not be accepted as a valid length. Regression
+      // test for the length validators previously using the character class
+      // `[-,+]`, which accidentally allowed a literal comma prefix.
+      // `textUnderlineOffset` is length-only (it does not accept arbitrary
+      // strings), so this exercises the length validators directly.
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          invalidStyle: {
+            textUnderlineOffset: ',4px',
+          },
+        });
+      `,
+      errors: [
+        {
+          message: `textUnderlineOffset value must be one of:
+auto
+a number literal or math expression
+a number ending in px, mm, in, pc, pt
+a number ending in ch, em, ex, ic, rem, vh, vw, vmin, vmax, svh, dvh, lvh, svw, dvw, ldw, cqw, cqh, cqmin, cqmax
+A string literal representing a percentage (e.g. 100%)
+null
+initial
+inherit
+unset
+revert`,
+        },
+      ],
+    },
+    {
+      // Same as above, for the relative-length validator.
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          invalidStyle: {
+            textUnderlineOffset: ',4rem',
+          },
+        });
+      `,
+      errors: [
+        {
+          message: `textUnderlineOffset value must be one of:
+auto
+a number literal or math expression
+a number ending in px, mm, in, pc, pt
+a number ending in ch, em, ex, ic, rem, vh, vw, vmin, vmax, svh, dvh, lvh, svw, dvw, ldw, cqw, cqh, cqmin, cqmax
+A string literal representing a percentage (e.g. 100%)
+null
+initial
+inherit
+unset
+revert`,
+        },
+      ],
+    },
+    {
       code: `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
