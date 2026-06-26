@@ -106,7 +106,7 @@ export class BorderRadiusShorthand {
     const verticalBottomRight = this.verticalBottomRight.toString();
     const verticalBottomLeft = this.verticalBottomLeft.toString();
 
-    let sStr = `${horizontalTopLeft} ${horizontalTopRight} ${horizontalBottomRight} ${horizontalBottomLeft}`;
+    let sStr = `${verticalTopLeft} ${verticalTopRight} ${verticalBottomRight} ${verticalBottomLeft}`;
     // All three are the same
     if (
       verticalTopLeft === verticalTopRight &&
