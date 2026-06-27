@@ -9,12 +9,12 @@ import { createWebpackPlugin } from 'unplugin';
 
 import { unpluginFactory } from './core';
 
-export function attachWebpackHooks(plugin) {
+export function attachWebpackHooks(plugin, hookName = 'webpack') {
   const cssInjectionTarget = plugin.__stylexCssInjectionTarget;
 
   return {
     ...plugin,
-    webpack(compiler) {
+    [hookName](compiler) {
       const PLUGIN_NAME = '@stylexjs/unplugin';
       compiler.hooks.thisCompilation.tap(PLUGIN_NAME, (compilation) => {
         plugin.__stylexResetState?.();
