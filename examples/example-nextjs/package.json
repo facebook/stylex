@@ -20,14 +20,14 @@
     "@stylexjs/eslint-plugin": "0.19.0",
     "@stylexjs/postcss-plugin": "0.19.0",
     "@types/json-schema": "^7.0.15",
-    "@types/node": "^22.7.6",
+    "@types/node": "^26.0.1",
     "@types/react": "^19.2.6",
     "@types/react-dom": "^19.2.3",
     "@typescript-eslint/parser": "^8.48.1",
-    "eslint": "^9.39.1",
+    "eslint": "^10.6.0",
     "eslint-config-next": "^16.0.6",
     "shx": "^0.4.0",
-    "typescript": "^5.9.3",
+    "typescript": "^6.0.3",
     "client-only": "0.0.1"
   }
 }
