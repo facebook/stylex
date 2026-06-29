@@ -3385,7 +3385,7 @@ describe('@stylexjs/babel-plugin', () => {
       `);
     });
 
-    test('hoisting correctly with duplicte names', () => {
+    test('hoisting correctly with duplicate names', () => {
       expect(
         transform(
           `
