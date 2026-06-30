@@ -10,11 +10,25 @@
 jest.autoMockOff();
 
 import { transformSync } from '@babel/core';
+import flow from '@babel/plugin-syntax-flow';
 import jsx from '@babel/plugin-syntax-jsx';
+import typescript from '@babel/plugin-syntax-typescript';
 import stylexPlugin from '../src/index';
 import path from 'path';
 
 function transform(source, opts = {}) {
+  return transformWithSyntaxPlugins(source, [flow, jsx], opts);
+}
+
+function transformTypeScript(source, opts = {}) {
+  return transformWithSyntaxPlugins(
+    source,
+    [jsx, [typescript, { allExtensions: true, isTSX: true }]],
+    { filename: 'test.tsx', ...opts },
+  );
+}
+
+function transformWithSyntaxPlugins(source, syntaxPlugins, opts = {}) {
   return transformSync(source, {
     filename: opts.filename,
     parserOpts: {
@@ -23,7 +37,7 @@ function transform(source, opts = {}) {
     },
     babelrc: false,
     plugins: [
-      jsx,
+      ...syntaxPlugins,
       [
         stylexPlugin,
         {
@@ -306,6 +320,183 @@ describe('@stylexjs/babel-plugin', () => {
             return <div className="color-x1e2nbdu" data-style-src="npm-package:js/node_modules/npm-package/dist/components/Foo.react.js:4">Hello World</div>;
           }"
         `);
+      });
+
+      describe('sx attribute runtime binding', () => {
+        test('injects a value namespace import alongside a type namespace import', () => {
+          expect(
+            transformTypeScript(`
+              import type * as stylex from '@stylexjs/stylex';
+              function Foo(props) {
+                const x = props.x;
+                return <svg sx={x} />;
+              }
+            `),
+          ).toMatchInlineSnapshot(`
+            "import * as _stylex from "@stylexjs/stylex";
+            import type * as stylex from '@stylexjs/stylex';
+            function Foo(props) {
+              const x = props.x;
+              return <svg {..._stylex.props(x)} />;
+            }"
+          `);
+        });
+
+        test('injects a value namespace import alongside a named type import', () => {
+          expect(
+            transform(`
+              import type { StyleXStyles } from '@stylexjs/stylex';
+              function Foo(props) {
+                const x = props.x;
+                return <svg sx={x} />;
+              }
+            `),
+          ).toMatchInlineSnapshot(`
+            "import * as _stylex from "@stylexjs/stylex";
+            import type { StyleXStyles } from '@stylexjs/stylex';
+            function Foo(props) {
+              const x = props.x;
+              return <svg {..._stylex.props(x)} />;
+            }"
+          `);
+        });
+
+        test('injects a value namespace import when there is no stylex import', () => {
+          expect(
+            transform(`
+              function Foo(props) {
+                const x = props.x;
+                return <svg sx={x} />;
+              }
+            `),
+          ).toMatchInlineSnapshot(`
+            "import * as stylex from "@stylexjs/stylex";
+            function Foo(props) {
+              const x = props.x;
+              return <svg {...stylex.props(x)} />;
+            }"
+          `);
+        });
+
+        test('injects from configured import source when there is no stylex import', () => {
+          expect(
+            transform(
+              `
+                function Foo(props) {
+                  const x = props.x;
+                  return <svg sx={x} />;
+                }
+              `,
+              { importSources: ['custom-stylex-path'] },
+            ),
+          ).toMatchInlineSnapshot(`
+            "import * as stylex from "custom-stylex-path";
+            function Foo(props) {
+              const x = props.x;
+              return <svg {...stylex.props(x)} />;
+            }"
+          `);
+        });
+
+        test('injects from existing type-only custom import source', () => {
+          expect(
+            transform(
+              `
+                import type { StyleXStyles } from 'custom-stylex-path';
+                function Foo(props) {
+                  const x = props.x;
+                  return <svg sx={x} />;
+                }
+              `,
+              { importSources: ['custom-stylex-path'] },
+            ),
+          ).toMatchInlineSnapshot(`
+            "import * as _stylex from "custom-stylex-path";
+            import type { StyleXStyles } from 'custom-stylex-path';
+            function Foo(props) {
+              const x = props.x;
+              return <svg {..._stylex.props(x)} />;
+            }"
+          `);
+        });
+
+        test('reuses an existing value namespace import', () => {
+          expect(
+            transform(`
+              import * as stylex from '@stylexjs/stylex';
+              function Foo(props) {
+                const x = props.x;
+                return <svg sx={x} />;
+              }
+            `),
+          ).toMatchInlineSnapshot(`
+            "import * as stylex from '@stylexjs/stylex';
+            function Foo(props) {
+              const x = props.x;
+              return <svg {...stylex.props(x)} />;
+            }"
+          `);
+        });
+
+        test('avoids a local stylex binding that would shadow the injected import', () => {
+          expect(
+            transform(`
+              function Foo(props) {
+                const stylex = props.stylex;
+                const x = props.x;
+                return <svg sx={x} />;
+              }
+            `),
+          ).toMatchInlineSnapshot(`
+            "import * as _stylex from "@stylexjs/stylex";
+            function Foo(props) {
+              const stylex = props.stylex;
+              const x = props.x;
+              return <svg {..._stylex.props(x)} />;
+            }"
+          `);
+        });
+
+        test('injects one value namespace import for multiple sx attributes', () => {
+          expect(
+            transform(`
+              function Foo(props) {
+                const x = props.x;
+                return (
+                  <>
+                    <svg sx={x} />
+                    <svg sx={props.y} />
+                  </>
+                );
+              }
+            `),
+          ).toMatchInlineSnapshot(`
+            "import * as stylex from "@stylexjs/stylex";
+            function Foo(props) {
+              const x = props.x;
+              return <>
+                                <svg {...stylex.props(x)} />
+                                <svg {...stylex.props(props.y)} />
+                              </>;
+            }"
+          `);
+        });
+
+        test('does not transform sx on capitalized components', () => {
+          expect(
+            transform(`
+              function Foo(props) {
+                const x = props.x;
+                return <CustomComponent sx={x} />;
+              }
+            `),
+          ).toMatchInlineSnapshot(`
+            "function Foo(props) {
+              const x = props.x;
+              return <CustomComponent sx={x} />;
+            }"
+          `);
+        });
       });
 
       test('local dynamic styles', () => {

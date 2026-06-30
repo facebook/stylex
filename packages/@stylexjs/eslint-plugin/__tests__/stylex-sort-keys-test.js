@@ -396,6 +396,38 @@ eslintTester.run('stylex-sort-keys', rule.default, {
       ],
     },
     {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            fontSize: 12,
+            animationDuration: '100ms',
+            padding: 10,
+          }
+        });
+      `,
+      output: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          main: {
+            padding: 10,
+            animationDuration: '100ms',
+            fontSize: 12,
+          }
+        });
+      `,
+      errors: [
+        {
+          message:
+            'StyleX property key "animationDuration" should be above "fontSize"',
+        },
+        {
+          message:
+            'StyleX property key "padding" should be above "animationDuration"',
+        },
+      ],
+    },
+    {
       options: [{ order: 'clean' }],
       code: `
         import * as stylex from '@stylexjs/stylex';
@@ -511,8 +543,8 @@ eslintTester.run('stylex-sort-keys', rule.default, {
         import { create } from 'stylex';
         const styles = create({
           button: {
-            alignItems: 'center',
             borderColor: 'red',
+            alignItems: 'center',
             display: 'flex',
           }
         });
@@ -713,8 +745,8 @@ eslintTester.run('stylex-sort-keys', rule.default, {
             '@media (min-width: 1540px)': 1366,
             ':hover': 'red',
           },
-          display: 'flex',
           borderRadius: 10,
+          display: 'flex',
         },
       });`,
       errors: [
