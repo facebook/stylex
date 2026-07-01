@@ -603,6 +603,31 @@ const stylexValidStyles = {
         };
       }
     }
+    function isStylexWhenCallExpression(
+      node: Expression | PrivateIdentifier,
+      computed: boolean,
+    ): boolean {
+      if (
+        !computed ||
+        node.type !== 'CallExpression' ||
+        node.callee.type !== 'MemberExpression'
+      ) {
+        return false;
+      }
+      const calleeObject = node.callee.object;
+      const calleeProperty = node.callee.property;
+      return (
+        (calleeObject.type === 'MemberExpression' &&
+          calleeObject.object.type === 'Identifier' &&
+          styleXDefaultImports.has(calleeObject.object.name) &&
+          calleeObject.property.type === 'Identifier' &&
+          calleeObject.property.name === 'when' &&
+          calleeProperty.type === 'Identifier') ||
+        (calleeObject.type === 'Identifier' &&
+          styleXWhenImports.has(calleeObject.name) &&
+          calleeProperty.type === 'Identifier')
+      );
+    }
     function checkStyleProperty(
       style: Node,
       level: number,
@@ -647,63 +672,74 @@ const stylexValidStyles = {
           if (isStylexResolvedVarsToken(key, stylexResolvedVarsTokenImports)) {
             return undefined;
           }
-          if (
-            typeof keyName !== 'string' ||
-            (key.type !== 'Literal' && key.type !== 'Identifier')
-          ) {
-            return context.report({
-              node: key,
-              loc: key.loc,
-              message: 'Keys must be strings',
-            } as Rule.ReportDescriptor);
-          }
-          if (keyName.startsWith('@') || keyName.startsWith(':')) {
-            if (level === 0) {
-              const ruleCheck = (
-                allowOuterPseudoAndMedia ? allModifiers : pseudoElements
-              )(key, variables);
+          const isWhenCall =
+            level > 0 && isStylexWhenCallExpression(key, style.computed);
 
-              if (ruleCheck !== undefined) {
-                if (keyName.startsWith('::')) {
+          if (!isWhenCall) {
+            if (
+              typeof keyName !== 'string' ||
+              (key.type !== 'Literal' && key.type !== 'Identifier')
+            ) {
+              return context.report({
+                node: key,
+                loc: key.loc,
+                message: 'Keys must be strings',
+              } as Rule.ReportDescriptor);
+            }
+            if (keyName.startsWith('@') || keyName.startsWith(':')) {
+              if (level === 0) {
+                const ruleCheck = (
+                  allowOuterPseudoAndMedia ? allModifiers : pseudoElements
+                )(key, variables);
+
+                if (ruleCheck !== undefined) {
+                  if (keyName.startsWith('::')) {
+                    return context.report({
+                      node: style.value,
+                      loc: style.value.loc,
+                      message: `Unknown pseudo element "${keyName}"`,
+                    } as $ReadOnly<Rule.ReportDescriptor>);
+                  }
                   return context.report({
                     node: style.value,
                     loc: style.value.loc,
-                    message: `Unknown pseudo element "${keyName}"`,
+                    message: allowOuterPseudoAndMedia
+                      ? 'Nested styles can only be used for the pseudo selectors in the stylex allowlist and for @media queries'
+                      : 'Pseudo Classes, Media Queries and other At Rules should be nested as conditions within style properties. Only Pseudo Elements (::after) are allowed at the top-level',
                   } as $ReadOnly<Rule.ReportDescriptor>);
                 }
-                return context.report({
-                  node: style.value,
-                  loc: style.value.loc,
-                  message: allowOuterPseudoAndMedia
-                    ? 'Nested styles can only be used for the pseudo selectors in the stylex allowlist and for @media queries'
-                    : 'Pseudo Classes, Media Queries and other At Rules should be nested as conditions within style properties. Only Pseudo Elements (::after) are allowed at the top-level',
-                } as $ReadOnly<Rule.ReportDescriptor>);
-              }
-            } else {
-              const ruleCheck = pseudoClassesAndAtRules(key, variables);
+              } else {
+                const ruleCheck = pseudoClassesAndAtRules(key, variables);
 
-              if (ruleCheck !== undefined) {
-                return context.report({
-                  node: style.value,
-                  loc: style.value.loc,
-                  message:
-                    'Invalid Pseudo class or At Rule used for conditional style value',
-                } as $ReadOnly<Rule.ReportDescriptor>);
+                if (ruleCheck !== undefined) {
+                  return context.report({
+                    node: style.value,
+                    loc: style.value.loc,
+                    message:
+                      'Invalid Pseudo class or At Rule used for conditional style value',
+                  } as $ReadOnly<Rule.ReportDescriptor>);
+                }
               }
             }
           }
+
+          // stylex.when.*() calls and condition keys (@media, :pseudo, default)
+          // are not property names — pass null so nested levels know they're
+          // inside a condition rather than a CSS property.
+          const isConditionKey =
+            isWhenCall ||
+            (typeof keyName === 'string' &&
+              (keyName.startsWith('@') ||
+                keyName.startsWith(':') ||
+                keyName === 'default'));
 
           return styleValue.properties.forEach((prop) =>
             checkStyleProperty(
               prop,
               level + 1,
-              propName ??
-                (keyName.startsWith('@') ||
-                keyName.startsWith(':') ||
-                keyName === 'default'
-                  ? null
-                  : keyName),
-              outerIsPseudoElement || keyName.startsWith('::'),
+              propName ?? (isConditionKey ? null : keyName),
+              outerIsPseudoElement ||
+                (typeof keyName === 'string' && keyName.startsWith('::')),
             ),
           );
         }
@@ -721,44 +757,26 @@ const stylexValidStyles = {
           return undefined;
         }
 
-        let isStylexWhenCall = false;
-        if (style.computed && styleKey.type !== 'Literal') {
-          if (
-            styleKey.type === 'CallExpression' &&
-            styleKey.callee.type === 'MemberExpression'
-          ) {
-            const calleeObject = styleKey.callee.object;
-            const calleeProperty = styleKey.callee.property;
-
-            isStylexWhenCall =
-              (calleeObject.type === 'MemberExpression' &&
-                calleeObject.object.type === 'Identifier' &&
-                styleXDefaultImports.has(calleeObject.object.name) &&
-                calleeObject.property.type === 'Identifier' &&
-                calleeObject.property.name === 'when' &&
-                calleeProperty.type === 'Identifier') ||
-              (calleeObject.type === 'Identifier' &&
-                styleXWhenImports.has(calleeObject.name) &&
-                calleeProperty.type === 'Identifier');
-
-            if (!isStylexWhenCall) {
-              const val = evaluate(styleKey, variables);
-              if (val == null) {
-                return context.report({
-                  node: style.key,
-                  loc: style.key.loc,
-                  message: 'Computed key cannot be resolved.',
-                } as Rule.ReportDescriptor);
-              } else if (val === 'ARG') {
-                return context.report({
-                  node: style.key,
-                  loc: style.key.loc,
-                  message: 'Computed key cannot depend on function argument',
-                } as Rule.ReportDescriptor);
-              } else {
-                styleKey = val;
-              }
-            }
+        const isStylexWhenCall = isStylexWhenCallExpression(
+          styleKey,
+          style.computed,
+        );
+        if (style.computed && styleKey.type !== 'Literal' && !isStylexWhenCall) {
+          const val = evaluate(styleKey, variables);
+          if (val == null) {
+            return context.report({
+              node: style.key,
+              loc: style.key.loc,
+              message: 'Computed key cannot be resolved.',
+            } as Rule.ReportDescriptor);
+          } else if (val === 'ARG') {
+            return context.report({
+              node: style.key,
+              loc: style.key.loc,
+              message: 'Computed key cannot depend on function argument',
+            } as Rule.ReportDescriptor);
+          } else {
+            styleKey = val;
           }
         }
         if (
