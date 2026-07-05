@@ -12,6 +12,9 @@ const os = require('node:os');
 const path = require('node:path');
 
 const { unplugin } = require('../src');
+const { unpluginFactory } = require('../src/core');
+const { Features, browserslistToTargets } = require('lightningcss');
+const browserslist = require('browserslist');
 
 describe('@stylexjs/unplugin', () => {
   test('ignores files without StyleX imports', async () => {
@@ -266,5 +269,66 @@ describe('@stylexjs/unplugin', () => {
       process.chdir(originalCwd);
       fs.rmSync(tempDir, { recursive: true, force: true });
     }
+  });
+
+  describe('browserslist & light-dark() handling', () => {
+    const LIGHT_DARK_SOURCE = `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({ foo: { color: 'light-dark(#000, #fff)' } });
+      export default styles;
+    `;
+
+    async function collectCssWithOptions(options) {
+      const plugin = unpluginFactory(
+        { runtimeInjection: false, ...options },
+        { framework: 'rollup' },
+      );
+      plugin.buildStart();
+      await plugin.transform.call({}, LIGHT_DARK_SOURCE, '/virtual/test.js');
+      return plugin.__stylexCollectCss();
+    }
+
+    test('preserves light-dark() when Features.LightDark is excluded', async () => {
+      const css = await collectCssWithOptions({
+        lightningcssOptions: {
+          exclude: Features.LightDark,
+          minify: false,
+        },
+      });
+      expect(css).toContain('light-dark(');
+      expect(css).not.toContain('--lightningcss-light');
+    });
+
+    test('preserves light-dark() with modern browser targets', async () => {
+      const css = await collectCssWithOptions({
+        lightningcssOptions: {
+          targets: browserslistToTargets(browserslist('Chrome >= 123')),
+          minify: false,
+        },
+      });
+      expect(css).toContain('light-dark(');
+      expect(css).not.toContain('--lightningcss-light');
+    });
+
+    test('lowers light-dark() when targets do not support it', async () => {
+      const css = await collectCssWithOptions({
+        lightningcssOptions: {
+          targets: browserslistToTargets(browserslist('Chrome >= 80')),
+          minify: false,
+        },
+      });
+      expect(css).toContain('--lightningcss-light');
+      expect(css).not.toContain('light-dark(');
+    });
+
+    test('uses project browserslist by default (not hardcoded >= 1%)', async () => {
+      const css = await collectCssWithOptions({
+        lightningcssOptions: { minify: false },
+      });
+      // The CSS should be valid regardless of which browserslist resolves.
+      // The key assertion: the output is non-empty and contains the color rule.
+      expect(css).toContain('color:');
+      expect(css).toContain('.x1aif7nf');
+    });
   });
 });

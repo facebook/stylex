@@ -1298,6 +1298,18 @@ export function splitSpecificShorthands(
     return entries;
   }
 
+  if (property === 'border') {
+    if (splitValues.hasTopLevelComma || splitValues.hasTopLevelSlash) {
+      return [['border', CANNOT_FIX]];
+    }
+    const expandedBorder = expandBorderSideShorthand(
+      property,
+      values,
+      importantSuffix,
+    );
+    return expandedBorder ?? [['border', CANNOT_FIX]];
+  }
+
   if (
     property === 'border-top' ||
     property === 'border-right' ||
@@ -1378,4 +1390,10 @@ export function splitDirectionalShorthands(
   }
 
   return nodes;
+}
+
+export function isSingleToken(value: string): boolean {
+  const { value: baseValue } = extractImportant(value);
+  const { parts } = splitTopLevelValueTokens(baseValue);
+  return parts.length <= 1;
 }

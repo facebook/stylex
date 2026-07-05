@@ -520,7 +520,13 @@ export class MediaQuery {
     switch (queries.type) {
       case 'media-keyword': {
         const prefix = queries.not ? 'not ' : queries.only ? 'only ' : '';
-        return prefix + (isTopLevel ? queries.key : `(${queries.key})`);
+        const isTypedMediaReference = queries.only || queries.not;
+        return (
+          prefix +
+          (isTopLevel || isTypedMediaReference
+            ? queries.key
+            : `(${queries.key})`)
+        );
       }
       case 'word-rule':
         return `(${queries.keyValue})`;

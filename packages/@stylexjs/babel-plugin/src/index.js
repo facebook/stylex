@@ -38,6 +38,14 @@ import {
   LOGICAL_FLOAT_END_VAR,
 } from './shared/preprocess-rules/legacy-expand-shorthands';
 import transformStyleXDefineMarker from './visitors/stylex-define-marker';
+import transformStyleXDefineVarsNested from './visitors/stylex-define-vars-nested';
+import transformStyleXDefineConstsNested from './visitors/stylex-define-consts-nested';
+import transformStyleXCreateThemeNested from './visitors/stylex-create-theme-nested';
+import { createUtilityStylesVisitor } from '@stylexjs/atoms/babel-transform';
+import { convertObjectToAST } from './utils/js-to-ast';
+import styleXCreateSet from './shared/stylex-create';
+import { getProgramPath, hoistExpression } from './utils/ast-helpers';
+import { injectDevClassNames } from './utils/dev-classname';
 
 const NAME = 'stylex';
 
@@ -160,6 +168,17 @@ function styleXTransform(): PluginObj<> {
               skipStylexPropsChildren(path, state);
             },
           });
+          // Run atoms visitor first to transform x.prop.value patterns
+          // This runs BEFORE stylex.props so that atomic styles are already
+          // compiled when stylex.props processes them
+          const atomsVisitor = createUtilityStylesVisitor(state, {
+            styleXCreateSet,
+            convertObjectToAST,
+            hoistExpression,
+            injectDevClassNames,
+          });
+          path.traverse(atomsVisitor);
+
           path.traverse({
             CallExpression(path: NodePath<t.CallExpression>) {
               transformStylexCall(path, state);
@@ -313,11 +332,12 @@ function styleXTransform(): PluginObj<> {
           if (value.isJSXEmptyExpression()) {
             continue;
           }
+          const stylexLocalName = getStylexRuntimeBinding(path, state);
           attr.replaceWith(
             t.jsxSpreadAttribute(
               t.callExpression(
                 t.memberExpression(
-                  t.identifier('stylex'),
+                  t.identifier(stylexLocalName),
                   t.identifier('props'),
                 ),
                 [value.node],
@@ -359,6 +379,9 @@ function styleXTransform(): PluginObj<> {
         transformStyleXDefineVars(path, state);
         transformStyleXDefineConsts(path, state);
         transformStyleXCreateTheme(path, state);
+        transformStyleXDefineVarsNested(path, state);
+        transformStyleXDefineConstsNested(path, state);
+        transformStyleXCreateThemeNested(path, state);
         transformStyleXCreate(path, state);
       },
     },
@@ -380,6 +403,53 @@ function isExported(path: null | NodePath<t.Node>): boolean {
     return true;
   }
   return isExported(path.parentPath);
+}
+
+function getStylexRuntimeBinding(
+  path: NodePath<t.JSXOpeningElement>,
+  state: StateManager,
+): string {
+  const program = getProgramPath(path);
+  if (program == null) {
+    throw new Error('Unable to find program path for JSX element.');
+  }
+
+  for (const localName of state.stylexImport) {
+    const programBinding = program.scope.getBinding(localName);
+    if (
+      programBinding != null &&
+      path.scope.getBinding(localName) === programBinding
+    ) {
+      return localName;
+    }
+  }
+
+  const existingImport = program.node.body.find(
+    (statement) =>
+      statement.type === 'ImportDeclaration' &&
+      state.importSources.includes(statement.source.value),
+  );
+  const existingImportSource =
+    existingImport?.type === 'ImportDeclaration'
+      ? existingImport.source.value
+      : null;
+  const importSource =
+    existingImportSource ?? state.importSources[2] ?? state.importSources[0];
+  const stylexLocalName =
+    existingImportSource != null || path.scope.hasBinding('stylex')
+      ? program.scope.generateUid('stylex')
+      : 'stylex';
+
+  const [importPath] = program.unshiftContainer(
+    'body',
+    t.importDeclaration(
+      [t.importNamespaceSpecifier(t.identifier(stylexLocalName))],
+      t.stringLiteral(importSource),
+    ),
+  );
+  program.scope.registerDeclaration(importPath);
+  state.stylexImport.add(stylexLocalName);
+  return stylexLocalName;
 }
 
 /**

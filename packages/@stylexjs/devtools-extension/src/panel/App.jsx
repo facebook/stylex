@@ -25,6 +25,7 @@ import { subscribeToSelectionAndNavigation } from '../devtools/events.js';
 import { evalInInspectedWindow } from '../devtools/api.js';
 import { collectStylexDebugData } from '../inspected/collectStylexDebugData.js';
 import { Button } from './components/Button';
+import { CopyMetadataButton } from './components/CopyMetadataButton';
 import { DeclarationsList } from './components/DeclarationsList';
 import { SourcesList } from './components/SourcesList';
 import { Section } from './components/Section';
@@ -131,6 +132,7 @@ function Panel({
         </div>
         <div {...stylex.props(styles.title)}>
           <span {...stylex.props(styles.pill, styles.mono)}>{tagName}</span>
+          {!showEmptyState && <CopyMetadataButton data={data} />}
           <Button onClick={refresh}>Refresh</Button>
         </div>
       </header>

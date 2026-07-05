@@ -1,0 +1,200 @@
+/**
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
+ * @flow strict
+ *
+ * Shared visitor helpers for the unstable_defineVarsNested / unstable_defineConstsNested /
+ * unstable_createThemeNested visitors. These extract common patterns (call detection,
+ * validation, eval config setup) to avoid duplication across the 3 nested visitors.
+ *
+ * NOTE: These helpers only serve the NEW nested visitors. The existing flat visitors
+ * (stylex-define-vars.js, stylex-define-consts.js, stylex-create-theme.js) are untouched.
+ */
+
+import type { NodePath } from '@babel/traverse';
+import type { FunctionConfig } from '../utils/evaluate-path';
+import type { InjectableStyle } from '../shared';
+
+import * as t from '@babel/types';
+import StateManager from '../utils/state-manager';
+import {
+  messages,
+  keyframes as stylexKeyframes,
+  positionTry as stylexPositionTry,
+  types as stylexTypes,
+} from '../shared';
+import { isVariableNamedExported } from '../utils/ast-helpers';
+
+/**
+ * Detects if a CallExpression matches a StyleX API call.
+ * Handles both import patterns:
+ *   - Named import:      import { unstable_defineVarsNested } from '@stylexjs/stylex';
+ *                         unstable_defineVarsNested({...})
+ *   - Member expression: import stylex from '@stylexjs/stylex';
+ *                         stylex.unstable_defineVarsNested({...})
+ *
+ * @param node         - The CallExpression AST node
+ * @param importSet    - Set of local names from named imports (e.g., state.stylexDefineVarsNestedImport)
+ * @param memberName   - The property name to match on member expressions (e.g., 'unstable_defineVarsNested')
+ * @param stylexImport - Set of local names for the default/namespace import (e.g., state.stylexImport)
+ */
+export function isCallTo(
+  node: t.CallExpression,
+  importSet: Set<string>,
+  memberName: string,
+  stylexImport: Set<string>,
+): boolean {
+  return (
+    (node.callee.type === 'Identifier' && importSet.has(node.callee.name)) ||
+    (node.callee.type === 'MemberExpression' &&
+      node.callee.object.type === 'Identifier' &&
+      node.callee.property.type === 'Identifier' &&
+      node.callee.property.name === memberName &&
+      stylexImport.has(node.callee.object.name))
+  );
+}
+
+/**
+ * Validates a StyleX define/createTheme call expression.
+ * Checks:
+ *   1. The call is assigned to a variable declarator with an Identifier name
+ *   2. The variable is a named export (when requireExport=true — used by defineVars/defineConsts)
+ *   3. The call has exactly `argCount` arguments
+ *
+ * Throws a SyntaxError with a code frame pointing to the call site on failure.
+ *
+ * @param callExpressionPath - Babel NodePath for the CallExpression
+ * @param apiName            - API name for error messages (e.g., 'unstable_defineVarsNested')
+ * @param argCount           - Expected number of arguments (1 for define*, 2 for createTheme)
+ * @param requireExport      - Whether the variable must be a named export (default: true)
+ */
+export function validateDefineCall(
+  callExpressionPath: NodePath<t.CallExpression>,
+  apiName: string,
+  argCount: number,
+  requireExport: boolean = true,
+): void {
+  const variableDeclaratorPath: any = callExpressionPath.parentPath;
+
+  if (
+    variableDeclaratorPath == null ||
+    variableDeclaratorPath.isExpressionStatement() ||
+    !variableDeclaratorPath.isVariableDeclarator() ||
+    variableDeclaratorPath.node.id.type !== 'Identifier'
+  ) {
+    throw callExpressionPath.buildCodeFrameError(
+      messages.unboundCallValue(apiName),
+      SyntaxError,
+    );
+  }
+
+  if (requireExport && !isVariableNamedExported(variableDeclaratorPath)) {
+    throw callExpressionPath.buildCodeFrameError(
+      messages.nonExportNamedDeclaration(apiName),
+      SyntaxError,
+    );
+  }
+
+  if (callExpressionPath.node.arguments.length !== argCount) {
+    throw callExpressionPath.buildCodeFrameError(
+      messages.illegalArgumentLength(apiName, argCount),
+      SyntaxError,
+    );
+  }
+}
+
+/**
+ * Builds the evaluation config for statically resolving special StyleX functions
+ * within defineVarsNested/createThemeNested arguments.
+ *
+ * This enables nested token objects to contain:
+ *   - stylex.keyframes({...})      → resolved to animation name string
+ *   - stylex.positionTry({...})    → resolved to position-try name string
+ *   - stylex.types.color({...})    → resolved to CSSType instance
+ *   - stylex.env.*                 → resolved to compile-time constant
+ *
+ * The returned { identifiers, memberExpressions } maps are passed to the
+ * evaluate() function which uses them to resolve these calls at compile time.
+ *
+ * @param state               - The StateManager with import tracking info
+ * @param otherInjectedCSSRules - Accumulator for CSS rules generated by keyframes/positionTry
+ * @returns { identifiers, memberExpressions } for the evaluate() function
+ */
+export function buildEvalConfig(
+  state: StateManager,
+  otherInjectedCSSRules: { [string]: InjectableStyle },
+): {
+  identifiers: FunctionConfig['identifiers'],
+  memberExpressions: FunctionConfig['memberExpressions'],
+} {
+  // eslint-disable-next-line no-inner-declarations
+  function keyframes<
+    Obj: {
+      +[key: string]: { +[k: string]: string | number },
+    },
+  >(animation: Obj): string {
+    const [animationName, injectedStyle] = stylexKeyframes(
+      animation,
+      state.options,
+    );
+    otherInjectedCSSRules[animationName] = injectedStyle;
+    return animationName;
+  }
+
+  // eslint-disable-next-line no-inner-declarations
+  function positionTry<
+    Obj: {
+      +[k: string]: string | number,
+    },
+  >(fallbackStyles: Obj): string {
+    const [positionTryName, injectedStyle] = stylexPositionTry(
+      fallbackStyles,
+      state.options,
+    );
+    otherInjectedCSSRules[positionTryName] = injectedStyle;
+    return positionTryName;
+  }
+
+  const identifiers: FunctionConfig['identifiers'] = {};
+  const memberExpressions: FunctionConfig['memberExpressions'] = {};
+  state.stylexKeyframesImport.forEach((name) => {
+    identifiers[name] = { fn: keyframes };
+  });
+  state.stylexPositionTryImport.forEach((name) => {
+    identifiers[name] = { fn: positionTry };
+  });
+  state.stylexTypesImport.forEach((name) => {
+    identifiers[name] = stylexTypes;
+  });
+  state.stylexImport.forEach((name) => {
+    if (memberExpressions[name] === undefined) {
+      memberExpressions[name] = {};
+    }
+
+    memberExpressions[name].keyframes = { fn: keyframes };
+    memberExpressions[name].positionTry = { fn: positionTry };
+    identifiers[name] = { ...(identifiers[name] ?? {}), types: stylexTypes };
+  });
+
+  // unstable_conditional is an identity function — it returns its argument unchanged.
+  // Its purpose is purely for type-level disambiguation: it gives conditional
+  // values ({ default: ..., '@media ...': ... }) a distinct type so Flow/TypeScript
+  // can distinguish them from namespace objects in nested token definitions.
+  const conditionalIdentity = (value: mixed): mixed => value;
+  state.stylexConditionalImport.forEach((name) => {
+    identifiers[name] = { fn: conditionalIdentity };
+  });
+  state.stylexImport.forEach((name) => {
+    if (memberExpressions[name] === undefined) {
+      memberExpressions[name] = {};
+    }
+    memberExpressions[name].unstable_conditional = { fn: conditionalIdentity };
+  });
+
+  state.applyStylexEnv(identifiers);
+
+  return { identifiers, memberExpressions };
+}

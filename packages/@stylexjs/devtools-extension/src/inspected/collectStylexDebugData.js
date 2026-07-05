@@ -24,7 +24,18 @@ declare const window: any;
 // NOTE:
 // This function is stringified and used using `evalInInspectedWindow` in the panel.
 // So it must be a completely self-contained function that doesn't rely on any external variables or functions.
-export function collectStylexDebugData(): StylexDebugData {
+//
+// `target` selects the element to inspect:
+//   - omitted        -> the DevTools-selected element (`$0`), used by the panel
+//   - a CSS selector -> `document.querySelector(target)`, used when running this
+//                       function outside DevTools (e.g. injected/evaluated by an
+//                       agent's browser automation, where there is no `$0`)
+//   - an element      -> inspected directly
+// This keeps a single canonical scraper that works both in the panel and when
+// vendored into other tooling.
+export function collectStylexDebugData(
+  target?: HTMLElement | string | null,
+): StylexDebugData {
   function safeString(value: mixed): string {
     if (typeof value === 'string') return value;
     if (value == null) return '';
@@ -635,8 +646,19 @@ export function collectStylexDebugData(): StylexDebugData {
     return decls;
   }
 
-  // $FlowExpectedError[cannot-resolve-name] - $0 helps get the currently selected item
-  const element = typeof $0 !== 'undefined' ? $0 : null;
+  function resolveElement(): HTMLElement | null {
+    if (typeof target === 'string') {
+      try {
+        return document.querySelector(target) as $FlowFixMe;
+      } catch {
+        return null;
+      }
+    }
+    if (target != null) return target;
+    // $FlowExpectedError[cannot-resolve-name] - $0 helps get the currently selected item
+    return typeof $0 !== 'undefined' ? $0 : null;
+  }
+  const element = resolveElement();
   if (!element) {
     return {
       element: { tagName: '—' },
@@ -681,6 +703,11 @@ export function collectStylexDebugData(): StylexDebugData {
   }
 
   const classToDecls = new Map<string, Array<$FlowFixMe>>();
+  // Tracks which (property/value/important/condition/pseudoElement) tuples we have
+  // already recorded per class, so an identical atomic rule appearing in multiple
+  // stylesheets (common in dev: HMR re-injection, StrictMode, multiple bundles)
+  // does not render as duplicate rows.
+  const seenDeclKeys = new Map<string, Set<string>>();
   for (const rule of rules) {
     const decls = parseDeclarationsFromRuleCssText(rule.cssText);
     if (decls.length === 0) continue;
@@ -722,11 +749,25 @@ export function collectStylexDebugData(): StylexDebugData {
             ? { pseudoElement: pseudoElementValue }
             : {}) as $FlowFixMe),
         }));
-        const declList = classToDecls.get(cls);
-        if (declList == null) {
-          classToDecls.set(cls, [...declsWithCondition]);
-        } else {
-          declList.push(...declsWithCondition);
+        const existingList = classToDecls.get(cls);
+        const declList = existingList != null ? existingList : [];
+        if (existingList == null) classToDecls.set(cls, declList);
+        const existingSeen = seenDeclKeys.get(cls);
+        const seen = existingSeen != null ? existingSeen : new Set<string>();
+        if (existingSeen == null) seenDeclKeys.set(cls, seen);
+        for (const decl of declsWithCondition) {
+          // JSON encoding (rather than a delimiter join) so values that contain
+          // the delimiter — e.g. `pseudoElement: '::before'` — cannot collide.
+          const dedupKey = JSON.stringify([
+            decl.property,
+            decl.value,
+            decl.important,
+            decl.condition ?? null,
+            decl.pseudoElement ?? null,
+          ]);
+          if (seen.has(dedupKey)) continue;
+          seen.add(dedupKey);
+          declList.push(decl);
         }
         for (const decl of decls) {
           if (computed[decl.property] == null) {

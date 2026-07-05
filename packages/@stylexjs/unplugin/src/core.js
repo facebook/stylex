@@ -52,7 +52,7 @@ function processCollectedRulesToCSS(rules, options) {
     enableLTRRTLComments: options?.enableLTRRTLComments,
   });
   const { code } = lightningTransform({
-    targets: browserslistToTargets(browserslist('>= 1%')),
+    targets: browserslistToTargets(browserslist()),
     ...options.lightningcssOptions,
     filename: 'stylex.css',
     code: Buffer.from(collectedCSS),

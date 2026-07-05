@@ -155,4 +155,118 @@ describe('collectStylexDebugData', () => {
       },
     ]);
   });
+
+  test('dedupes identical declarations across multiple stylesheets', () => {
+    const element = document.createElement('div');
+    element.setAttribute('class', 'xfoo');
+    document.body.appendChild(element);
+    global.$0 = element;
+
+    Object.defineProperty(element, 'matches', {
+      configurable: true,
+      value: (selector) => selector === '.xfoo',
+    });
+
+    const makeSheet = () => ({
+      cssRules: [
+        { type: 1, selectorText: '.xfoo', cssText: '.xfoo { color: red; }' },
+      ],
+    });
+
+    // Same atomic rule injected into three stylesheets (as HMR / StrictMode /
+    // multiple bundles do in dev).
+    Object.defineProperty(document, 'styleSheets', {
+      configurable: true,
+      value: [makeSheet(), makeSheet(), makeSheet()],
+    });
+
+    const data = collectStylexDebugData();
+
+    const xfoo = data.applied.classes.find((entry) => entry.name === 'xfoo');
+    expect(xfoo.declarations).toEqual([
+      {
+        property: 'color',
+        value: 'red',
+        important: false,
+        condition: 'default',
+        className: 'xfoo',
+      },
+    ]);
+  });
+
+  test('inspects an element by CSS selector via the target argument', () => {
+    const element = document.createElement('div');
+    element.setAttribute('class', 'xfoo');
+    element.setAttribute('id', 'target');
+    document.body.appendChild(element);
+    // Intentionally do NOT set global.$0 — the selector path must work without it.
+
+    Object.defineProperty(element, 'matches', {
+      configurable: true,
+      value: (selector) => selector === '.xfoo',
+    });
+
+    Object.defineProperty(document, 'styleSheets', {
+      configurable: true,
+      value: [
+        {
+          cssRules: [
+            {
+              type: 1,
+              selectorText: '.xfoo',
+              cssText: '.xfoo { color: red; }',
+            },
+          ],
+        },
+      ],
+    });
+
+    const data = collectStylexDebugData('#target');
+
+    expect(data.element.tagName).toBe('div');
+    expect(data.applied.classes.map((entry) => entry.name)).toEqual(['xfoo']);
+  });
+
+  test('inspects an explicitly passed element via the target argument', () => {
+    const element = document.createElement('span');
+    element.setAttribute('class', 'xfoo');
+    document.body.appendChild(element);
+
+    Object.defineProperty(element, 'matches', {
+      configurable: true,
+      value: (selector) => selector === '.xfoo',
+    });
+
+    Object.defineProperty(document, 'styleSheets', {
+      configurable: true,
+      value: [
+        {
+          cssRules: [
+            {
+              type: 1,
+              selectorText: '.xfoo',
+              cssText: '.xfoo { color: red; }',
+            },
+          ],
+        },
+      ],
+    });
+
+    const data = collectStylexDebugData(element);
+
+    expect(data.element.tagName).toBe('span');
+    expect(data.applied.classes.map((entry) => entry.name)).toEqual(['xfoo']);
+  });
+
+  test('returns empty data for an invalid selector', () => {
+    Object.defineProperty(document, 'styleSheets', {
+      configurable: true,
+      value: [],
+    });
+
+    const data = collectStylexDebugData(':::not a valid selector');
+
+    expect(data.element.tagName).toBe('—');
+    expect(data.applied.classes).toEqual([]);
+  });
 });
