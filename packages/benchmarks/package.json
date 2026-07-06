@@ -14,8 +14,8 @@
     "benchmark": "^2.1.4",
     "brotli-size": "^4.0.0",
     "clean-css": "^5.3.3",
-    "rollup": "^4.59.0",
-    "terser": "^5.3.0",
+    "rollup": "^4.62.2",
+    "terser": "^5.48.0",
     "yargs": "^18.0.0"
   },
   "engines": {
