@@ -917,6 +917,18 @@ eslintTester.run('stylex-valid-styles', rule.default, {
         }
       });
     `,
+    // outlineWidth accepts calc() / math expressions, like other <line-width>
+    // properties such as borderWidth (#1690)
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          foo: {
+            outlineWidth: 'calc(0.25rem + 1px)',
+          },
+        });
+      `,
+    },
     {
       code: `
         import * as stylex from '@stylexjs/stylex';
