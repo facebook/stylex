@@ -3644,7 +3644,7 @@ describe('@stylexjs/babel-plugin', () => {
             "$$css": true
           };
           export const styles = {
-            root: color => [_temp, {
+            root: color => [_temp, color !== undefined && {
               kMwMTN: color != null ? "x14rh7hd" : "",
               $$css: true
             }, {
@@ -3699,7 +3699,7 @@ describe('@stylexjs/babel-plugin', () => {
         expect(code).toMatchInlineSnapshot(`
           "import * as stylex from '@stylexjs/stylex';
           export const styles = {
-            one: color => [{
+            one: color => [color !== undefined && {
               kMwMTN: color != null ? "x14rh7hd" : "",
               $$css: true
             }, {
@@ -3757,8 +3757,10 @@ describe('@stylexjs/babel-plugin', () => {
         expect(code).toMatchInlineSnapshot(`
           "import * as stylex from '@stylexjs/stylex';
           export const styles = {
-            root: (bgColor, otherColor) => [{
+            root: (bgColor, otherColor) => [bgColor !== undefined && {
               "--background-color": bgColor != null ? "xwn82o0" : "",
+              $$css: true
+            }, otherColor !== undefined && {
               "--otherColor": otherColor != null ? "xp3hsad" : "",
               $$css: true
             }, {
@@ -3821,7 +3823,7 @@ describe('@stylexjs/babel-plugin', () => {
           expect(code).toMatchInlineSnapshot(`
             "import * as stylex from '@stylexjs/stylex';
             export const styles = {
-              root: width => [{
+              root: width => [width !== undefined && {
                 kzqmXN: width != null ? "x5lhr3w" : "",
                 $$css: true
               }, {
@@ -3873,7 +3875,7 @@ describe('@stylexjs/babel-plugin', () => {
               "$$css": true
             };
             export const styles = {
-              root: width => [_temp, {
+              root: width => [_temp, width !== undefined && {
                 kzqmXN: width != null ? "x5lhr3w" : "",
                 $$css: true
               }, {
@@ -3952,7 +3954,7 @@ describe('@stylexjs/babel-plugin', () => {
             "import * as stylex from '@stylexjs/stylex';
             import { vars } from 'vars.stylex.js';
             export const styles = {
-              root: width => [{
+              root: width => [width !== undefined && {
                 "--x1anmu0j": width != null ? "x5fq457" : "",
                 $$css: true
               }, {
@@ -4406,7 +4408,7 @@ describe('@stylexjs/babel-plugin', () => {
               "$$css": true
             };
             export const styles = {
-              root: (color, isDark) => [_temp, {
+              root: (color, isDark) => [_temp, (isDark ? color : 'black') !== undefined && {
                 kMwMTN: (isDark ? color : 'black') != null ? "x14rh7hd" : "",
                 $$css: true
               }, {
@@ -4576,8 +4578,10 @@ describe('@stylexjs/babel-plugin', () => {
           expect(code).toMatchInlineSnapshot(`
             "import * as stylex from '@stylexjs/stylex';
             export const styles = {
-              root: color => [{
+              root: color => [color !== undefined && {
                 kWkggS: color != null ? "x1j2k28p" : "",
+                $$css: true
+              }, color !== undefined && {
                 kMwMTN: color != null ? "x1qvlgnj" : "",
                 $$css: true
               }, {
@@ -4736,8 +4740,10 @@ describe('@stylexjs/babel-plugin', () => {
           expect(code).toMatchInlineSnapshot(`
             "import * as stylex from '@stylexjs/stylex';
             export const styles = {
-              foo: (a, b) => [{
+              foo: (a, b) => [a !== undefined && {
                 kxBb7d: a != null ? "xaigonn" : "",
+                $$css: true
+              }, b !== undefined && {
                 kB1Fuz: b != null ? "x1p1099i" : "",
                 $$css: true
               }, {
@@ -4800,7 +4806,7 @@ describe('@stylexjs/babel-plugin', () => {
           expect(code).toMatchInlineSnapshot(`
             "import * as stylex from '@stylexjs/stylex';
             export const styles = {
-              foo: color => [{
+              foo: color => [color !== undefined && {
                 k8Qsv1: color != null ? "x1mzl164" : "",
                 $$css: true
               }, {
@@ -4846,7 +4852,7 @@ describe('@stylexjs/babel-plugin', () => {
           expect(code).toMatchInlineSnapshot(`
             "import * as stylex from '@stylexjs/stylex';
             export const styles = {
-              foo: width => [{
+              foo: width => [width !== undefined && {
                 k8pbKx: width != null ? "x18fgbt0" : "",
                 $$css: true
               }, {
@@ -4950,7 +4956,7 @@ describe('@stylexjs/babel-plugin', () => {
           expect(code).toMatchInlineSnapshot(`
             "import * as stylex from '@stylexjs/stylex';
             export const styles = {
-              repro: color => [{
+              repro: color => [color !== undefined && {
                 kB1Fuz: color != null ? "x1p1099i" : "",
                 $$css: true
               }, {

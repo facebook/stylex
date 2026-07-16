@@ -542,7 +542,7 @@ describe('@stylexjs/babel-plugin', () => {
           "$$css": true
         };
         export const styles = {
-          node: padding => [_temp, {
+          node: padding => [_temp, padding !== undefined && {
             kmVPX3: padding != null ? "x1fozly0" : "",
             $$css: true
           }, {

@@ -239,7 +239,7 @@ describe('@stylexjs/babel-plugin', () => {
             "--orange-theme-color": "--orange-theme-color-xufgesz",
             $$css: "components/main.js:71"
           },
-          dynamic: color => [{
+          dynamic: color => [color !== undefined && {
             "color-kMwMTN": color != null ? "color-x14rh7hd" : "",
             $$css: "components/main.js:74"
           }, {
@@ -332,7 +332,7 @@ describe('@stylexjs/babel-plugin', () => {
             "--orange-theme-color": "--orange-theme-color-xufgesz",
             $$css: "main.js:71"
           },
-          dynamic: color => [{
+          dynamic: color => [color !== undefined && {
             "color-kMwMTN": color != null ? "color-x14rh7hd" : "",
             $$css: "main.js:74"
           }, {
@@ -780,7 +780,7 @@ describe('@stylexjs/babel-plugin', () => {
             "--orange-theme-color": "--orange-theme-color-xufgesz",
             $$css: "main.js:71"
           },
-          dynamic: color => [{
+          dynamic: color => [color !== undefined && {
             "color-kMwMTN": color != null ? "color-x14rh7hd" : "",
             $$css: "main.js:74"
           }, {

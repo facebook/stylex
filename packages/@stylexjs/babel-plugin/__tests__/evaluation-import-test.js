@@ -401,7 +401,7 @@ describe('Evaluation of imported values works based on configuration', () => {
           priority: 0
         });
         const styles = {
-          color: color => [{
+          color: color => [color !== undefined && {
             "--__hashed_var__1jqb1tb": color != null ? "__hashed_var__1w8wjxo" : "",
             $$css: true
           }, {
