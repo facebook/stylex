@@ -922,6 +922,22 @@ eslintTester.run('stylex-valid-styles', rule.default, {
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
           foo: {
+            outlineWidth: 'calc(0.25rem + 1px)',
+          },
+          hover: {
+            outlineWidth: {
+              default: 'calc(0.25rem + 1px)',
+              ':hover': 'calc(0.5rem + 1px)',
+            },
+          },
+        });
+      `,
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          foo: {
             outlineOffset: 2,
           },
         });
