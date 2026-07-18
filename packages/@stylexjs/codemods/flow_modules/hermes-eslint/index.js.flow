@@ -1,0 +1,20 @@
+/**
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
+ * @flow strict
+ */
+
+// Minimal type stub for `hermes-eslint` (its compiled entry lives under
+// `dist/`, which this repo's .flowconfig ignores). The module is
+// ESM-compiled with NO default export — always use a namespace import;
+// the namespace itself is the ESLint parser object.
+
+declare export function parseForESLint(
+  code: string,
+  options?: mixed,
+): { +ast: mixed, +scopeManager: mixed, ... };
+
+declare export function parse(code: string, options?: mixed): mixed;

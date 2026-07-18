@@ -1,0 +1,17 @@
+/**
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
+ * @flow strict
+ */
+
+// Minimal type stub for `@emotion/serialize` (test-only devDependency;
+// the semantic-diff gate's "before" ground truth).
+
+declare export function serializeStyles(
+  args: $ReadOnlyArray<mixed>,
+  registered?: mixed,
+  props?: mixed,
+): { +name: string, +styles: string, ... };
