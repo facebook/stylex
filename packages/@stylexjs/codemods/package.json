@@ -1,0 +1,38 @@
+{
+  "name": "@stylexjs/codemods",
+  "version": "0.19.0",
+  "description": "Codemods for migrating styling libraries (Emotion first) to StyleX",
+  "main": "./lib/index.js",
+  "repository": "https://www.github.com/facebook/stylex",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "prebuild": "gen-types -i src/ -o lib/",
+    "build": "cross-env BABEL_ENV=cjs babel src/ --out-dir lib/ --copy-files",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@babel/core": "^7.28.5",
+    "@stylexjs/babel-plugin": "0.19.0",
+    "@stylexjs/eslint-plugin": "0.19.0",
+    "@stylexjs/shared": "0.19.0",
+    "babel-plugin-syntax-hermes-parser": "0.36.1",
+    "eslint": "8.57.1",
+    "hermes-eslint": "0.36.1",
+    "jscodeshift": "^17.3.0",
+    "style-value-parser": "0.19.0"
+  },
+  "devDependencies": {
+    "@emotion/serialize": "^1.3.3",
+    "scripts": "0.19.0"
+  },
+  "jest": {
+    "testPathIgnorePatterns": [
+      "/__fixtures__/",
+      "/__tests__/utils/"
+    ]
+  },
+  "files": [
+    "lib/*"
+  ]
+}

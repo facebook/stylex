@@ -46,6 +46,9 @@ module.exports = {
     '**/*.d.ts',
     '**/pages.gen.ts',
     '**/devtools-extension/extension/**',
+    // codemod fixtures are deliberately non-conforming (broken-on-purpose
+    // inputs that the correctness gates must fail on)
+    '**/codemods/__fixtures__/**',
   ],
   overrides: [
     {

@@ -24,6 +24,7 @@ module.name_mapper='^@stylexjs/babel-plugin$' -> '<PROJECT_ROOT>/packages/@style
 module.name_mapper='^@stylexjs/stylex$' -> '<PROJECT_ROOT>/packages/@stylexjs/stylex/src/stylex.js'
 module.name_mapper='^@stylexjs/shared$' -> '<PROJECT_ROOT>/packages/@stylexjs/shared/src/index.js'
 module.name_mapper='^style-value-parser$' -> '<PROJECT_ROOT>/packages/style-value-parser/src/index.js'
+module.name_mapper='^@stylexjs/eslint-plugin$' -> '<PROJECT_ROOT>/packages/@stylexjs/eslint-plugin/src/index.js'
 ; type-stubs
 module.system.node.resolve_dirname=flow_modules
 module.system.node.resolve_dirname=node_modules
