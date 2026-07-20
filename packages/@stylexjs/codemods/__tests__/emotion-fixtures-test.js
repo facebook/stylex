@@ -15,23 +15,25 @@
  *   2. expected compiles through @stylexjs/babel-plugin;
  *   3. expected passes @stylexjs/eslint-plugin at error, zero messages;
  *   4. the net CSS of input and expected is semantically identical
- *      (minus the sanctioned allowlist).
+ *      (Emotion's own serializer vs the babel-plugin metadata, minus the
+ *      sanctioned allowlist). Skip-fixtures (expected === input) assert
+ *      that the transform really did refuse.
  *
  * Set UPDATE_STYLEX_CODEMOD_FIXTURES=1 to regenerate expected files when a
  * change is intentional.
- *
- * M0 status: no transform exists yet, so checks 1 and 4 (which need the
- * transform / the adapter's reader) are pending and explicitly skipped;
- * checks 2 and 3 run for real. M1 wires `transform` below and un-skips.
  */
 
 import * as fs from 'fs';
+import { serializeStyles } from '@emotion/serialize';
 import { compileGate } from '../src/core/gates/compile';
 import { lintGate } from '../src/core/gates/lint';
+import {
+  semanticDiffGate,
+  netCssFromSerializedCss,
+  netCssFromStylexMetadata,
+} from '../src/core/gates/semanticDiff';
+import { transformEmotionFile } from '../src/adapters/emotion/transform';
 import { loadFixtures, formatWithPrettier } from './utils/harness';
-
-// M1: replace with the real emotion transform (input source -> output source).
-const transform: ((source: string, filename: string) => string) | null = null;
 
 const UPDATE = process.env.UPDATE_STYLEX_CODEMOD_FIXTURES === '1';
 
@@ -50,17 +52,12 @@ test('prettier normalization is available and idempotent', () => {
 describe.each(fixtures.map((f) => [f.name, f]))(
   'fixture: %s',
   (_name, fixture) => {
-    const testIfTransform = transform == null ? test.skip : test;
+    const result = transformEmotionFile(fixture.input, fixture.inputPath);
+    const output = result.status === 'converted' ? result.code : fixture.input;
 
-    // Check 1 — pending M1 (needs the transform).
-    testIfTransform('transform(input) matches expected byte-exactly', () => {
-      if (transform == null) {
-        throw new Error('unreachable');
-      }
-      const actual = formatWithPrettier(
-        transform(fixture.input, fixture.inputPath),
-        fixture.expectedPath,
-      );
+    // Check 1 — byte-exact against expected, formatting-insensitive.
+    test('transform(input) matches expected byte-exactly', () => {
+      const actual = formatWithPrettier(output, fixture.expectedPath);
       if (UPDATE) {
         fs.writeFileSync(fixture.expectedPath, actual);
       }
@@ -69,35 +66,72 @@ describe.each(fixtures.map((f) => [f.name, f]))(
       );
     });
 
-    // Check 2 — live from M0.
+    // Check 2.
     test('expected compiles through @stylexjs/babel-plugin', () => {
-      const result = compileGate(fixture.expected, {
+      const compiled = compileGate(fixture.expected, {
         filename: fixture.expectedPath,
       });
-      if (!result.ok) {
-        throw new Error(result.errors.join('\n'));
+      if (!compiled.ok) {
+        throw new Error(compiled.errors.join('\n'));
       }
-      expect(result.ok).toBe(true);
+      expect(compiled.ok).toBe(true);
     });
 
-    // Check 3 — live from M0.
+    // Check 3.
     test('expected passes @stylexjs/eslint-plugin at error with zero messages', () => {
-      const result = lintGate(fixture.expected, {
+      const linted = lintGate(fixture.expected, {
         filename: fixture.expectedPath,
       });
-      if (!result.ok) {
-        throw new Error(JSON.stringify(result.messages, null, 2));
+      if (!linted.ok) {
+        throw new Error(JSON.stringify(linted.messages, null, 2));
       }
-      expect(result.ok).toBe(true);
+      expect(linted.ok).toBe(true);
     });
 
-    // Check 4 — pending M1 (extracting the input's style objects is the
-    // adapter reader's job; the gate itself is proven in gates-test.js).
-    testIfTransform(
-      'net CSS of input and expected is semantically identical',
-      () => {
-        throw new Error('wired in M1 with the emotion adapter reader');
-      },
-    );
+    // Check 4.
+    test('net CSS of input and expected is semantically identical', () => {
+      if (result.status !== 'converted') {
+        // A skip-fixture: the transform must have refused (loudly, with
+        // reasons) and left the file byte-identical.
+        expect(fixture.expected).toEqual(fixture.input);
+        if (result.status === 'skipped') {
+          expect(result.reasons.length).toBeGreaterThan(0);
+        }
+        return;
+      }
+      // Before: Emotion's own serializer over each converted object.
+      // (Fixture-design constraint: sites must not restate the same
+      // property+conditions with different values, or the union is lossy.)
+      const before: { [string]: $FlowFixMe } = {};
+      for (const site of result.sites) {
+        const net = netCssFromSerializedCss(
+          serializeStyles([site.cssObject]).styles,
+        );
+        for (const coordinate of Object.keys(net)) {
+          if (
+            before[coordinate] != null &&
+            before[coordinate].value !== net[coordinate].value
+          ) {
+            throw new Error(
+              `fixture restates '${coordinate}' with different values across sites`,
+            );
+          }
+          before[coordinate] = net[coordinate];
+        }
+      }
+      // After: the real babel-plugin metadata for the converted output.
+      const compiled = compileGate(output, { filename: fixture.expectedPath });
+      if (!compiled.ok) {
+        throw new Error(compiled.errors.join('\n'));
+      }
+      const diff = semanticDiffGate(
+        before,
+        netCssFromStylexMetadata(compiled.metadata),
+      );
+      if (!diff.ok) {
+        throw new Error(JSON.stringify(diff.diffs, null, 2));
+      }
+      expect(diff.ok).toBe(true);
+    });
   },
 );
