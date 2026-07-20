@@ -15,18 +15,29 @@
  * Deliberately AST-free: emit produces plain data; the adapter (which owns
  * the file's AST) renders it. This keeps `core/` blind to parser nodes.
  *
+ * "The flip" materializes here: atoms (property × condition-stack × value)
+ * are grouped BY PROPERTY with conditions nested inside — StyleX's required
+ * property-grouped shape, the inverse of Emotion's selector-grouped input.
+ *
  * Naming (M1 minimal policy, superseded wholesale in M4): the adapter's
  * nameHint (label > enclosing component) is sanitized to a camelCase
  * identifier; collisions get a numeric suffix starting at 2.
  */
 
-import type { FileIR, StyleRule, Value } from './ir';
+import type { Atom, Condition, FileIR, StyleRule, Value } from './ir';
+import { conditionKey } from './ir';
 
 /**
- * A value in a `stylex.create` entry: a static value, or a fallback array
- * (StyleX's shorthand for `firstThatWorks`).
+ * A value in a `stylex.create` entry: a static value, a fallback array
+ * (StyleX's `firstThatWorks`), or a nested condition object.
  */
-export type EmittedValue = string | number | $ReadOnlyArray<string | number>;
+export type EmittedValue =
+  | string
+  | number
+  | null
+  | $ReadOnlyArray<string | number>
+  | EmittedConditions;
+export type EmittedConditions = { +[condition: string]: EmittedValue };
 
 /** A `stylex.create` entry as plain data: property -> value. */
 export type EmittedStyle = { +[property: string]: EmittedValue };
@@ -42,6 +53,11 @@ export type EmitResult = {
   +bindings: $ReadOnlyArray<string>,
 };
 
+export type EmitOptions = {
+  /** Wrap `:hover` in `@media (hover: hover)` (default true). */
+  +hoverGuard?: boolean,
+};
+
 export class EmitError extends Error {
   constructor(message: string) {
     super(`[stylex-codemod emit] ${message}`);
@@ -51,6 +67,7 @@ export class EmitError extends Error {
 
 const IDENTIFIER = /^[A-Za-z_$][A-Za-z0-9_$]*$/;
 const RESERVED = new Set(['default', 'delete', 'do', 'in', 'new', 'var']);
+const HOVER_GUARD = '@media (hover: hover)';
 
 /** Sanitizes an adapter name hint into a usable create key. */
 export function sanitizeKey(hint: string): string {
@@ -64,45 +81,154 @@ export function sanitizeKey(hint: string): string {
   return IDENTIFIER.test(key) && !RESERVED.has(key) ? key : 'styles';
 }
 
-function emitValue(value: Value, rule: StyleRule): EmittedValue {
+function staticValue(value: Value, rule: StyleRule): string | number | null {
   if (value.kind === 'first-that-works') {
-    return value.values;
-  }
-  if (value.kind !== 'static' || value.value == null) {
-    throw new EmitError(
-      `rule '${rule.name}': only static non-null values are emittable in M1`,
-    );
+    // A fallback array is itself a leaf; handled by the caller.
+    throw new EmitError(`rule '${rule.name}': unexpected fallback array`);
   }
   return value.value;
 }
 
-export function emitFileIR(ir: FileIR): EmitResult {
+function leafValue(value: Value, rule: StyleRule): EmittedValue {
+  return value.kind === 'first-that-works'
+    ? value.values
+    : staticValue(value, rule);
+}
+
+/**
+ * Canonical outer→inner nesting order for a condition stack: at-rules
+ * outermost, then pseudo-classes, then pseudo-elements innermost; alpha
+ * within a kind. StyleX sums priorities regardless of nesting order, so a
+ * canonical order is safe and makes the tree merge deterministically.
+ * Applies the hover-guard: any stack containing `:hover` gains an outer
+ * `@media (hover: hover)`.
+ */
+function canonicalPath(
+  conditions: $ReadOnlyArray<Condition>,
+  hoverGuard: boolean,
+): Array<string> {
+  const atRules = conditions
+    .filter((c) => c.kind === 'at-rule')
+    .map(conditionKey);
+  const pseudoClasses = conditions
+    .filter((c) => c.kind === 'pseudo-class')
+    .map(conditionKey);
+  const pseudoElements = conditions
+    .filter((c) => c.kind === 'pseudo-element')
+    .map(conditionKey);
+  if (hoverGuard && pseudoClasses.includes(':hover')) {
+    atRules.push(HOVER_GUARD);
+  }
+  return [...atRules.sort(), ...pseudoClasses.sort(), ...pseudoElements.sort()];
+}
+
+type MutableTree = { [key: string]: EmittedValue };
+
+function insertAtPath(
+  node: MutableTree,
+  path: $ReadOnlyArray<string>,
+  value: EmittedValue,
+  rule: StyleRule,
+): void {
+  if (path.length === 0) {
+    if (node.default !== undefined) {
+      throw new EmitError(`rule '${rule.name}': duplicate base declaration`);
+    }
+    node.default = value;
+    return;
+  }
+  const [head, ...rest] = path;
+  if (rest.length === 0) {
+    const existing = node[head];
+    if (
+      existing != null &&
+      typeof existing === 'object' &&
+      !Array.isArray(existing)
+    ) {
+      // A deeper path already created an object here; place value at default.
+      insertAtPath(existing as $FlowFixMe, [], value, rule);
+    } else if (existing !== undefined) {
+      throw new EmitError(`rule '${rule.name}': duplicate condition '${head}'`);
+    } else {
+      node[head] = value;
+    }
+    return;
+  }
+  let child = node[head];
+  if (child == null || typeof child !== 'object' || Array.isArray(child)) {
+    const nested: MutableTree = {};
+    if (child !== undefined) {
+      nested.default = child; // promote a previously-plain value
+    }
+    node[head] = nested;
+    child = nested;
+  }
+  insertAtPath(child as $FlowFixMe, rest, value, rule);
+}
+
+/** Ensures every condition object has a `default` and its keys are ordered
+ * (`default` first, then alphabetical) so the output passes stylex/sort-keys
+ * with zero autofixes. */
+function normalizeTree(value: EmittedValue): EmittedValue {
+  if (value == null || typeof value !== 'object' || Array.isArray(value)) {
+    return value;
+  }
+  const node = value as EmittedConditions;
+  const ordered: MutableTree = {};
+  ordered.default =
+    node.default === undefined ? null : normalizeTree(node.default);
+  for (const key of Object.keys(node)
+    .filter((k) => k !== 'default')
+    .sort()) {
+    ordered[key] = normalizeTree(node[key]);
+  }
+  return ordered;
+}
+
+function emitProperty(
+  atoms: $ReadOnlyArray<Atom>,
+  rule: StyleRule,
+  hoverGuard: boolean,
+): EmittedValue {
+  // Flat fast-path: a single unconditional atom stays a plain value.
+  if (atoms.length === 1 && atoms[0].conditions.length === 0) {
+    return leafValue(atoms[0].value, rule);
+  }
+  const root: MutableTree = {};
+  for (const atom of atoms) {
+    insertAtPath(
+      root,
+      canonicalPath(atom.conditions, hoverGuard),
+      leafValue(atom.value, rule),
+      rule,
+    );
+  }
+  return normalizeTree(root);
+}
+
+export function emitFileIR(ir: FileIR, options?: EmitOptions): EmitResult {
+  const hoverGuard = options?.hoverGuard ?? true;
   const usedKeys = new Set<string>();
   const rules: Array<EmittedRule> = [];
   const bindings: Array<string> = [];
 
   for (const rule of ir.rules) {
-    const unsorted: { [string]: EmittedValue } = {};
+    // Group atoms by property, preserving source order within each property.
+    const byProperty: Map<string, Array<Atom>> = new Map();
     for (const atom of rule.atoms) {
-      if (atom.conditions.length > 0) {
-        throw new EmitError(
-          `rule '${rule.name}': conditions are not emittable until M2`,
-        );
-      }
-      if (unsorted[atom.property] !== undefined) {
-        throw new EmitError(
-          `rule '${rule.name}': duplicate property '${atom.property}'`,
-        );
-      }
-      unsorted[atom.property] = emitValue(atom.value, rule);
+      const list = byProperty.get(atom.property) ?? [];
+      list.push(atom);
+      byProperty.set(atom.property, list);
     }
     // Alphabetical property order satisfies stylex/sort-keys with zero
-    // autofixes. Safe in M1: flat longhands are order-independent, and the
-    // order-DEPENDENT cases (duplicates, shorthand/longhand overlap) are
-    // refused upstream. M4's scoped verifyAndFix supersedes this.
+    // autofixes.
     const style: { [string]: EmittedValue } = {};
-    for (const property of Object.keys(unsorted).sort()) {
-      style[property] = unsorted[property];
+    for (const property of [...byProperty.keys()].sort()) {
+      style[property] = emitProperty(
+        byProperty.get(property) ?? [],
+        rule,
+        hoverGuard,
+      );
     }
 
     const base = sanitizeKey(rule.name);

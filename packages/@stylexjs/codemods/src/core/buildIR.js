@@ -17,15 +17,17 @@
  * home so the seam does not move.
  */
 
-import type { Atom, FileIR, StyleRule } from './ir';
+import type { Atom, Condition, FileIR, StyleRule, Value } from './ir';
 
 /**
- * One style declaration as handed over by an adapter: no conditions yet
- * (M1), no StyleX knowledge, no AST nodes.
+ * One style declaration as handed over by an adapter: a property, a value,
+ * and the self-targeting conditions it applies under (empty for a flat
+ * declaration). No StyleX knowledge, no AST nodes.
  */
 export type Declaration = {
   +property: string,
-  +value: string | number,
+  +value: Value,
+  +conditions?: $ReadOnlyArray<Condition>,
 };
 
 /**
@@ -42,8 +44,8 @@ export function buildFileIR(groups: $ReadOnlyArray<DeclarationGroup>): FileIR {
   const rules: Array<StyleRule> = groups.map((group) => {
     const atoms: Array<Atom> = group.declarations.map((declaration) => ({
       property: declaration.property,
-      conditions: [],
-      value: { kind: 'static', value: declaration.value },
+      conditions: declaration.conditions ?? [],
+      value: declaration.value,
     }));
     return { name: group.nameHint, atoms };
   });

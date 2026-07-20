@@ -14,7 +14,7 @@
  * output).
  */
 
-import type { FileIR } from '../src/core/ir';
+import type { Atom, FileIR } from '../src/core/ir';
 import { buildFileIR } from '../src/core/buildIR';
 import { emitFileIR, sanitizeKey, EmitError } from '../src/core/emit';
 
@@ -82,26 +82,7 @@ describe('emitFileIR', () => {
     expect(sanitizeKey('default')).toBe('styles');
   });
 
-  test('REFUSES conditions (M2) rather than emitting incorrectly', () => {
-    const ir: FileIR = {
-      rules: [
-        {
-          name: 'badge',
-          atoms: [
-            {
-              property: 'color',
-              conditions: [{ kind: 'pseudo-class', name: ':hover' }],
-              value: { kind: 'static', value: 'blue' },
-            },
-          ],
-        },
-      ],
-      keyframes: [],
-    };
-    expect(() => emitFileIR(ir)).toThrow(EmitError);
-  });
-
-  test('REFUSES duplicate properties within a rule', () => {
+  test('REFUSES a duplicate unconditional base declaration', () => {
     const ir = irOf([
       [
         'badge',
@@ -115,14 +96,104 @@ describe('emitFileIR', () => {
   });
 });
 
+describe('emitFileIR — conditions (the flip)', () => {
+  const cond = (
+    name: string,
+    kind: 'pseudo-class' | 'pseudo-element',
+    value: string,
+  ): Atom => ({
+    property: 'color',
+    conditions: [
+      kind === 'pseudo-class'
+        ? { kind: 'pseudo-class', name }
+        : { kind: 'pseudo-element', name },
+    ],
+    value: { kind: 'static', value },
+  });
+  const baseAtom = (value: string): Atom => ({
+    property: 'color',
+    conditions: [],
+    value: { kind: 'static', value },
+  });
+  const ruleOf = (atoms: Array<Atom>): FileIR => ({
+    rules: [{ name: 'badge', atoms }],
+    keyframes: [],
+  });
+
+  test('base + :hover nests property-grouped, hover-guarded by default', () => {
+    const { rules } = emitFileIR(
+      ruleOf([baseAtom('red'), cond(':hover', 'pseudo-class', 'blue')]),
+    );
+    expect(rules[0].style).toEqual({
+      color: {
+        default: 'red',
+        '@media (hover: hover)': { default: null, ':hover': 'blue' },
+      },
+    });
+  });
+
+  test('hover-guard can be disabled', () => {
+    const { rules } = emitFileIR(
+      ruleOf([baseAtom('red'), cond(':hover', 'pseudo-class', 'blue')]),
+      { hoverGuard: false },
+    );
+    expect(rules[0].style).toEqual({
+      color: { default: 'red', ':hover': 'blue' },
+    });
+  });
+
+  test(':focus is not hover-guarded', () => {
+    const { rules } = emitFileIR(
+      ruleOf([baseAtom('red'), cond(':focus', 'pseudo-class', 'green')]),
+    );
+    expect(rules[0].style).toEqual({
+      color: { default: 'red', ':focus': 'green' },
+    });
+  });
+
+  test('a condition with no base gets default: null', () => {
+    const { rules } = emitFileIR(
+      ruleOf([cond(':focus', 'pseudo-class', 'green')]),
+    );
+    expect(rules[0].style).toEqual({
+      color: { default: null, ':focus': 'green' },
+    });
+  });
+
+  test('media condition nests as an at-rule object', () => {
+    const { rules } = emitFileIR(
+      ruleOf([
+        baseAtom('red'),
+        {
+          property: 'color',
+          conditions: [{ kind: 'at-rule', rule: '@media (min-width: 600px)' }],
+          value: { kind: 'static', value: 'green' },
+        },
+      ]),
+    );
+    expect(rules[0].style).toEqual({
+      color: { default: 'red', '@media (min-width: 600px)': 'green' },
+    });
+  });
+
+  test('pseudo-element nests (different box, not hover-guarded)', () => {
+    const { rules } = emitFileIR(
+      ruleOf([baseAtom('red'), cond('::before', 'pseudo-element', 'gray')]),
+    );
+    expect(rules[0].style).toEqual({
+      color: { default: 'red', '::before': 'gray' },
+    });
+  });
+});
+
 describe('buildFileIR', () => {
   test('flat declarations become zero-condition static atoms', () => {
     const ir = buildFileIR([
       {
         nameHint: 'badge',
         declarations: [
-          { property: 'color', value: 'red' },
-          { property: 'fontSize', value: 16 },
+          { property: 'color', value: { kind: 'static', value: 'red' } },
+          { property: 'fontSize', value: { kind: 'static', value: 16 } },
         ],
       },
     ]);
@@ -153,7 +224,9 @@ describe('buildFileIR', () => {
       buildFileIR([
         {
           nameHint: 'Badge',
-          declarations: [{ property: 'color', value: 'red' }],
+          declarations: [
+            { property: 'color', value: { kind: 'static', value: 'red' } },
+          ],
         },
       ]),
     );
