@@ -73,7 +73,13 @@ function normalizeAtRule(rule: string): string {
 }
 
 function normalizeValue(value: string): string {
-  return value.trim().replace(/\s+/g, ' ');
+  // Comma-whitespace is canonicalized because CSS treats
+  // `rgb(10, 20, 30)` and `rgb(10,20,30)` as the same value — and the
+  // StyleX compiler normalizes to the latter.
+  return value
+    .trim()
+    .replace(/\s+/g, ' ')
+    .replace(/\s*,\s*/g, ',');
 }
 
 function normalizeCondition(raw: string): string {
