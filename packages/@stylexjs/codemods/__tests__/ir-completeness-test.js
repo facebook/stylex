@@ -58,20 +58,34 @@ function valueToSource(value: EmittedValue | mixed): string {
   if (typeof value === 'number') {
     return String(value);
   }
+  if (value === null) {
+    return 'null';
+  }
   if (Array.isArray(value)) {
     return `[${value.map(valueToSource).join(', ')}]`;
   }
+  if (typeof value === 'object') {
+    // A nested condition object: { default, ':hover', '@media …' }.
+    return objectToSource(value);
+  }
   throw new Error(`unstringifiable value: ${String(value)}`);
+}
+
+const BARE_KEY = /^[A-Za-z_$][A-Za-z0-9_$]*$/;
+
+function objectToSource(object: { +[string]: mixed }): string {
+  const entries = Object.keys(object).map((key) => {
+    const renderedKey = BARE_KEY.test(key) ? key : `'${key}'`;
+    return `${renderedKey}: ${valueToSource(object[key])}`;
+  });
+  return `{ ${entries.join(', ')} }`;
 }
 
 function styleToSource(style: EmittedStyle | mixed): string {
   if (style == null || typeof style !== 'object') {
     throw new Error('unstringifiable style object');
   }
-  const entries = Object.keys(style).map(
-    (property) => `${property}: ${valueToSource(style[property])}`,
-  );
-  return `{ ${entries.join(', ')} }`;
+  return objectToSource(style);
 }
 
 function netCssOfStyleObject(style: EmittedStyle | mixed) {
@@ -104,8 +118,13 @@ test('every corpus entry round-trips through the IR or is a typed coverage gap',
       continue;
     }
     // Round-trip: IR -> emit -> compile, and compare against the original
-    // object compiled directly. Empty allowlist: any drift is a failure.
-    const { rules } = emitFileIR({ rules: [rule], keyframes: [] });
+    // object compiled directly. hoverGuard is off so the round-trip is a
+    // true identity (the guard is a sanctioned change, not an equivalence);
+    // empty allowlist means any drift is a failure.
+    const { rules } = emitFileIR(
+      { rules: [rule], keyframes: [] },
+      { hoverGuard: false },
+    );
     const diff = semanticDiffGate(
       netCssOfStyleObject(styleObject),
       netCssOfStyleObject(rules[0].style),
@@ -119,10 +138,8 @@ test('every corpus entry round-trips through the IR or is a typed coverage gap',
     covered.push(name);
   }
   expect(covered.length + gaps.length).toBe(SEED_CORPUS.length);
-  expect(covered).toEqual([
-    'flat static styles',
-    'fallback array (firstThatWorks)',
-  ]);
+  // M2 covers conditions, so the whole seed corpus now round-trips.
+  expect(gaps).toEqual([]);
   // eslint-disable-next-line no-console
   console.info(
     `[ir-completeness] ${covered.length}/${SEED_CORPUS.length} corpus entries covered` +

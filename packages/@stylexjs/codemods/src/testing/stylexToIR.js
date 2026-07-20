@@ -16,12 +16,13 @@
  * coverage percentage. An IR gap found here is SAFE — in the real pipeline
  * the same construct would be flagged, never emitted incorrectly.
  *
- * M1 coverage: flat static values and fallback arrays. Condition objects
- * (pseudo/at-rule keys or condition-in-value objects) are M2 gaps; null
- * values and keyframes are M3 gaps.
+ * M2 coverage: flat static values, fallback arrays, AND condition-in-value
+ * objects (`{ default, ':hover', '@media …', '::before' }`, including
+ * nesting) — the StyleX-side proof that the flip round-trips. `null` values
+ * and keyframes are M3 gaps.
  */
 
-import type { Atom, StyleRule } from '../core/ir';
+import type { Atom, Condition, StyleRule, Value } from '../core/ir';
 
 export class IRCoverageGapError extends Error {
   constructor(message: string) {
@@ -47,6 +48,70 @@ function toStaticValueArray(
   return values;
 }
 
+/** Parses a StyleX condition key into a typed IR condition, or throws. */
+function toCondition(context: string, key: string): Condition {
+  if (key.startsWith('@')) {
+    return { kind: 'at-rule', rule: key };
+  }
+  if (key.startsWith('::')) {
+    return { kind: 'pseudo-element', name: key };
+  }
+  if (key.startsWith(':')) {
+    return { kind: 'pseudo-class', name: key };
+  }
+  throw new IRCoverageGapError(
+    `${context}: unrecognized condition key '${key}'`,
+  );
+}
+
+/** A static leaf value, or null if not one. */
+function toLeafValue(raw: mixed): Value | null {
+  if (typeof raw === 'string' || typeof raw === 'number') {
+    return { kind: 'static', value: raw };
+  }
+  if (Array.isArray(raw) && raw.length > 0) {
+    const values = toStaticValueArray(raw);
+    return values == null ? null : { kind: 'first-that-works', values };
+  }
+  return null;
+}
+
+/** Walks a property's value — a leaf, or a condition object (possibly
+ * nested) — emitting one atom per leaf with its accumulated conditions. */
+function readProperty(
+  context: string,
+  property: string,
+  raw: mixed,
+  conditions: $ReadOnlyArray<Condition>,
+  atoms: Array<Atom>,
+): void {
+  const leaf = toLeafValue(raw);
+  if (leaf != null) {
+    atoms.push({ property, conditions, value: leaf });
+    return;
+  }
+  if (raw == null || typeof raw !== 'object') {
+    throw new IRCoverageGapError(
+      `${context}.${property}: value form not representable yet ` +
+        '(null/keyframes land in M3)',
+    );
+  }
+  const conditionObject: { +[string]: mixed } = raw;
+  for (const key of Object.keys(conditionObject)) {
+    if (key === 'default') {
+      readProperty(context, property, conditionObject[key], conditions, atoms);
+    } else {
+      readProperty(
+        context,
+        property,
+        conditionObject[key],
+        [...conditions, toCondition(`${context}.${property}`, key)],
+        atoms,
+      );
+    }
+  }
+}
+
 export function stylexObjectToIR(name: string, styleObject: mixed): StyleRule {
   if (
     styleObject == null ||
@@ -57,31 +122,7 @@ export function stylexObjectToIR(name: string, styleObject: mixed): StyleRule {
   }
   const atoms: Array<Atom> = [];
   for (const property of Object.keys(styleObject)) {
-    const raw = styleObject[property];
-    if (typeof raw === 'string' || typeof raw === 'number') {
-      atoms.push({
-        property,
-        conditions: [],
-        value: { kind: 'static', value: raw },
-      });
-    } else if (Array.isArray(raw) && raw.length > 0) {
-      const values = toStaticValueArray(raw);
-      if (values == null) {
-        throw new IRCoverageGapError(
-          `'${name}.${property}': fallback array contains a non-static entry`,
-        );
-      }
-      atoms.push({
-        property,
-        conditions: [],
-        value: { kind: 'first-that-works', values },
-      });
-    } else {
-      throw new IRCoverageGapError(
-        `'${name}.${property}': value form not representable yet ` +
-          '(conditions land in M2, null/keyframes in M3)',
-      );
-    }
+    readProperty(name, property, styleObject[property], [], atoms);
   }
   return { name, atoms };
 }
