@@ -19,6 +19,8 @@
 
 import { buildFileIR } from '../../core/buildIR';
 import { emitFileIR } from '../../core/emit';
+import type { EmittedRule } from '../../core/emit';
+import { checkRule } from '../../core/referee';
 import {
   parseSource,
   printSource,
@@ -45,9 +47,15 @@ export type TransformResult =
   | { +status: 'skipped', +reasons: $ReadOnlyArray<string> }
   | { +status: 'unchanged' };
 
+export type TransformOptions = {
+  /** Wrap `:hover` in `@media (hover: hover)` (default true). */
+  +hoverGuard?: boolean,
+};
+
 export function transformEmotionFile(
   source: string,
   filename: string = 'file.js',
+  options?: TransformOptions,
 ): TransformResult {
   // Cheap bail before parsing anything.
   if (!source.includes('@emotion/react')) {
@@ -85,7 +93,27 @@ export function transformEmotionFile(
     }
     return { nameHint: read.nameHint, declarations: read.declarations };
   });
-  const { rules, bindings } = emitFileIR(buildFileIR(groups));
+  const fileIR = buildFileIR(groups);
+
+  // L5 Referee: convert only when Emotion's cascade and StyleX's priority
+  // agree on every simultaneously-active condition; otherwise refuse.
+  const refereed = fileIR.rules.map(checkRule);
+  const conflicts = refereed.flatMap((r) => (r.ok ? [] : r.conflicts));
+  if (conflicts.length > 0) {
+    return { status: 'skipped', reasons: conflicts };
+  }
+  const { rules, bindings } = emitFileIR(
+    {
+      rules: refereed.map((r) => {
+        if (!r.ok) {
+          throw new Error('unreachable: conflicts were checked above');
+        }
+        return r.rule;
+      }),
+      keyframes: fileIR.keyframes,
+    },
+    { hoverGuard: options?.hoverGuard ?? true },
+  );
 
   // Core -> adapter: place the StyleX back into the file's idiom.
   const stylesLocalName = pickStylesName(j, root);
@@ -130,10 +158,7 @@ function insertRegistry(
   root: $FlowFixMe,
   firstSite: $FlowFixMe,
   stylesLocalName: string,
-  rules: $ReadOnlyArray<{
-    +key: string,
-    +style: { +[string]: string | number | $ReadOnlyArray<string | number> },
-  }>,
+  rules: $ReadOnlyArray<EmittedRule>,
 ): void {
   const createObject = j.objectExpression(
     rules.map((rule) =>
