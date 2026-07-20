@@ -15,15 +15,18 @@
  * we have deliberately kept open.
  *
  * jscodeshift is the default: format-preserving printing via recast, and
- * parses the Flow/TS/JSX found in user code.
+ * parses the Flow/TS/JSX found in user code. Adapters receive `j` and
+ * `root` from here and never import the toolkit themselves (enforced by
+ * seam-test); `core/` outside this file never sees an AST node at all.
  */
 
 import jscodeshift from 'jscodeshift';
+import type { EmittedStyle, EmittedValue } from './emit';
 
 // 'flow' also covers plain JS + JSX; 'tsx' also covers plain TS.
 export type ParserChoice = 'flow' | 'tsx';
 
-export opaque type Rewriter = {
+export type Rewriter = {
   +j: $FlowFixMe,
   +root: $FlowFixMe,
 };
@@ -45,4 +48,23 @@ export function parseSource(
 /** Prints a rewriter handle back to source, format-preserving. */
 export function printSource(rewriter: Rewriter): string {
   return rewriter.root.toSource({ quote: 'single' });
+}
+
+/**
+ * Renders emitted style data (plain values / fallback arrays) as an
+ * ObjectExpression — the bridge that lets `core/emit.js` stay AST-free.
+ */
+export function styleToObjectAst(
+  j: $FlowFixMe,
+  style: EmittedStyle,
+): $FlowFixMe {
+  const valueAst = (value: EmittedValue): $FlowFixMe =>
+    Array.isArray(value)
+      ? j.arrayExpression(value.map((v) => j.literal(v)))
+      : j.literal(value);
+  return j.objectExpression(
+    Object.keys(style).map((property) =>
+      j.property('init', j.identifier(property), valueAst(style[property])),
+    ),
+  );
 }
