@@ -140,13 +140,32 @@ describe('semantic-diff gate', () => {
     expect(result.allowed.length).toBeGreaterThan(0);
   });
 
-  test('allowlist: physical -> logical is a sanctioned diff', () => {
+  test('allowlist: physical -> logical is a sanctioned diff (inset, not canonicalized)', () => {
+    // margin/padding are canonicalized to physical longhands and match
+    // directly; left/right (inset) still flow through the allowlist.
     const result = semanticDiffGate(
-      emotionNetCss({ marginLeft: '8px' }),
-      emotionNetCss({ marginInlineStart: '8px' }),
+      emotionNetCss({ left: '0px' }),
+      emotionNetCss({ insetInlineStart: '0px' }),
     );
     expect(result.ok).toBe(true);
     expect(result.allowed.length).toBeGreaterThan(0);
+  });
+
+  test('box shorthand and its expanded longhands compare equal', () => {
+    // Emotion `margin: 8px 16px` vs the codemod's logical expansion.
+    const result = semanticDiffGate(
+      emotionNetCss({ margin: '8px 16px' }),
+      emotionNetCss({ marginBlock: '8px', marginInline: '16px' }),
+    );
+    expect(result.ok).toBe(true);
+  });
+
+  test('shorthand canonicalization still catches a real per-side difference', () => {
+    const result = semanticDiffGate(
+      emotionNetCss({ margin: '8px 16px' }),
+      emotionNetCss({ marginBlock: '8px', marginInline: '99px' }),
+    );
+    expect(result.ok).toBe(false);
   });
 
   test('allowlist does NOT excuse a value change under the same disguise', () => {

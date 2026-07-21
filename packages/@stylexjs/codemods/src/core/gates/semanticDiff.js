@@ -107,6 +107,130 @@ function coordinate(
     : `${property} @ ${conditions.join(' && ')}`;
 }
 
+// --- box-shorthand canonicalization ------------------------------------
+
+// Emotion writes `margin: 8px 16px` (one shorthand declaration); the codemod
+// emits StyleX's expanded logical form (`margin-block` / `margin-inline`).
+// Compared property-by-property these look different even though they render
+// identically. So before diffing we expand BOTH sides' box shorthands down
+// to the four physical per-side longhands, resolving logical → physical in
+// LTR (the semantic-diff checks LTR-equivalence; the allowlist owns the
+// sanctioned RTL difference). margin/padding only in this slice — inset and
+// border keep the allowlist path.
+
+const BOX_FAMILIES: $ReadOnlyArray<string> = ['margin', 'padding'];
+
+/** Splits a space-separated value list, keeping parenthesized groups
+ * (`calc(…)`, `var(…)`) intact. */
+function splitValueList(value: string): Array<string> {
+  const parts: Array<string> = [];
+  let depth = 0;
+  let current = '';
+  for (let i = 0; i < value.length; i++) {
+    const ch = value[i];
+    if (ch === '(') {
+      depth += 1;
+    } else if (ch === ')') {
+      depth -= 1;
+    }
+    if (ch === ' ' && depth === 0) {
+      if (current !== '') {
+        parts.push(current);
+        current = '';
+      }
+    } else {
+      current += ch;
+    }
+  }
+  if (current !== '') {
+    parts.push(current);
+  }
+  return parts;
+}
+
+/** [top, right, bottom, left] from a 1–4 value box shorthand, or null. */
+function fourSides(
+  values: Array<string>,
+): [string, string, string, string] | null {
+  switch (values.length) {
+    case 1:
+      return [values[0], values[0], values[0], values[0]];
+    case 2:
+      return [values[0], values[1], values[0], values[1]];
+    case 3:
+      return [values[0], values[1], values[2], values[1]];
+    case 4:
+      return [values[0], values[1], values[2], values[3]];
+    default:
+      return null;
+  }
+}
+
+/** Expands a (property, value) into one or more physical-longhand pairs.
+ * Non-box properties pass through unchanged. */
+function expandToPhysical(
+  property: string,
+  value: string,
+): Array<[string, string]> {
+  for (const fam of BOX_FAMILIES) {
+    if (property === fam) {
+      const sides = fourSides(splitValueList(value));
+      return sides == null
+        ? [[property, value]]
+        : [
+            [`${fam}-top`, sides[0]],
+            [`${fam}-right`, sides[1]],
+            [`${fam}-bottom`, sides[2]],
+            [`${fam}-left`, sides[3]],
+          ];
+    }
+    if (property === `${fam}-inline` || property === `${fam}-block`) {
+      const vals = splitValueList(value);
+      const start = vals[0];
+      const end = vals.length > 1 ? vals[1] : vals[0];
+      return property === `${fam}-block`
+        ? [
+            [`${fam}-top`, start],
+            [`${fam}-bottom`, end],
+          ]
+        : [
+            [`${fam}-left`, start],
+            [`${fam}-right`, end],
+          ];
+    }
+    switch (property) {
+      case `${fam}-inline-start`:
+        return [[`${fam}-left`, value]];
+      case `${fam}-inline-end`:
+        return [[`${fam}-right`, value]];
+      case `${fam}-block-start`:
+        return [[`${fam}-top`, value]];
+      case `${fam}-block-end`:
+        return [[`${fam}-bottom`, value]];
+      default:
+        break;
+    }
+  }
+  return [[property, value]];
+}
+
+/** Rewrites every box shorthand/logical property in a NetCss into physical
+ * per-side longhands so both sides of a diff share one vocabulary. */
+function canonicalizeNetCss(net: NetCss): NetCss {
+  const out: { [string]: NetDeclaration } = {};
+  for (const coord of Object.keys(net)) {
+    const decl = net[coord];
+    for (const [prop, val] of expandToPhysical(decl.property, decl.value)) {
+      out[coordinate(prop, decl.conditions)] = {
+        property: prop,
+        conditions: decl.conditions,
+        value: normalizeValue(val),
+      };
+    }
+  }
+  return out;
+}
+
 function addDeclaration(
   target: { [string]: NetDeclaration },
   property: string,
@@ -349,11 +473,15 @@ export const DEFAULT_ALLOWLIST: $ReadOnlyArray<AllowlistRule> = [
 // --- the gate -----------------------------------------------------------
 
 export function semanticDiffGate(
-  before: NetCss,
-  after: NetCss,
+  beforeRaw: NetCss,
+  afterRaw: NetCss,
   options?: { +allowlist?: $ReadOnlyArray<AllowlistRule> },
 ): SemanticDiffResult {
   const allowlist = options?.allowlist ?? DEFAULT_ALLOWLIST;
+  // Expand box shorthands on both sides so a shorthand and its expanded
+  // longhands compare equal.
+  const before = canonicalizeNetCss(beforeRaw);
+  const after = canonicalizeNetCss(afterRaw);
   const coordinates = new Set([...Object.keys(before), ...Object.keys(after)]);
   const diffs: Array<DiffEntry> = [];
   const allowed: Array<DiffEntry> = [];
