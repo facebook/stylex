@@ -34,16 +34,19 @@ export type Condition =
   | { +kind: 'at-rule', +rule: string }; // e.g. '@media (min-width: 600px)'
 
 /**
- * The value of an atom. `static` is the only variant in v1.0; a
- * `dynamic` variant (props-driven, -> StyleX function-form create) is the
- * planned v1.1 addition.
+ * The value of an atom. `static` is the base variant; `first-that-works` is
+ * a fallback array; `reference` is an identifier reference (e.g.
+ * `animationName` pointing at a `stylex.keyframes` variable). A `dynamic`
+ * variant (props-driven, -> StyleX function-form create) is the planned
+ * v1.1 addition.
  */
 export type Value =
   | { +kind: 'static', +value: string | number | null }
   | {
       +kind: 'first-that-works',
       +values: $ReadOnlyArray<string | number>,
-    };
+    }
+  | { +kind: 'reference', +name: string };
 
 /**
  * The unit of the IR: one property, under zero or more conditions,

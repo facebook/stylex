@@ -75,6 +75,11 @@ function valueAst(j: $FlowFixMe, value: EmittedValue): $FlowFixMe {
     return j.arrayExpression(value.map((v) => j.literal(v)));
   }
   if (value != null && typeof value === 'object') {
+    // A reference sentinel renders as a bare identifier (e.g. `animationName:
+    // spin`), not a string literal.
+    if (typeof value.$$ref === 'string') {
+      return j.identifier(value.$$ref);
+    }
     return objectAst(j, value);
   }
   return j.literal(value);

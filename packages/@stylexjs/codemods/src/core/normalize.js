@@ -45,6 +45,11 @@ const PHYSICAL_TO_LOGICAL: $ReadOnly<{ [string]: string }> = {
   right: 'insetInlineEnd',
 };
 
+function mapAtom(atom: Atom): Atom {
+  const mapped = PHYSICAL_TO_LOGICAL[atom.property];
+  return mapped == null ? atom : { ...atom, property: mapped };
+}
+
 export function normalizeFileIR(
   ir: FileIR,
   options?: NormalizeOptions,
@@ -55,10 +60,14 @@ export function normalizeFileIR(
   }
   const rules: $ReadOnlyArray<StyleRule> = ir.rules.map((rule) => ({
     name: rule.name,
-    atoms: rule.atoms.map((atom: Atom) => {
-      const mapped = PHYSICAL_TO_LOGICAL[atom.property];
-      return mapped == null ? atom : { ...atom, property: mapped };
-    }),
+    atoms: rule.atoms.map(mapAtom),
   }));
-  return { rules, keyframes: ir.keyframes };
+  const keyframes = ir.keyframes.map((kf) => ({
+    name: kf.name,
+    frames: kf.frames.map((frame) => ({
+      selector: frame.selector,
+      atoms: frame.atoms.map(mapAtom),
+    })),
+  }));
+  return { rules, keyframes };
 }

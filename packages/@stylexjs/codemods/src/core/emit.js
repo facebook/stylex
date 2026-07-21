@@ -29,14 +29,18 @@ import { conditionKey } from './ir';
 
 /**
  * A value in a `stylex.create` entry: a static value, a fallback array
- * (StyleX's `firstThatWorks`), or a nested condition object.
+ * (StyleX's `firstThatWorks`), an identifier reference (rendered as a bare
+ * identifier, e.g. `animationName: spin`), or a nested condition object.
  */
 export type EmittedValue =
   | string
   | number
   | null
   | $ReadOnlyArray<string | number>
+  | EmittedRef
   | EmittedConditions;
+/** Sentinel for a bare-identifier reference; `$$ref` is the identifier. */
+export type EmittedRef = { +$$ref: string };
 export type EmittedConditions = { +[condition: string]: EmittedValue };
 
 /** A `stylex.create` entry as plain data: property -> value. */
@@ -47,8 +51,15 @@ export type EmittedRule = {
   +style: EmittedStyle,
 };
 
+/** An emitted `stylex.keyframes` declaration: a variable name and its frames. */
+export type EmittedKeyframes = {
+  +name: string,
+  +frames: $ReadOnlyArray<{ +selector: string, +style: EmittedStyle }>,
+};
+
 export type EmitResult = {
   +rules: $ReadOnlyArray<EmittedRule>,
+  +keyframes: $ReadOnlyArray<EmittedKeyframes>,
   /** bindings[i] is the create key for FileIR.rules[i]. */
   +bindings: $ReadOnlyArray<string>,
 };
@@ -81,18 +92,16 @@ export function sanitizeKey(hint: string): string {
   return IDENTIFIER.test(key) && !RESERVED.has(key) ? key : 'styles';
 }
 
-function staticValue(value: Value, rule: StyleRule): string | number | null {
-  if (value.kind === 'first-that-works') {
-    // A fallback array is itself a leaf; handled by the caller.
-    throw new EmitError(`rule '${rule.name}': unexpected fallback array`);
+function leafValue(value: Value): EmittedValue {
+  switch (value.kind) {
+    case 'first-that-works':
+      return value.values;
+    case 'reference':
+      return { $$ref: value.name };
+    case 'static':
+    default:
+      return value.value;
   }
-  return value.value;
-}
-
-function leafValue(value: Value, rule: StyleRule): EmittedValue {
-  return value.kind === 'first-that-works'
-    ? value.values
-    : staticValue(value, rule);
 }
 
 /**
@@ -192,18 +201,38 @@ function emitProperty(
 ): EmittedValue {
   // Flat fast-path: a single unconditional atom stays a plain value.
   if (atoms.length === 1 && atoms[0].conditions.length === 0) {
-    return leafValue(atoms[0].value, rule);
+    return leafValue(atoms[0].value);
   }
   const root: MutableTree = {};
   for (const atom of atoms) {
     insertAtPath(
       root,
       canonicalPath(atom.conditions, hoverGuard),
-      leafValue(atom.value, rule),
+      leafValue(atom.value),
       rule,
     );
   }
   return normalizeTree(root);
+}
+
+/** Groups a rule's atoms by property (the flip) into one emitted style
+ * object, alphabetically ordered for stylex/sort-keys. */
+function emitStyleObject(rule: StyleRule, hoverGuard: boolean): EmittedStyle {
+  const byProperty: Map<string, Array<Atom>> = new Map();
+  for (const atom of rule.atoms) {
+    const list = byProperty.get(atom.property) ?? [];
+    list.push(atom);
+    byProperty.set(atom.property, list);
+  }
+  const style: { [string]: EmittedValue } = {};
+  for (const property of [...byProperty.keys()].sort()) {
+    style[property] = emitProperty(
+      byProperty.get(property) ?? [],
+      rule,
+      hoverGuard,
+    );
+  }
+  return style;
 }
 
 export function emitFileIR(ir: FileIR, options?: EmitOptions): EmitResult {
@@ -213,24 +242,7 @@ export function emitFileIR(ir: FileIR, options?: EmitOptions): EmitResult {
   const bindings: Array<string> = [];
 
   for (const rule of ir.rules) {
-    // Group atoms by property, preserving source order within each property.
-    const byProperty: Map<string, Array<Atom>> = new Map();
-    for (const atom of rule.atoms) {
-      const list = byProperty.get(atom.property) ?? [];
-      list.push(atom);
-      byProperty.set(atom.property, list);
-    }
-    // Alphabetical property order satisfies stylex/sort-keys with zero
-    // autofixes.
-    const style: { [string]: EmittedValue } = {};
-    for (const property of [...byProperty.keys()].sort()) {
-      style[property] = emitProperty(
-        byProperty.get(property) ?? [],
-        rule,
-        hoverGuard,
-      );
-    }
-
+    const style = emitStyleObject(rule, hoverGuard);
     const base = sanitizeKey(rule.name);
     let key = base;
     for (let n = 2; usedKeys.has(key); n++) {
@@ -241,8 +253,14 @@ export function emitFileIR(ir: FileIR, options?: EmitOptions): EmitResult {
     bindings.push(key);
   }
 
-  if (ir.keyframes.length > 0) {
-    throw new EmitError('keyframes are not emittable until M3');
-  }
-  return { rules, bindings };
+  const keyframes: Array<EmittedKeyframes> = ir.keyframes.map((kf) => ({
+    name: kf.name,
+    frames: kf.frames.map((frame) => ({
+      selector: frame.selector,
+      // A frame is a flat style object; reuse the same grouping machinery.
+      style: emitStyleObject({ name: kf.name, atoms: frame.atoms }, hoverGuard),
+    })),
+  }));
+
+  return { rules, keyframes, bindings };
 }

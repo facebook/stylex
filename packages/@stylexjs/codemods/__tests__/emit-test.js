@@ -234,3 +234,68 @@ describe('buildFileIR', () => {
     expect(bindings).toEqual(['badge']);
   });
 });
+
+describe('emitFileIR — references and keyframes', () => {
+  test('a reference value emits a $$ref sentinel (rendered as a bare identifier)', () => {
+    const ir: FileIR = {
+      rules: [
+        {
+          name: 'spinner',
+          atoms: [
+            {
+              property: 'animationName',
+              conditions: [],
+              value: { kind: 'reference', name: 'spin' },
+            },
+          ],
+        },
+      ],
+      keyframes: [],
+    };
+    expect(emitFileIR(ir).rules[0].style).toEqual({
+      animationName: { $$ref: 'spin' },
+    });
+  });
+
+  test('keyframes emit as named frame objects', () => {
+    const ir: FileIR = {
+      rules: [],
+      keyframes: [
+        {
+          name: 'spin',
+          frames: [
+            {
+              selector: 'from',
+              atoms: [
+                {
+                  property: 'opacity',
+                  conditions: [],
+                  value: { kind: 'static', value: 0 },
+                },
+              ],
+            },
+            {
+              selector: 'to',
+              atoms: [
+                {
+                  property: 'opacity',
+                  conditions: [],
+                  value: { kind: 'static', value: 1 },
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    };
+    expect(emitFileIR(ir).keyframes).toEqual([
+      {
+        name: 'spin',
+        frames: [
+          { selector: 'from', style: { opacity: 0 } },
+          { selector: 'to', style: { opacity: 1 } },
+        ],
+      },
+    ]);
+  });
+});
