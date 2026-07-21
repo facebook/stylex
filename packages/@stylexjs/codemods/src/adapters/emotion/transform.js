@@ -19,7 +19,11 @@
 
 import { buildFileIR } from '../../core/buildIR';
 import { emitFileIR } from '../../core/emit';
-import type { EmittedRule } from '../../core/emit';
+import type {
+  EmittedRule,
+  EmittedStyle,
+  EmittedKeyframes,
+} from '../../core/emit';
 import { normalizeFileIR } from '../../core/normalize';
 import { postprocess } from '../../core/postprocess';
 import { checkRule } from '../../core/referee';
@@ -35,8 +39,8 @@ import {
   removeCssImport,
   insertStylexImport,
 } from './imports';
-import { detectSites } from './detect';
-import { readSite } from './read';
+import { detectSites, detectKeyframes } from './detect';
+import { readSite, readKeyframes } from './read';
 import type { PlainStyleObject } from './read';
 import { rewriteSite } from './rewriteSites';
 
@@ -45,6 +49,9 @@ export type TransformResult =
       +status: 'converted',
       +code: string,
       +sites: $ReadOnlyArray<{ +key: string, +cssObject: PlainStyleObject }>,
+      +keyframes: $ReadOnlyArray<{
+        +framesObject: { +[selector: string]: { +[string]: mixed } },
+      }>,
     }
   | { +status: 'skipped', +reasons: $ReadOnlyArray<string> }
   | { +status: 'unchanged' };
@@ -71,22 +78,41 @@ export function transformEmotionFile(
   });
 
   const wiring = analyzeEmotionWiring(j, root);
-  if (!wiring.hasPragma && wiring.cssLocalName == null) {
+  if (
+    !wiring.hasPragma &&
+    wiring.cssLocalName == null &&
+    wiring.keyframesLocalName == null
+  ) {
     return { status: 'unchanged' };
   }
 
+  // Keyframes first, so css sites can reference them by name.
+  const kfDetection = detectKeyframes(j, root, wiring.keyframesLocalName);
+  const kfReads = kfDetection.sites.map((s) =>
+    readKeyframes(s.varName, s.objectNode),
+  );
+
   const detection = detectSites(j, root, wiring.cssLocalName);
-  const blockers = [...wiring.blockers, ...detection.blockers];
-  const reads = detection.sites.map(readSite);
+  const blockers = [
+    ...wiring.blockers,
+    ...detection.blockers,
+    ...kfDetection.blockers,
+  ];
+  const reads = detection.sites.map((s) => readSite(s, kfDetection.names));
   for (const read of reads) {
     if (!read.ok) {
       blockers.push(read.blocker);
     }
   }
+  for (const kf of kfReads) {
+    if (!kf.ok) {
+      blockers.push(kf.blocker);
+    }
+  }
   if (blockers.length > 0) {
     return { status: 'skipped', reasons: blockers };
   }
-  if (detection.sites.length === 0) {
+  if (detection.sites.length === 0 && kfDetection.sites.length === 0) {
     return { status: 'unchanged' };
   }
 
@@ -97,11 +123,18 @@ export function transformEmotionFile(
     }
     return { nameHint: read.nameHint, declarations: read.declarations };
   });
+  const keyframeRules = kfReads.map((kf) => {
+    if (!kf.ok) {
+      throw new Error('unreachable: blockers were checked above');
+    }
+    return kf.rule;
+  });
   // L6 Normalize runs before the referee so every downstream layer sees one
   // vocabulary (physical→logical is a sanctioned RTL change).
-  const fileIR = normalizeFileIR(buildFileIR(groups), {
-    logicalProperties: options?.logicalProperties ?? true,
-  });
+  const fileIR = normalizeFileIR(
+    { rules: buildFileIR(groups).rules, keyframes: keyframeRules },
+    { logicalProperties: options?.logicalProperties ?? true },
+  );
 
   // L5 Referee: convert only when Emotion's cascade and StyleX's priority
   // agree on every simultaneously-active condition; otherwise refuse.
@@ -110,7 +143,7 @@ export function transformEmotionFile(
   if (conflicts.length > 0) {
     return { status: 'skipped', reasons: conflicts };
   }
-  const { rules, bindings } = emitFileIR(
+  const { rules, keyframes, bindings } = emitFileIR(
     {
       rules: refereed.map((r) => {
         if (!r.ok) {
@@ -128,7 +161,10 @@ export function transformEmotionFile(
   detection.sites.forEach((site, i) => {
     rewriteSite(j, site, stylesLocalName, bindings[i]);
   });
-  insertRegistry(j, root, detection.sites[0], stylesLocalName, rules);
+  rewriteKeyframes(j, kfDetection.sites, keyframes);
+  if (rules.length > 0) {
+    insertRegistry(j, root, detection.sites[0], stylesLocalName, rules);
+  }
   insertStylexImport(j, root);
   removeCssImport(j, root);
   removePragma(j, root);
@@ -154,7 +190,45 @@ export function transformEmotionFile(
       }
       return { key: bindings[i], cssObject: read.cssObject };
     }),
+    keyframes: kfReads.map((kf) => {
+      if (!kf.ok) {
+        throw new Error('unreachable: blockers were checked above');
+      }
+      return { framesObject: kf.framesObject };
+    }),
   };
+}
+
+/**
+ * Rewrites each `keyframes({...})` call in place to
+ * `stylex.keyframes({...})`, replacing the frames object with the emitted
+ * (normalized) one. Emitted keyframes are matched to detected sites by the
+ * bound variable name.
+ */
+function rewriteKeyframes(
+  j: $FlowFixMe,
+  sites: $ReadOnlyArray<{ +callPath: $FlowFixMe, +varName: string, ... }>,
+  emitted: $ReadOnlyArray<EmittedKeyframes>,
+): void {
+  const byName: Map<string, EmittedKeyframes> = new Map(
+    emitted.map((kf) => [kf.name, kf]),
+  );
+  for (const site of sites) {
+    const kf = byName.get(site.varName);
+    if (kf == null) {
+      continue;
+    }
+    const framesObject: { [string]: EmittedStyle } = {};
+    for (const frame of kf.frames) {
+      framesObject[frame.selector] = frame.style;
+    }
+    j(site.callPath).replaceWith(
+      j.callExpression(
+        j.memberExpression(j.identifier('stylex'), j.identifier('keyframes')),
+        [styleToObjectAst(j, framesObject)],
+      ),
+    );
+  }
 }
 
 /** `styles`, or a numbered variant if the file already uses that name. */

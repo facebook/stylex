@@ -133,3 +133,88 @@ export function detectSites(
 
   return { sites, blockers };
 }
+
+export type KeyframesSite = {
+  +callPath: $FlowFixMe, // CallExpression path (keyframes({...}))
+  +objectNode: $FlowFixMe, // the frames ObjectExpression
+  +varName: string, // the `const <varName> = keyframes(...)` binding
+};
+
+export type KeyframesDetection = {
+  +sites: Array<KeyframesSite>,
+  +names: Set<string>,
+  +blockers: Array<string>,
+};
+
+/**
+ * Finds `const NAME = keyframes({ ... })` declarations. Only the object form
+ * bound to a simple `const` is convertible; anything else (tagged template,
+ * inline, reassignment) is a blocker.
+ */
+export function detectKeyframes(
+  j: $FlowFixMe,
+  root: $FlowFixMe,
+  keyframesLocalName: string | null,
+): KeyframesDetection {
+  const sites: Array<KeyframesSite> = [];
+  const names: Set<string> = new Set();
+  const blockers: Array<string> = [];
+  if (keyframesLocalName == null) {
+    return { sites, names, blockers };
+  }
+
+  const siteCallees = new Set<$FlowFixMe>();
+  root
+    .find(j.CallExpression)
+    .filter(
+      (path: $FlowFixMe) =>
+        path.node.callee.type === 'Identifier' &&
+        path.node.callee.name === keyframesLocalName,
+    )
+    .forEach((path: $FlowFixMe) => {
+      const declarator = path.parent.node;
+      const isSimpleConstBinding =
+        declarator.type === 'VariableDeclarator' &&
+        declarator.init === path.node &&
+        declarator.id.type === 'Identifier';
+      const arg = path.node.arguments[0];
+      if (
+        !isSimpleConstBinding ||
+        path.node.arguments.length !== 1 ||
+        arg.type !== 'ObjectExpression'
+      ) {
+        blockers.push(
+          'keyframes() must be an object bound to a const to convert ' +
+            '(tagged-template or inline keyframes land later)',
+        );
+        return;
+      }
+      siteCallees.add(path.node.callee);
+      names.add(declarator.id.name);
+      sites.push({
+        callPath: path,
+        objectNode: arg,
+        varName: declarator.id.name,
+      });
+    });
+
+  // Any other use of the keyframes identifier (not a convertible call, not
+  // the import) means we cannot fully remove it — refuse.
+  root
+    .find(j.Identifier, { name: keyframesLocalName })
+    .forEach((path: $FlowFixMe) => {
+      const parentNode = path.parent.node;
+      if (
+        parentNode.type === 'ImportSpecifier' ||
+        siteCallees.has(path.node) ||
+        (parentNode.type === 'Property' && parentNode.key === path.node)
+      ) {
+        return;
+      }
+      blockers.push(
+        `'${keyframesLocalName}' is used in an unsupported position`,
+      );
+    });
+
+  return { sites, names, blockers };
+}

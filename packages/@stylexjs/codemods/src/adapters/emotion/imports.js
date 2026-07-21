@@ -20,14 +20,19 @@ const PRAGMA_PATTERN = /@jsxImportSource\s+@emotion\/react/;
 export type EmotionWiring = {
   +hasPragma: boolean,
   +cssLocalName: string | null,
+  +keyframesLocalName: string | null,
   +blockers: Array<string>,
 };
+
+// Named @emotion/react imports the adapter knows how to convert.
+const CONVERTIBLE_IMPORTS = new Set(['css', 'keyframes']);
 
 export function analyzeEmotionWiring(
   j: $FlowFixMe,
   root: $FlowFixMe,
 ): EmotionWiring {
   let cssLocalName: string | null = null;
+  let keyframesLocalName: string | null = null;
   const blockers: Array<string> = [];
 
   root.find(j.ImportDeclaration).forEach((path: $FlowFixMe) => {
@@ -40,15 +45,16 @@ export function analyzeEmotionWiring(
       return;
     }
     for (const specifier of path.node.specifiers ?? []) {
-      if (
-        specifier.type === 'ImportSpecifier' &&
-        specifier.imported.name === 'css'
-      ) {
+      const imported =
+        specifier.type === 'ImportSpecifier' ? specifier.imported.name : null;
+      if (imported === 'css') {
         cssLocalName = specifier.local.name;
+      } else if (imported === 'keyframes') {
+        keyframesLocalName = specifier.local.name;
       } else {
         blockers.push(
           `'@emotion/react' import of '${
-            specifier.imported?.name ?? specifier.local?.name ?? '?'
+            imported ?? specifier.local?.name ?? '?'
           }' is not convertible yet`,
         );
       }
@@ -58,6 +64,7 @@ export function analyzeEmotionWiring(
   return {
     hasPragma: PRAGMA_PATTERN.test(findPragmaText(j, root) ?? ''),
     cssLocalName,
+    keyframesLocalName,
     blockers,
   };
 }
@@ -94,9 +101,10 @@ export function removePragma(j: $FlowFixMe, root: $FlowFixMe): void {
 }
 
 /**
- * Removes the `css` specifier from the `@emotion/react` import (the whole
- * declaration when nothing else remains), transplanting any non-pragma
- * comments onto the next statement so file headers survive.
+ * Removes the converted specifiers (`css`, `keyframes`) from the
+ * `@emotion/react` import (the whole declaration when nothing else remains),
+ * transplanting any non-pragma comments onto the next statement so file
+ * headers survive.
  */
 export function removeCssImport(j: $FlowFixMe, root: $FlowFixMe): void {
   root.find(j.ImportDeclaration).forEach((path: $FlowFixMe) => {
@@ -107,7 +115,7 @@ export function removeCssImport(j: $FlowFixMe, root: $FlowFixMe): void {
       (specifier: $FlowFixMe) =>
         !(
           specifier.type === 'ImportSpecifier' &&
-          specifier.imported.name === 'css'
+          CONVERTIBLE_IMPORTS.has(specifier.imported.name)
         ),
     );
     if (remaining.length > 0) {

@@ -20,7 +20,7 @@
  * referee cannot yet arbitrate.
  */
 
-import type { Condition, Value } from '../../core/ir';
+import type { Atom, Condition, KeyframesRule, Value } from '../../core/ir';
 import type { Declaration } from '../../core/buildIR';
 import { atomCoordinate } from '../../core/ir';
 import type { StyleSite } from './detect';
@@ -160,7 +160,11 @@ function findShorthandOverlap(properties: Array<string>): string | null {
   return null;
 }
 
-export function readSite(site: StyleSite): ReadSite {
+export function readSite(
+  site: StyleSite,
+  keyframesNames?: $ReadOnlySet<string>,
+): ReadSite {
+  const knownKeyframes = keyframesNames ?? new Set<string>();
   const declarations: Array<Declaration> = [];
   const cssObject: { [string]: mixed } = {};
   let label: string | null = null;
@@ -219,6 +223,23 @@ export function readSite(site: StyleSite): ReadSite {
       if (!IDENTIFIER.test(key) && !/^[a-zA-Z-]+$/.test(key)) {
         return `un-convertible style key '${key}'`;
       }
+
+      // `animationName: <keyframes var>` — a reference, not a static value.
+      // Omitted from the mirror; the keyframes content is diffed separately
+      // and the generated animation-name is allowlisted.
+      if (
+        key === 'animationName' &&
+        valueNode.type === 'Identifier' &&
+        knownKeyframes.has(valueNode.name)
+      ) {
+        declarations.push({
+          property: key,
+          value: { kind: 'reference', name: valueNode.name },
+          conditions,
+        });
+        continue;
+      }
+
       const value = valueOf(valueNode);
       if (value == null) {
         return (
@@ -283,6 +304,76 @@ export function readSite(site: StyleSite): ReadSite {
     cssObject,
     nameHint: label ?? enclosingComponentName(site) ?? site.tagName,
   };
+}
+
+export type ReadKeyframes =
+  | {
+      +ok: true,
+      +rule: KeyframesRule,
+      +framesObject: { +[selector: string]: { +[string]: mixed } },
+    }
+  | { +ok: false, +blocker: string };
+
+const FRAME_SELECTOR = /^(from|to|-?\d+(\.\d+)?%)$/;
+
+/** Reads a `keyframes({ from: {...}, to: {...} })` object into a
+ * KeyframesRule plus a plain mirror (for the semantic-diff "before"). Frames
+ * are flat style objects — nested conditions inside a frame are refused. */
+export function readKeyframes(
+  varName: string,
+  objectNode: $FlowFixMe,
+): ReadKeyframes {
+  const frames: Array<{ selector: string, atoms: Array<Atom> }> = [];
+  const framesObject: { [selector: string]: { [string]: mixed } } = {};
+
+  for (const property of objectNode.properties) {
+    if (property.type !== 'Property' && property.type !== 'ObjectProperty') {
+      return { ok: false, blocker: 'spread in keyframes object' };
+    }
+    const selector = propertyKey(property.key);
+    if (selector == null || !FRAME_SELECTOR.test(selector)) {
+      return {
+        ok: false,
+        blocker: `keyframes selector '${String(selector)}' is not from/to/%`,
+      };
+    }
+    if (property.value.type !== 'ObjectExpression') {
+      return {
+        ok: false,
+        blocker: `keyframes frame '${selector}' is not an object`,
+      };
+    }
+    const atoms: Array<Atom> = [];
+    const mirror: { [string]: mixed } = {};
+    for (const decl of property.value.properties) {
+      if (decl.type !== 'Property' && decl.type !== 'ObjectProperty') {
+        return { ok: false, blocker: 'spread in keyframes frame' };
+      }
+      const key = propertyKey(decl.key);
+      if (key == null || decl.computed) {
+        return {
+          ok: false,
+          blocker: `un-analyzable key in frame '${selector}'`,
+        };
+      }
+      const value = valueOf(decl.value);
+      if (value == null) {
+        return {
+          ok: false,
+          blocker: `value of '${key}' in frame '${selector}' is not static`,
+        };
+      }
+      atoms.push({ property: key, conditions: [], value });
+      mirror[key] = plainOf(value);
+    }
+    frames.push({ selector, atoms });
+    framesObject[selector] = mirror;
+  }
+
+  if (frames.length === 0) {
+    return { ok: false, blocker: 'empty keyframes object' };
+  }
+  return { ok: true, rule: { name: varName, frames }, framesObject };
 }
 
 function enclosingComponentName(site: StyleSite): string | null {
