@@ -20,6 +20,8 @@
 import { buildFileIR } from '../../core/buildIR';
 import { emitFileIR } from '../../core/emit';
 import type { EmittedRule } from '../../core/emit';
+import { normalizeFileIR } from '../../core/normalize';
+import { postprocess } from '../../core/postprocess';
 import { checkRule } from '../../core/referee';
 import {
   parseSource,
@@ -50,6 +52,8 @@ export type TransformResult =
 export type TransformOptions = {
   /** Wrap `:hover` in `@media (hover: hover)` (default true). */
   +hoverGuard?: boolean,
+  /** Map inline-axis physical properties to logical (default true). */
+  +logicalProperties?: boolean,
 };
 
 export function transformEmotionFile(
@@ -93,7 +97,11 @@ export function transformEmotionFile(
     }
     return { nameHint: read.nameHint, declarations: read.declarations };
   });
-  const fileIR = buildFileIR(groups);
+  // L6 Normalize runs before the referee so every downstream layer sees one
+  // vocabulary (physical→logical is a sanctioned RTL change).
+  const fileIR = normalizeFileIR(buildFileIR(groups), {
+    logicalProperties: options?.logicalProperties ?? true,
+  });
 
   // L5 Referee: convert only when Emotion's cascade and StyleX's priority
   // agree on every simultaneously-active condition; otherwise refuse.
@@ -125,9 +133,20 @@ export function transformEmotionFile(
   removeCssImport(j, root);
   removePragma(j, root);
 
+  // L10 Postprocess: run StyleX's own eslint autofixes so key ordering and
+  // shorthands match its canonical form. Unfixable residual errors mean the
+  // output is not clean at error → refuse the whole file.
+  const { code, residualErrors } = postprocess(
+    printSource({ j, root }),
+    filename,
+  );
+  if (residualErrors.length > 0) {
+    return { status: 'skipped', reasons: residualErrors };
+  }
+
   return {
     status: 'converted',
-    code: printSource({ j, root }),
+    code,
     sites: detection.sites.map((site, i) => {
       const read = reads[i];
       if (!read.ok) {
