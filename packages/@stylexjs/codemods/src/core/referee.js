@@ -69,6 +69,61 @@ function coordinate(atom: Atom): string {
   return atom.conditions.map(conditionKey).slice().sort().join('&&');
 }
 
+/** Signature of an atom's non-at-rule context (pseudo-classes + elements) —
+ * two atoms with the same signature but different at-rules become sibling
+ * media keys under one object. */
+function nonAtRuleSignature(conditions: $ReadOnlyArray<Condition>): string {
+  return conditions
+    .filter((c) => c.kind !== 'at-rule')
+    .map(conditionKey)
+    .sort()
+    .join('&&');
+}
+
+function atRuleSignature(conditions: $ReadOnlyArray<Condition>): string {
+  return conditions
+    .filter((c) => c.kind === 'at-rule')
+    .map(conditionKey)
+    .sort()
+    .join('&&');
+}
+
+/**
+ * The sibling-at-rule hazard: when one property has ≥2 atoms that share a
+ * pseudo context but differ by at-rule, they become sibling media keys in
+ * the emitted object. StyleX's sort-keys autofix reorders sibling keys, but
+ * the compiler treats sibling media order as SEMANTIC (last matching wins),
+ * so a reorder can silently change rendering — and the per-coordinate
+ * semantic-diff gate cannot see it. Until that upstream inconsistency is
+ * resolved we refuse (never emit incorrectly). Returns a conflict string or null.
+ */
+function siblingAtRuleConflict(
+  property: string,
+  atoms: $ReadOnlyArray<Atom>,
+): string | null {
+  const atRulesByContext: Map<string, Set<string>> = new Map();
+  for (const atom of atoms) {
+    const at = atRuleSignature(atom.conditions);
+    if (at === '') {
+      continue;
+    }
+    const context = nonAtRuleSignature(atom.conditions);
+    const set = atRulesByContext.get(context) ?? new Set();
+    set.add(at);
+    atRulesByContext.set(context, set);
+  }
+  for (const [, set] of atRulesByContext) {
+    if (set.size >= 2) {
+      return (
+        `'${property}': ≥2 sibling at-rule (e.g. @media) conditions whose order ` +
+        'is semantic to the StyleX compiler but which sort-keys would reorder ' +
+        `(${[...set].join(', ')})`
+      );
+    }
+  }
+  return null;
+}
+
 /**
  * Checks one rule. On success returns the rule with same-coordinate
  * duplicates collapsed (last-in-source wins, matching both Emotion and
@@ -97,6 +152,14 @@ export function checkRule(rule: StyleRule): RefereeResult {
       lastByCoord.set(coordinate(entry.atom), entry);
     }
     const deduped = [...lastByCoord.values()];
+
+    const siblingConflict = siblingAtRuleConflict(
+      property,
+      deduped.map((e) => e.atom),
+    );
+    if (siblingConflict != null) {
+      conflicts.push(siblingConflict);
+    }
 
     // Partition by pseudo-element target; each box is refereed independently.
     const byTarget: Map<

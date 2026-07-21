@@ -92,6 +92,26 @@ describe('checkRule — disagreement (refuses)', () => {
     const result = checkRule(rule([media(MEDIA, 'green'), base('red')]));
     expect(result.ok).toBe(false);
   });
+
+  test('≥2 sibling media queries on one property (sort-keys reorder hazard)', () => {
+    const result = checkRule(
+      rule([
+        base('black'),
+        media('@media (min-width: 500px)', 'blue'),
+        media('@media (min-width: 700px)', 'green'),
+      ]),
+    );
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.conflicts[0]).toMatch(/sibling at-rule/);
+    }
+  });
+
+  test('a single media query alongside base is fine', () => {
+    expect(checkRule(rule([base('black'), media(MEDIA, 'blue')])).ok).toBe(
+      true,
+    );
+  });
 });
 
 describe('checkRule — dedup', () => {
