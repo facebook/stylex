@@ -31,11 +31,28 @@ import {
   semanticDiffGate,
   netCssFromSerializedCss,
   netCssFromStylexMetadata,
+  keyframesFromStylexMetadata,
+  parseFrames,
 } from '../src/core/gates/semanticDiff';
 import { transformEmotionFile } from '../src/adapters/emotion/transform';
 import { loadFixtures, formatWithPrettier } from './utils/harness';
 
 const UPDATE = process.env.UPDATE_STYLEX_CODEMOD_FIXTURES === '1';
+
+/** Deterministic JSON with recursively-sorted keys, for set comparison. */
+function canonicalJson(value: mixed): string {
+  if (value == null || typeof value !== 'object') {
+    return JSON.stringify(value) ?? 'null';
+  }
+  if (Array.isArray(value)) {
+    return `[${value.map(canonicalJson).join(',')}]`;
+  }
+  const obj: { +[string]: mixed } = value;
+  return `{${Object.keys(obj)
+    .sort()
+    .map((k) => `${JSON.stringify(k)}:${canonicalJson(obj[k])}`)
+    .join(',')}}`;
+}
 
 const fixtures = loadFixtures('emotion');
 
@@ -132,6 +149,18 @@ describe.each(fixtures.map((f) => [f.name, f]))(
         throw new Error(JSON.stringify(diff.diffs, null, 2));
       }
       expect(diff.ok).toBe(true);
+
+      // Keyframes: the generated animation-name differs, so the frame
+      // CONTENTS are compared directly (Emotion serializer vs StyleX
+      // @keyframes metadata), as an order-independent multiset.
+      const emotionFrames = result.keyframes
+        .map((kf) => parseFrames(serializeStyles([kf.framesObject]).styles))
+        .map(canonicalJson)
+        .sort();
+      const stylexFrames = keyframesFromStylexMetadata(compiled.metadata)
+        .map(canonicalJson)
+        .sort();
+      expect(stylexFrames).toEqual(emotionFrames);
     });
   },
 );

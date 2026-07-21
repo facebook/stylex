@@ -349,9 +349,85 @@ export function netCssFromStylexMetadata(metadata: mixed): NetCss {
 
   const out: { [string]: NetDeclaration } = {};
   for (const { ltr } of entries) {
+    // @keyframes rules are compared separately (frame contents), not as
+    // per-property net CSS.
+    if (ltr.trim().startsWith('@keyframes')) {
+      continue;
+    }
     parseStylexRule(ltr, out);
   }
   return out;
+}
+
+export type FrameMap = { +[selector: string]: { +[property: string]: string } };
+
+/** Extracts `@keyframes NAME{ from{...} to{...} }` rules from StyleX
+ * metadata as normalized frame maps (name-agnostic). */
+export function keyframesFromStylexMetadata(
+  metadata: mixed,
+): $ReadOnlyArray<FrameMap> {
+  const rules =
+    metadata != null &&
+    typeof metadata === 'object' &&
+    Array.isArray(metadata.stylex)
+      ? metadata.stylex
+      : Array.isArray(metadata)
+        ? metadata
+        : [];
+  const out: Array<FrameMap> = [];
+  for (const rule of rules) {
+    let ltr = null;
+    if (Array.isArray(rule)) {
+      const styles = rule[1];
+      if (
+        styles != null &&
+        typeof styles === 'object' &&
+        typeof styles.ltr === 'string'
+      ) {
+        ltr = styles.ltr;
+      }
+    }
+    if (ltr == null || !ltr.trim().startsWith('@keyframes')) {
+      continue;
+    }
+    const brace = ltr.indexOf('{');
+    const inner = ltr.slice(brace + 1, ltr.lastIndexOf('}'));
+    out.push(parseFrames(inner));
+  }
+  return out;
+}
+
+/** Parses `from{...}to{...}0%{...}` frame text into a normalized frame map. */
+export function parseFrames(css: string): FrameMap {
+  const frames: { [string]: { [string]: string } } = {};
+  const blockRe = /([^{}]+)\{([^{}]*)\}/g;
+  for (const match of css.trim().matchAll(blockRe)) {
+    const rawSelector = match[1];
+    const body = match[2];
+    if (rawSelector == null || body == null) {
+      continue;
+    }
+    const selector = rawSelector.trim().toLowerCase();
+    const decls: { [string]: string } = {};
+    for (const chunk of body.split(';')) {
+      const decl = chunk.trim();
+      if (decl === '') {
+        continue;
+      }
+      const colon = decl.indexOf(':');
+      if (colon <= 0) {
+        throw new UnsupportedCssError(`keyframe declaration '${decl}'`);
+      }
+      decls[decl.slice(0, colon).trim().toLowerCase()] = normalizeValue(
+        decl.slice(colon + 1),
+      );
+    }
+    frames[selector] = decls;
+  }
+  if (Object.keys(frames).length === 0) {
+    throw new UnsupportedCssError(`no keyframe blocks in '${css}'`);
+  }
+  return frames;
 }
 
 function parseStylexRule(ltr: string, out: { [string]: NetDeclaration }): void {
@@ -465,9 +541,23 @@ export const allowHoverGuard: AllowlistRule = (entry, before, after) => {
   return false;
 };
 
+/**
+ * Sanctioned: `animation-name` present only on the after side. Emotion and
+ * StyleX generate different opaque keyframes names, so the codemod omits the
+ * reference from the Emotion "before" and the frame CONTENTS are verified
+ * separately (see `keyframesFromStylexMetadata`). This only ever fires for a
+ * converted keyframes reference — a literal animationName string stays in the
+ * before and is diffed normally.
+ */
+export const allowGeneratedAnimationName: AllowlistRule = (entry) =>
+  entry.property === 'animation-name' &&
+  entry.beforeValue == null &&
+  entry.afterValue != null;
+
 export const DEFAULT_ALLOWLIST: $ReadOnlyArray<AllowlistRule> = [
   allowPhysicalToLogical,
   allowHoverGuard,
+  allowGeneratedAnimationName,
 ];
 
 // --- the gate -----------------------------------------------------------
