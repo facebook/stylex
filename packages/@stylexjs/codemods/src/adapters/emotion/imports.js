@@ -89,8 +89,14 @@ function findPragmaText(j: $FlowFixMe, root: $FlowFixMe): string | null {
   return null;
 }
 
-/** Removes the `@jsxImportSource @emotion/react` pragma comment. */
+/**
+ * Removes the `@jsxImportSource @emotion/react` pragma — but only when no
+ * `css` prop remains (a flagged, still-Emotion site needs the pragma).
+ */
 export function removePragma(j: $FlowFixMe, root: $FlowFixMe): void {
+  if (root.find(j.JSXAttribute, { name: { name: 'css' } }).size() > 0) {
+    return;
+  }
   for (const slot of allCommentSlots(j, root)) {
     if (slot.comments != null) {
       slot.comments = slot.comments.filter(
@@ -101,10 +107,50 @@ export function removePragma(j: $FlowFixMe, root: $FlowFixMe): void {
 }
 
 /**
+ * Whether an identifier name is still referenced AS A VALUE — not as its own
+ * import specifier, a member-access property (`stylex.keyframes`), or an
+ * object key. Without those exclusions the newly-emitted `stylex.keyframes`
+ * property would be mistaken for a use of the Emotion `keyframes` import.
+ */
+function isStillReferenced(
+  j: $FlowFixMe,
+  root: $FlowFixMe,
+  name: string,
+): boolean {
+  return (
+    root
+      .find(j.Identifier, { name })
+      .filter((path: $FlowFixMe) => {
+        const parent = path.parent.node;
+        if (parent.type === 'ImportSpecifier') {
+          return false;
+        }
+        if (
+          parent.type === 'MemberExpression' &&
+          parent.property === path.node &&
+          !parent.computed
+        ) {
+          return false;
+        }
+        if (
+          (parent.type === 'Property' || parent.type === 'ObjectProperty') &&
+          parent.key === path.node &&
+          !parent.computed
+        ) {
+          return false;
+        }
+        return true;
+      })
+      .size() > 0
+  );
+}
+
+/**
  * Removes the converted specifiers (`css`, `keyframes`) from the
- * `@emotion/react` import (the whole declaration when nothing else remains),
- * transplanting any non-pragma comments onto the next statement so file
- * headers survive.
+ * `@emotion/react` import — but only those whose local name is no longer
+ * referenced (a flagged tagged-template still using `css` keeps it). Drops the
+ * whole declaration when nothing remains, transplanting any non-pragma
+ * comments onto the next statement so file headers survive.
  */
 export function removeCssImport(j: $FlowFixMe, root: $FlowFixMe): void {
   root.find(j.ImportDeclaration).forEach((path: $FlowFixMe) => {
@@ -115,7 +161,8 @@ export function removeCssImport(j: $FlowFixMe, root: $FlowFixMe): void {
       (specifier: $FlowFixMe) =>
         !(
           specifier.type === 'ImportSpecifier' &&
-          CONVERTIBLE_IMPORTS.has(specifier.imported.name)
+          CONVERTIBLE_IMPORTS.has(specifier.imported.name) &&
+          !isStillReferenced(j, root, specifier.local.name)
         ),
     );
     if (remaining.length > 0) {

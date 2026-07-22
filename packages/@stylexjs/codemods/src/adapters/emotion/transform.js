@@ -11,10 +11,12 @@
  * The Emotion -> StyleX pipeline for one file: detect -> read (adapter),
  * buildIR -> emit (core), rewrite -> registry -> imports (adapter).
  *
- * M1 policy (user-ratified): whole-file-or-nothing. A file is rewritten
- * only when every style site is convertible; any blocker returns
- * `skipped` with the reasons and the source untouched. TODO-comment
- * flagging machinery lands in M5.
+ * M5 policy (bail loudly, per site): every convertible css site is rewritten
+ * and each unconvertible one is left in place with a
+ * `// TODO(stylex-migration): …` marker — the file is no longer skipped
+ * wholesale. Genuinely file-level structural issues (a non-namespace stylex
+ * import, ≥2 registries, an unconvertible keyframes) still refuse the whole
+ * file with stated reasons. Nothing is ever silently dropped or guessed.
  */
 
 import { buildFileIR } from '../../core/buildIR';
@@ -28,11 +30,13 @@ import { normalizeFileIR } from '../../core/normalize';
 import { postprocess } from '../../core/postprocess';
 import { lintGate } from '../../core/gates/lint';
 import { checkRule } from '../../core/referee';
+import { formatTodo, isTodoMarker } from '../../core/todos';
 import {
   parseSource,
   printSource,
   parserForFile,
   styleToObjectAst,
+  jsxComment,
 } from '../../core/rewriter';
 import {
   analyzeEmotionWiring,
@@ -53,6 +57,8 @@ export type TransformResult =
       +keyframes: $ReadOnlyArray<{
         +framesObject: { +[selector: string]: { +[string]: mixed } },
       }>,
+      /** Reasons for each site left in place with a TODO marker (M5). */
+      +flags: $ReadOnlyArray<string>,
     }
   | { +status: 'skipped', +reasons: $ReadOnlyArray<string> }
   | { +status: 'unchanged' };
@@ -94,79 +100,103 @@ export function transformEmotionFile(
   );
 
   const detection = detectSites(j, root, wiring.cssLocalName);
-  // A pre-existing `stylex.create` becomes a merge target rather than a refusal.
   const registryDetection = detectExistingRegistry(j, root);
-  const blockers = [
+
+  // Whole-file refusals: genuinely file-level structural issues (not a single
+  // site). Keyframes stay whole-file for now — per-site keyframe flagging is a
+  // later slice.
+  const wholeFileBlockers = [
     ...wiring.blockers,
     ...detection.blockers,
     ...kfDetection.blockers,
     ...registryDetection.blockers,
+    ...kfReads.map((r) => (r.ok ? null : r.blocker)).filter(Boolean),
   ];
-  const reads = detection.sites.map((s) => readSite(s, kfDetection.names));
-  for (const read of reads) {
-    if (!read.ok) {
-      blockers.push(read.blocker);
-    }
-  }
-  for (const kf of kfReads) {
-    if (!kf.ok) {
-      blockers.push(kf.blocker);
-    }
-  }
-  if (blockers.length > 0) {
-    return { status: 'skipped', reasons: blockers };
-  }
-  if (detection.sites.length === 0 && kfDetection.sites.length === 0) {
-    return { status: 'unchanged' };
+  if (wholeFileBlockers.length > 0) {
+    return { status: 'skipped', reasons: wholeFileBlockers };
   }
 
-  // Adapter -> core: declarations in, create data + binding map out.
-  const groups = reads.map((read) => {
-    if (!read.ok) {
-      throw new Error('unreachable: blockers were checked above');
+  // --- Per-site classification: each css site either converts or is flagged
+  // with a `// TODO(stylex-migration): …` marker (bail loudly, in place). ---
+  const flags: Array<{ +attrPath: $FlowFixMe, +reason: string }> = [];
+  const candidates: Array<{ +site: $FlowFixMe, +read: $FlowFixMe }> = [];
+  for (const site of detection.sites) {
+    if (site.kind === 'flagged') {
+      flags.push({ attrPath: site.attrPath, reason: site.reason });
+      continue;
     }
-    return { nameHint: read.nameHint, declarations: read.declarations };
-  });
-  const keyframeRules = kfReads.map((kf) => {
-    if (!kf.ok) {
-      throw new Error('unreachable: blockers were checked above');
+    if (siteAlreadyFlagged(j, site.attrPath)) {
+      continue; // re-run guard: leave a previously-flagged site alone
     }
-    return kf.rule;
-  });
-  // L6 Normalize runs before the referee so every downstream layer sees one
-  // vocabulary (physical→logical is a sanctioned RTL change).
+    const read = readSite(site, kfDetection.names);
+    if (read.ok) {
+      candidates.push({ site, read });
+    } else {
+      flags.push({ attrPath: site.attrPath, reason: read.blocker });
+    }
+  }
+
+  // Adapter -> core for the convertible candidates.
   const fileIR = normalizeFileIR(
-    { rules: buildFileIR(groups).rules, keyframes: keyframeRules },
-    { logicalProperties: options?.logicalProperties ?? true },
-  );
-
-  // L5 Referee: convert only when Emotion's cascade and StyleX's priority
-  // agree on every simultaneously-active condition; otherwise refuse.
-  const refereed = fileIR.rules.map(checkRule);
-  const conflicts = refereed.flatMap((r) => (r.ok ? [] : r.conflicts));
-  if (conflicts.length > 0) {
-    return { status: 'skipped', reasons: conflicts };
-  }
-  const existing = registryDetection.registry;
-  const { rules, keyframes, bindings } = emitFileIR(
     {
-      rules: refereed.map((r) => {
+      rules: buildFileIR(
+        candidates.map((c) => ({
+          nameHint: c.read.nameHint,
+          declarations: c.read.declarations,
+        })),
+      ).rules,
+      keyframes: kfReads.map((r) => {
         if (!r.ok) {
-          throw new Error('unreachable: conflicts were checked above');
+          throw new Error('unreachable: keyframes blockers checked above');
         }
         return r.rule;
       }),
-      keyframes: fileIR.keyframes,
     },
-    {
-      hoverGuard: options?.hoverGuard ?? true,
-      reservedKeys: existing?.keys,
-    },
+    { logicalProperties: options?.logicalProperties ?? true },
   );
 
-  // L10 Scoped postprocess: run StyleX's own eslint autofixes on ONLY the
-  // emitted stylex (as a standalone snippet), so a user's pre-existing stylex
-  // is never linted or reordered. The fixed objects are spliced back below.
+  // L5 Referee, per rule: a conflicting site is flagged, not fatal to the file.
+  const convertRules: Array<{ +rule: $FlowFixMe, +candidateIndex: number }> =
+    [];
+  fileIR.rules.forEach((rule, i) => {
+    const checked = checkRule(rule);
+    if (checked.ok) {
+      convertRules.push({ rule: checked.rule, candidateIndex: i });
+    } else {
+      flags.push({
+        attrPath: candidates[i].site.attrPath,
+        reason: checked.conflicts[0],
+      });
+    }
+  });
+
+  if (convertRules.length === 0 && kfDetection.sites.length === 0) {
+    if (flags.length === 0) {
+      return { status: 'unchanged' };
+    }
+    // Nothing convertible, but sites to flag: inject TODOs and keep Emotion.
+    for (const flag of flags) {
+      injectTodo(j, flag.attrPath, flag.reason);
+    }
+    return {
+      status: 'converted',
+      code: printSource({ j, root }),
+      sites: [],
+      keyframes: [],
+      flags: flags.map((f) => f.reason),
+    };
+  }
+
+  const existing = registryDetection.registry;
+  const { rules, keyframes, bindings } = emitFileIR(
+    {
+      rules: convertRules.map((c) => c.rule),
+      keyframes: fileIR.keyframes,
+    },
+    { hoverGuard: options?.hoverGuard ?? true, reservedKeys: existing?.keys },
+  );
+
+  // L10 Scoped postprocess (see scopedFix): fixes ONLY our emitted stylex.
   const stylesLocalName =
     existing != null ? existing.varName : pickStylesName(j, root);
   const fixed = scopedFix(j, rules, keyframes, stylesLocalName, filename);
@@ -174,38 +204,44 @@ export function transformEmotionFile(
     return { status: 'skipped', reasons: fixed.residualErrors };
   }
 
-  // Core -> adapter: place the StyleX back into the file's idiom.
-  detection.sites.forEach((site, i) => {
-    rewriteSite(j, site, stylesLocalName, bindings[i]);
+  // Rewrite converted sites; flag the rest in place.
+  convertRules.forEach((c, k) => {
+    rewriteSite(
+      j,
+      candidates[c.candidateIndex].site,
+      stylesLocalName,
+      bindings[k],
+    );
   });
   rewriteKeyframes(j, kfDetection.sites, fixed.keyframesByName);
+  for (const flag of flags) {
+    injectTodo(j, flag.attrPath, flag.reason);
+  }
+
   if (rules.length > 0 && fixed.createObject != null) {
     if (existing != null) {
-      // Merge: append our (already-fixed) style entries to the user's
-      // registry. Top-level style names need no sort-keys ordering, and the
-      // user's own entries are left exactly as they were.
       existing.objectNode.properties.push(...fixed.createObject.properties);
     } else {
       insertRegistry(
         j,
         root,
-        detection.sites[0],
+        candidates[convertRules[0].candidateIndex].site,
         stylesLocalName,
         fixed.createObject,
       );
     }
   }
-  if (existing == null) {
+  if (existing == null && (rules.length > 0 || keyframes.length > 0)) {
     insertStylexImport(j, root);
   }
+  // Remove Emotion wiring only where it is no longer referenced: flagged css
+  // props keep the pragma; a still-used `css`/`keyframes` keeps its import.
   removeCssImport(j, root);
   removePragma(j, root);
 
   const code = printSource({ j, root });
-  // Final safety VERIFY (not fix) over the whole file. Our emitted code was
-  // already fixed in isolation; this catches a merge into a user registry
-  // whose own pre-existing code is lint-dirty — we refuse rather than
-  // silently reorder it (that is the whole point of the scoped fix).
+  // Final safety VERIFY (not fix) over the whole file — catches a merge into a
+  // user registry whose own code is lint-dirty; we refuse rather than rewrite.
   const finalLint = lintGate(code, { filename });
   if (!finalLint.ok) {
     return {
@@ -219,20 +255,72 @@ export function transformEmotionFile(
   return {
     status: 'converted',
     code,
-    sites: detection.sites.map((site, i) => {
-      const read = reads[i];
-      if (!read.ok) {
-        throw new Error('unreachable: blockers were checked above');
-      }
-      return { key: bindings[i], cssObject: read.cssObject };
-    }),
+    sites: convertRules.map((c, k) => ({
+      key: bindings[k],
+      cssObject: candidates[c.candidateIndex].read.cssObject,
+    })),
     keyframes: kfReads.map((kf) => {
       if (!kf.ok) {
-        throw new Error('unreachable: blockers were checked above');
+        throw new Error('unreachable: keyframes blockers checked above');
       }
       return { framesObject: kf.framesObject };
     }),
+    flags: flags.map((f) => f.reason),
   };
+}
+
+/** Whether a css site was already flagged on a previous run (re-run guard):
+ * a TODO comment sibling immediately before its element, or leading on it. */
+function siteAlreadyFlagged(j: $FlowFixMe, attrPath: $FlowFixMe): boolean {
+  const elementPath = attrPath.parent.parent;
+  const parent = elementPath.parent.node;
+  const children = Array.isArray(parent.children) ? parent.children : null;
+  const leading = (elementPath.node.comments ?? []).some((c: $FlowFixMe) =>
+    isTodoMarker(c.value),
+  );
+  if (leading) {
+    return true;
+  }
+  if (children == null) {
+    return false;
+  }
+  const idx = children.indexOf(elementPath.node);
+  for (let i = idx - 1; i >= 0; i--) {
+    const sibling = children[i];
+    if (sibling.type === 'JSXText' && String(sibling.value).trim() === '') {
+      continue;
+    }
+    return (
+      sibling.type === 'JSXExpressionContainer' &&
+      sibling.expression?.type === 'JSXEmptyExpression' &&
+      (sibling.expression.comments ?? []).some((c: $FlowFixMe) =>
+        isTodoMarker(c.value),
+      )
+    );
+  }
+  return false;
+}
+
+/** Injects a `TODO(stylex-migration): reason` marker at a flagged css site: a
+ * braced JSX comment sibling when the element is a JSX child, else a leading
+ * block comment on the element (both valid, unlike a bare comment as a child). */
+function injectTodo(j: $FlowFixMe, attrPath: $FlowFixMe, reason: string): void {
+  const elementPath = attrPath.parent.parent;
+  const element = elementPath.node;
+  const parent = elementPath.parent.node;
+  const text = formatTodo(reason);
+  if (
+    (parent.type === 'JSXElement' || parent.type === 'JSXFragment') &&
+    Array.isArray(parent.children)
+  ) {
+    const idx = parent.children.indexOf(element);
+    parent.children.splice(idx, 0, jsxComment(j, text), j.jsxText('\n'));
+  } else {
+    element.comments = [
+      ...(element.comments ?? []),
+      { type: 'CommentBlock', value: text, leading: true, trailing: false },
+    ];
+  }
 }
 
 const STYLEX_IMPORT = "import * as stylex from '@stylexjs/stylex';";

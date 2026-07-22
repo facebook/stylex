@@ -19,17 +19,32 @@
  * on host (lowercase) elements with no `className`/`style`/spread props.
  */
 
-export type StyleSite = {
+import { REASONS } from '../../core/todos';
+
+export type ConvertibleSite = {
+  +kind: 'convertible',
   +attrPath: $FlowFixMe, // JSXAttribute path
   +objectNode: $FlowFixMe, // the style ObjectExpression
   +tagName: string,
 };
+export type FlaggedSite = {
+  +kind: 'flagged',
+  +attrPath: $FlowFixMe,
+  +tagName: string,
+  +reason: string,
+};
+export type StyleSite = ConvertibleSite | FlaggedSite;
 
 export type Detection = {
   +sites: Array<StyleSite>,
   +blockers: Array<string>,
 };
 
+/**
+ * Classifies every `css` prop as convertible (a static object) or flagged
+ * (with a reason). M5: a flagged site no longer skips the file — it gets a
+ * `// TODO(stylex-migration): …` marker while the rest of the file converts.
+ */
 export function detectSites(
   j: $FlowFixMe,
   root: $FlowFixMe,
@@ -37,17 +52,18 @@ export function detectSites(
 ): Detection {
   const sites: Array<StyleSite> = [];
   const blockers: Array<string> = [];
-  const siteCallees = new Set<$FlowFixMe>();
 
   root
     .find(j.JSXAttribute, { name: { name: 'css' } })
     .forEach((path: $FlowFixMe) => {
       const opening = path.parent.node;
       const nameNode = opening.name;
-      if (nameNode.type !== 'JSXIdentifier' || !/^[a-z]/.test(nameNode.name)) {
-        blockers.push(
-          'css prop on a component element (className forwarding is not provable)',
-        );
+      const tagName = String(nameNode.name ?? '?');
+      const flag = (reason: string) =>
+        sites.push({ kind: 'flagged', attrPath: path, tagName, reason });
+
+      if (nameNode.type !== 'JSXIdentifier' || !/^[a-z]/.test(tagName)) {
+        flag(REASONS.componentElement);
         return;
       }
       const conflicting = (opening.attributes ?? []).find(
@@ -57,22 +73,21 @@ export function detectSites(
           attr.name?.name === 'style',
       );
       if (conflicting != null) {
-        blockers.push(
-          `<${nameNode.name}> mixes css with className/style/spread props`,
-        );
+        flag(REASONS.propConflict);
         return;
       }
       const container = path.node.value;
       if (container?.type !== 'JSXExpressionContainer') {
-        blockers.push(`css prop on <${nameNode.name}> is not an expression`);
+        flag('css prop is not an expression');
         return;
       }
       const expression = container.expression;
       if (expression.type === 'ObjectExpression') {
         sites.push({
+          kind: 'convertible',
           attrPath: path,
           objectNode: expression,
-          tagName: nameNode.name,
+          tagName,
         });
         return;
       }
@@ -84,39 +99,20 @@ export function detectSites(
         expression.arguments.length === 1 &&
         expression.arguments[0].type === 'ObjectExpression'
       ) {
-        siteCallees.add(expression.callee);
         sites.push({
+          kind: 'convertible',
           attrPath: path,
           objectNode: expression.arguments[0],
-          tagName: nameNode.name,
+          tagName,
         });
         return;
       }
-      blockers.push(
-        `css prop value form on <${nameNode.name}> is not convertible yet ` +
-          '(template literals, arrays, references and dynamic styles land in later milestones)',
+      flag(
+        expression.type === 'TaggedTemplateExpression'
+          ? REASONS.templateLiteral
+          : REASONS.dynamicValue,
       );
     });
-
-  if (cssLocalName != null) {
-    root
-      .find(j.Identifier, { name: cssLocalName })
-      .forEach((path: $FlowFixMe) => {
-        const parentNode = path.parent.node;
-        if (
-          parentNode.type === 'ImportSpecifier' ||
-          siteCallees.has(path.node) ||
-          (parentNode.type === 'Property' && parentNode.key === path.node) ||
-          parentNode.type === 'JSXAttribute'
-        ) {
-          return;
-        }
-        blockers.push(
-          `'${cssLocalName}' is used outside a convertible css prop ` +
-            '(tagged templates / shared style variables land in later milestones)',
-        );
-      });
-  }
 
   return { sites, blockers };
 }
