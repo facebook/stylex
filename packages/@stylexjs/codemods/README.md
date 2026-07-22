@@ -4,9 +4,12 @@ Codemods for migrating styling libraries to [StyleX](https://stylexjs.com) —
 Emotion first, built as **one library-agnostic engine with swappable
 per-library adapters**.
 
-> **Status: pre-release scaffold (M0).** The correctness harness — fixture
-> tests plus three gates (compile, lint, semantic-diff) — is in place and
-> proven; transforms land milestone by milestone. Nothing here is published
+> **Status: pre-release, milestone M3 of the v1.0 (MVP) ladder.** The
+> correctness harness — fixture tests plus three gates (compile, lint,
+> semantic-diff) — is in place and proven; transforms land milestone by
+> milestone. Converting today: static styles, self-targeting conditions
+> (pseudo-classes/elements, media queries), physical→logical properties,
+> multi-value shorthands, and object-form keyframes. Nothing here is published
 > yet, and the package name/location is pending maintainer confirmation.
 
 ## Principles
@@ -25,9 +28,14 @@ per-library adapters**.
 
 | Bucket | Patterns |
 | --- | --- |
-| Converts | static `css={{…}}` / `css({})` / object-form `styled.div({})`; self-targeting pseudo-classes/elements; media queries; object-form `keyframes`; fallback arrays; shorthands; mapped theme tokens |
-| Flags | template literals; dynamic styles; `styled(Component)`; out-of-element selectors; `<Global>`; `shouldForwardProp`; unmapped tokens; `!important` |
-| Refuses | any file where partial conversion could change rendering |
+| Converts | static `css={{…}}` / `css({})`; self-targeting pseudo-classes/elements; media queries and nesting; physical→logical properties; multi-value margin/padding shorthands; object-form `keyframes`; fallback arrays |
+| Flags *(planned)* | template literals; dynamic styles; `styled(Component)`; out-of-element selectors; `<Global>`; `shouldForwardProp`; `!important` |
+| Refuses | any file where partial conversion could change rendering; conflicting cascades (referee disagreement); ≥2 sibling media queries on one property; theme tokens (until M6 — see [ADR-0001](./docs/decisions/0001-tokens-are-a-trusted-transformation-deferred-to-config.md)) |
+
+Theme tokens → `defineVars` is deferred to the configuration milestone (M6):
+it is a *trusted* transformation (a token's value is external to the file, so
+it cannot be verified by the semantic-diff gate) and requires the
+user-authored `resolveValue` config.
 
 ## Compatibility
 
