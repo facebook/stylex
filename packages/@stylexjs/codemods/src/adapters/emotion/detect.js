@@ -118,20 +118,102 @@ export function detectSites(
       });
   }
 
-  if (
-    root
-      .find(j.ImportDeclaration)
-      .some(
-        (path: $FlowFixMe) =>
-          String(path.node.source.value) === '@stylexjs/stylex',
-      )
-  ) {
-    blockers.push(
-      'file already imports @stylexjs/stylex (registry merge lands in M4)',
+  return { sites, blockers };
+}
+
+export type ExistingRegistry = {
+  +objectNode: $FlowFixMe, // the ObjectExpression passed to stylex.create
+  +varName: string, // the `const <varName> = stylex.create(...)` binding
+  +keys: $ReadOnlySet<string>, // existing style-name keys
+};
+
+export type RegistryDetection = {
+  +registry: ExistingRegistry | null,
+  +stylexImported: boolean,
+  +blockers: Array<string>,
+};
+
+/**
+ * Finds a pre-existing `import * as stylex` + `const X = stylex.create({...})`
+ * so new styles can be MERGED into it (M4) rather than the file being refused.
+ * Anything non-standard (stylex imported by a name other than a namespace,
+ * ≥2 creates, a non-object/non-const create) is a blocker.
+ */
+export function detectExistingRegistry(
+  j: $FlowFixMe,
+  root: $FlowFixMe,
+): RegistryDetection {
+  const blockers: Array<string> = [];
+
+  const stylexImport = root
+    .find(j.ImportDeclaration)
+    .filter(
+      (path: $FlowFixMe) =>
+        String(path.node.source.value) === '@stylexjs/stylex',
     );
+  if (stylexImport.size() === 0) {
+    return { registry: null, stylexImported: false, blockers };
   }
 
-  return { sites, blockers };
+  const specifiers = stylexImport.paths()[0].node.specifiers ?? [];
+  const namespace = specifiers.find(
+    (s: $FlowFixMe) => s.type === 'ImportNamespaceSpecifier',
+  );
+  if (specifiers.length !== 1 || namespace == null) {
+    blockers.push(
+      'file imports @stylexjs/stylex in a non-namespace form (merge needs `import * as stylex`)',
+    );
+    return { registry: null, stylexImported: true, blockers };
+  }
+  const stylexLocal = namespace.local.name;
+
+  const registries: Array<ExistingRegistry> = [];
+  root
+    .find(j.CallExpression)
+    .filter(
+      (path: $FlowFixMe) =>
+        path.node.callee.type === 'MemberExpression' &&
+        path.node.callee.object.type === 'Identifier' &&
+        path.node.callee.object.name === stylexLocal &&
+        path.node.callee.property.name === 'create',
+    )
+    .forEach((path: $FlowFixMe) => {
+      const declarator = path.parent.node;
+      const arg = path.node.arguments[0];
+      if (
+        declarator.type !== 'VariableDeclarator' ||
+        declarator.id.type !== 'Identifier' ||
+        arg?.type !== 'ObjectExpression'
+      ) {
+        blockers.push(
+          'pre-existing stylex.create is not a simple const object',
+        );
+        return;
+      }
+      const keys = new Set<string>();
+      for (const prop of arg.properties) {
+        if (prop.key?.type === 'Identifier') {
+          keys.add(prop.key.name);
+        } else if (
+          prop.key?.type === 'Literal' ||
+          prop.key?.type === 'StringLiteral'
+        ) {
+          keys.add(String(prop.key.value));
+        }
+      }
+      registries.push({ objectNode: arg, varName: declarator.id.name, keys });
+    });
+
+  if (registries.length > 1) {
+    blockers.push('file has ≥2 stylex.create registries (merge targets one)');
+    return { registry: null, stylexImported: true, blockers };
+  }
+
+  return {
+    registry: registries[0] ?? null,
+    stylexImported: true,
+    blockers,
+  };
 }
 
 export type KeyframesSite = {

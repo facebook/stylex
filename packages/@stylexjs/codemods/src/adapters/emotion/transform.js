@@ -26,6 +26,7 @@ import type {
 } from '../../core/emit';
 import { normalizeFileIR } from '../../core/normalize';
 import { postprocess } from '../../core/postprocess';
+import { lintGate } from '../../core/gates/lint';
 import { checkRule } from '../../core/referee';
 import {
   parseSource,
@@ -39,7 +40,7 @@ import {
   removeCssImport,
   insertStylexImport,
 } from './imports';
-import { detectSites, detectKeyframes } from './detect';
+import { detectSites, detectKeyframes, detectExistingRegistry } from './detect';
 import { readSite, readKeyframes } from './read';
 import type { PlainStyleObject } from './read';
 import { rewriteSite } from './rewriteSites';
@@ -93,10 +94,13 @@ export function transformEmotionFile(
   );
 
   const detection = detectSites(j, root, wiring.cssLocalName);
+  // A pre-existing `stylex.create` becomes a merge target rather than a refusal.
+  const registryDetection = detectExistingRegistry(j, root);
   const blockers = [
     ...wiring.blockers,
     ...detection.blockers,
     ...kfDetection.blockers,
+    ...registryDetection.blockers,
   ];
   const reads = detection.sites.map((s) => readSite(s, kfDetection.names));
   for (const read of reads) {
@@ -143,6 +147,7 @@ export function transformEmotionFile(
   if (conflicts.length > 0) {
     return { status: 'skipped', reasons: conflicts };
   }
+  const existing = registryDetection.registry;
   const { rules, keyframes, bindings } = emitFileIR(
     {
       rules: refereed.map((r) => {
@@ -153,31 +158,62 @@ export function transformEmotionFile(
       }),
       keyframes: fileIR.keyframes,
     },
-    { hoverGuard: options?.hoverGuard ?? true },
+    {
+      hoverGuard: options?.hoverGuard ?? true,
+      reservedKeys: existing?.keys,
+    },
   );
 
+  // L10 Scoped postprocess: run StyleX's own eslint autofixes on ONLY the
+  // emitted stylex (as a standalone snippet), so a user's pre-existing stylex
+  // is never linted or reordered. The fixed objects are spliced back below.
+  const stylesLocalName =
+    existing != null ? existing.varName : pickStylesName(j, root);
+  const fixed = scopedFix(j, rules, keyframes, stylesLocalName, filename);
+  if (fixed.residualErrors.length > 0) {
+    return { status: 'skipped', reasons: fixed.residualErrors };
+  }
+
   // Core -> adapter: place the StyleX back into the file's idiom.
-  const stylesLocalName = pickStylesName(j, root);
   detection.sites.forEach((site, i) => {
     rewriteSite(j, site, stylesLocalName, bindings[i]);
   });
-  rewriteKeyframes(j, kfDetection.sites, keyframes);
-  if (rules.length > 0) {
-    insertRegistry(j, root, detection.sites[0], stylesLocalName, rules);
+  rewriteKeyframes(j, kfDetection.sites, fixed.keyframesByName);
+  if (rules.length > 0 && fixed.createObject != null) {
+    if (existing != null) {
+      // Merge: append our (already-fixed) style entries to the user's
+      // registry. Top-level style names need no sort-keys ordering, and the
+      // user's own entries are left exactly as they were.
+      existing.objectNode.properties.push(...fixed.createObject.properties);
+    } else {
+      insertRegistry(
+        j,
+        root,
+        detection.sites[0],
+        stylesLocalName,
+        fixed.createObject,
+      );
+    }
   }
-  insertStylexImport(j, root);
+  if (existing == null) {
+    insertStylexImport(j, root);
+  }
   removeCssImport(j, root);
   removePragma(j, root);
 
-  // L10 Postprocess: run StyleX's own eslint autofixes so key ordering and
-  // shorthands match its canonical form. Unfixable residual errors mean the
-  // output is not clean at error → refuse the whole file.
-  const { code, residualErrors } = postprocess(
-    printSource({ j, root }),
-    filename,
-  );
-  if (residualErrors.length > 0) {
-    return { status: 'skipped', reasons: residualErrors };
+  const code = printSource({ j, root });
+  // Final safety VERIFY (not fix) over the whole file. Our emitted code was
+  // already fixed in isolation; this catches a merge into a user registry
+  // whose own pre-existing code is lint-dirty — we refuse rather than
+  // silently reorder it (that is the whole point of the scoped fix).
+  const finalLint = lintGate(code, { filename });
+  if (!finalLint.ok) {
+    return {
+      status: 'skipped',
+      reasons: finalLint.messages.map(
+        (m) => `${m.ruleId ?? 'error'}: ${m.message} (line ${m.line})`,
+      ),
+    };
   }
 
   return {
@@ -199,33 +235,108 @@ export function transformEmotionFile(
   };
 }
 
+const STYLEX_IMPORT = "import * as stylex from '@stylexjs/stylex';";
+
 /**
- * Rewrites each `keyframes({...})` call in place to
- * `stylex.keyframes({...})`, replacing the frames object with the emitted
- * (normalized) one. Emitted keyframes are matched to detected sites by the
- * bound variable name.
+ * Scoped postprocess: build a standalone module of just the emitted stylex
+ * (keyframes + create + usage stubs), run StyleX's eslint autofixes on it,
+ * and extract the FIXED object expressions. The user's file is never linted,
+ * so their pre-existing stylex code cannot be reordered.
  */
-function rewriteKeyframes(
+function scopedFix(
   j: $FlowFixMe,
-  sites: $ReadOnlyArray<{ +callPath: $FlowFixMe, +varName: string, ... }>,
-  emitted: $ReadOnlyArray<EmittedKeyframes>,
-): void {
-  const byName: Map<string, EmittedKeyframes> = new Map(
-    emitted.map((kf) => [kf.name, kf]),
-  );
-  for (const site of sites) {
-    const kf = byName.get(site.varName);
-    if (kf == null) {
-      continue;
-    }
+  rules: $ReadOnlyArray<EmittedRule>,
+  keyframes: $ReadOnlyArray<EmittedKeyframes>,
+  stylesLocalName: string,
+  filename: string,
+): {
+  createObject: $FlowFixMe | null,
+  keyframesByName: Map<string, $FlowFixMe>,
+  residualErrors: $ReadOnlyArray<string>,
+} {
+  const lines: Array<string> = [STYLEX_IMPORT];
+  for (const kf of keyframes) {
     const framesObject: { [string]: EmittedStyle } = {};
     for (const frame of kf.frames) {
       framesObject[frame.selector] = frame.style;
     }
+    lines.push(
+      `const ${kf.name} = stylex.keyframes(` +
+        `${printExpr(j, styleToObjectAst(j, framesObject))});`,
+    );
+  }
+  if (rules.length > 0) {
+    const createStyle: { [string]: EmittedStyle } = {};
+    for (const rule of rules) {
+      createStyle[rule.key] = rule.style;
+    }
+    lines.push(
+      `const ${stylesLocalName} = stylex.create(` +
+        `${printExpr(j, styleToObjectAst(j, createStyle))});`,
+    );
+    // Usage stubs so no-unused stays quiet (real usage is in the JSX).
+    for (const rule of rules) {
+      lines.push(`stylex.props(${stylesLocalName}.${rule.key});`);
+    }
+  }
+
+  const { code, residualErrors } = postprocess(lines.join('\n'), filename, {
+    excludeRules: ['no-unused'],
+  });
+
+  const parsed = j(code);
+  let createObject: $FlowFixMe | null = null;
+  const keyframesByName: Map<string, $FlowFixMe> = new Map();
+  parsed.find(j.CallExpression).forEach((path: $FlowFixMe) => {
+    const callee = path.node.callee;
+    if (
+      callee.type !== 'MemberExpression' ||
+      callee.object.type !== 'Identifier' ||
+      callee.object.name !== 'stylex'
+    ) {
+      return;
+    }
+    if (callee.property.name === 'create') {
+      createObject = path.node.arguments[0];
+    } else if (callee.property.name === 'keyframes') {
+      const declarator = path.parent.node;
+      if (
+        declarator.type === 'VariableDeclarator' &&
+        declarator.id.type === 'Identifier'
+      ) {
+        keyframesByName.set(declarator.id.name, path.node.arguments[0]);
+      }
+    }
+  });
+
+  return { createObject, keyframesByName, residualErrors };
+}
+
+/** Prints a single expression node to source (via a throwaway wrapper). */
+function printExpr(j: $FlowFixMe, node: $FlowFixMe): string {
+  return j(j.expressionStatement(node))
+    .toSource({ quote: 'single' })
+    .replace(/;\s*$/, '');
+}
+
+/**
+ * Rewrites each `keyframes({...})` call in place to `stylex.keyframes(<fixed
+ * object>)`, matched to detected sites by the bound variable name.
+ */
+function rewriteKeyframes(
+  j: $FlowFixMe,
+  sites: $ReadOnlyArray<{ +callPath: $FlowFixMe, +varName: string, ... }>,
+  fixedByName: Map<string, $FlowFixMe>,
+): void {
+  for (const site of sites) {
+    const framesObject = fixedByName.get(site.varName);
+    if (framesObject == null) {
+      continue;
+    }
     j(site.callPath).replaceWith(
       j.callExpression(
         j.memberExpression(j.identifier('stylex'), j.identifier('keyframes')),
-        [styleToObjectAst(j, framesObject)],
+        [framesObject],
       ),
     );
   }
@@ -251,17 +362,8 @@ function insertRegistry(
   root: $FlowFixMe,
   firstSite: $FlowFixMe,
   stylesLocalName: string,
-  rules: $ReadOnlyArray<EmittedRule>,
+  createObject: $FlowFixMe,
 ): void {
-  const createObject = j.objectExpression(
-    rules.map((rule) =>
-      j.property(
-        'init',
-        j.identifier(rule.key),
-        styleToObjectAst(j, rule.style),
-      ),
-    ),
-  );
   const declaration = j.variableDeclaration('const', [
     j.variableDeclarator(
       j.identifier(stylesLocalName),
