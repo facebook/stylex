@@ -4,7 +4,7 @@ import { Button } from './Button';
 
 export default function Toolbar() {
   return (
-    /* TODO(stylex-migration): css on a component — className forwarding is not provable here */
+    /* TODO(stylex-migration): css on a component element */
     <Button css={{ color: 'white' }}>Save</Button>
   );
 }

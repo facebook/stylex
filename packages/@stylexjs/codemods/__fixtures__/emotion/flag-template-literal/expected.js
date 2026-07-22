@@ -8,7 +8,7 @@ const fancy = css`
 
 export default function Fancy() {
   return (
-    /* TODO(stylex-migration): dynamic value — needs a StyleX function-form style (v1.1) */
+    /* TODO(stylex-migration): dynamic value (props-driven) */
     <div css={fancy}>Fancy</div>
   );
 }

@@ -242,10 +242,7 @@ export function readSite(
 
       const value = valueOf(valueNode);
       if (value == null) {
-        return (
-          `value of '${key}' is not a static string/number/fallback-array ` +
-          '(dynamic values land in v1.1)'
-        );
+        return `dynamic value (props-driven) on '${key}'`;
       }
       declarations.push({ property: key, value, conditions });
       mirror[key] = plainOf(value);
@@ -293,7 +290,7 @@ export function readSite(
     if (overlap != null) {
       return {
         ok: false,
-        blocker: `shorthand/longhand overlap (${overlap}) needs the M2 referee`,
+        blocker: `shorthand/longhand overlap (${overlap})`,
       };
     }
   }

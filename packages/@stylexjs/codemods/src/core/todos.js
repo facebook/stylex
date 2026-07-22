@@ -20,25 +20,23 @@
 
 export const TODO_PREFIX: string = 'TODO(stylex-migration)';
 
-/** Canonical reasons for the recurring unconvertible categories. */
+/**
+ * Canonical reasons for the recurring unconvertible categories. These land in
+ * comments committed to the user's source, so they are short, plain, and
+ * TIMELESS — no roadmap/version references (those go stale and read
+ * ambiguously). Anything shipped-later belongs in the dry-run report, not the
+ * committed comment.
+ */
 export const REASONS: {
   +templateLiteral: string,
   +dynamicValue: string,
   +componentElement: string,
   +propConflict: string,
-  +refereeConflict: string,
-  +siblingMedia: string,
-  +outOfElement: string,
 } = {
-  templateLiteral: 'template-literal styles are not statically analyzable yet',
-  dynamicValue: 'dynamic value — needs a StyleX function-form style (v1.1)',
-  componentElement:
-    'css on a component — className forwarding is not provable here',
-  propConflict: 'css mixed with className/style/spread on the same element',
-  refereeConflict:
-    'Emotion source order and StyleX priority disagree on the winning value',
-  siblingMedia: 'multiple sibling media queries whose order is significant',
-  outOfElement: 'selector reaches outside the element',
+  templateLiteral: 'template-literal styles',
+  dynamicValue: 'dynamic value (props-driven)',
+  componentElement: 'css on a component element',
+  propConflict: 'css mixed with className/style/spread',
 };
 
 /** The block-comment body for a flagged site (note the surrounding spaces). */
