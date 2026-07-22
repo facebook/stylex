@@ -51,6 +51,21 @@ export function printSource(rewriter: Rewriter): string {
 }
 
 /**
+ * Builds a JSX comment container node — the braced comment form that is valid
+ * as a JSX child, unlike a bare block comment which would render as visible
+ * text. Parses a real one so recast reprints it correctly.
+ */
+export function jsxComment(j: $FlowFixMe, text: string): $FlowFixMe {
+  let container = null;
+  j(`<x>{/*${text}*/}</x>`)
+    .find(j.JSXExpressionContainer)
+    .forEach((path: $FlowFixMe) => {
+      container = path.node;
+    });
+  return container;
+}
+
+/**
  * Renders emitted style data (plain values, fallback arrays, or nested
  * condition objects) as an ObjectExpression — the bridge that lets
  * `core/emit.js` stay AST-free.
