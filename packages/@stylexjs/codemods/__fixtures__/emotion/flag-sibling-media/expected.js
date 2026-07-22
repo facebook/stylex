@@ -6,6 +6,7 @@ import * as React from 'react';
 // upstream inconsistency is resolved.
 export default function Panel() {
   return (
+    /* TODO(stylex-migration): 'width': ≥2 sibling at-rule (e.g. @media) conditions whose order is semantic to the StyleX compiler but which sort-keys would reorder (@media (min-width: 700px), @media (min-width: 500px)) */
     <div
       css={{
         width: '100%',

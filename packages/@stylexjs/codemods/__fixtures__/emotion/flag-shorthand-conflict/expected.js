@@ -2,5 +2,8 @@
 import * as React from 'react';
 
 export default function Box() {
-  return <div css={{ marginTop: 20, margin: 4 }}>Box</div>;
+  return (
+    /* TODO(stylex-migration): shorthand/longhand overlap ('margin' + 'marginTop') needs the M2 referee */
+    <div css={{ marginTop: 20, margin: 4 }}>Box</div>
+  );
 }

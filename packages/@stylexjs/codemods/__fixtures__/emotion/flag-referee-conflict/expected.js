@@ -6,6 +6,7 @@ import * as React from 'react';
 // so the whole file must be refused (not silently converted incorrectly).
 export default function Toggle() {
   return (
+    /* TODO(stylex-migration): 'color': Emotion source-order and StyleX priority disagree on which conditional value wins when several are active (:focus vs :hover) */
     <button
       css={{
         ':focus': { color: 'green' },

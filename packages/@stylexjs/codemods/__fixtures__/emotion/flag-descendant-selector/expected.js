@@ -5,6 +5,7 @@ import * as React from 'react';
 // so it cannot enter the IR and the file is refused.
 export default function List() {
   return (
+    /* TODO(stylex-migration): selector '& > li' is not self-targeting */
     <ul css={{ color: 'black', '& > li': { color: 'gray' } }}>
       <li>Item</li>
     </ul>
