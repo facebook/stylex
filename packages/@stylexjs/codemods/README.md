@@ -46,6 +46,35 @@ user-authored `resolveValue` config.
 
 See [`ARCHITECTURE.md`](./ARCHITECTURE.md) for the design.
 
+## Usage
+
+```sh
+# DRY RUN by default — previews a convert / refuse / TODO report, writes nothing:
+stylex-codemod emotion "src/**/*.jsx"
+
+# Apply the changes:
+stylex-codemod emotion "src/**/*.jsx" --write
+
+# List unchanged files and every TODO reason:
+stylex-codemod emotion "src/**/*.jsx" --verbose
+```
+
+Each file is reported as **convert** (fully, or partially with `+N TODO`s left
+in place), **refuse** (a whole-file structural issue, with the reason), or
+**skip** (no Emotion / nothing to do). Convertible-but-unsafe styles are left
+in place with a `// TODO(stylex-migration): …` marker rather than dropped.
+
+### Config
+
+An optional `stylex-codemod.config.js` (or `--config <path>`) tunes behavior:
+
+```js
+module.exports = {
+  hoverGuard: true, // wrap :hover in @media (hover: hover) (default true)
+  logicalProperties: true, // map marginLeft -> marginInlineStart, etc. (default true)
+};
+```
+
 ## Development
 
 ```sh
