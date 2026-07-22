@@ -26,15 +26,23 @@ export function compileGate(
   options?: { +filename?: string },
 ): CompileGateResult {
   const filename = options?.filename ?? 'stylex-codemod-gate-input.js';
+  // TypeScript files strip types via preset-typescript; everything else
+  // (JS/JSX/Flow) parses through hermes so bare Flow annotations work without
+  // a `@flow` pragma.
+  const isTypeScript = /\.(ts|tsx|mts|cts)$/.test(filename);
+  const presets = isTypeScript
+    ? [['@babel/preset-typescript', { allExtensions: true, isTSX: true }]]
+    : [];
+  const syntaxPlugins = isTypeScript
+    ? []
+    : [['babel-plugin-syntax-hermes-parser', { flow: 'all' }]];
   try {
     const result = babel.transformSync(source, {
       filename,
       babelrc: false,
       configFile: false,
-      plugins: [
-        ['babel-plugin-syntax-hermes-parser', { flow: 'detect' }],
-        [styleXPlugin, {}],
-      ],
+      presets,
+      plugins: [...syntaxPlugins, [styleXPlugin, {}]],
     });
     if (result == null || result.code == null) {
       return { ok: false, errors: ['Babel produced no output'] };

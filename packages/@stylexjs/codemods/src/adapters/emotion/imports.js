@@ -69,13 +69,12 @@ export function analyzeEmotionWiring(
   };
 }
 
+// The pragma can attach to the program or to whichever top-level statement
+// leads the file — and that statement's index shifts once we insert the stylex
+// import. Scanning every top-level statement finds it regardless of position.
 function allCommentSlots(j: $FlowFixMe, root: $FlowFixMe): Array<$FlowFixMe> {
   const program = root.get().node.program;
-  const slots = [program];
-  if (program.body.length > 0) {
-    slots.push(program.body[0]);
-  }
-  return slots;
+  return [program, ...program.body];
 }
 
 function findPragmaText(j: $FlowFixMe, root: $FlowFixMe): string | null {

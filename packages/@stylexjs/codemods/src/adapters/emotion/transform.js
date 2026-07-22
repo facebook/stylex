@@ -385,14 +385,17 @@ function scopedFix(
       return;
     }
     if (callee.property.name === 'create') {
-      createObject = path.node.arguments[0];
+      createObject = unparenthesize(path.node.arguments[0]);
     } else if (callee.property.name === 'keyframes') {
       const declarator = path.parent.node;
       if (
         declarator.type === 'VariableDeclarator' &&
         declarator.id.type === 'Identifier'
       ) {
-        keyframesByName.set(declarator.id.name, path.node.arguments[0]);
+        keyframesByName.set(
+          declarator.id.name,
+          unparenthesize(path.node.arguments[0]),
+        );
       }
     }
   });
@@ -400,11 +403,23 @@ function scopedFix(
   return { createObject, keyframesByName, residualErrors };
 }
 
-/** Prints a single expression node to source (via a throwaway wrapper). */
+/** Prints a single expression node to source (via a throwaway wrapper). An
+ * object literal at statement position is parenthesized to avoid block
+ * ambiguity; that grouping is stripped again on the way back out. */
 function printExpr(j: $FlowFixMe, node: $FlowFixMe): string {
   return j(j.expressionStatement(node))
     .toSource({ quote: 'single' })
     .replace(/;\s*$/, '');
+}
+
+/** Clears any parenthesized-grouping metadata from a node so recast reprints
+ * it without redundant parens (the TS parser records it, Flow does not). */
+function unparenthesize(node: $FlowFixMe): $FlowFixMe {
+  if (node != null && node.extra != null) {
+    node.extra.parenthesized = false;
+    node.extra.parens = undefined;
+  }
+  return node;
 }
 
 /**
