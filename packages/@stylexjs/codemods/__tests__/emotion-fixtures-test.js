@@ -116,10 +116,21 @@ describe.each(fixtures.map((f) => [f.name, f]))(
         }
         return;
       }
-      // Before: Emotion's own serializer over each converted object.
+      // Before: any pre-existing StyleX in the INPUT (unchanged by a merge,
+      // so it appears on both sides) + Emotion's serializer over each
+      // converted object.
       // (Fixture-design constraint: sites must not restate the same
       // property+conditions with different values, or the union is lossy.)
       const before: { [string]: $FlowFixMe } = {};
+      const inputCompiled = compileGate(fixture.input, {
+        filename: fixture.inputPath,
+      });
+      if (inputCompiled.ok) {
+        const preExisting = netCssFromStylexMetadata(inputCompiled.metadata);
+        for (const coordinate of Object.keys(preExisting)) {
+          before[coordinate] = preExisting[coordinate];
+        }
+      }
       for (const site of result.sites) {
         const net = netCssFromSerializedCss(
           serializeStyles([site.cssObject]).styles,
