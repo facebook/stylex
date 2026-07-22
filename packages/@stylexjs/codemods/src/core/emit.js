@@ -67,6 +67,9 @@ export type EmitResult = {
 export type EmitOptions = {
   /** Wrap `:hover` in `@media (hover: hover)` (default true). */
   +hoverGuard?: boolean,
+  /** Style-name keys already taken (e.g. a pre-existing registry we merge
+   * into); emitted keys avoid collisions with these. */
+  +reservedKeys?: $ReadOnlySet<string>,
 };
 
 export class EmitError extends Error {
@@ -237,7 +240,7 @@ function emitStyleObject(rule: StyleRule, hoverGuard: boolean): EmittedStyle {
 
 export function emitFileIR(ir: FileIR, options?: EmitOptions): EmitResult {
   const hoverGuard = options?.hoverGuard ?? true;
-  const usedKeys = new Set<string>();
+  const usedKeys = new Set<string>(options?.reservedKeys ?? []);
   const rules: Array<EmittedRule> = [];
   const bindings: Array<string> = [];
 

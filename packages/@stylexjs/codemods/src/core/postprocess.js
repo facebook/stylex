@@ -8,21 +8,22 @@
  */
 
 /**
- * L10 — Postprocess. Runs StyleX's OWN eslint autofixes over the emitted
- * output, so the result passes `@stylexjs/eslint-plugin` at error with zero
- * autofixes remaining (Meta's golden rule) — and, crucially, so key
- * ordering and shorthand handling exactly match StyleX's canonical form
- * rather than a heuristic we maintain.
+ * L10 — Postprocess. Runs StyleX's OWN eslint autofixes over emitted output,
+ * so the result passes `@stylexjs/eslint-plugin` at error with zero autofixes
+ * remaining (Meta's golden rule) — and, crucially, so key ordering and
+ * shorthand handling exactly match StyleX's canonical form rather than a
+ * heuristic we maintain.
  *
- * M3: run file-wide. This is safe *now* because a converted file has no
- * pre-existing user `stylex.create` (files that do are refused upstream),
- * so the only nodes the autofix can touch are the ones we emitted. M4 adds
- * the scoping needed once we merge into a user's existing registry.
+ * M4: the caller runs this on a SCOPED snippet containing only the emitted
+ * `stylex.create`/`stylex.keyframes` (plus usage stubs), never the whole
+ * file — so a user's pre-existing StyleX code is never linted or reordered
+ * (proven by `__tests__/scoped-postprocess-test.js`). The fixed objects are
+ * then spliced back into the file.
  *
  * The sort-keys autofix can reorder sibling media queries, which the StyleX
- * compiler treats as semantic — but the semantic-diff gate runs on this
- * function's OUTPUT, so any reorder that changes rendering is caught (the
- * file is refused) rather than shipped.
+ * compiler treats as semantic — but the semantic-diff gate runs on the final
+ * output, so any reorder that changes rendering is caught (file refused)
+ * rather than shipped.
  *
  * Residual (unfixable) errors mean the output is not clean; the caller
  * refuses the whole file.
@@ -37,17 +38,28 @@ export type PostprocessResult = {
   +residualErrors: $ReadOnlyArray<string>,
 };
 
+export type PostprocessOptions = {
+  /** Rule short-names to omit (e.g. 'no-unused' when linting a snippet whose
+   * styles are used elsewhere). */
+  +excludeRules?: $ReadOnlyArray<string>,
+};
+
 const PARSER_NAME = 'hermes-eslint';
 
 export function postprocess(
   code: string,
   filename: string = 'file.js',
+  options?: PostprocessOptions,
 ): PostprocessResult {
+  const excluded = new Set(options?.excludeRules ?? []);
   const linter = new Linter();
   linter.defineParser(PARSER_NAME, hermesEslint);
   const ruleMap: { +[string]: mixed } = stylexRules;
   const config: { [string]: 'error' } = {};
   for (const ruleName of Object.keys(ruleMap)) {
+    if (excluded.has(ruleName)) {
+      continue;
+    }
     const qualified = `@stylexjs/${ruleName}`;
     linter.defineRule(qualified, ruleMap[ruleName]);
     config[qualified] = 'error';
