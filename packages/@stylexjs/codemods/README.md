@@ -4,13 +4,17 @@ Codemods for migrating styling libraries to [StyleX](https://stylexjs.com) —
 Emotion first, built as **one library-agnostic engine with swappable
 per-library adapters**.
 
-> **Status: pre-release, milestone M3 of the v1.0 (MVP) ladder.** The
-> correctness harness — fixture tests plus three gates (compile, lint,
-> semantic-diff) — is in place and proven; transforms land milestone by
-> milestone. Converting today: static styles, self-targeting conditions
-> (pseudo-classes/elements, media queries), physical→logical properties,
-> multi-value shorthands, and object-form keyframes. Nothing here is published
-> yet, and the package name/location is pending maintainer confirmation.
+> **Status: v1.0 (MVP) feature-complete, pre-publish.** The Emotion adapter
+> converts object-syntax styles, self-targeting conditions, physical→logical
+> properties, multi-value shorthands, and object-form keyframes; merges into
+> partially-migrated files; flags what it can't safely convert with `// TODO`
+> markers; and ships as a CLI with a dry-run report. Correctness is enforced by
+> three gates (compile, lint, semantic-diff) plus a robustness corpus. Nothing
+> here is published yet, and the package name/location is pending maintainer
+> confirmation.
+
+See the [**Migrating from Emotion to StyleX** guide](./docs/migrating-from-emotion.md)
+for usage, what converts/flags/refuses, and known limitations.
 
 ## Principles
 
