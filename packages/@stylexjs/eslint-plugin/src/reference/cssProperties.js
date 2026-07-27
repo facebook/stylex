@@ -2094,7 +2094,11 @@ const CSSProperties = {
     'inset',
     'outset',
   ) as RuleCheck,
-  outlineWidth: makeUnionRule(isNumber, isLength, isNonNumericString) as RuleCheck,
+  outlineWidth: makeUnionRule(
+    isNumber,
+    isLength,
+    isNonNumericString,
+  ) as RuleCheck,
   blockOverflow: overflow, // TODO - Add support to Babel Plugin
   inlineOverflow: overflow, // TODO - Add support to Babel Plugin
   overflow: overflow,
