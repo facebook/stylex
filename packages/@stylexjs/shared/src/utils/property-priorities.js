@@ -768,6 +768,14 @@ export function getAtRulePriority(key: string): number | void {
   if (key.startsWith('@container')) {
     return AT_RULE_PRIORITIES['@container'];
   }
+
+  // `defineConsts` at-rules reach us as `var(--hash)` placeholders, so the
+  // condition they stand for is unknown until the CSS variable is inlined.
+  // They are almost always media queries, and must rank as an at-rule either
+  // way so they can't outrank a pseudo-class.
+  if (key.startsWith('var(--')) {
+    return AT_RULE_PRIORITIES['@media'];
+  }
 }
 
 export function getPseudoElementPriority(key: string): number | void {
