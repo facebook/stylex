@@ -7,10 +7,8 @@
  * @flow strict
  */
 
-'use strict';
+import { createInspectedPageRuntime } from './runtime';
+import { INSPECTED_RUNTIME_KEY } from './runtimeKey';
 
-import { createStylexSidebarPane } from './createSidebarPane.js';
-
-createStylexSidebarPane().catch((error) => {
-  console.error('Could not create the StyleX DevTools sidebar.', error);
-});
+(globalThis as any)[Symbol.for(INSPECTED_RUNTIME_KEY)] =
+  createInspectedPageRuntime();

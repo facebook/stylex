@@ -7,10 +7,4 @@
  * @flow strict
  */
 
-'use strict';
-
-import { createStylexSidebarPane } from './createSidebarPane.js';
-
-createStylexSidebarPane().catch((error) => {
-  console.error('Could not create the StyleX DevTools sidebar.', error);
-});
+export const INSPECTED_RUNTIME_KEY = '@stylexjs/devtools/inspected-runtime';

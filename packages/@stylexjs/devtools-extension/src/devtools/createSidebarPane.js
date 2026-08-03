@@ -7,13 +7,27 @@
  * @flow strict
  */
 
-'use strict';
+import { devtools, usesPromiseApi } from './browserApi';
 
-import { devtools } from '../../flow-types/chrome.js';
+function configurePane(pane: any): Promise<void> {
+  const operations = [Promise.resolve(pane.setPage('panel.html'))];
+  if (typeof pane.setHeight === 'function') {
+    operations.push(Promise.resolve(pane.setHeight(400)));
+  }
+  return Promise.all(operations).then(() => {});
+}
 
-export function createStylexSidebarPane(): void {
-  devtools.panels.elements.createSidebarPane('StyleX', (pane) => {
-    pane.setPage('panel.html');
-    pane.setHeight(400);
+export async function createStylexSidebarPane(): Promise<void> {
+  const elements = devtools.panels.elements;
+  if (usesPromiseApi) {
+    const pane = await elements.createSidebarPane('StyleX');
+    await configurePane(pane);
+    return;
+  }
+
+  await new Promise((resolve, reject) => {
+    elements.createSidebarPane('StyleX', (pane) => {
+      configurePane(pane).then(resolve, reject);
+    });
   });
 }
