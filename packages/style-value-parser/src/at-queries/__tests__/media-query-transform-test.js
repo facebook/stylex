@@ -726,20 +726,3 @@ describe('Media Query Transformer', () => {
     expect(JSON.stringify(result)).toBe(JSON.stringify(expectedStyles));
   });
 });
-
-test('TEMPORARY LOG: Container query output', () => {
-  const input = {
-    color: {
-      default: null,
-      '@container (width >= 360px)': 'green',
-      '@container (width >= 420px)': 'red',
-    },
-  };
-
-  const result = lastMediaQueryWinsTransform(input);
-  
-  console.log('TRANSFORMED CONTAINER OUTPUT:');
-  console.log(JSON.stringify(result, null, 2));
-  
-  expect(true).toBe(true);
-});
