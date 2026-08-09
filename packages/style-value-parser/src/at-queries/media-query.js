@@ -510,11 +510,14 @@ function mergeAndSimplifyRanges(
 
 export class MediaQuery {
   queries: MediaQueryRule;
-  constructor(queries: MediaQueryRule) {
+  atRuleName: string;
+
+  constructor(queries: MediaQueryRule, atRuleName: string = 'media') {
     this.queries = MediaQuery.normalize(queries);
+    this.atRuleName = atRuleName;
   }
   toString(): string {
-    return `@media ${this.#toString(this.queries, true)}`;
+    return `@${this.atRuleName} ${this.#toString(this.queries, true)}`;
   }
   #toString(queries: MediaQueryRule, isTopLevel: boolean = false): string {
     switch (queries.type) {
@@ -688,11 +691,13 @@ export class MediaQuery {
         ),
     );
 
+    const atRuleNameParser = TokenParser.tokens.AtKeyword.where(
+      (token: TokenAtKeyword): implies token is TokenAtKeyword =>
+        token[4].value === 'media' || token[4].value === 'container',
+    ).map((token) => token[4].value);
+
     return TokenParser.sequence(
-      TokenParser.tokens.AtKeyword.where(
-        (token: TokenAtKeyword): implies token is TokenAtKeyword =>
-          token[4].value === 'media',
-      ),
+      atRuleNameParser,
       TokenParser.oneOrMore(
         TokenParser.oneOf(leadingNotParser, normalRuleParser),
       ).separatedBy(
@@ -702,12 +707,12 @@ export class MediaQuery {
       ),
     )
       .separatedBy(TokenParser.tokens.Whitespace)
-      .map(([_at, querySets]) => {
+      .map(([atRuleName, querySets]) => {
         const rule =
           querySets.length > 1
             ? { type: 'or', rules: querySets }
             : querySets[0];
-        return new MediaQuery(rule as $FlowFixMe as MediaQueryRule);
+        return new MediaQuery(rule as $FlowFixMe as MediaQueryRule, atRuleName);
       });
   }
 }
