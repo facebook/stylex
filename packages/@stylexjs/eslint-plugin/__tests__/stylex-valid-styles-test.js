@@ -355,6 +355,51 @@ eslintTester.run('stylex-valid-styles', rule.default, {
       `,
       options: [{ allowOuterPseudoAndMedia: true }],
     },
+    // stylex.env member keys are compile time literals (issue 1764)
+    `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({
+        hideBelowSmall: {
+          display: {
+            [stylex.env.responsive.belowSmall]: 'none',
+          },
+        },
+      });
+    `,
+    `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({
+        hideBelowSmall: {
+          display: {
+            default: 'block',
+            [stylex.env.responsive.belowSmall]: 'none',
+          },
+        },
+      });
+    `,
+    `
+      import { create, env } from '@stylexjs/stylex';
+      const styles = create({
+        hideBelowSmall: {
+          display: {
+            [env.responsive.belowSmall]: 'none',
+          },
+        },
+      });
+    `,
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          hideBelowSmall: {
+            [stylex.env.responsive.belowSmall]: {
+              display: 'none',
+            },
+          },
+        });
+      `,
+      options: [{ allowOuterPseudoAndMedia: true }],
+    },
     // test for positive numbers
     "import * as stylex from '@stylexjs/stylex'; stylex.create({default: {marginInlineStart: 5}});",
     // test for literals as namespaces
@@ -2935,6 +2980,24 @@ revert`,
         },
         {
           message: 'Keys must be strings',
+        },
+      ],
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        import { env } from 'some-other-library';
+        const styles = stylex.create({
+          hideBelowSmall: {
+            display: {
+              [env.responsive.belowSmall]: 'none',
+            },
+          },
+        });
+      `,
+      errors: [
+        {
+          message: 'All keys in a stylex object must be static literal values.',
         },
       ],
     },
