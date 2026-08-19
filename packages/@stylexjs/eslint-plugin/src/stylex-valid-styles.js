@@ -110,6 +110,14 @@ const LEGACY_CONDITIONAL_REPLACEMENT_FIXERS = new Set([
   'borderLeft',
 ]);
 
+const STYLEX_WHEN_METHODS = new Set([
+  'ancestor',
+  'descendant',
+  'anySibling',
+  'siblingBefore',
+  'siblingAfter',
+]);
+
 const NUMERIC_LITERAL_VALUE_REGEX = /^[-+]?(?:\d+|\d*\.\d+)$/;
 
 const NUMERIC_LITERAL_PROPERTIES = new Set([
@@ -610,22 +618,30 @@ const stylexValidStyles = {
       if (
         !computed ||
         node.type !== 'CallExpression' ||
-        node.callee.type !== 'MemberExpression'
+        node.callee.type !== 'MemberExpression' ||
+        node.callee.computed
       ) {
         return false;
       }
       const calleeObject = node.callee.object;
       const calleeProperty = node.callee.property;
+
+      if (
+        calleeProperty.type !== 'Identifier' ||
+        !STYLEX_WHEN_METHODS.has(calleeProperty.name)
+      ) {
+        return false;
+      }
+
       return (
         (calleeObject.type === 'MemberExpression' &&
+          !calleeObject.computed &&
           calleeObject.object.type === 'Identifier' &&
           styleXDefaultImports.has(calleeObject.object.name) &&
           calleeObject.property.type === 'Identifier' &&
-          calleeObject.property.name === 'when' &&
-          calleeProperty.type === 'Identifier') ||
+          calleeObject.property.name === 'when') ||
         (calleeObject.type === 'Identifier' &&
-          styleXWhenImports.has(calleeObject.name) &&
-          calleeProperty.type === 'Identifier')
+          styleXWhenImports.has(calleeObject.name))
       );
     }
     function checkStyleProperty(
@@ -661,19 +677,21 @@ const stylexValidStyles = {
               message: 'Private properties are not allowed in stylex',
             } as Rule.ReportDescriptor);
           }
-          const keyName =
+          const keyName: null | string =
             key.type === 'Literal'
-              ? key.value
+              ? typeof key.value === 'string'
+                ? key.value
+                : null
               : key.type === 'Identifier'
                 ? !style.computed
                   ? key.name
-                  : resolveKey(key, variables)
+                  : (resolveKey(key, variables) ?? null)
                 : null;
           if (isStylexResolvedVarsToken(key, stylexResolvedVarsTokenImports)) {
             return undefined;
           }
           const isWhenCall =
-            level > 0 && isStylexWhenCallExpression(key, style.computed);
+            propName != null && isStylexWhenCallExpression(key, style.computed);
 
           if (!isWhenCall) {
             if (
@@ -761,7 +779,11 @@ const stylexValidStyles = {
           styleKey,
           style.computed,
         );
-        if (style.computed && styleKey.type !== 'Literal' && !isStylexWhenCall) {
+        if (
+          style.computed &&
+          styleKey.type !== 'Literal' &&
+          !isStylexWhenCall
+        ) {
           const val = evaluate(styleKey, variables);
           if (val == null) {
             return context.report({

@@ -263,7 +263,9 @@ eslintTester.run('stylex-valid-styles', rule.default, {
             width: {
               default: 10,
               [when.descendant(":focus")]: 20,
-              [when.siblingAfter(":active")]: 30,
+              [when.anySibling(":focus")]: 30,
+              [when.siblingBefore(":active")]: 40,
+              [when.siblingAfter(":active")]: 50,
             },
           },
         })
@@ -381,7 +383,7 @@ eslintTester.run('stylex-valid-styles', rule.default, {
           icon: {
             transitionDuration: {
               default: '0.5s',
-              [when.ancestor(":hover")]: {
+              [when.descendant(":hover")]: {
                 default: null,
                 "@media (hover: hover)": '0.1s',
               },
@@ -2944,6 +2946,70 @@ revert`,
         {
           message:
             'float value must be one of:\nleft\nright\nnone\ninline-start\ninline-end\nnull\ninitial\ninherit\nunset\nrevert',
+        },
+      ],
+    },
+    // test for unsupported stylex.when method with an object value
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          base: {
+            width: {
+              default: 10,
+              [stylex.when.notAMethod(":hover")]: {
+                default: 20,
+                "@media (hover: hover)": 30,
+              },
+            },
+          },
+        })
+      `,
+      errors: [
+        {
+          message: 'Keys must be strings',
+        },
+      ],
+    },
+    // test for unsupported destructured when method with an object value
+    {
+      code: `
+        import { create, when } from '@stylexjs/stylex';
+        const styles = create({
+          base: {
+            width: {
+              default: 10,
+              [when.notAMethod(":hover")]: {
+                default: 20,
+                "@media (hover: hover)": 30,
+              },
+            },
+          },
+        })
+      `,
+      errors: [
+        {
+          message: 'Keys must be strings',
+        },
+      ],
+    },
+    // test for stylex.when group nested inside a pseudo-element
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          base: {
+            '::after': {
+              [stylex.when.ancestor(":hover")]: {
+                width: 20,
+              },
+            },
+          },
+        })
+      `,
+      errors: [
+        {
+          message: 'Keys must be strings',
         },
       ],
     },
