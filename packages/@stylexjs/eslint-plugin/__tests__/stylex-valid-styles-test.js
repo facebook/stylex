@@ -392,6 +392,23 @@ eslintTester.run('stylex-valid-styles', rule.default, {
         })
       `,
     },
+    // test for nested attribute selector inside stylex.when.ancestor()
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          icon: {
+            color: {
+              default: 'black',
+              [stylex.when.ancestor(':hover')]: {
+                default: 'blue',
+                '[data-state="open"]': 'red',
+              },
+            },
+          },
+        })
+      `,
+    },
     // test for positive numbers
     "import * as stylex from '@stylexjs/stylex'; stylex.create({default: {marginInlineStart: 5}});",
     // test for literals as namespaces
@@ -2968,6 +2985,56 @@ revert`,
       errors: [
         {
           message: 'Keys must be strings',
+        },
+      ],
+    },
+    // test for invalid keys nested inside a stylex.when object
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          base: {
+            transitionDuration: {
+              default: '0.5s',
+              [stylex.when.ancestor(':hover')]: {
+                foo: '0.1s',
+              },
+            },
+          },
+        })
+      `,
+      errors: [
+        {
+          message:
+            'Invalid Pseudo class or At Rule used for conditional style value',
+        },
+      ],
+    },
+    // test for invalid numeric keys nested inside a stylex.when object
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const INVALID_CONDITION = 456;
+        const styles = stylex.create({
+          base: {
+            transitionDuration: {
+              default: '0.5s',
+              [stylex.when.ancestor(':hover')]: {
+                123: '0.1s',
+                [INVALID_CONDITION]: '0.2s',
+              },
+            },
+          },
+        })
+      `,
+      errors: [
+        {
+          message:
+            'Invalid Pseudo class or At Rule used for conditional style value',
+        },
+        {
+          message:
+            'Invalid Pseudo class or At Rule used for conditional style value',
         },
       ],
     },
