@@ -10,6 +10,7 @@
 import * as stylex from '@stylexjs/stylex';
 import type {
   StaticStyles,
+  StyleXMarkerToken,
   StyleXStyles,
   StaticStylesWithout,
   StyleXStylesWithout,
@@ -317,3 +318,35 @@ const styles9 = stylex.create({
   // @ts-expect-error - `undefined` is not a valid style value
   bar: (height: number, width?: number) => ({ height, width }),
 });
+
+/**
+ * MARKER STYLES
+ *
+ * stylex.defaultMarker() and stylex.defineMarker() should be accepted by
+ * StyleXStyles<T> for any T, enabling the marker API at component prop boundaries.
+ */
+
+const defaultMarkerToken = stylex.defaultMarker();
+const customMarkerToken = stylex.defineMarker();
+
+// Marker tokens satisfy StyleXMarkerToken
+defaultMarkerToken satisfies StyleXMarkerToken;
+customMarkerToken satisfies StyleXMarkerToken;
+
+// Marker tokens are accepted by constrained StyleXStyles<T>
+defaultMarkerToken satisfies StyleXStyles<{ margin?: string }>;
+customMarkerToken satisfies StyleXStyles<{ margin?: string }>;
+
+// Mixed array: layout styles + marker token through a constrained prop type
+const layoutStyles = stylex.create({ base: { margin: '8px' } });
+[layoutStyles.base, defaultMarkerToken] satisfies StyleXStyles<{
+  margin?: string;
+}>;
+[layoutStyles.base, customMarkerToken] satisfies StyleXStyles<{
+  margin?: string;
+}>;
+
+// CSS constraints are still enforced — this doesn't weaken StyleXStyles<T>
+const opacityStyle = stylex.create({ foo: { opacity: 0 } });
+// @ts-expect-error — opacity is not in the constraint
+opacityStyle.foo satisfies StyleXStyles<{ margin?: string }>;
