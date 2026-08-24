@@ -188,7 +188,8 @@ export type StyleXStyles<
 > = StyleXArray<
   | ?false
   | GenStylePropType<Readonly<CSS>>
-  | Readonly<[GenStylePropType<Readonly<CSS>>, InlineStyles]>,
+  | Readonly<[GenStylePropType<Readonly<CSS>>, InlineStyles]>
+  | StyleXMarkerToken,
 >;
 
 export type StyleXStylesWithout<
@@ -297,6 +298,14 @@ export type StyleX$CreateTheme = <
 export type StyleX$DefineMarker = () => MapNamespace<{
   readonly marker: 'custom-marker',
 }>;
+
+export type StyleX$DefaultMarker = () => MapNamespace<{
+  readonly marker: 'default-marker',
+}>;
+
+export type StyleXMarkerToken =
+  | ReturnType<StyleX$DefineMarker>
+  | ReturnType<StyleX$DefaultMarker>;
 
 export type StyleX$When = {
   ancestor: (

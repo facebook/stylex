@@ -26,6 +26,7 @@ import type {
   StyleX$DefineConsts,
   StyleXArray,
   StyleXClassNameFor,
+  StyleXMarkerToken,
   StyleXStyles,
   StyleXStylesWithout,
   StyleXVar,
@@ -35,6 +36,7 @@ import type {
   ViewTransitionClass,
   StyleX$When,
   MapNamespace,
+  StyleX$DefaultMarker,
   StyleX$DefineMarker,
   StyleX$Env,
 } from './types/StyleXTypes';
@@ -51,6 +53,7 @@ export type {
   StaticStylesWithout,
   StyleXArray,
   StyleXClassNameFor,
+  StyleXMarkerToken,
   StyleXStyles,
   StyleXStylesWithout,
   StyleXVar,
@@ -313,11 +316,7 @@ type IStyleX = {
   defineConsts: StyleX$DefineConsts,
   defineVars: StyleX$DefineVars,
   env: StyleX$Env,
-  defaultMarker: () => MapNamespace<
-    Readonly<{
-      marker: 'default-marker',
-    }>,
-  >,
+  defaultMarker: StyleX$DefaultMarker,
   defineMarker: StyleX$DefineMarker,
   firstThatWorks: <T extends string | number>(
     ...v: ReadonlyArray<T>
