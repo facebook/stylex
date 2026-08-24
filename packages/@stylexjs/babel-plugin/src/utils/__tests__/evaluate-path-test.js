@@ -264,6 +264,217 @@ describe('custom path evaluation works as expected', () => {
     });
   });
 
+  describe('evaluate-path prototype-chain escape prevention', () => {
+    test('blocks reading .constructor off an object literal', () => {
+      expect(evaluateFirstStatement('const x = ({}).constructor;', {})).toEqual(
+        {
+          confident: false,
+        },
+      );
+    });
+
+    test('blocks walking to Function via .constructor.constructor', () => {
+      expect(
+        evaluateFirstStatement('const x = ({}).constructor.constructor;', {}),
+      ).toEqual({ confident: false });
+    });
+
+    test('blocks arbitrary code execution via Function constructor', () => {
+      expect(
+        evaluateLastStatement(
+          '({}).constructor.constructor("return 1").call({});',
+          {},
+        ),
+      ).toEqual({ confident: false });
+    });
+
+    test('blocks constructor calls on allowlisted globals', () => {
+      expect(
+        evaluateLastStatement('Object.constructor("return 1").call({});', {}),
+      ).toEqual({ confident: false });
+    });
+
+    test('blocks computed-property access to constructor', () => {
+      expect(
+        evaluateLastStatement(
+          '({})["constructor"]["constructor"]("return 1").call({});',
+          {},
+        ),
+      ).toEqual({ confident: false });
+    });
+
+    test('blocks computed-property access after property-key coercion', () => {
+      const code = `
+        const key = Object('constructor');
+        const FunctionConstructor = ({})[key][key];
+        FunctionConstructor('return 1').call({});
+      `;
+      expect(
+        evaluateLastStatement(code, {
+          identifiers: {},
+          memberExpressions: {},
+        }),
+      ).toEqual({ confident: false });
+    });
+
+    test('blocks __proto__ traversal', () => {
+      expect(
+        evaluateLastStatement(
+          '({}).__proto__.constructor.constructor("return 1").call({});',
+          {},
+        ),
+      ).toEqual({ confident: false });
+    });
+
+    test('blocks prototype traversal', () => {
+      expect(evaluateFirstStatement('const x = Object.prototype;', {})).toEqual(
+        {
+          confident: false,
+        },
+      );
+    });
+
+    test('blocks .constructor off a string literal', () => {
+      expect(
+        evaluateLastStatement(
+          '"abc".constructor.constructor("return 1").call({});',
+          {},
+        ),
+      ).toEqual({ confident: false });
+    });
+
+    test('blocks .constructor reached through a bound variable', () => {
+      const code = `
+        const o = {};
+        o.constructor.constructor("return 1").call({});
+      `;
+      expect(evaluateLastStatement(code, {})).toEqual({ confident: false });
+    });
+
+    test('blocks Function reached through reflection', () => {
+      const code = `
+        const objectPrototype = Object.getPrototypeOf({});
+        const ObjectConstructor = Object.getOwnPropertyDescriptor(
+          objectPrototype,
+          'constructor',
+        ).value;
+        const functionPrototype = Object.getPrototypeOf(ObjectConstructor);
+        const FunctionConstructor = Object.getOwnPropertyDescriptor(
+          functionPrototype,
+          'constructor',
+        ).value;
+        FunctionConstructor('return 1').call({});
+      `;
+      expect(
+        evaluateLastStatement(code, {
+          identifiers: {},
+          memberExpressions: {},
+        }),
+      ).toEqual({ confident: false });
+    });
+
+    test('blocks Function reached through inherited config properties', () => {
+      // `memberExpressions['constructor']` resolves to `Object` through the
+      // prototype chain, and `Object.constructor` is `Function`.
+      expect(
+        evaluateLastStatement('constructor.constructor("return 1").call({});', {
+          identifiers: {},
+          memberExpressions: {},
+        }),
+      ).toEqual({ confident: false });
+      expect(
+        evaluateLastStatement('valueOf.constructor("return 1").call({});', {
+          identifiers: {},
+          memberExpressions: {},
+        }),
+      ).toEqual({ confident: false });
+    });
+
+    test('blocks reflective Object methods', () => {
+      expect(
+        evaluateFirstStatement('const x = Object.getPrototypeOf({});', {}),
+      ).toEqual({ confident: false });
+      expect(
+        evaluateFirstStatement(
+          "const x = Object.getOwnPropertyDescriptor({a: 1}, 'a');",
+          {},
+        ),
+      ).toEqual({ confident: false });
+      expect(
+        evaluateFirstStatement('const x = Object.create({});', {}),
+      ).toEqual({ confident: false });
+      expect(
+        evaluateFirstStatement('const x = Object.getOwnPropertyNames({});', {}),
+      ).toEqual({ confident: false });
+    });
+
+    test('still deopts on non-deterministic and mutating methods', () => {
+      expect(evaluateFirstStatement('const x = Math.random();', {})).toEqual({
+        confident: false,
+      });
+      expect(
+        evaluateFirstStatement('const x = Object.assign({}, {a: 1});', {}),
+      ).toEqual({ confident: false });
+      expect(
+        evaluateFirstStatement('const x = Object.freeze({a: 1});', {}),
+      ).toEqual({ confident: false });
+    });
+
+    test('still allows legitimate member access', () => {
+      expect(evaluateFirstStatement('const x = "abc".length;', {})).toBe(3);
+      expect(evaluateFirstStatement('const x = ({a: 1, b: 2}).b;', {})).toBe(2);
+      expect(evaluateFirstStatement('const x = [10, 20][1];', {})).toBe(20);
+    });
+
+    // The checks above assert that each escape *deopts*. This one asserts the
+    // property that actually matters: that a payload is never run, no matter
+    // how the escape is spelled or whether the evaluator deopts or throws.
+    test('a payload is never executed, however it is reached', () => {
+      const payload = JSON.stringify('globalThis.__stylexPwned__ = true');
+      const vectors = [
+        `({}).constructor.constructor(${payload})()`,
+        `({}).constructor.constructor(${payload}).call({})`,
+        `Object.constructor(${payload}).call({})`,
+        // `memberExpressions['constructor']` is `Object` via the prototype
+        // chain, so `constructor.constructor` would be `Function`.
+        `constructor.constructor(${payload}).call({})`,
+        `valueOf.constructor(${payload}).call({})`,
+        `({})["constructor"]["constructor"](${payload}).call({})`,
+        // Built at runtime, so an AST-level check on the key would miss it.
+        `({})["const"+"ructor"]["con"+"structor"](${payload}).call({})`,
+        `[].constructor.constructor(${payload}).call({})`,
+        `"a".constructor.constructor(${payload}).call({})`,
+        `((x) => x).constructor(${payload}).call({})`,
+        `[].map.constructor(${payload}).call({})`,
+        `Object.getOwnPropertyDescriptor(Object.getPrototypeOf({}), "constructor").value.constructor(${payload}).call({})`,
+        `Object.fromEntries([["a",1]]).constructor.constructor(${payload}).call({})`,
+        `Array.from([1]).constructor.constructor(${payload}).call({})`,
+        `new Function(${payload})()`,
+        `eval(${payload})`,
+        `[1].map((x) => x.constructor.constructor(${payload})())[0]`,
+      ];
+
+      const executed = [];
+      for (const vector of vectors) {
+        delete globalThis.__stylexPwned__;
+        try {
+          evaluateLastStatement(`${vector};`, {
+            identifiers: {},
+            memberExpressions: {},
+          });
+        } catch {
+          // Refusing by throwing still means the payload did not run.
+        }
+        if (globalThis.__stylexPwned__ !== undefined) {
+          executed.push(vector);
+        }
+      }
+      delete globalThis.__stylexPwned__;
+
+      expect(executed).toEqual([]);
+    });
+  });
+
   describe('evaluate-path mutation detection', () => {
     test('evaluates constant array correctly', () => {
       const code = `
