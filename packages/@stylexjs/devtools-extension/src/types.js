@@ -132,7 +132,7 @@ export type DebugWarning = {
   count?: number,
 };
 
-export type StylexDebugData = $ReadOnly<{
+export type StylexDebugData = Readonly<{
   selectionId: string,
   selectionState: 'element' | 'none' | 'non-element',
   element: {

@@ -163,7 +163,7 @@ const appConfig = {
     format: 'es',
     sourcemap: false,
     entryFileNames: 'assets/[name].js',
-    chunkFileNames: 'assets/shared.js',
+    chunkFileNames: 'assets/chunk-[hash].js',
     assetFileNames: 'assets/[name][extname]',
   },
   plugins: [

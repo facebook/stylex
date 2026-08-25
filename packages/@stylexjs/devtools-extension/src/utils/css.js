@@ -23,11 +23,11 @@ export function parseCssValue(value: string): {
   important: boolean,
 } {
   const trimmed = value.trim();
-  if (!/\s!important\s*$/i.test(trimmed)) {
+  if (!/!\s*important\s*$/i.test(trimmed)) {
     return { value: trimmed, important: false };
   }
   return {
-    value: trimmed.replace(/\s!important\s*$/i, '').trim(),
+    value: trimmed.replace(/!\s*important\s*$/i, '').trim(),
     important: true,
   };
 }

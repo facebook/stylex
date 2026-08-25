@@ -74,11 +74,11 @@ export function walkCssSyntax(
     }
 
     if (character === '(') paren += 1;
-    else if (character === ')') paren -= 1;
+    else if (character === ')') paren = Math.max(0, paren - 1);
     else if (character === '[') square += 1;
-    else if (character === ']') square -= 1;
+    else if (character === ']') square = Math.max(0, square - 1);
     else if (character === '{') curly += 1;
-    else if (character === '}') curly -= 1;
+    else if (character === '}') curly = Math.max(0, curly - 1);
 
     if (!visit(character, index, { curly, paren, square })) return;
   }

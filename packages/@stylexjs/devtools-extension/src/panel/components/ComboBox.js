@@ -31,7 +31,7 @@ export function ComboBox({
   onChange: (value: string) => void,
   onCommit: (value: string) => mixed,
   placeholder?: string,
-  suggestions: $ReadOnlyArray<string>,
+  suggestions: ReadonlyArray<string>,
   value: string,
 }): React.Node {
   const listId = useId();

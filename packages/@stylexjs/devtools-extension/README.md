@@ -36,13 +36,14 @@ location command instead.
 
 ## Load In Safari
 
-The Safari build is packaged by the separate macOS app project at
-`~/Developer/myCode/stylex_devtools`. Run its `scripts/sync-extension.sh`
-command to rebuild and copy `dist/safari` into the Xcode project. Safari uses a
-full Web Inspector tab because it does not support Elements sidebar extensions.
-Grant StyleX DevTools access to the sites you inspect when Safari asks. The
-Safari-only HTTP/HTTPS host permission is required because WebKit checks site
-access before allowing `devtools.inspectedWindow.eval()`.
+The Safari build must be packaged by a separate Safari Web Extension host app;
+the Xcode project is intentionally not part of this repository. Build this
+package, copy `dist/safari` into the host app's extension resources, and build
+the host app in Xcode. Safari uses a full Web Inspector tab because it does not
+support Elements sidebar extensions. Grant StyleX DevTools access to the sites
+you inspect when Safari asks. The Safari-only HTTP/HTTPS host permission is
+required because WebKit checks site access before allowing
+`devtools.inspectedWindow.eval()`.
 
 Browser capabilities are intentionally separate:
 

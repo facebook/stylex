@@ -14,7 +14,6 @@ const requiredFiles = new Set([
   'assets/inspected-runtime.js',
   'assets/panel.js',
   'assets/reset.css',
-  'assets/shared.js',
   'assets/stylex-icon.svg',
   'assets/stylex-icon-16.png',
   'assets/stylex-icon-32.png',
@@ -27,6 +26,7 @@ const requiredFiles = new Set([
   'manifest.json',
   'panel.html',
 ]);
+const generatedChunkPattern = /^assets\/chunk-[A-Za-z0-9_-]+\.js$/;
 
 async function listFiles(directory, relative = '') {
   const entries = await fs.readdir(path.join(directory, relative), {
@@ -47,7 +47,14 @@ async function listFiles(directory, relative = '') {
 
 export async function verifyBrowserOutput(directory) {
   const files = await listFiles(directory);
-  const expectedFiles = new Set(requiredFiles);
+  const generatedChunks = files.filter((file) =>
+    generatedChunkPattern.test(file),
+  );
+  assert(
+    generatedChunks.length > 0,
+    'Extension output must contain at least one generated application chunk.',
+  );
+  const expectedFiles = new Set([...requiredFiles, ...generatedChunks]);
   assert.deepEqual(
     files,
     Array.from(expectedFiles).sort(),
@@ -71,7 +78,15 @@ export async function verifySharedOutputs(
   );
   const chromeFiles = fileLists[0];
 
-  for (const file of requiredFiles) {
+  for (let index = 1; index < fileLists.length; index += 1) {
+    assert.deepEqual(
+      fileLists[index],
+      chromeFiles,
+      `${outputs[index][0]} output file list differs from Chrome.`,
+    );
+  }
+
+  for (const file of chromeFiles) {
     if (file === 'manifest.json') continue;
     const contents = await Promise.all(
       outputs.map(([, directory]) => fs.readFile(path.join(directory, file))),

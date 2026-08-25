@@ -17,19 +17,21 @@ export async function copyText(text: string): Promise<boolean> {
     }
   } catch {}
 
+  let textarea = null;
   try {
-    const textarea = document.createElement('textarea');
+    textarea = document.createElement('textarea');
     textarea.value = text;
     textarea.style.position = 'fixed';
     textarea.style.opacity = '0';
     const body = document.body;
     if (body == null) return false;
     body.appendChild(textarea);
+    textarea.focus();
     textarea.select();
-    const copied = document.execCommand('copy');
-    textarea.remove();
-    return copied;
+    return document.execCommand('copy');
   } catch {
     return false;
+  } finally {
+    textarea?.remove();
   }
 }
