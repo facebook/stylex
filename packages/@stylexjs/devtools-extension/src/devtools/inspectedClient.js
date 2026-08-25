@@ -117,6 +117,14 @@ export async function collectDebugData(): Promise<StylexDebugData> {
   );
 }
 
+export async function getSelectionIdentity(): Promise<string> {
+  await ensureRuntime();
+  const key = JSON.stringify(INSPECTED_RUNTIME_KEY);
+  return evalInInspectedPage(
+    `globalThis[Symbol.for(${key})].identify(typeof $0 === 'undefined' ? null : $0)`,
+  );
+}
+
 export async function mutateOverride(
   command: OverrideCommand,
 ): Promise<OverrideMutationResult> {
@@ -128,3 +136,9 @@ export async function mutateOverride(
     )}, typeof $0 === 'undefined' ? null : $0)`,
   );
 }
+
+export const inspectedPageClient = {
+  collect: collectDebugData,
+  identify: getSelectionIdentity,
+  mutate: mutateOverride,
+};

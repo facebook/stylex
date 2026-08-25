@@ -14,8 +14,9 @@ import type {
   StylexDebugData,
 } from '../types';
 
-import { devtools } from './browserApi';
-import { collectDebugData, mutateOverride } from './inspectedClient';
+import { devtools, requiresDevtoolsPageRelay } from './browserApi';
+import { inspectedPageClient } from './inspectedClient';
+import { relayedInspectedPageClient } from './inspectedPageRelay';
 import {
   getSourcePreview,
   invalidateSourceCache,
@@ -39,18 +40,59 @@ export type DevtoolsBridge = {
   subscribe: (callback: () => mixed) => () => void,
 };
 
-function subscribe(callback: () => mixed): () => void {
+const SELECTION_POLL_INTERVAL_MS = 500;
+const activeInspectedPageClient = requiresDevtoolsPageRelay
+  ? relayedInspectedPageClient
+  : inspectedPageClient;
+
+export function subscribeToDevtoolsChanges(
+  callback: () => mixed,
+  readSelectionIdentity: () => Promise<string> = activeInspectedPageClient.identify,
+  pollInterval: number = SELECTION_POLL_INTERVAL_MS,
+): () => void {
   const selectionEvent = devtools.panels?.elements?.onSelectionChanged;
   const navigationEvent = devtools.network?.onNavigated;
+  let disposed = false;
+  let hasIdentity = false;
+  let lastIdentity = '';
+  let pollInProgress = false;
+  let pollTimer: ?IntervalID = null;
+
   const handleNavigation = () => {
+    hasIdentity = false;
     invalidateSourceCache();
     callback();
   };
 
+  const pollSelection = async () => {
+    if (disposed || pollInProgress) return;
+    pollInProgress = true;
+    try {
+      const identity = await readSelectionIdentity();
+      if (!hasIdentity) {
+        hasIdentity = true;
+        lastIdentity = identity;
+      } else if (identity !== lastIdentity) {
+        lastIdentity = identity;
+        callback();
+      }
+    } catch {
+      // The initial collection surfaces permission and inspected-page errors.
+    } finally {
+      pollInProgress = false;
+    }
+  };
+
   selectionEvent?.addListener(callback);
   navigationEvent?.addListener(handleNavigation);
+  if (selectionEvent == null) {
+    pollSelection();
+    pollTimer = setInterval(pollSelection, pollInterval);
+  }
 
   return () => {
+    disposed = true;
+    if (pollTimer != null) clearInterval(pollTimer);
     selectionEvent?.removeListener(callback);
     navigationEvent?.removeListener(handleNavigation);
   };
@@ -61,9 +103,9 @@ export const devtoolsBridge: DevtoolsBridge = {
     openSource: supportsOpenResource && supportsSourcePreview,
     sourcePreview: supportsSourcePreview,
   },
-  collect: collectDebugData,
-  mutate: mutateOverride,
+  collect: activeInspectedPageClient.collect,
+  mutate: activeInspectedPageClient.mutate,
   getSourcePreview,
   openSource,
-  subscribe,
+  subscribe: subscribeToDevtoolsChanges,
 };

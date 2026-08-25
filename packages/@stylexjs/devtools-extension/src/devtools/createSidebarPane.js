@@ -7,7 +7,13 @@
  * @flow strict
  */
 
-import { devtools, usesPromiseApi } from './browserApi';
+import {
+  devtools,
+  supportsElementsSidebar,
+  usesPromiseApi,
+} from './browserApi';
+
+const SAFARI_PANEL_ICON = 'assets/stylex-icon.svg';
 
 function configurePane(pane: any): Promise<void> {
   const operations = [Promise.resolve(pane.setPage('panel.html'))];
@@ -17,8 +23,22 @@ function configurePane(pane: any): Promise<void> {
   return Promise.all(operations).then(() => {});
 }
 
-export async function createStylexSidebarPane(): Promise<void> {
+export async function createStylexSidebarPane(
+  relayId: ?string = null,
+): Promise<void> {
   const elements = devtools.panels.elements;
+  if (!supportsElementsSidebar) {
+    if (typeof devtools.panels.create !== 'function') {
+      throw new Error('This browser cannot create a DevTools view.');
+    }
+    const panelPage =
+      relayId == null
+        ? 'panel.html'
+        : `panel.html?stylexRelay=${encodeURIComponent(relayId)}`;
+    await devtools.panels.create('StyleX', SAFARI_PANEL_ICON, panelPage);
+    return;
+  }
+
   if (usesPromiseApi) {
     const pane = await elements.createSidebarPane('StyleX');
     await configurePane(pane);

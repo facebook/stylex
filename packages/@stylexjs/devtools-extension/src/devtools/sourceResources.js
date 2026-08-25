@@ -11,7 +11,11 @@ import type { SourcePreview } from '../types';
 
 import { findBestMatchingResource } from '../utils/resourceMatching';
 import { formatSourceSnippet } from '../utils/sourceSnippet';
-import { devtools, usesPromiseApi } from './browserApi';
+import {
+  devtools,
+  requiresDevtoolsPageRelay,
+  usesPromiseApi,
+} from './browserApi';
 
 type Resource = {
   url: string,
@@ -21,21 +25,24 @@ type Resource = {
 let resourcesPromise: ?Promise<Array<Resource>> = null;
 
 export const supportsSourcePreview: boolean =
-  !usesPromiseApi &&
+  (!usesPromiseApi || requiresDevtoolsPageRelay) &&
   typeof devtools.inspectedWindow?.getResources === 'function';
 
 export const supportsOpenResource: boolean =
-  !usesPromiseApi && typeof devtools.panels?.openResource === 'function';
+  (!usesPromiseApi || requiresDevtoolsPageRelay) &&
+  typeof devtools.panels?.openResource === 'function';
 
 export function invalidateSourceCache(): void {
   resourcesPromise = null;
 }
 
-function loadResources(): Promise<Array<Resource>> {
+async function loadResources(): Promise<Array<Resource>> {
   if (!supportsSourcePreview) {
-    return Promise.reject(
-      new Error('This browser does not expose inspected-page resources.'),
-    );
+    throw new Error('This browser does not expose inspected-page resources.');
+  }
+  if (usesPromiseApi) {
+    const resources = await devtools.inspectedWindow.getResources();
+    return Array.isArray(resources) ? resources : [];
   }
   return new Promise((resolve) => {
     devtools.inspectedWindow.getResources(resolve);
@@ -56,7 +63,17 @@ async function findResource(file: string): Promise<?Resource> {
   return findBestMatchingResource(await getResources(), file);
 }
 
-function getResourceText(resource: Resource): Promise<?string> {
+async function getResourceText(resource: Resource): Promise<?string> {
+  if (usesPromiseApi) {
+    const result = await resource.getContent();
+    if (Array.isArray(result)) {
+      return decodeContent(result[0], result[1]);
+    }
+    if (result != null && typeof result === 'object') {
+      return decodeContent(result.content, result.encoding);
+    }
+    return null;
+  }
   return new Promise((resolve) => {
     resource.getContent((content, encoding) => {
       resolve(decodeContent(content, encoding));
@@ -93,7 +110,7 @@ export async function openSource(
   if (resource == null) {
     throw new Error(`Could not find a loaded resource matching: ${file}`);
   }
-  devtools.panels.openResource(resource.url, toZeroBasedLine(line));
+  await devtools.panels.openResource(resource.url, toZeroBasedLine(line));
 }
 
 export async function getSourcePreview(

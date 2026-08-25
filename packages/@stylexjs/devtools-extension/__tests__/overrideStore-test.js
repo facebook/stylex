@@ -22,6 +22,18 @@ const baseCommand = (data, values = {}) => ({
   ...values,
 });
 
+test('identifies selections without collecting stylesheet data', () => {
+  const runtime = createInspectedPageRuntime();
+  const element = document.createElement('div');
+
+  expect(runtime.identify(null)).toBe('none');
+  expect(runtime.identify(document.createTextNode('text'))).toBe('non-element');
+  const selectionId = runtime.identify(element);
+  expect(selectionId).toMatch(/^selection-/);
+  expect(runtime.identify(element)).toBe(selectionId);
+  runtime.identify(null);
+});
+
 describe('override transactions', () => {
   beforeEach(() => {
     document.body.innerHTML = '';

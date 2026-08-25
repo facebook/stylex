@@ -1,6 +1,6 @@
 # @stylexjs/devtools-extension
 
-DevTools extension for inspecting StyleX styles in Chrome and Firefox.
+DevTools extension for inspecting StyleX styles in Chrome, Firefox, and Safari.
 
 ## Build
 
@@ -8,11 +8,12 @@ DevTools extension for inspecting StyleX styles in Chrome and Firefox.
 npm run build -w @stylexjs/devtools-extension
 ```
 
-The build produces clean browser-specific directories with identical shared
-application assets:
+The build produces clean browser-specific directories with byte-identical
+panel, inspected runtime, and UI assets:
 
 - `dist/chrome`
 - `dist/firefox`
+- `dist/safari`
 
 The extension currently uses `@stylexjs/stylex@0.19.0`, the latest published
 StyleX release.
@@ -32,6 +33,23 @@ StyleX release.
 Firefox does not expose the Chrome resource APIs used for source previews and
 opening files. The Firefox build shows source metadata and provides a copy
 location command instead.
+
+## Load In Safari
+
+The Safari build is packaged by the separate macOS app project at
+`~/Developer/myCode/stylex_devtools`. Run its `scripts/sync-extension.sh`
+command to rebuild and copy `dist/safari` into the Xcode project. Safari uses a
+full Web Inspector tab because it does not support Elements sidebar extensions.
+Grant StyleX DevTools access to the sites you inspect when Safari asks. The
+Safari-only HTTP/HTTPS host permission is required because WebKit checks site
+access before allowing `devtools.inspectedWindow.eval()`.
+
+Browser capabilities are intentionally separate:
+
+- Chrome uses the Elements sidebar, source previews, and source navigation.
+- Firefox uses the Elements sidebar and copy-only source locations.
+- Safari uses a full Inspector tab, copy-only source locations, selection
+  polling, and an instance-scoped DevTools-page bridge for inspected-page calls.
 
 ## Verify And Package
 

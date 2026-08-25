@@ -50,7 +50,7 @@ export function MatchedStyles({
 
   return (
     <div {...stylex.props(styles.groups)}>
-      {groups.map(({ pseudoElement, properties }) => (
+      {groups.map(({ pseudoElement, properties, variableClasses }) => (
         <div
           {...stylex.props(styles.pseudoGroup)}
           key={pseudoElement || 'base'}
@@ -68,6 +68,29 @@ export function MatchedStyles({
               property={property}
             />
           ))}
+          {variableClasses.map(
+            ({ className, properties: variableProperties }) => (
+              <div
+                {...stylex.props(styles.variableClassGroup)}
+                data-variable-class={className}
+                key={className}
+              >
+                {variableProperties.map(({ property, declarations }, index) => (
+                  <PropertyGroup
+                    classNameLabel={index === 0 ? className : undefined}
+                    computedValue={data.computed[pseudoElement]?.[property]}
+                    data={data}
+                    declarations={declarations}
+                    groupedVariable
+                    key={property}
+                    onMutate={onMutate}
+                    property={property}
+                    suppressDeclarationClassName
+                  />
+                ))}
+              </div>
+            ),
+          )}
         </div>
       ))}
     </div>
@@ -75,17 +98,23 @@ export function MatchedStyles({
 }
 
 function PropertyGroup({
+  classNameLabel,
   computedValue,
   data,
   declarations,
+  groupedVariable = false,
   onMutate,
   property,
+  suppressDeclarationClassName = false,
 }: {
+  classNameLabel?: string,
   computedValue?: string,
   data: StylexDebugData,
   declarations: $ReadOnlyArray<StylexDeclaration>,
+  groupedVariable?: boolean,
   onMutate: (command: OverrideCommand) => Promise<void>,
   property: string,
+  suppressDeclarationClassName?: boolean,
 }): React.Node {
   const propertyPrefix = (
     <span
@@ -98,10 +127,21 @@ function PropertyGroup({
 
   if (declarations.length === 1) {
     return (
-      <div {...stylex.props(styles.propertyGroup)}>
+      <div
+        {...stylex.props(
+          styles.propertyGroup,
+          groupedVariable && styles.groupedVariableProperty,
+        )}
+      >
         <DeclarationRow
           data={data}
           declaration={declarations[0]}
+          displayClassName={
+            classNameLabel ??
+            (suppressDeclarationClassName
+              ? undefined
+              : declarations[0].className)
+          }
           onMutate={onMutate}
           prefix={propertyPrefix}
         />
@@ -110,13 +150,25 @@ function PropertyGroup({
   }
 
   return (
-    <div {...stylex.props(styles.propertyGroup)}>
+    <div
+      {...stylex.props(
+        styles.propertyGroup,
+        groupedVariable && styles.groupedVariableProperty,
+      )}
+    >
       <div {...stylex.props(styles.propertyHeading)}>{propertyPrefix}</div>
       <div {...stylex.props(styles.conditionList)}>
-        {declarations.map((declaration) => (
+        {declarations.map((declaration, index) => (
           <DeclarationRow
             data={data}
             declaration={declaration}
+            displayClassName={
+              index === 0 && classNameLabel != null
+                ? classNameLabel
+                : suppressDeclarationClassName
+                  ? undefined
+                  : declaration.className
+            }
             key={declaration.key}
             onMutate={onMutate}
             prefix={<ConditionPrefix declaration={declaration} />}
@@ -159,11 +211,13 @@ function ConditionPrefix({
 function DeclarationRow({
   data,
   declaration,
+  displayClassName,
   onMutate,
   prefix,
 }: {
   data: StylexDebugData,
   declaration: StylexDeclaration,
+  displayClassName?: string,
   onMutate: (command: OverrideCommand) => Promise<void>,
   prefix: React.Node,
 }): React.Node {
@@ -214,22 +268,29 @@ function DeclarationRow({
 
   return (
     <div {...stylex.props(styles.row)}>
-      <div {...stylex.props(styles.declaration)}>
+      <div {...stylex.props(styles.prefixCell)} data-declaration-part="prefix">
         {prefix}
+      </div>
+      <div {...stylex.props(styles.valueCell)} data-declaration-part="value">
         <ValueEditor
           onCommit={commit}
+          resolvedVariables={data.resolvedVariables}
           suggestions={getSuggestionValues(suggestions)}
           value={displayValue}
         />
       </div>
-      <span {...stylex.props(styles.className)}>{declaration.className}</span>
+      {displayClassName != null ? (
+        <span {...stylex.props(styles.className)} data-declaration-part="class">
+          {displayClassName}
+        </span>
+      ) : null}
     </div>
   );
 }
 
 const styles = stylex.create({
   muted: { color: colors.textMuted },
-  groups: { display: 'grid', gap: 12 },
+  groups: { containerType: 'inline-size', display: 'grid', gap: 12 },
   pseudoGroup: { display: 'grid', gap: 7 },
   pseudoTitle: {
     color: colors.textMuted,
@@ -245,6 +306,18 @@ const styles = stylex.create({
     gap: 4,
     paddingBlock: 5,
   },
+  variableClassGroup: {
+    borderBottomColor: colors.separator,
+    borderBottomStyle: 'solid',
+    borderBottomWidth: 1,
+    display: 'grid',
+    gap: 4,
+    paddingBlock: 5,
+  },
+  groupedVariableProperty: {
+    borderBottomWidth: 0,
+    paddingBlock: 0,
+  },
   propertyHeading: {
     fontFamily:
       'ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace',
@@ -254,23 +327,34 @@ const styles = stylex.create({
   },
   conditionList: { display: 'grid', gap: 2, paddingInlineStart: 12 },
   row: {
-    alignItems: 'baseline',
-    display: 'flex',
-    gap: 12,
-    justifyContent: 'space-between',
-    minWidth: 0,
-  },
-  declaration: {
-    alignItems: 'baseline',
+    alignItems: 'start',
     columnGap: 6,
-    display: 'flex',
-    flex: 1,
+    display: 'grid',
     fontFamily:
       'ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace',
+    gridTemplateAreas: {
+      default: '"prefix value className"',
+      '@container (width < 520px)': '"prefix className" "value value"',
+    },
+    gridTemplateColumns: {
+      default: 'max-content minmax(0, 1fr) max-content',
+      '@container (width < 520px)': 'minmax(0, 1fr) max-content',
+    },
     minWidth: 0,
+    rowGap: {
+      default: 0,
+      '@container (width < 520px)': 2,
+    },
+  },
+  prefixCell: {
+    gridArea: 'prefix',
+    minWidth: 0,
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    textWrap: 'nowrap',
+    whiteSpace: 'nowrap',
   },
   propertyPrefix: {
-    flexShrink: 0,
     textWrap: 'nowrap',
     whiteSpace: 'nowrap',
   },
@@ -279,12 +363,15 @@ const styles = stylex.create({
     color: colors.secondaryAccent,
   },
   inactive: { opacity: 0.55, textDecoration: 'line-through' },
+  valueCell: { gridArea: 'value', minWidth: 0 },
   className: {
+    alignSelf: 'start',
     color: colors.textMuted,
-    flexShrink: 0,
     fontFamily:
       'ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace',
-    maxWidth: '50%',
+    gridArea: 'className',
+    justifySelf: 'end',
+    maxWidth: '16ch',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap',

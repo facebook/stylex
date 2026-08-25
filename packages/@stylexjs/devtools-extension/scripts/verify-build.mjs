@@ -14,8 +14,9 @@ async function main() {
   const files = await verifySharedOutputs(
     path.join(root, 'dist/chrome'),
     path.join(root, 'dist/firefox'),
+    path.join(root, 'dist/safari'),
   );
-  console.log(`Verified ${files.length} allowlisted files for both browsers.`);
+  console.log(`Verified ${files.length} browser extension files.`);
 }
 
 main().catch((error) => {

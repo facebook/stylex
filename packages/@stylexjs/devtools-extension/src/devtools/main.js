@@ -10,7 +10,13 @@
 'use strict';
 
 import { createStylexSidebarPane } from './createSidebarPane.js';
+import {
+  createInspectedPageRelayId,
+  installInspectedPageRelay,
+} from './inspectedPageRelay.js';
 
-createStylexSidebarPane().catch((error) => {
+const relayId = createInspectedPageRelayId();
+installInspectedPageRelay(relayId);
+createStylexSidebarPane(relayId).catch((error) => {
   console.error('Could not create the StyleX DevTools sidebar.', error);
 });

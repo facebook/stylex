@@ -140,6 +140,7 @@ export type StylexDebugData = $ReadOnly<{
   },
   sources: Array<StylexSource>,
   computed: { [string]: { [string]: string, ... }, ... },
+  resolvedVariables: { [string]: string, ... },
   suggestions: { [string]: Array<AtomicSuggestion>, ... },
   overrides: Array<StylexOverride>,
   matched: {

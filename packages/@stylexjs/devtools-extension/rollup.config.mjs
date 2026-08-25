@@ -39,6 +39,13 @@ function copyStaticFiles() {
     ['devtools.html', 'devtools.html'],
     ['panel.html', 'panel.html'],
     ['src/panel/index.css', 'assets/reset.css'],
+    ['icons/stylex-icon.svg', 'assets/stylex-icon.svg'],
+    ['icons/stylex-icon-16.png', 'assets/stylex-icon-16.png'],
+    ['icons/stylex-icon-32.png', 'assets/stylex-icon-32.png'],
+    ['icons/stylex-icon-48.png', 'assets/stylex-icon-48.png'],
+    ['icons/stylex-icon-128.png', 'assets/stylex-icon-128.png'],
+    ['icons/stylex-icon-256.png', 'assets/stylex-icon-256.png'],
+    ['icons/stylex-icon-512.png', 'assets/stylex-icon-512.png'],
   ];
   return {
     name: 'copy-static-files',
@@ -69,12 +76,13 @@ async function readManifest(name) {
 let assemblyQueue = Promise.resolve();
 async function assembleBrowserOutputs() {
   const baseManifest = await readManifest('base');
-  for (const browserName of ['chrome', 'firefox']) {
+  for (const browserName of ['chrome', 'firefox', 'safari']) {
     const output = path.join(distDir, browserName);
     const overlay = await readManifest(browserName);
     await fs.rm(output, { recursive: true, force: true });
     await fs.mkdir(output, { recursive: true });
-    for (const source of [appOutDir, runtimeOutDir]) {
+    const sources = [appOutDir, runtimeOutDir];
+    for (const source of sources) {
       try {
         await fs.cp(source, output, { recursive: true });
       } catch (error) {

@@ -14,11 +14,13 @@ import type {
   RuleCondition,
   StylexDebugData,
   StylexDeclaration,
+  StylexOverride,
   StylexSource,
 } from '../types';
 
 import { readAuthoredDeclarations } from './declarationAnalysis';
 import { parseSelectorCandidates } from './selectorAnalysis';
+import { findCssVariableReferences } from '../utils/cssVariables';
 import { normalizeCssProperty } from '../utils/css';
 import {
   clearSelection,
@@ -46,6 +48,7 @@ function createEmptyData(
     element: { tagName: '—' },
     sources: [],
     computed: {},
+    resolvedVariables: {},
     suggestions: {},
     overrides: [],
     matched: { classes: [] },
@@ -214,6 +217,12 @@ function collectStyleRule(
 
   for (const candidate of candidates) {
     for (const cssDeclaration of declarations) {
+      if (
+        cssDeclaration.property.startsWith('--') &&
+        candidate.contextSelector.trim().toLowerCase() === ':root'
+      ) {
+        continue;
+      }
       const conditions = [...atRuleConditions, ...candidate.selectorConditions];
       const contextKey = getContextKey(
         cssDeclaration.property,
@@ -316,24 +325,63 @@ function collectRules(element: Element): CollectionState {
   return state;
 }
 
-function collectComputedValues(
+function collectReferencedVariableNames(
+  classes: $ReadOnlyArray<MatchedStylexClass>,
+  overrides: $ReadOnlyArray<StylexOverride>,
+): Set<string> {
+  const names: Set<string> = new Set();
+  const values = [
+    ...classes.flatMap(({ declarations }) =>
+      declarations.map(({ value }) => value),
+    ),
+    ...overrides.map(({ value }) => value),
+  ];
+
+  for (const value of values) {
+    for (const { name } of findCssVariableReferences(value)) {
+      names.add(name);
+    }
+  }
+  return names;
+}
+
+type ComputedData = {
+  properties: { [string]: { [string]: string } },
+  variables: { [string]: string },
+};
+
+function collectComputedData(
   element: Element,
   propertiesByPseudo: Map<string, Set<string>>,
-): { [string]: { [string]: string } } {
-  const computed: { [string]: { [string]: string } } = {};
-  for (const [pseudo, properties] of propertiesByPseudo) {
+  variableNames: Set<string>,
+): ComputedData {
+  const propertiesByContext: { [string]: { [string]: string } } = {};
+  const variables: { [string]: string } = {};
+  const pseudos = new Set(propertiesByPseudo.keys());
+  if (variableNames.size > 0) pseudos.add('');
+
+  for (const pseudo of pseudos) {
+    const properties = propertiesByPseudo.get(pseudo) ?? new Set();
     try {
       const declaration = window.getComputedStyle(element, pseudo || null);
       const values: { [string]: string } = {};
       for (const property of properties) {
         values[property] = declaration.getPropertyValue(property);
       }
-      computed[pseudo] = values;
+      propertiesByContext[pseudo] = values;
+      if (pseudo === '') {
+        for (const name of variableNames) {
+          variables[name] = declaration.getPropertyValue(name).trim();
+        }
+      }
     } catch {
-      computed[pseudo] = {};
+      propertiesByContext[pseudo] = {};
+      if (pseudo === '') {
+        for (const name of variableNames) variables[name] = '';
+      }
     }
   }
-  return computed;
+  return { properties: propertiesByContext, variables };
 }
 
 function variableKey(property: string, pseudoElement?: string): string {
@@ -447,7 +495,8 @@ export function collectStylexDebugData(target: mixed): StylexDebugData {
   const element = selected;
   const selectionId = registerSelection(element);
   const state = collectRules(element);
-  for (const override of getPublicOverrides(element)) {
+  const overrides = getPublicOverrides(element);
+  for (const override of overrides) {
     const pseudoElement = override.pseudoElement ?? '';
     let properties = state.propertiesByPseudo.get(pseudoElement);
     if (properties == null) {
@@ -471,20 +520,26 @@ export function collectStylexDebugData(target: mixed): StylexDebugData {
       declarations.map(({ contextKey }) => contextKey),
     ),
   );
+  const computedData = collectComputedData(
+    element,
+    state.propertiesByPseudo,
+    collectReferencedVariableNames(matchedClasses, overrides),
+  );
 
   return {
     selectionId,
     selectionState: 'element',
     element: { tagName: element.tagName.toLowerCase() },
     sources: parseSourceMetadata(element),
-    computed: collectComputedValues(element, state.propertiesByPseudo),
+    computed: computedData.properties,
+    resolvedVariables: computedData.variables,
     suggestions: formatSuggestions(
       state.suggestions,
       matchedContextKeys,
       state.rootFallbackClasses,
       themedVariableKeys,
     ),
-    overrides: getPublicOverrides(element),
+    overrides,
     matched: {
       classes: matchedClasses,
     },

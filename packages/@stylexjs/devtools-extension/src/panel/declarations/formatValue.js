@@ -9,134 +9,89 @@
 
 'use strict';
 
-const LONG_VALUE_MIN_LENGTH = 80;
-const INDENT = '  ';
+import type { Doc } from './documentPrinter';
+import type { ValueNode } from './valueTree';
 
-type FunctionValue = {
-  args: Array<string>,
-  name: string,
-  suffix: string,
-};
+import {
+  align,
+  concat,
+  group,
+  ifBreak,
+  line,
+  printDoc,
+  text,
+} from './documentPrinter';
+import { parseCssValue } from './valueTree';
+
+const LONG_VALUE_MIN_LENGTH = 80;
+const EMPTY = text('');
 
 export function isLongCssValue(value: string): boolean {
   return value.length >= LONG_VALUE_MIN_LENGTH;
 }
 
-function parseOuterFunction(value: string): ?FunctionValue {
-  const trimmed = value.trim();
-  const functionMatch = /^([_a-zA-Z-][_a-zA-Z0-9-]*)\(/.exec(trimmed);
-  if (functionMatch == null || functionMatch[1].toLowerCase() === 'url') {
-    return null;
-  }
-
-  const openIndex = functionMatch[0].length - 1;
-  const commaIndexes = [];
-  let closeIndex = -1;
-  let comment = false;
-  let curlyDepth = 0;
-  let escaped = false;
-  let parenDepth = 0;
-  let quote = null;
-  let squareDepth = 0;
-
-  for (let index = openIndex; index < trimmed.length; index += 1) {
-    const character = trimmed[index];
-    const nextCharacter = trimmed[index + 1];
-
-    if (comment) {
-      if (character === '*' && nextCharacter === '/') {
-        comment = false;
-        index += 1;
-      }
-      continue;
-    }
-    if (quote != null) {
-      if (escaped) {
-        escaped = false;
-      } else if (character === '\\') {
-        escaped = true;
-      } else if (character === quote) {
-        quote = null;
-      }
-      continue;
-    }
-    if (character === '/' && nextCharacter === '*') {
-      comment = true;
-      index += 1;
-      continue;
-    }
-    if (character === '"' || character === "'") {
-      quote = character;
-      continue;
-    }
-    if (character === '(') {
-      parenDepth += 1;
-      continue;
-    }
-    if (character === ')') {
-      parenDepth -= 1;
-      if (parenDepth === 0) {
-        closeIndex = index;
-        break;
-      }
-      continue;
-    }
-    if (character === '[') squareDepth += 1;
-    else if (character === ']') squareDepth -= 1;
-    else if (character === '{') curlyDepth += 1;
-    else if (character === '}') curlyDepth -= 1;
-    else if (
-      character === ',' &&
-      parenDepth === 1 &&
-      squareDepth === 0 &&
-      curlyDepth === 0
-    ) {
-      commaIndexes.push(index);
-    }
-  }
-
-  if (closeIndex === -1) return null;
-  const rawSuffix = trimmed.slice(closeIndex + 1).trim();
-  if (rawSuffix !== '' && !/^!important$/i.test(rawSuffix)) return null;
-
-  const args = [];
-  let argStart = openIndex + 1;
-  for (const commaIndex of commaIndexes) {
-    args.push(trimmed.slice(argStart, commaIndex).trim());
-    argStart = commaIndex + 1;
-  }
-  args.push(trimmed.slice(argStart, closeIndex).trim());
-  if (args.some((arg) => arg === '')) return null;
-
-  return {
-    args,
-    name: functionMatch[1],
-    suffix: rawSuffix === '' ? '' : ` ${rawSuffix}`,
-  };
+function delimited(open: string, value: Doc, close: string): Doc {
+  return group(
+    concat([
+      text(open),
+      align(
+        -1,
+        concat([ifBreak(text(' '), EMPTY), value, line(), text(close)]),
+      ),
+    ]),
+  );
 }
 
-function prettyPrintFunction(
+function operationToDoc(node: ValueNode): Doc {
+  if (node.type !== 'operation') return valueToDoc(node);
+
+  const [first, ...rest] = node.parts;
+  return group(
+    concat([
+      valueToDoc(first.value),
+      ...rest.flatMap(({ operator, value }) => [
+        line(' '),
+        text(`${operator ?? ''} `),
+        valueToDoc(value),
+      ]),
+    ]),
+  );
+}
+
+function functionToDoc(node: ValueNode): Doc {
+  if (node.type !== 'function') return valueToDoc(node);
+
+  const [first, ...rest] = node.args;
+  const argumentsDoc = concat([
+    valueToDoc(first),
+    ...rest.flatMap((argument) => [line(), text(', '), valueToDoc(argument)]),
+  ]);
+
+  return concat([
+    text(node.name),
+    delimited('(', argumentsDoc, `)${node.suffix}`),
+  ]);
+}
+
+function valueToDoc(node: ValueNode): Doc {
+  switch (node.type) {
+    case 'raw':
+      return text(node.value);
+    case 'function':
+      return functionToDoc(node);
+    case 'group':
+      return delimited('(', valueToDoc(node.value), ')');
+    case 'operation':
+      return operationToDoc(node);
+    default:
+      throw new Error('Unknown CSS value node.');
+  }
+}
+
+export function formatCssValueForDisplay(
   value: string,
-  depth: number,
-  maxLineLength: number,
-): ?string {
-  const parsed = parseOuterFunction(value);
-  if (parsed == null) return null;
-
-  const indent = INDENT.repeat(depth);
-  const childIndent = INDENT.repeat(depth + 1);
-  const args = parsed.args.map((arg) => {
-    const nested =
-      childIndent.length + arg.length >= maxLineLength
-        ? prettyPrintFunction(arg, depth + 1, maxLineLength)
-        : null;
-    return `${childIndent}${nested ?? arg}`;
-  });
-
-  return `${parsed.name}(\n${args.join(',\n')}\n${indent})${parsed.suffix}`;
-}
-
-export function formatCssValueForDisplay(value: string): string {
-  if (!isLongCssValue(value) || value.includes('\n')) return value;
-  return prettyPrintFunction(value, 0, LONG_VALUE_MIN_LENGTH) ?? value;
+  maxLineLength: number = LONG_VALUE_MIN_LENGTH,
+): string {
+  if (value.length < maxLineLength || value.includes('\n')) return value;
+  return printDoc(valueToDoc(parseCssValue(value)), maxLineLength);
 }

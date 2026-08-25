@@ -15,6 +15,13 @@ const requiredFiles = new Set([
   'assets/panel.js',
   'assets/reset.css',
   'assets/shared.js',
+  'assets/stylex-icon.svg',
+  'assets/stylex-icon-16.png',
+  'assets/stylex-icon-32.png',
+  'assets/stylex-icon-48.png',
+  'assets/stylex-icon-128.png',
+  'assets/stylex-icon-256.png',
+  'assets/stylex-icon-512.png',
   'assets/stylex.css',
   'devtools.html',
   'manifest.json',
@@ -40,33 +47,41 @@ async function listFiles(directory, relative = '') {
 
 export async function verifyBrowserOutput(directory) {
   const files = await listFiles(directory);
+  const expectedFiles = new Set(requiredFiles);
   assert.deepEqual(
     files,
-    Array.from(requiredFiles).sort(),
+    Array.from(expectedFiles).sort(),
     'Extension output does not match the exact package allowlist.',
   );
   return files;
 }
 
-export async function verifySharedOutputs(chromeDir, firefoxDir) {
-  const chromeFiles = await verifyBrowserOutput(chromeDir);
-  const firefoxFiles = await verifyBrowserOutput(firefoxDir);
-  assert.deepEqual(
-    chromeFiles,
-    firefoxFiles,
-    'Browser output file lists differ.',
+export async function verifySharedOutputs(
+  chromeDir,
+  firefoxDir,
+  safariDir = null,
+) {
+  const outputs = [
+    ['chrome', chromeDir],
+    ['firefox', firefoxDir],
+    ...(safariDir == null ? [] : [['safari', safariDir]]),
+  ];
+  const fileLists = await Promise.all(
+    outputs.map(([, directory]) => verifyBrowserOutput(directory)),
   );
+  const chromeFiles = fileLists[0];
 
-  for (const file of chromeFiles) {
+  for (const file of requiredFiles) {
     if (file === 'manifest.json') continue;
-    const [chromeFile, firefoxFile] = await Promise.all([
-      fs.readFile(path.join(chromeDir, file)),
-      fs.readFile(path.join(firefoxDir, file)),
-    ]);
-    assert(
-      chromeFile.equals(firefoxFile),
-      `Shared browser output differs: ${file}`,
+    const contents = await Promise.all(
+      outputs.map(([, directory]) => fs.readFile(path.join(directory, file))),
     );
+    for (let index = 1; index < contents.length; index += 1) {
+      assert(
+        contents[0].equals(contents[index]),
+        `Shared ${outputs[index][0]} output differs: ${file}`,
+      );
+    }
   }
 
   const chromeManifest = JSON.parse(
@@ -87,5 +102,17 @@ export async function verifySharedOutputs(chromeDir, firefoxDir) {
       .required,
     ['none'],
   );
+  if (safariDir != null) {
+    const safariManifest = JSON.parse(
+      await fs.readFile(path.join(safariDir, 'manifest.json'), 'utf8'),
+    );
+    assert.equal(safariManifest.version, '0.1.1');
+    assert.deepEqual(safariManifest.permissions, ['devtools']);
+    assert.deepEqual(safariManifest.host_permissions, [
+      'http://*/*',
+      'https://*/*',
+    ]);
+    assert.equal(safariManifest.background, undefined);
+  }
   return chromeFiles;
 }

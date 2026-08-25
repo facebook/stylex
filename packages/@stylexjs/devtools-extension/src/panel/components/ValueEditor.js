@@ -15,22 +15,29 @@ import {
   formatCssValueForDisplay,
   isLongCssValue,
 } from '../declarations/formatValue';
+import { useValueLineLength } from '../hooks/useValueLineLength';
 import { colors } from '../theme.stylex';
 import { ComboBox } from './ComboBox';
+import { VariableValue } from './VariableValue';
+
+const EMPTY_RESOLVED_VARIABLES = {};
 
 export function ValueEditor({
   onCommit,
+  resolvedVariables = EMPTY_RESOLVED_VARIABLES,
   suggestions,
   value,
 }: {
   onCommit: (value: string) => Promise<void>,
+  resolvedVariables?: $ReadOnly<{ [string]: string, ... }>,
   suggestions: $ReadOnlyArray<string>,
   value: string,
 }): React.Node {
   const [draft, setDraft] = useState(value);
   const [editing, setEditing] = useState(false);
   const [pending, setPending] = useState(false);
-  const displayValue = formatCssValueForDisplay(value);
+  const { buttonRef, maxLineLength } = useValueLineLength(!editing);
+  const displayValue = formatCssValueForDisplay(value, maxLineLength);
 
   const cancel = () => {
     setDraft(value);
@@ -40,17 +47,22 @@ export function ValueEditor({
   if (!editing) {
     return (
       <button
+        ref={buttonRef}
         {...stylex.props(
           styles.valueButton,
           isLongCssValue(value) && styles.longValue,
         )}
+        aria-label={`Edit value: ${value}`}
         onClick={() => {
           setDraft(value);
           setEditing(true);
         }}
         type="button"
       >
-        {displayValue}
+        <VariableValue
+          resolvedVariables={resolvedVariables}
+          value={displayValue}
+        />
       </button>
     );
   }

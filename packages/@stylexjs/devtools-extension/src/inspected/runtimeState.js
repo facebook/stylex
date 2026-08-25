@@ -79,6 +79,18 @@ export function clearSelection(): void {
   currentSelection = null;
 }
 
+export function identifySelection(value: mixed): string {
+  if (value == null) {
+    clearSelection();
+    return 'none';
+  }
+  if (!isElementNode(value)) {
+    clearSelection();
+    return 'non-element';
+  }
+  return registerSelection(value);
+}
+
 export function getCurrentSelection(): Selection | null {
   return currentSelection;
 }

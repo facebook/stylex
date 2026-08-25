@@ -15,10 +15,12 @@ import type {
 
 import { collectStylexDebugData } from './collector';
 import { applyOverrideMutation } from './overrideStore';
+import { identifySelection } from './runtimeState';
 
 export type InspectedPageRuntime = {
   version: 1,
   collect: (target: mixed) => StylexDebugData,
+  identify: (target: mixed) => string,
   mutate: (command: OverrideCommand, target: mixed) => OverrideMutationResult,
 };
 
@@ -28,6 +30,7 @@ export function createInspectedPageRuntime(
   return {
     version: 1,
     collect: collector,
+    identify: identifySelection,
     mutate(command, target) {
       const result = applyOverrideMutation(command, target);
       if (!result.ok) {

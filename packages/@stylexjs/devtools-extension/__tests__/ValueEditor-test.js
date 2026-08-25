@@ -39,6 +39,7 @@ function renderEditor(props = {}) {
 }
 
 afterEach(() => {
+  jest.restoreAllMocks();
   document.body.innerHTML = '';
 });
 
@@ -59,6 +60,42 @@ test('pretty prints a long function without changing the editable value', () => 
   expect(button.textContent).toContain('\n');
   act(() => button.click());
   expect(container.querySelector('input').value).toBe(value);
+});
+
+test('keeps a long nested function inline when its value cell is wide', () => {
+  jest.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockReturnValue({
+    bottom: 0,
+    height: 20,
+    left: 0,
+    right: 1200,
+    top: 0,
+    width: 1200,
+    x: 0,
+    y: 0,
+    toJSON: () => ({}),
+  });
+  const value =
+    'light-dark(var(--xa5j11c), color-mix(in oklab, var(--xa5j11c) 88%, var(--x1q2bivm)))';
+  const { container } = renderEditor({ value });
+
+  expect(container.querySelector('button').textContent).toBe(value);
+});
+
+test('shows a variable resolved on the inspected element when hovered', () => {
+  const { container } = renderEditor({
+    resolvedVariables: { '--color': 'rgb(10, 20, 30)' },
+    value: 'var(--color)',
+  });
+  const reference = container.querySelector('[data-css-variable="--color"]');
+
+  expect(reference).not.toBeNull();
+  act(() => {
+    reference.dispatchEvent(new MouseEvent('mouseover', { bubbles: true }));
+  });
+  expect(container.querySelector('[aria-hidden="true"]').textContent).toBe(
+    'rgb(10, 20, 30)',
+  );
+  expect(container.querySelector('input')).toBeNull();
 });
 
 test('cancels an empty value on blur without committing', () => {

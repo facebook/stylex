@@ -26,6 +26,7 @@ describe('collectStylexDebugData', () => {
   beforeEach(() => {
     document.body.innerHTML = '';
     document.head.innerHTML = '';
+    document.documentElement.removeAttribute('class');
     jest.spyOn(window, 'getComputedStyle').mockImplementation(() => ({
       getPropertyValue: (property) =>
         property === 'color' ? 'rgb(255, 0, 0)' : '',
@@ -36,6 +37,7 @@ describe('collectStylexDebugData', () => {
     jest.restoreAllMocks();
     delete document.styleSheets;
     delete global.$0;
+    document.documentElement.removeAttribute('class');
   });
 
   test('collects escaped classes and CSS values containing delimiters', () => {
@@ -228,6 +230,36 @@ describe('collectStylexDebugData', () => {
     }
   });
 
+  test('ignores root-only duplicate contexts for custom properties', () => {
+    const element = document.documentElement;
+    element.className = 'xTheme';
+    setStylesheets([
+      {
+        cssRules: [
+          makeRule('.xTheme, .xTheme:root', '--weight: 400'),
+          makeRule(
+            '.xTheme, .xTheme:root',
+            '--foreground: color-mix(in oklab, white 80%, black)',
+          ),
+        ],
+      },
+    ]);
+
+    const declarations =
+      collectStylexDebugData(element).matched.classes[0].declarations;
+
+    expect(declarations).toHaveLength(2);
+    expect(declarations.map(({ property }) => property)).toEqual([
+      '--weight',
+      '--foreground',
+    ]);
+    expect(
+      declarations.flatMap(({ conditions }) =>
+        conditions.map(({ text }) => text),
+      ),
+    ).not.toContain(':root');
+  });
+
   test('preserves authored shorthands instead of CSSOM longhands', () => {
     const element = document.createElement('div');
     element.className = 'x-border';
@@ -277,6 +309,39 @@ describe('collectStylexDebugData', () => {
     expect(data.computed['']).toEqual({ color: 'rgb(255, 0, 0)' });
     expect(data.computed['::before']).toEqual({ display: '' });
     expect(Object.keys(data.computed[''])).toEqual(['color']);
+  });
+
+  test('resolves only custom properties referenced by matched values', () => {
+    const element = document.createElement('div');
+    element.className = 'xfoo';
+    document.body.appendChild(element);
+    setStylesheets([
+      {
+        cssRules: [
+          makeRule(
+            '.xfoo',
+            'color: var(--foreground); box-shadow: var(--shadow, var(--fallback))',
+          ),
+        ],
+      },
+    ]);
+    window.getComputedStyle.mockImplementation(() => ({
+      getPropertyValue: (property) =>
+        ({
+          '--fallback': '0 0 2px black',
+          '--foreground': 'rgb(10, 20, 30)',
+          '--shadow': '0 1px 4px rgb(0 0 0 / 0.2)',
+          color: 'rgb(10, 20, 30)',
+        })[property] ?? '',
+    }));
+
+    const data = collectStylexDebugData(element);
+
+    expect(data.resolvedVariables).toEqual({
+      '--fallback': '0 0 2px black',
+      '--foreground': 'rgb(10, 20, 30)',
+      '--shadow': '0 1px 4px rgb(0 0 0 / 0.2)',
+    });
   });
 
   test('surfaces inaccessible stylesheets without failing collection', () => {

@@ -9,6 +9,7 @@ import {
   conditionsAreActive,
   formatConditions,
   getReplacementOverrideIds,
+  groupDeclarations,
 } from '../src/panel/declarations/model';
 
 test('omits cascade layers from displayed condition labels', () => {
@@ -25,6 +26,49 @@ test('omits cascade layers from displayed condition labels', () => {
     '@media (forced-colors: active)',
   );
   expect(conditionsAreActive([layer, media])).toBe(false);
+});
+
+test('groups custom properties by class while keeping styles property-first', () => {
+  const declaration = (className, property, value) => ({
+    key: `${className}-${property}`,
+    contextKey: `${className}-${property}`,
+    className,
+    conditions: [],
+    important: false,
+    property,
+    value,
+  });
+  const groups = groupDeclarations([
+    {
+      name: 'xTheme',
+      declarations: [
+        declaration('xTheme', '--foreground', 'white'),
+        declaration('xTheme', '--background', 'black'),
+        declaration('xTheme', 'color', 'white'),
+      ],
+    },
+    {
+      name: 'xAccent',
+      declarations: [declaration('xAccent', '--accent', 'blue')],
+    },
+  ]);
+
+  expect(groups[0].properties.map(({ property }) => property)).toEqual([
+    'color',
+  ]);
+  expect(groups[0].variableClasses).toEqual([
+    expect.objectContaining({
+      className: 'xTheme',
+      properties: [
+        expect.objectContaining({ property: '--foreground' }),
+        expect.objectContaining({ property: '--background' }),
+      ],
+    }),
+    expect.objectContaining({
+      className: 'xAccent',
+      properties: [expect.objectContaining({ property: '--accent' })],
+    }),
+  ]);
 });
 
 test('replaces only the rule override for the same pseudo-element property', () => {

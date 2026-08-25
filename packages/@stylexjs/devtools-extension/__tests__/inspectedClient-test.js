@@ -12,7 +12,10 @@ jest.mock('../src/devtools/browserApi', () => ({
 }));
 
 const { devtools } = require('../src/devtools/browserApi');
-const { collectDebugData } = require('../src/devtools/inspectedClient');
+const {
+  collectDebugData,
+  getSelectionIdentity,
+} = require('../src/devtools/inspectedClient');
 
 test('replaces an inspected runtime from an older extension build', async () => {
   const data = { selectionState: 'none' };
@@ -43,5 +46,22 @@ test('replaces an inspected runtime from an older extension build', async () => 
   );
   expect(devtools.inspectedWindow.eval.mock.calls[1][0]).toContain(
     '].revision = ',
+  );
+});
+
+test('reads the selected element identity without collecting styles', async () => {
+  devtools.inspectedWindow.eval.mockImplementation((expression) => {
+    if (expression.includes('?.revision ===')) {
+      return Promise.resolve([true, null]);
+    }
+    if (expression.includes('.identify(')) {
+      return Promise.resolve(['selection-2', null]);
+    }
+    return Promise.resolve([true, null]);
+  });
+
+  await expect(getSelectionIdentity()).resolves.toBe('selection-2');
+  expect(devtools.inspectedWindow.eval.mock.calls.at(-1)[0]).toContain(
+    '].identify(',
   );
 });

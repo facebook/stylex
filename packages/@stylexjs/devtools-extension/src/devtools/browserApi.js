@@ -20,6 +20,17 @@ if (extensionApi == null || extensionApi.devtools == null) {
 
 export const devtools: any = extensionApi.devtools;
 
+export const supportsElementsSidebar: boolean =
+  typeof devtools.panels?.elements?.createSidebarPane === 'function';
+
+// Safari exposes a full Web Inspector tab, but DevTools API calls made from
+// that tab are not accepted as privileged messages. Route those calls through
+// the DevTools page that created the tab.
+export const requiresDevtoolsPageRelay: boolean =
+  usesPromiseApi &&
+  !supportsElementsSidebar &&
+  typeof devtools.panels?.create === 'function';
+
 export function getExtensionUrl(path: string): string {
   return extensionApi.runtime.getURL(path);
 }
