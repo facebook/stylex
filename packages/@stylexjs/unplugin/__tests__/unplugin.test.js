@@ -47,7 +47,7 @@ describe('@stylexjs/unplugin', () => {
     const source = `
       import * as stylex from '@stylexjs/stylex';
       const styles = stylex.create({ hero: { color: 'red' } });
-      export default function $$Page() { return styles; }
+      export default styles;
     `;
     const result = await plugin.transform(source, '/virtual/page.astro');
     expect(result).not.toBeNull();
