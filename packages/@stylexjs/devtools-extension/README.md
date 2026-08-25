@@ -5,11 +5,11 @@ DevTools extension for inspecting StyleX styles in Chrome, Firefox, and Safari.
 ## Build
 
 ```sh
-npm run build -w @stylexjs/devtools-extension
+yarn run build -w @stylexjs/devtools-extension
 ```
 
-The build produces clean browser-specific directories with byte-identical
-panel, inspected runtime, and UI assets:
+The build produces clean browser-specific directories with byte-identical panel,
+inspected runtime, and UI assets:
 
 - `dist/chrome`
 - `dist/firefox`
@@ -54,10 +54,10 @@ Browser capabilities are intentionally separate:
 ## Verify And Package
 
 ```sh
-npm test -w @stylexjs/devtools-extension
-npm run verify:build -w @stylexjs/devtools-extension
-npm run web-ext:lint -w @stylexjs/devtools-extension
-npm run web-ext:build -w @stylexjs/devtools-extension
+yarn test -w @stylexjs/devtools-extension
+yarn run verify:build -w @stylexjs/devtools-extension
+yarn run web-ext:lint -w @stylexjs/devtools-extension
+yarn run web-ext:build -w @stylexjs/devtools-extension
 ```
 
 Packaging validates an explicit file allowlist before writing deterministic
