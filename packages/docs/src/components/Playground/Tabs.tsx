@@ -479,7 +479,7 @@ const styles = stylex.create({
     alignItems: 'center',
     paddingBlock: 14,
     paddingInline: 8,
-    fontSize: 14,
+    fontSize: 16,
     fontStyle: 'inherit',
     fontWeight: 'inherit',
     color: 'inherit',
