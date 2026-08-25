@@ -26,6 +26,46 @@ describe('@stylexjs/unplugin', () => {
     expect(result).toBeNull();
   });
 
+  test('includes .astro files', () => {
+    const plugin = unplugin.raw({});
+    expect(plugin.transformInclude('/virtual/page.astro')).toBe(true);
+    expect(
+      plugin.transformInclude('/virtual/page.astro?astro&type=script'),
+    ).toBe(true);
+  });
+
+  test('compiles StyleX in .astro modules', async () => {
+    const plugin = unplugin.rollup({
+      runtimeInjection: false,
+      devPersistToDisk: false,
+      dev: false,
+    });
+    if (typeof plugin.buildStart === 'function') {
+      plugin.buildStart();
+    }
+    // Astro hands bundler plugins the compiled module, not the `---` source
+    const source = `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({ hero: { color: 'red' } });
+      export default function $$Page() { return styles; }
+    `;
+    const result = await plugin.transform(source, '/virtual/page.astro');
+    expect(result).not.toBeNull();
+    expect(result.code).not.toContain('stylex.create');
+
+    const tempDir = fs.mkdtempSync(
+      path.join(os.tmpdir(), 'stylex-unplugin-test-'),
+    );
+    try {
+      await plugin.writeBundle({ dir: tempDir }, {});
+      const cssPath = path.join(tempDir, 'assets', 'stylex.css');
+      expect(fs.existsSync(cssPath)).toBe(true);
+      expect(fs.readFileSync(cssPath, 'utf8')).toContain('color: red;');
+    } finally {
+      fs.rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+
   test('writes fallback CSS asset when no CSS bundle entry exists', async () => {
     const plugin = unplugin.rollup({
       runtimeInjection: false,
