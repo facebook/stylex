@@ -477,7 +477,7 @@ const styles = stylex.create({
     display: 'inline-flex',
     gap: 6,
     alignItems: 'center',
-    paddingBlock: 14,
+    paddingBlock: 15,
     paddingInline: 8,
     fontSize: 16,
     fontStyle: 'inherit',

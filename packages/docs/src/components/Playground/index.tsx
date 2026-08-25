@@ -961,7 +961,7 @@ const styles = stylex.create({
     display: 'block',
     flexShrink: 0,
     width: '100%',
-    height: 44,
+    height: 46,
     paddingBlock: 8,
     paddingInline: 16,
     fontSize: 16,
