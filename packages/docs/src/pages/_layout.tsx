@@ -21,12 +21,6 @@ const CHUNK_RECOVERY_SCRIPT = `
   const key = 'stylex:chunk-reload:' + window.location.pathname;
   const retryWindow = 60_000;
 
-  window.setTimeout(() => {
-    try {
-      window.sessionStorage.removeItem(key);
-    } catch {}
-  }, 10_000);
-
   window.addEventListener('vite:preloadError', (event) => {
     try {
       const lastReload = Number(window.sessionStorage.getItem(key) || 0);
