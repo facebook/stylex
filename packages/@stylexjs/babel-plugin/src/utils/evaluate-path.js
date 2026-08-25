@@ -1073,25 +1073,24 @@ function _evaluate(path: NodePath<>, state: State): any {
     let context;
     let func;
 
-    if (callee.isIdentifier()) {
-      const calleeName = callee.node.name;
-      const identifierFn = getOwnProperty(
-        state.functions.identifiers,
-        calleeName,
-      );
-
-      // Number(1);
-      if (!path.scope.getBinding(calleeName) && isValidCallee(calleeName)) {
-        func = global[calleeName];
-      } else if (identifierFn) {
-        func = identifierFn;
+    // Number(1);
+    if (
+      callee.isIdentifier() &&
+      !path.scope.getBinding(callee.node.name) &&
+      isValidCallee(callee.node.name)
+    ) {
+      func = global[callee.node.name];
+    } else if (
+      callee.isIdentifier() &&
+      getOwnProperty(state.functions.identifiers, callee.node.name)
+    ) {
+      func = getOwnProperty(state.functions.identifiers, callee.node.name);
+    } else if (callee.isIdentifier()) {
+      const maybeFunction = evaluateCached(callee, state);
+      if (state.confident) {
+        func = maybeFunction;
       } else {
-        const maybeFunction = evaluateCached(callee, state);
-        if (state.confident) {
-          func = maybeFunction;
-        } else {
-          deopt(callee, state, errMsgs.NON_CONSTANT);
-        }
+        deopt(callee, state, errMsgs.NON_CONSTANT);
       }
     }
 
@@ -1189,16 +1188,8 @@ function _evaluate(path: NodePath<>, state: State): any {
 
         if (func.fn) {
           return func.fn.apply(context, args);
-        } else if (typeof func === 'function') {
-          return func.apply(context, args);
         } else {
-          // A non-callable value in callee position. Bail out rather than
-          // letting the `TypeError` escape and crash the compilation.
-          return deopt(
-            path,
-            state,
-            errMsgs.UNSUPPORTED_EXPRESSION(path.node.type),
-          );
+          return func.apply(context, args);
         }
       }
     }
