@@ -727,7 +727,7 @@ declare module 'react' {
                     scrollBeyondLastLine: true,
                     contextmenu: false,
                     readOnly: !sandpackInitialized,
-                    fontSize: 13,
+                    fontSize: 14,
                     lineHeight: 22,
                   }}
                   path={`/${activeInputFile}`}
@@ -779,7 +779,7 @@ declare module 'react' {
                         scrollBeyondLastLine: false,
                         contextmenu: false,
                         readOnly: true,
-                        fontSize: 13,
+                        fontSize: 14,
                         lineHeight: 22,
                       }}
                       theme={
@@ -961,10 +961,10 @@ const styles = stylex.create({
     display: 'block',
     flexShrink: 0,
     width: '100%',
-    height: 44,
+    height: 46,
     paddingBlock: 8,
     paddingInline: 16,
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: 500,
     color: vars['--color-fd-foreground'],
     textAlign: 'start',
