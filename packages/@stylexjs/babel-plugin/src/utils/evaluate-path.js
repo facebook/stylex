@@ -126,32 +126,25 @@ function isBlockedProperty(property: mixed): boolean {
   return typeof property === 'string' && BLOCKED_PROPERTIES.has(property);
 }
 
-// Functions that turn data into executable code, or that let a caller
-// re-target another function at an arbitrary `this`. Reaching one of these
-// through a gadget this file does not yet know about would mean arbitrary code
+// Functions that turn data into executable code. Reaching one of these through
+// a gadget this file does not yet know about would mean arbitrary code
 // execution at build time, so invoking them is refused outright. This is the
 // backstop behind `BLOCKED_PROPERTIES` and `VALID_CALLEE_METHODS`.
-const BLOCKED_FUNCTIONS: Set<mixed> = new Set([
-  Function.prototype.apply,
-  Function.prototype.bind,
-  Function.prototype.call,
-  // Referenced, never called: this is the value the evaluator refuses to run.
-  // eslint-disable-next-line no-eval
-  global.eval,
-]);
-
 function isBlockedFunction(fn: mixed): boolean {
   if (typeof fn !== 'function') {
     return false;
   }
   const callable: $FlowFixMe = fn;
-  if (BLOCKED_FUNCTIONS.has(callable)) {
-    return true;
-  }
-  // `Function` itself, plus the async, generator and async-generator function
-  // constructors — the latter three are the only functions that inherit
-  // directly from `Function` rather than from `Function.prototype`.
-  return callable === Function || Object.getPrototypeOf(callable) === Function;
+  return (
+    // `Function` itself, plus the async, generator and async-generator function
+    // constructors, which are the only functions that inherit directly from
+    // `Function` rather than from `Function.prototype`.
+    callable === Function ||
+    Object.getPrototypeOf(callable) === Function ||
+    // Referenced, never called: this is a value the evaluator refuses to run.
+    // eslint-disable-next-line no-eval
+    callable === global.eval
+  );
 }
 
 // `state.functions.identifiers` and `state.functions.memberExpressions` are

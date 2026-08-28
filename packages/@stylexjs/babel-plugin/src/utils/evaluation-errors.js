@@ -38,9 +38,8 @@ is blocked to prevent arbitrary code execution.
 `;
 
 export const BLOCKED_FUNCTION_CALL = `Calling this function is not allowed during compilation.
-Functions that compile strings into code, such as 'Function' and 'eval', and functions that
-re-target another function, such as 'call', 'apply' and 'bind', are blocked to prevent
-arbitrary code execution.
+Functions that compile strings into code, such as 'Function' and 'eval', are blocked to
+prevent arbitrary code execution.
 `;
 
 export const IMPORT_PATH_RESOLUTION_ERROR = `Could not resolve the path to the imported file.
