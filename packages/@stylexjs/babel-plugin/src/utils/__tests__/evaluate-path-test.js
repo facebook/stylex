@@ -404,8 +404,26 @@ describe('custom path evaluation works as expected', () => {
         evaluateFirstStatement('const x = Object.create({});', {}),
       ).toEqual({ confident: false });
       expect(
-        evaluateFirstStatement('const x = Object.getOwnPropertyNames({});', {}),
+        evaluateFirstStatement('const x = Object.setPrototypeOf({}, {});', {}),
       ).toEqual({ confident: false });
+    });
+
+    // Only the methods that hand back prototype chain objects are rejected.
+    // Ones that return plain data stay available, so the restriction does not
+    // reach further than it has to.
+    test('still allows built-in methods that return plain data', () => {
+      expect(
+        evaluateFirstStatement(
+          'const x = Object.getOwnPropertyNames({a: 1});',
+          {},
+        ),
+      ).toEqual(['a']);
+      expect(evaluateFirstStatement('const x = Object.isFrozen({});', {})).toBe(
+        false,
+      );
+      expect(
+        evaluateFirstStatement('const x = Object.isExtensible({});', {}),
+      ).toBe(true);
     });
 
     test('still deopts on non-deterministic and mutating methods', () => {

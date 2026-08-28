@@ -101,9 +101,25 @@ const VALID_CALLEE_METHODS: Map<string, Set<string>> = new Map([
   ],
   [
     'Object',
-    // Mutating methods (`assign`, `defineProperty`, `freeze`, `seal`, ...) and
-    // reflective ones are both excluded.
-    new Set(['entries', 'fromEntries', 'hasOwn', 'is', 'keys', 'values']),
+    // Everything here returns plain data: own values, names or booleans.
+    // Excluded are the mutating methods (`assign`, `defineProperty`, `freeze`,
+    // `seal`, `preventExtensions`), which were already rejected before, and the
+    // reflective ones (`create`, `getPrototypeOf`, `setPrototypeOf`,
+    // `getOwnPropertyDescriptor`), which hand back prototype chain objects.
+    new Set([
+      'entries',
+      'fromEntries',
+      'getOwnPropertyNames',
+      'getOwnPropertySymbols',
+      'groupBy',
+      'hasOwn',
+      'is',
+      'isExtensible',
+      'isFrozen',
+      'isSealed',
+      'keys',
+      'values',
+    ]),
   ],
   ['Array', new Set(['from', 'isArray', 'of'])],
 ]);
