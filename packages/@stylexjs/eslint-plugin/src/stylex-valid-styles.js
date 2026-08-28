@@ -48,7 +48,6 @@ import {
   CSSProperties,
   CSSPropertyReplacements,
   pseudoElements,
-  pseudoClassesAndAtRules,
   allModifiers,
   all,
 } from './reference/cssProperties';
@@ -688,15 +687,13 @@ const stylexValidStyles = {
       if (
         keyName === 'default' ||
         keyName.startsWith('[') ||
-        keyName.startsWith('var(--')
+        keyName.startsWith('var(--') ||
+        keyName.startsWith('@') ||
+        keyName.startsWith(':')
       ) {
         return null;
       }
-      if (!keyName.startsWith('@') && !keyName.startsWith(':')) {
-        return key;
-      }
-
-      return pseudoClassesAndAtRules(key, variables) === undefined ? null : key;
+      return key;
     }
     function checkStyleProperty(
       style: Node,
@@ -769,17 +766,6 @@ const stylexValidStyles = {
                     message: allowOuterPseudoAndMedia
                       ? 'Nested styles can only be used for the pseudo selectors in the stylex allowlist and for @media queries'
                       : 'Pseudo Classes, Media Queries and other At Rules should be nested as conditions within style properties. Only Pseudo Elements (::after) are allowed at the top-level',
-                  } as $ReadOnly<Rule.ReportDescriptor>);
-                }
-              } else {
-                const ruleCheck = pseudoClassesAndAtRules(key, variables);
-
-                if (ruleCheck !== undefined) {
-                  return context.report({
-                    node: style.value,
-                    loc: style.value.loc,
-                    message:
-                      'Invalid Pseudo class or At Rule used for conditional style value',
                   } as $ReadOnly<Rule.ReportDescriptor>);
                 }
               }

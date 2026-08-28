@@ -409,6 +409,26 @@ eslintTester.run('stylex-valid-styles', rule.default, {
         })
       `,
     },
+    // test for functional pseudo selectors in conditional style values
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          input: {
+            color: {
+              default: 'black',
+              ':where([data-state="open"])': {
+                default: 'red',
+                '@media (hover: hover)': 'orange',
+              },
+              ':is([data-state="closed"])': 'blue',
+              ':dir(rtl)': 'green',
+              '::placeholder': 'gray',
+            },
+          },
+        })
+      `,
+    },
     // test for positive numbers
     "import * as stylex from '@stylexjs/stylex'; stylex.create({default: {marginInlineStart: 5}});",
     // test for literals as namespaces
