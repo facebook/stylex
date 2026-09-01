@@ -5318,6 +5318,128 @@ describe('@stylexjs/babel-plugin', () => {
       });
     });
 
+    describe('options `enableCompressedClassnames:true`', () => {
+      test('uses short names for simple declarations and hashes the rest', () => {
+        const { code, metadata } = transform(
+          `
+            import * as stylex from '@stylexjs/stylex';
+            export const styles = stylex.create({
+              root: {
+                margin: 0,
+                marginTop: '4px',
+                paddingTop: '16px',
+                display: 'flex',
+                position: 'absolute',
+                opacity: 0.5,
+                color: '#fff',
+                animationTimeline: 'auto',
+                ':hover': {
+                  marginBottom: 0,
+                },
+              },
+            });
+          `,
+          { enableCompressedClassnames: true },
+        );
+
+        expect(code).toMatchInlineSnapshot(`
+          "import * as stylex from '@stylexjs/stylex';
+          export const styles = {
+            root: {
+              m: "m0",
+              mt: "mt4",
+              pt: "pt16",
+              d: "d-f",
+              po: "po-a",
+              op: "op0d5",
+              c: "c-fff",
+              kjjejL: "xyuw9oy",
+              kCBjJz: "x2xz49s",
+              $$css: true
+            }
+          };"
+        `);
+        expect(metadata).toMatchInlineSnapshot(`
+          {
+            "stylex": [
+              [
+                "m0",
+                {
+                  "ltr": ".m0{margin:0}",
+                  "rtl": null,
+                },
+                1000,
+              ],
+              [
+                "mt4",
+                {
+                  "ltr": ".mt4{margin-top:4px}",
+                  "rtl": null,
+                },
+                4000,
+              ],
+              [
+                "pt16",
+                {
+                  "ltr": ".pt16{padding-top:16px}",
+                  "rtl": null,
+                },
+                4000,
+              ],
+              [
+                "d-f",
+                {
+                  "ltr": ".d-f{display:flex}",
+                  "rtl": null,
+                },
+                3000,
+              ],
+              [
+                "po-a",
+                {
+                  "ltr": ".po-a{position:absolute}",
+                  "rtl": null,
+                },
+                3000,
+              ],
+              [
+                "op0d5",
+                {
+                  "ltr": ".op0d5{opacity:.5}",
+                  "rtl": null,
+                },
+                3000,
+              ],
+              [
+                "c-fff",
+                {
+                  "ltr": ".c-fff{color:#fff}",
+                  "rtl": null,
+                },
+                3000,
+              ],
+              [
+                "xyuw9oy",
+                {
+                  "ltr": ".xyuw9oy{animation-timeline:auto}",
+                  "rtl": null,
+                },
+                3000,
+              ],
+              [
+                "x2xz49s",
+                {
+                  "ltr": ".x2xz49s:hover{margin-bottom:0}",
+                  "rtl": null,
+                },
+                4130,
+              ],
+            ],
+          }
+        `);
+      });
+    });
+
     describe('options `debug:true`', () => {
       test('adds debug data', () => {
         const options = {

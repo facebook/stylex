@@ -132,6 +132,36 @@ describe('StateManager config parsing', () => {
     });
   });
 
+  describe('"enableCompressedClassnames" option (boolean)', () => {
+    test('logs errors if invalid', () => {
+      const stateManager = makeState({ enableCompressedClassnames: 'true' });
+      expect(stateManager.options.enableCompressedClassnames).toBe(false);
+      expect(warnings).toEqual([
+        [
+          '[@stylexjs/babel-plugin]',
+          'Expected (options.enableCompressedClassnames) to be a boolean, but got `"true"`.',
+        ],
+      ]);
+    });
+
+    test('default value', () => {
+      const stateManager = makeState();
+      expect(stateManager.options.enableCompressedClassnames).toBe(false);
+      expect(warnings).toEqual([]);
+    });
+
+    test('false value', () => {
+      const stateManager = makeState({ enableCompressedClassnames: false });
+      expect(stateManager.options.enableCompressedClassnames).toBe(false);
+      expect(warnings).toEqual([]);
+    });
+
+    test('true value', () => {
+      const stateManager = makeState({ enableCompressedClassnames: true });
+      expect(stateManager.options.enableCompressedClassnames).toBe(true);
+      expect(warnings).toEqual([]);
+    });
+  });
   describe('"enableDebugDataProp" option (boolean)', () => {
     test('logs errors if invalid', () => {
       const stateManager = makeState({

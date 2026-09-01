@@ -43,6 +43,7 @@ export type StyleXOptions = Readonly<{
   env?: Readonly<{ [$$Key$$: string]: any }>;
   dev: boolean;
   propertyValidationMode?: 'throw' | 'warn' | 'silent';
+  enableCompressedClassnames?: null | undefined | boolean;
   enableDebugDataProp?: null | undefined | boolean;
   enableDevClassNames?: null | undefined | boolean;
   enableFontSizePxToRem?: null | undefined | boolean;
