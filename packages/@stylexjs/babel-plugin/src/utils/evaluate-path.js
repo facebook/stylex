@@ -309,18 +309,8 @@ function resolveVarGroupKey(
   }
 
   const strToHash = utils.genFileBasedIdentifier({ fileName, exportName, key });
-  const { debug, enableDebugClassNames, classNamePrefix } =
-    traversalState.options;
-
-  const varSafeKey = (key[0] >= '0' && key[0] <= '9' ? `_${key}` : key).replace(
-    /[^a-zA-Z0-9]/g,
-    '_',
-  );
-
-  const varName =
-    debug && enableDebugClassNames
-      ? `${varSafeKey}-${classNamePrefix}${utils.hash(strToHash)}`
-      : classNamePrefix + utils.hash(strToHash);
+  const { classNamePrefix } = traversalState.options;
+  const varName = classNamePrefix + utils.hash(strToHash);
 
   return `var(--${varName})`;
 }
