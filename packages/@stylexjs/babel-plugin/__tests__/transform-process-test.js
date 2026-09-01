@@ -239,8 +239,8 @@ describe('@stylexjs/babel-plugin', () => {
             "--orange-theme-color": "--orange-theme-color-xufgesz",
             $$css: "components/main.js:71"
           },
-          dynamic: color => [{
-            "color-kMwMTN": color != null ? "color-x14rh7hd" : color,
+          dynamic: color => [color !== undefined && {
+            "color-kMwMTN": color != null ? "color-x14rh7hd" : "",
             $$css: "components/main.js:74"
           }, {
             "--x-color": color != null ? color : undefined
@@ -332,8 +332,8 @@ describe('@stylexjs/babel-plugin', () => {
             "--orange-theme-color": "--orange-theme-color-xufgesz",
             $$css: "main.js:71"
           },
-          dynamic: color => [{
-            "color-kMwMTN": color != null ? "color-x14rh7hd" : color,
+          dynamic: color => [color !== undefined && {
+            "color-kMwMTN": color != null ? "color-x14rh7hd" : "",
             $$css: "main.js:74"
           }, {
             "--x-color": color != null ? color : undefined
@@ -780,8 +780,8 @@ describe('@stylexjs/babel-plugin', () => {
             "--orange-theme-color": "--orange-theme-color-xufgesz",
             $$css: "main.js:71"
           },
-          dynamic: color => [{
-            "color-kMwMTN": color != null ? "color-x14rh7hd" : color,
+          dynamic: color => [color !== undefined && {
+            "color-kMwMTN": color != null ? "color-x14rh7hd" : "",
             $$css: "main.js:74"
           }, {
             "--x-color": color != null ? color : undefined
