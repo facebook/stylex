@@ -224,14 +224,14 @@ describe('@stylexjs/babel-plugin', () => {
         };
         export const styles = {
           root: {
-            "animationName-kKVMdj": "x13ah0pd",
-            "backgroundColor-kWkggS": "xrkmrrc xbrh7vm xfy810d xahc4vn x1t4kl4c x975j7z",
-            "margin-kogj98": "xymmreb",
-            "borderColor-kVAM5u": "x1bg2uv5 xio2edn xqiy1ys",
-            "outlineColor-kjBf7l": "x18abd1y",
-            "textShadow-kKMj4B": "x1skrh0i xtj17id",
-            "padding-kmVPX3": "x1s2izit",
-            "float-kyUFMd": "x1kmio9f",
+            "animationName-am": "x13ah0pd",
+            "backgroundColor-bg": "xrkmrrc xbrh7vm xfy810d xahc4vn x1t4kl4c x975j7z",
+            "margin-m": "xymmreb",
+            "borderColor-bc": "x1bg2uv5 xio2edn xqiy1ys",
+            "outlineColor-olc": "x18abd1y",
+            "textShadow-ts": "x1skrh0i xtj17id",
+            "padding-p": "x1s2izit",
+            "float-fl": "x1kmio9f",
             $$css: "components/main.js:33"
           },
           overrideColor: {
@@ -239,7 +239,7 @@ describe('@stylexjs/babel-plugin', () => {
             $$css: "components/main.js:71"
           },
           dynamic: color => [{
-            "color-kMwMTN": color != null ? "x14rh7hd" : color,
+            "color-c": color != null ? "x14rh7hd" : color,
             $$css: "components/main.js:74"
           }, {
             "--x-color": color != null ? color : undefined
@@ -317,14 +317,14 @@ describe('@stylexjs/babel-plugin', () => {
         };
         export const styles = {
           root: {
-            "animationName-kKVMdj": "x13ah0pd",
-            "backgroundColor-kWkggS": "xrkmrrc xbrh7vm xfy810d xahc4vn x1t4kl4c x975j7z",
-            "margin-kogj98": "xymmreb",
-            "borderColor-kVAM5u": "x1bg2uv5 xio2edn xqiy1ys",
-            "outlineColor-kjBf7l": "x18abd1y",
-            "textShadow-kKMj4B": "x1skrh0i xtj17id",
-            "padding-kmVPX3": "x1s2izit",
-            "float-kyUFMd": "x1kmio9f",
+            "animationName-am": "x13ah0pd",
+            "backgroundColor-bg": "xrkmrrc xbrh7vm xfy810d xahc4vn x1t4kl4c x975j7z",
+            "margin-m": "xymmreb",
+            "borderColor-bc": "x1bg2uv5 xio2edn xqiy1ys",
+            "outlineColor-olc": "x18abd1y",
+            "textShadow-ts": "x1skrh0i xtj17id",
+            "padding-p": "x1s2izit",
+            "float-fl": "x1kmio9f",
             $$css: "main.js:33"
           },
           overrideColor: {
@@ -332,7 +332,7 @@ describe('@stylexjs/babel-plugin', () => {
             $$css: "main.js:71"
           },
           dynamic: color => [{
-            "color-kMwMTN": color != null ? "x14rh7hd" : color,
+            "color-c": color != null ? "x14rh7hd" : color,
             $$css: "main.js:74"
           }, {
             "--x-color": color != null ? color : undefined
@@ -765,14 +765,14 @@ describe('@stylexjs/babel-plugin', () => {
         };
         export const styles = {
           root: {
-            "animationName-kKVMdj": "x13ah0pd",
-            "backgroundColor-kWkggS": "xrkmrrc xbrh7vm xfy810d xahc4vn x1t4kl4c x975j7z",
-            "margin-kogj98": "xymmreb",
-            "borderColor-kVAM5u": "x1bg2uv5 xio2edn xqiy1ys",
-            "outlineColor-kjBf7l": "x18abd1y",
-            "textShadow-kKMj4B": "x1skrh0i xtj17id",
-            "padding-kmVPX3": "x1s2izit",
-            "float-kyUFMd": "x1kmio9f",
+            "animationName-am": "x13ah0pd",
+            "backgroundColor-bg": "xrkmrrc xbrh7vm xfy810d xahc4vn x1t4kl4c x975j7z",
+            "margin-m": "xymmreb",
+            "borderColor-bc": "x1bg2uv5 xio2edn xqiy1ys",
+            "outlineColor-olc": "x18abd1y",
+            "textShadow-ts": "x1skrh0i xtj17id",
+            "padding-p": "x1s2izit",
+            "float-fl": "x1kmio9f",
             $$css: "main.js:33"
           },
           overrideColor: {
@@ -780,7 +780,7 @@ describe('@stylexjs/babel-plugin', () => {
             $$css: "main.js:71"
           },
           dynamic: color => [{
-            "color-kMwMTN": color != null ? "x14rh7hd" : color,
+            "color-c": color != null ? "x14rh7hd" : color,
             $$css: "main.js:74"
           }, {
             "--x-color": color != null ? color : undefined
@@ -865,15 +865,15 @@ describe('@stylexjs/babel-plugin', () => {
         };
         export const styles = {
           container: {
-            "marginTop-keoZOQ": "x1anpbxc",
-            "marginInlineEnd-k71WvV": "x3aesyq",
-            "marginBottom-k1K539": "xyorhqc",
-            "marginInlineStart-keTefX": "xqsn43r",
-            "paddingTop-kLKAdn": "x123j3cw",
-            "paddingInlineEnd-kwRFfy": "x1q3ajuy",
-            "paddingBottom-kGO01o": "xs9asl8",
-            "paddingInlineStart-kZCmMZ": "x1gx403c",
-            "float-kyUFMd": "xj87blo",
+            "marginTop-mt": "x1anpbxc",
+            "marginInlineEnd-me": "x3aesyq",
+            "marginBottom-mb": "xyorhqc",
+            "marginInlineStart-ms": "xqsn43r",
+            "paddingTop-pt": "x123j3cw",
+            "paddingInlineEnd-pe": "x1q3ajuy",
+            "paddingBottom-pb": "xs9asl8",
+            "paddingInlineStart-ps": "x1gx403c",
+            "float-fl": "xj87blo",
             $$css: "main.js:25"
           }
         };"

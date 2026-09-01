@@ -14,12 +14,12 @@ import "./stylex_bundle.css";
 const fadeAnimation = "xgnty7z-B";
 const styles = {
   foo: {
-    kKVMdj: "xeuoslp",
-    kWkggS: "x1gykpug",
-    k1xSpc: "x78zum5",
-    kZKoxP: "x1egiwwb",
-    keoZOQ: "xlrshdv",
-    keTefX: "x1hm9lzh",
+    am: "xeuoslp",
+    bg: "x1gykpug",
+    d: "x78zum5",
+    h: "x1egiwwb",
+    mt: "xlrshdv",
+    ms: "x1hm9lzh",
     $$css: true
   }
 };

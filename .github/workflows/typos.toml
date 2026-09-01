@@ -12,3 +12,5 @@ extend-exclude = [
 # Ignore false-positives
 stylex = "stylex"
 nd = "nd"
+# Intentional CSS property shorthand.
+ser = "ser"

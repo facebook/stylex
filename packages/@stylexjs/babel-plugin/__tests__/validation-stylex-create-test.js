@@ -468,7 +468,7 @@ describe('@stylexjs/babel-plugin', () => {
           };
           export const styles = {
             root: {
-              kWkggS: "xrkmrrc",
+              bg: "xrkmrrc",
               $$css: true
             }
           };"
