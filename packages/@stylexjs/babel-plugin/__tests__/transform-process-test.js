@@ -350,6 +350,7 @@ describe('@stylexjs/babel-plugin', () => {
         @layer priority1, priority2, priority3, priority4;
         @property --x-color { syntax: "*"; inherits: false;}
         @keyframes x35atj5-B{0%{box-shadow:1px 2px 3px 4px red;color:yellow;}100%{box-shadow:10px 20px 30px 40px green;color:var(--orange-theme-color);}}
+        @layer priority1{
         :root, .xsg933n{--blue-xpqh4lw:blue;--marginTokens-x8nt2k2:10px;--colorTokens-xkxfyv:red;}
         :root, .xbiwvf9{--small-x19twipt:2px;--medium-xypjos2:4px;--large-x1ec7iuc:8px;}
         @media (prefers-color-scheme: dark){:root, .xsg933n{--colorTokens-xkxfyv:lightblue;}}
@@ -358,6 +359,7 @@ describe('@stylexjs/babel-plugin', () => {
         .x6xqkwy.x6xqkwy, .x6xqkwy.x6xqkwy:root{--blue-xpqh4lw:lightblue;}
         .x57uvma.x57uvma, .x57uvma.x57uvma:root{--large-x1ec7iuc:20px;--medium-xypjos2:10px;--small-x19twipt:5px;}
         .--orange-theme-color-xufgesz{--orange-theme-color:red}
+        }
         @layer priority2{
         .margin-xymmreb{margin:10px 20px}
         .padding-xss17vw{padding:var(--large-x1ec7iuc)}
@@ -385,6 +387,37 @@ describe('@stylexjs/babel-plugin', () => {
       `);
     });
 
+    // Regression test for https://github.com/facebook/stylex/issues/1611
+    // A `priorityLevel` (Math.floor(priority / 1000)) groups together CSS
+    // custom properties (priority 1) with priority-0 at-rules such as
+    // `@keyframes`. The layer-wrapping decision must not let the at-rule's
+    // priority 0 pull the layerable custom property out of its `@layer`.
+    test('custom properties stay inside @layer alongside priority-0 at-rules', () => {
+      const { metadata } = transform(`
+        import * as stylex from '@stylexjs/stylex';
+        const fade = stylex.keyframes({ from: { opacity: 0 }, to: { opacity: 1 } });
+        const styles = stylex.create({
+          card: {
+            animationName: fade,
+            '--card-padding': '16px',
+            color: 'red',
+          },
+        });
+      `);
+      const css = stylexPlugin.processStylexRules(metadata, {
+        useLayers: true,
+        enableLTRRTLComments: false,
+      });
+      // The @keyframes at-rule must stay unlayered (some CSS validators do not
+      // understand @keyframes/@property/@position-try inside @layer, #1071)...
+      expect(css).toMatch(/^@keyframes /m);
+      expect(css).not.toMatch(/@layer priority\d+\{[^}]*@keyframes/);
+      // ...but the custom property must be wrapped in its layer so external
+      // CSS layers can override it.
+      expect(css).toMatch(/@layer priority1\{[^]*--card-padding:16px[^]*\n\}/);
+      expect(css).not.toMatch(/\n\.[a-zA-Z0-9_-]+\{--card-padding:16px\}\n@/);
+    });
+
     test('useLayers with before option', () => {
       const { metadata } = transform(fixture);
       expect(
@@ -399,6 +432,7 @@ describe('@stylexjs/babel-plugin', () => {
         @layer reset, typography, priority1, priority2, priority3, priority4;
         @property --x-color { syntax: "*"; inherits: false;}
         @keyframes x35atj5-B{0%{box-shadow:1px 2px 3px 4px red;color:yellow;}100%{box-shadow:10px 20px 30px 40px green;color:var(--orange-theme-color);}}
+        @layer priority1{
         :root, .xsg933n{--blue-xpqh4lw:blue;--marginTokens-x8nt2k2:10px;--colorTokens-xkxfyv:red;}
         :root, .xbiwvf9{--small-x19twipt:2px;--medium-xypjos2:4px;--large-x1ec7iuc:8px;}
         @media (prefers-color-scheme: dark){:root, .xsg933n{--colorTokens-xkxfyv:lightblue;}}
@@ -407,6 +441,7 @@ describe('@stylexjs/babel-plugin', () => {
         .x6xqkwy.x6xqkwy, .x6xqkwy.x6xqkwy:root{--blue-xpqh4lw:lightblue;}
         .x57uvma.x57uvma, .x57uvma.x57uvma:root{--large-x1ec7iuc:20px;--medium-xypjos2:10px;--small-x19twipt:5px;}
         .--orange-theme-color-xufgesz{--orange-theme-color:red}
+        }
         @layer priority2{
         .margin-xymmreb{margin:10px 20px}
         .padding-xss17vw{padding:var(--large-x1ec7iuc)}
@@ -448,6 +483,7 @@ describe('@stylexjs/babel-plugin', () => {
         @layer priority1, priority2, priority3, priority4, overrides, xds.theme;
         @property --x-color { syntax: "*"; inherits: false;}
         @keyframes x35atj5-B{0%{box-shadow:1px 2px 3px 4px red;color:yellow;}100%{box-shadow:10px 20px 30px 40px green;color:var(--orange-theme-color);}}
+        @layer priority1{
         :root, .xsg933n{--blue-xpqh4lw:blue;--marginTokens-x8nt2k2:10px;--colorTokens-xkxfyv:red;}
         :root, .xbiwvf9{--small-x19twipt:2px;--medium-xypjos2:4px;--large-x1ec7iuc:8px;}
         @media (prefers-color-scheme: dark){:root, .xsg933n{--colorTokens-xkxfyv:lightblue;}}
@@ -456,6 +492,7 @@ describe('@stylexjs/babel-plugin', () => {
         .x6xqkwy.x6xqkwy, .x6xqkwy.x6xqkwy:root{--blue-xpqh4lw:lightblue;}
         .x57uvma.x57uvma, .x57uvma.x57uvma:root{--large-x1ec7iuc:20px;--medium-xypjos2:10px;--small-x19twipt:5px;}
         .--orange-theme-color-xufgesz{--orange-theme-color:red}
+        }
         @layer priority2{
         .margin-xymmreb{margin:10px 20px}
         .padding-xss17vw{padding:var(--large-x1ec7iuc)}
@@ -498,6 +535,7 @@ describe('@stylexjs/babel-plugin', () => {
         @layer reset, priority1, priority2, priority3, priority4, xds.theme;
         @property --x-color { syntax: "*"; inherits: false;}
         @keyframes x35atj5-B{0%{box-shadow:1px 2px 3px 4px red;color:yellow;}100%{box-shadow:10px 20px 30px 40px green;color:var(--orange-theme-color);}}
+        @layer priority1{
         :root, .xsg933n{--blue-xpqh4lw:blue;--marginTokens-x8nt2k2:10px;--colorTokens-xkxfyv:red;}
         :root, .xbiwvf9{--small-x19twipt:2px;--medium-xypjos2:4px;--large-x1ec7iuc:8px;}
         @media (prefers-color-scheme: dark){:root, .xsg933n{--colorTokens-xkxfyv:lightblue;}}
@@ -506,6 +544,7 @@ describe('@stylexjs/babel-plugin', () => {
         .x6xqkwy.x6xqkwy, .x6xqkwy.x6xqkwy:root{--blue-xpqh4lw:lightblue;}
         .x57uvma.x57uvma, .x57uvma.x57uvma:root{--large-x1ec7iuc:20px;--medium-xypjos2:10px;--small-x19twipt:5px;}
         .--orange-theme-color-xufgesz{--orange-theme-color:red}
+        }
         @layer priority2{
         .margin-xymmreb{margin:10px 20px}
         .padding-xss17vw{padding:var(--large-x1ec7iuc)}
@@ -547,6 +586,7 @@ describe('@stylexjs/babel-plugin', () => {
         @layer stylex.priority1, stylex.priority2, stylex.priority3, stylex.priority4;
         @property --x-color { syntax: "*"; inherits: false;}
         @keyframes x35atj5-B{0%{box-shadow:1px 2px 3px 4px red;color:yellow;}100%{box-shadow:10px 20px 30px 40px green;color:var(--orange-theme-color);}}
+        @layer stylex.priority1{
         :root, .xsg933n{--blue-xpqh4lw:blue;--marginTokens-x8nt2k2:10px;--colorTokens-xkxfyv:red;}
         :root, .xbiwvf9{--small-x19twipt:2px;--medium-xypjos2:4px;--large-x1ec7iuc:8px;}
         @media (prefers-color-scheme: dark){:root, .xsg933n{--colorTokens-xkxfyv:lightblue;}}
@@ -555,6 +595,7 @@ describe('@stylexjs/babel-plugin', () => {
         .x6xqkwy.x6xqkwy, .x6xqkwy.x6xqkwy:root{--blue-xpqh4lw:lightblue;}
         .x57uvma.x57uvma, .x57uvma.x57uvma:root{--large-x1ec7iuc:20px;--medium-xypjos2:10px;--small-x19twipt:5px;}
         .--orange-theme-color-xufgesz{--orange-theme-color:red}
+        }
         @layer stylex.priority2{
         .margin-xymmreb{margin:10px 20px}
         .padding-xss17vw{padding:var(--large-x1ec7iuc)}
@@ -598,6 +639,7 @@ describe('@stylexjs/babel-plugin', () => {
         @layer reset, typography, stylex.priority1, stylex.priority2, stylex.priority3, stylex.priority4, xds.theme;
         @property --x-color { syntax: "*"; inherits: false;}
         @keyframes x35atj5-B{0%{box-shadow:1px 2px 3px 4px red;color:yellow;}100%{box-shadow:10px 20px 30px 40px green;color:var(--orange-theme-color);}}
+        @layer stylex.priority1{
         :root, .xsg933n{--blue-xpqh4lw:blue;--marginTokens-x8nt2k2:10px;--colorTokens-xkxfyv:red;}
         :root, .xbiwvf9{--small-x19twipt:2px;--medium-xypjos2:4px;--large-x1ec7iuc:8px;}
         @media (prefers-color-scheme: dark){:root, .xsg933n{--colorTokens-xkxfyv:lightblue;}}
@@ -606,6 +648,7 @@ describe('@stylexjs/babel-plugin', () => {
         .x6xqkwy.x6xqkwy, .x6xqkwy.x6xqkwy:root{--blue-xpqh4lw:lightblue;}
         .x57uvma.x57uvma, .x57uvma.x57uvma:root{--large-x1ec7iuc:20px;--medium-xypjos2:10px;--small-x19twipt:5px;}
         .--orange-theme-color-xufgesz{--orange-theme-color:red}
+        }
         @layer stylex.priority2{
         .margin-xymmreb{margin:10px 20px}
         .padding-xss17vw{padding:var(--large-x1ec7iuc)}
@@ -649,6 +692,7 @@ describe('@stylexjs/babel-plugin', () => {
         @layer xds.reset, xds.typography, xds.base.priority1, xds.base.priority2, xds.base.priority3, xds.base.priority4, xds.theme;
         @property --x-color { syntax: "*"; inherits: false;}
         @keyframes x35atj5-B{0%{box-shadow:1px 2px 3px 4px red;color:yellow;}100%{box-shadow:10px 20px 30px 40px green;color:var(--orange-theme-color);}}
+        @layer xds.base.priority1{
         :root, .xsg933n{--blue-xpqh4lw:blue;--marginTokens-x8nt2k2:10px;--colorTokens-xkxfyv:red;}
         :root, .xbiwvf9{--small-x19twipt:2px;--medium-xypjos2:4px;--large-x1ec7iuc:8px;}
         @media (prefers-color-scheme: dark){:root, .xsg933n{--colorTokens-xkxfyv:lightblue;}}
@@ -657,6 +701,7 @@ describe('@stylexjs/babel-plugin', () => {
         .x6xqkwy.x6xqkwy, .x6xqkwy.x6xqkwy:root{--blue-xpqh4lw:lightblue;}
         .x57uvma.x57uvma, .x57uvma.x57uvma:root{--large-x1ec7iuc:20px;--medium-xypjos2:10px;--small-x19twipt:5px;}
         .--orange-theme-color-xufgesz{--orange-theme-color:red}
+        }
         @layer xds.base.priority2{
         .margin-xymmreb{margin:10px 20px}
         .padding-xss17vw{padding:var(--large-x1ec7iuc)}
@@ -699,6 +744,7 @@ describe('@stylexjs/babel-plugin', () => {
         @layer priority1, priority2, priority3, priority4;
         @property --x-color { syntax: "*"; inherits: false;}
         @keyframes x35atj5-B{0%{box-shadow:1px 2px 3px 4px red;color:yellow;}100%{box-shadow:10px 20px 30px 40px green;color:var(--orange-theme-color);}}
+        @layer priority1{
         :root, .xsg933n{--blue-xpqh4lw:blue;--marginTokens-x8nt2k2:10px;--colorTokens-xkxfyv:red;}
         :root, .xbiwvf9{--small-x19twipt:2px;--medium-xypjos2:4px;--large-x1ec7iuc:8px;}
         @media (prefers-color-scheme: dark){:root, .xsg933n{--colorTokens-xkxfyv:lightblue;}}
@@ -707,6 +753,7 @@ describe('@stylexjs/babel-plugin', () => {
         .x6xqkwy.x6xqkwy, .x6xqkwy.x6xqkwy:root{--blue-xpqh4lw:lightblue;}
         .x57uvma.x57uvma, .x57uvma.x57uvma:root{--large-x1ec7iuc:20px;--medium-xypjos2:10px;--small-x19twipt:5px;}
         .--orange-theme-color-xufgesz{--orange-theme-color:red}
+        }
         @layer priority2{
         .margin-xymmreb{margin:10px 20px}
         .padding-xss17vw{padding:var(--large-x1ec7iuc)}
