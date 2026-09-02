@@ -266,8 +266,8 @@ describe('@stylexjs/babel-plugin', () => {
         .margin-xymmreb:not(#\\#){margin:10px 20px}
         .padding-xss17vw:not(#\\#){padding:var(--large-x1ec7iuc)}
         .borderColor-x1bg2uv5:not(#\\#):not(#\\#){border-color:green}
-        @media (max-width: 1000px){.borderColor-x5ugf7c.borderColor-x5ugf7c:not(#\\#):not(#\\#){border-color:var(--blue-xpqh4lw)}}
-        @media (max-width: 500px){@media (max-width: 1000px){.borderColor-xqiy1ys.borderColor-xqiy1ys.borderColor-xqiy1ys:not(#\\#):not(#\\#){border-color:yellow}}}
+        @media (max-width: 1000px){.borderColor-x5ugf7c:not(#\\#):not(#\\#){border-color:var(--blue-xpqh4lw)}}
+        @media (max-width: 500px){@media (max-width: 1000px){.borderColor-xqiy1ys:not(#\\#):not(#\\#){border-color:yellow}}}
         .animationName-x13ah0pd:not(#\\#):not(#\\#):not(#\\#){animation-name:x35atj5-B}
         .backgroundColor-xrkmrrc:not(#\\#):not(#\\#):not(#\\#){background-color:red}
         .color-x14rh7hd:not(#\\#):not(#\\#):not(#\\#){color:var(--x-color)}
@@ -275,12 +275,12 @@ describe('@stylexjs/babel-plugin', () => {
         html[dir='rtl'] .float-x1kmio9f:not(#\\#):not(#\\#):not(#\\#){float:right}
         .outlineColor-x184ctg8:not(#\\#):not(#\\#):not(#\\#){outline-color:var(--colorTokens-xkxfyv)}
         .textShadow-x1skrh0i:not(#\\#):not(#\\#):not(#\\#){text-shadow:1px 2px 3px 4px red}
+        @media (max-width: 1000px){.backgroundColor-xahc4vn:not(#\\#):not(#\\#):not(#\\#){background-color:yellow}}
+        @media (min-width: 320px){.textShadow-xtj17id:not(#\\#):not(#\\#):not(#\\#){text-shadow:10px 20px 30px 40px green}}
         .backgroundColor-xfy810d.backgroundColor-xfy810d:where(.x-default-marker:focus *):not(#\\#):not(#\\#):not(#\\#){background-color:green}
-        .backgroundColor-xbrh7vm:hover:not(#\\#):not(#\\#):not(#\\#){background-color:blue}
-        @media (max-width: 1000px){.backgroundColor-xahc4vn.backgroundColor-xahc4vn:not(#\\#):not(#\\#):not(#\\#){background-color:yellow}}
-        @media (min-width: 320px){.textShadow-xtj17id.textShadow-xtj17id:not(#\\#):not(#\\#):not(#\\#){text-shadow:10px 20px 30px 40px green}}
-        @media (max-width: 1000px){.backgroundColor-x1t4kl4c.backgroundColor-x1t4kl4c.backgroundColor-x1t4kl4c:where(:has(.x-default-marker:focus)):not(#\\#):not(#\\#):not(#\\#){background-color:purple}}
-        @media (max-width: 1000px){.backgroundColor-x975j7z.backgroundColor-x975j7z.backgroundColor-x975j7z:where(.x-default-marker:active ~ *, :has(~ .x-default-marker:active)):not(#\\#):not(#\\#):not(#\\#){background-color:orange}}"
+        @media (max-width: 1000px){.backgroundColor-x1t4kl4c.backgroundColor-x1t4kl4c:where(:has(.x-default-marker:focus)):not(#\\#):not(#\\#):not(#\\#){background-color:purple}}
+        @media (max-width: 1000px){.backgroundColor-x975j7z.backgroundColor-x975j7z:where(.x-default-marker:active ~ *, :has(~ .x-default-marker:active)):not(#\\#):not(#\\#):not(#\\#){background-color:orange}}
+        .backgroundColor-xbrh7vm:hover:not(#\\#):not(#\\#):not(#\\#){background-color:blue}"
       `);
     });
 
@@ -364,8 +364,8 @@ describe('@stylexjs/babel-plugin', () => {
         }
         @layer priority3{
         .borderColor-x1bg2uv5{border-color:green}
-        @media (max-width: 1000px){.borderColor-x5ugf7c.borderColor-x5ugf7c{border-color:var(--blue-xpqh4lw)}}
-        @media (max-width: 500px){@media (max-width: 1000px){.borderColor-xqiy1ys.borderColor-xqiy1ys.borderColor-xqiy1ys{border-color:yellow}}}
+        @media (max-width: 1000px){.borderColor-x5ugf7c{border-color:var(--blue-xpqh4lw)}}
+        @media (max-width: 500px){@media (max-width: 1000px){.borderColor-xqiy1ys{border-color:yellow}}}
         }
         @layer priority4{
         .animationName-x13ah0pd{animation-name:x35atj5-B}
@@ -375,12 +375,12 @@ describe('@stylexjs/babel-plugin', () => {
         html[dir='rtl'] .float-x1kmio9f{float:right}
         .outlineColor-x184ctg8{outline-color:var(--colorTokens-xkxfyv)}
         .textShadow-x1skrh0i{text-shadow:1px 2px 3px 4px red}
+        @media (max-width: 1000px){.backgroundColor-xahc4vn{background-color:yellow}}
+        @media (min-width: 320px){.textShadow-xtj17id{text-shadow:10px 20px 30px 40px green}}
         .backgroundColor-xfy810d.backgroundColor-xfy810d:where(.x-default-marker:focus *){background-color:green}
+        @media (max-width: 1000px){.backgroundColor-x1t4kl4c.backgroundColor-x1t4kl4c:where(:has(.x-default-marker:focus)){background-color:purple}}
+        @media (max-width: 1000px){.backgroundColor-x975j7z.backgroundColor-x975j7z:where(.x-default-marker:active ~ *, :has(~ .x-default-marker:active)){background-color:orange}}
         .backgroundColor-xbrh7vm:hover{background-color:blue}
-        @media (max-width: 1000px){.backgroundColor-xahc4vn.backgroundColor-xahc4vn{background-color:yellow}}
-        @media (min-width: 320px){.textShadow-xtj17id.textShadow-xtj17id{text-shadow:10px 20px 30px 40px green}}
-        @media (max-width: 1000px){.backgroundColor-x1t4kl4c.backgroundColor-x1t4kl4c.backgroundColor-x1t4kl4c:where(:has(.x-default-marker:focus)){background-color:purple}}
-        @media (max-width: 1000px){.backgroundColor-x975j7z.backgroundColor-x975j7z.backgroundColor-x975j7z:where(.x-default-marker:active ~ *, :has(~ .x-default-marker:active)){background-color:orange}}
         }"
       `);
     });
@@ -413,8 +413,8 @@ describe('@stylexjs/babel-plugin', () => {
         }
         @layer priority3{
         .borderColor-x1bg2uv5{border-color:green}
-        @media (max-width: 1000px){.borderColor-x5ugf7c.borderColor-x5ugf7c{border-color:var(--blue-xpqh4lw)}}
-        @media (max-width: 500px){@media (max-width: 1000px){.borderColor-xqiy1ys.borderColor-xqiy1ys.borderColor-xqiy1ys{border-color:yellow}}}
+        @media (max-width: 1000px){.borderColor-x5ugf7c{border-color:var(--blue-xpqh4lw)}}
+        @media (max-width: 500px){@media (max-width: 1000px){.borderColor-xqiy1ys{border-color:yellow}}}
         }
         @layer priority4{
         .animationName-x13ah0pd{animation-name:x35atj5-B}
@@ -424,12 +424,12 @@ describe('@stylexjs/babel-plugin', () => {
         html[dir='rtl'] .float-x1kmio9f{float:right}
         .outlineColor-x184ctg8{outline-color:var(--colorTokens-xkxfyv)}
         .textShadow-x1skrh0i{text-shadow:1px 2px 3px 4px red}
+        @media (max-width: 1000px){.backgroundColor-xahc4vn{background-color:yellow}}
+        @media (min-width: 320px){.textShadow-xtj17id{text-shadow:10px 20px 30px 40px green}}
         .backgroundColor-xfy810d.backgroundColor-xfy810d:where(.x-default-marker:focus *){background-color:green}
+        @media (max-width: 1000px){.backgroundColor-x1t4kl4c.backgroundColor-x1t4kl4c:where(:has(.x-default-marker:focus)){background-color:purple}}
+        @media (max-width: 1000px){.backgroundColor-x975j7z.backgroundColor-x975j7z:where(.x-default-marker:active ~ *, :has(~ .x-default-marker:active)){background-color:orange}}
         .backgroundColor-xbrh7vm:hover{background-color:blue}
-        @media (max-width: 1000px){.backgroundColor-xahc4vn.backgroundColor-xahc4vn{background-color:yellow}}
-        @media (min-width: 320px){.textShadow-xtj17id.textShadow-xtj17id{text-shadow:10px 20px 30px 40px green}}
-        @media (max-width: 1000px){.backgroundColor-x1t4kl4c.backgroundColor-x1t4kl4c.backgroundColor-x1t4kl4c:where(:has(.x-default-marker:focus)){background-color:purple}}
-        @media (max-width: 1000px){.backgroundColor-x975j7z.backgroundColor-x975j7z.backgroundColor-x975j7z:where(.x-default-marker:active ~ *, :has(~ .x-default-marker:active)){background-color:orange}}
         }"
       `);
     });
@@ -462,8 +462,8 @@ describe('@stylexjs/babel-plugin', () => {
         }
         @layer priority3{
         .borderColor-x1bg2uv5{border-color:green}
-        @media (max-width: 1000px){.borderColor-x5ugf7c.borderColor-x5ugf7c{border-color:var(--blue-xpqh4lw)}}
-        @media (max-width: 500px){@media (max-width: 1000px){.borderColor-xqiy1ys.borderColor-xqiy1ys.borderColor-xqiy1ys{border-color:yellow}}}
+        @media (max-width: 1000px){.borderColor-x5ugf7c{border-color:var(--blue-xpqh4lw)}}
+        @media (max-width: 500px){@media (max-width: 1000px){.borderColor-xqiy1ys{border-color:yellow}}}
         }
         @layer priority4{
         .animationName-x13ah0pd{animation-name:x35atj5-B}
@@ -473,12 +473,12 @@ describe('@stylexjs/babel-plugin', () => {
         html[dir='rtl'] .float-x1kmio9f{float:right}
         .outlineColor-x184ctg8{outline-color:var(--colorTokens-xkxfyv)}
         .textShadow-x1skrh0i{text-shadow:1px 2px 3px 4px red}
+        @media (max-width: 1000px){.backgroundColor-xahc4vn{background-color:yellow}}
+        @media (min-width: 320px){.textShadow-xtj17id{text-shadow:10px 20px 30px 40px green}}
         .backgroundColor-xfy810d.backgroundColor-xfy810d:where(.x-default-marker:focus *){background-color:green}
+        @media (max-width: 1000px){.backgroundColor-x1t4kl4c.backgroundColor-x1t4kl4c:where(:has(.x-default-marker:focus)){background-color:purple}}
+        @media (max-width: 1000px){.backgroundColor-x975j7z.backgroundColor-x975j7z:where(.x-default-marker:active ~ *, :has(~ .x-default-marker:active)){background-color:orange}}
         .backgroundColor-xbrh7vm:hover{background-color:blue}
-        @media (max-width: 1000px){.backgroundColor-xahc4vn.backgroundColor-xahc4vn{background-color:yellow}}
-        @media (min-width: 320px){.textShadow-xtj17id.textShadow-xtj17id{text-shadow:10px 20px 30px 40px green}}
-        @media (max-width: 1000px){.backgroundColor-x1t4kl4c.backgroundColor-x1t4kl4c.backgroundColor-x1t4kl4c:where(:has(.x-default-marker:focus)){background-color:purple}}
-        @media (max-width: 1000px){.backgroundColor-x975j7z.backgroundColor-x975j7z.backgroundColor-x975j7z:where(.x-default-marker:active ~ *, :has(~ .x-default-marker:active)){background-color:orange}}
         }"
       `);
     });
@@ -512,8 +512,8 @@ describe('@stylexjs/babel-plugin', () => {
         }
         @layer priority3{
         .borderColor-x1bg2uv5{border-color:green}
-        @media (max-width: 1000px){.borderColor-x5ugf7c.borderColor-x5ugf7c{border-color:var(--blue-xpqh4lw)}}
-        @media (max-width: 500px){@media (max-width: 1000px){.borderColor-xqiy1ys.borderColor-xqiy1ys.borderColor-xqiy1ys{border-color:yellow}}}
+        @media (max-width: 1000px){.borderColor-x5ugf7c{border-color:var(--blue-xpqh4lw)}}
+        @media (max-width: 500px){@media (max-width: 1000px){.borderColor-xqiy1ys{border-color:yellow}}}
         }
         @layer priority4{
         .animationName-x13ah0pd{animation-name:x35atj5-B}
@@ -523,12 +523,12 @@ describe('@stylexjs/babel-plugin', () => {
         html[dir='rtl'] .float-x1kmio9f{float:right}
         .outlineColor-x184ctg8{outline-color:var(--colorTokens-xkxfyv)}
         .textShadow-x1skrh0i{text-shadow:1px 2px 3px 4px red}
+        @media (max-width: 1000px){.backgroundColor-xahc4vn{background-color:yellow}}
+        @media (min-width: 320px){.textShadow-xtj17id{text-shadow:10px 20px 30px 40px green}}
         .backgroundColor-xfy810d.backgroundColor-xfy810d:where(.x-default-marker:focus *){background-color:green}
+        @media (max-width: 1000px){.backgroundColor-x1t4kl4c.backgroundColor-x1t4kl4c:where(:has(.x-default-marker:focus)){background-color:purple}}
+        @media (max-width: 1000px){.backgroundColor-x975j7z.backgroundColor-x975j7z:where(.x-default-marker:active ~ *, :has(~ .x-default-marker:active)){background-color:orange}}
         .backgroundColor-xbrh7vm:hover{background-color:blue}
-        @media (max-width: 1000px){.backgroundColor-xahc4vn.backgroundColor-xahc4vn{background-color:yellow}}
-        @media (min-width: 320px){.textShadow-xtj17id.textShadow-xtj17id{text-shadow:10px 20px 30px 40px green}}
-        @media (max-width: 1000px){.backgroundColor-x1t4kl4c.backgroundColor-x1t4kl4c.backgroundColor-x1t4kl4c:where(:has(.x-default-marker:focus)){background-color:purple}}
-        @media (max-width: 1000px){.backgroundColor-x975j7z.backgroundColor-x975j7z.backgroundColor-x975j7z:where(.x-default-marker:active ~ *, :has(~ .x-default-marker:active)){background-color:orange}}
         }"
       `);
     });
@@ -561,8 +561,8 @@ describe('@stylexjs/babel-plugin', () => {
         }
         @layer stylex.priority3{
         .borderColor-x1bg2uv5{border-color:green}
-        @media (max-width: 1000px){.borderColor-x5ugf7c.borderColor-x5ugf7c{border-color:var(--blue-xpqh4lw)}}
-        @media (max-width: 500px){@media (max-width: 1000px){.borderColor-xqiy1ys.borderColor-xqiy1ys.borderColor-xqiy1ys{border-color:yellow}}}
+        @media (max-width: 1000px){.borderColor-x5ugf7c{border-color:var(--blue-xpqh4lw)}}
+        @media (max-width: 500px){@media (max-width: 1000px){.borderColor-xqiy1ys{border-color:yellow}}}
         }
         @layer stylex.priority4{
         .animationName-x13ah0pd{animation-name:x35atj5-B}
@@ -572,12 +572,12 @@ describe('@stylexjs/babel-plugin', () => {
         html[dir='rtl'] .float-x1kmio9f{float:right}
         .outlineColor-x184ctg8{outline-color:var(--colorTokens-xkxfyv)}
         .textShadow-x1skrh0i{text-shadow:1px 2px 3px 4px red}
+        @media (max-width: 1000px){.backgroundColor-xahc4vn{background-color:yellow}}
+        @media (min-width: 320px){.textShadow-xtj17id{text-shadow:10px 20px 30px 40px green}}
         .backgroundColor-xfy810d.backgroundColor-xfy810d:where(.x-default-marker:focus *){background-color:green}
+        @media (max-width: 1000px){.backgroundColor-x1t4kl4c.backgroundColor-x1t4kl4c:where(:has(.x-default-marker:focus)){background-color:purple}}
+        @media (max-width: 1000px){.backgroundColor-x975j7z.backgroundColor-x975j7z:where(.x-default-marker:active ~ *, :has(~ .x-default-marker:active)){background-color:orange}}
         .backgroundColor-xbrh7vm:hover{background-color:blue}
-        @media (max-width: 1000px){.backgroundColor-xahc4vn.backgroundColor-xahc4vn{background-color:yellow}}
-        @media (min-width: 320px){.textShadow-xtj17id.textShadow-xtj17id{text-shadow:10px 20px 30px 40px green}}
-        @media (max-width: 1000px){.backgroundColor-x1t4kl4c.backgroundColor-x1t4kl4c.backgroundColor-x1t4kl4c:where(:has(.x-default-marker:focus)){background-color:purple}}
-        @media (max-width: 1000px){.backgroundColor-x975j7z.backgroundColor-x975j7z.backgroundColor-x975j7z:where(.x-default-marker:active ~ *, :has(~ .x-default-marker:active)){background-color:orange}}
         }"
       `);
     });
@@ -612,8 +612,8 @@ describe('@stylexjs/babel-plugin', () => {
         }
         @layer stylex.priority3{
         .borderColor-x1bg2uv5{border-color:green}
-        @media (max-width: 1000px){.borderColor-x5ugf7c.borderColor-x5ugf7c{border-color:var(--blue-xpqh4lw)}}
-        @media (max-width: 500px){@media (max-width: 1000px){.borderColor-xqiy1ys.borderColor-xqiy1ys.borderColor-xqiy1ys{border-color:yellow}}}
+        @media (max-width: 1000px){.borderColor-x5ugf7c{border-color:var(--blue-xpqh4lw)}}
+        @media (max-width: 500px){@media (max-width: 1000px){.borderColor-xqiy1ys{border-color:yellow}}}
         }
         @layer stylex.priority4{
         .animationName-x13ah0pd{animation-name:x35atj5-B}
@@ -623,12 +623,12 @@ describe('@stylexjs/babel-plugin', () => {
         html[dir='rtl'] .float-x1kmio9f{float:right}
         .outlineColor-x184ctg8{outline-color:var(--colorTokens-xkxfyv)}
         .textShadow-x1skrh0i{text-shadow:1px 2px 3px 4px red}
+        @media (max-width: 1000px){.backgroundColor-xahc4vn{background-color:yellow}}
+        @media (min-width: 320px){.textShadow-xtj17id{text-shadow:10px 20px 30px 40px green}}
         .backgroundColor-xfy810d.backgroundColor-xfy810d:where(.x-default-marker:focus *){background-color:green}
+        @media (max-width: 1000px){.backgroundColor-x1t4kl4c.backgroundColor-x1t4kl4c:where(:has(.x-default-marker:focus)){background-color:purple}}
+        @media (max-width: 1000px){.backgroundColor-x975j7z.backgroundColor-x975j7z:where(.x-default-marker:active ~ *, :has(~ .x-default-marker:active)){background-color:orange}}
         .backgroundColor-xbrh7vm:hover{background-color:blue}
-        @media (max-width: 1000px){.backgroundColor-xahc4vn.backgroundColor-xahc4vn{background-color:yellow}}
-        @media (min-width: 320px){.textShadow-xtj17id.textShadow-xtj17id{text-shadow:10px 20px 30px 40px green}}
-        @media (max-width: 1000px){.backgroundColor-x1t4kl4c.backgroundColor-x1t4kl4c.backgroundColor-x1t4kl4c:where(:has(.x-default-marker:focus)){background-color:purple}}
-        @media (max-width: 1000px){.backgroundColor-x975j7z.backgroundColor-x975j7z.backgroundColor-x975j7z:where(.x-default-marker:active ~ *, :has(~ .x-default-marker:active)){background-color:orange}}
         }"
       `);
     });
@@ -663,8 +663,8 @@ describe('@stylexjs/babel-plugin', () => {
         }
         @layer xds.base.priority3{
         .borderColor-x1bg2uv5{border-color:green}
-        @media (max-width: 1000px){.borderColor-x5ugf7c.borderColor-x5ugf7c{border-color:var(--blue-xpqh4lw)}}
-        @media (max-width: 500px){@media (max-width: 1000px){.borderColor-xqiy1ys.borderColor-xqiy1ys.borderColor-xqiy1ys{border-color:yellow}}}
+        @media (max-width: 1000px){.borderColor-x5ugf7c{border-color:var(--blue-xpqh4lw)}}
+        @media (max-width: 500px){@media (max-width: 1000px){.borderColor-xqiy1ys{border-color:yellow}}}
         }
         @layer xds.base.priority4{
         .animationName-x13ah0pd{animation-name:x35atj5-B}
@@ -674,12 +674,12 @@ describe('@stylexjs/babel-plugin', () => {
         html[dir='rtl'] .float-x1kmio9f{float:right}
         .outlineColor-x184ctg8{outline-color:var(--colorTokens-xkxfyv)}
         .textShadow-x1skrh0i{text-shadow:1px 2px 3px 4px red}
+        @media (max-width: 1000px){.backgroundColor-xahc4vn{background-color:yellow}}
+        @media (min-width: 320px){.textShadow-xtj17id{text-shadow:10px 20px 30px 40px green}}
         .backgroundColor-xfy810d.backgroundColor-xfy810d:where(.x-default-marker:focus *){background-color:green}
+        @media (max-width: 1000px){.backgroundColor-x1t4kl4c.backgroundColor-x1t4kl4c:where(:has(.x-default-marker:focus)){background-color:purple}}
+        @media (max-width: 1000px){.backgroundColor-x975j7z.backgroundColor-x975j7z:where(.x-default-marker:active ~ *, :has(~ .x-default-marker:active)){background-color:orange}}
         .backgroundColor-xbrh7vm:hover{background-color:blue}
-        @media (max-width: 1000px){.backgroundColor-xahc4vn.backgroundColor-xahc4vn{background-color:yellow}}
-        @media (min-width: 320px){.textShadow-xtj17id.textShadow-xtj17id{text-shadow:10px 20px 30px 40px green}}
-        @media (max-width: 1000px){.backgroundColor-x1t4kl4c.backgroundColor-x1t4kl4c.backgroundColor-x1t4kl4c:where(:has(.x-default-marker:focus)){background-color:purple}}
-        @media (max-width: 1000px){.backgroundColor-x975j7z.backgroundColor-x975j7z.backgroundColor-x975j7z:where(.x-default-marker:active ~ *, :has(~ .x-default-marker:active)){background-color:orange}}
         }"
       `);
     });
@@ -713,8 +713,8 @@ describe('@stylexjs/babel-plugin', () => {
         }
         @layer priority3{
         .borderColor-x1bg2uv5{border-color:green}
-        @media (max-width: 1000px){.borderColor-x5ugf7c.borderColor-x5ugf7c{border-color:var(--blue-xpqh4lw)}}
-        @media (max-width: 500px){@media (max-width: 1000px){.borderColor-xqiy1ys.borderColor-xqiy1ys.borderColor-xqiy1ys{border-color:yellow}}}
+        @media (max-width: 1000px){.borderColor-x5ugf7c{border-color:var(--blue-xpqh4lw)}}
+        @media (max-width: 500px){@media (max-width: 1000px){.borderColor-xqiy1ys{border-color:yellow}}}
         }
         @layer priority4{
         .animationName-x13ah0pd{animation-name:x35atj5-B}
@@ -724,12 +724,12 @@ describe('@stylexjs/babel-plugin', () => {
         html[dir='rtl'] .float-x1kmio9f{float:right}
         .outlineColor-x184ctg8{outline-color:var(--colorTokens-xkxfyv)}
         .textShadow-x1skrh0i{text-shadow:1px 2px 3px 4px red}
+        @media (max-width: 1000px){.backgroundColor-xahc4vn{background-color:yellow}}
+        @media (min-width: 320px){.textShadow-xtj17id{text-shadow:10px 20px 30px 40px green}}
         .backgroundColor-xfy810d.backgroundColor-xfy810d:where(.x-default-marker:focus *){background-color:green}
+        @media (max-width: 1000px){.backgroundColor-x1t4kl4c.backgroundColor-x1t4kl4c:where(:has(.x-default-marker:focus)){background-color:purple}}
+        @media (max-width: 1000px){.backgroundColor-x975j7z.backgroundColor-x975j7z:where(.x-default-marker:active ~ *, :has(~ .x-default-marker:active)){background-color:orange}}
         .backgroundColor-xbrh7vm:hover{background-color:blue}
-        @media (max-width: 1000px){.backgroundColor-xahc4vn.backgroundColor-xahc4vn{background-color:yellow}}
-        @media (min-width: 320px){.textShadow-xtj17id.textShadow-xtj17id{text-shadow:10px 20px 30px 40px green}}
-        @media (max-width: 1000px){.backgroundColor-x1t4kl4c.backgroundColor-x1t4kl4c.backgroundColor-x1t4kl4c:where(:has(.x-default-marker:focus)){background-color:purple}}
-        @media (max-width: 1000px){.backgroundColor-x975j7z.backgroundColor-x975j7z.backgroundColor-x975j7z:where(.x-default-marker:active ~ *, :has(~ .x-default-marker:active)){background-color:orange}}
         }"
       `);
     });
@@ -808,8 +808,8 @@ describe('@stylexjs/babel-plugin', () => {
         .margin-xymmreb{margin:10px 20px}
         .padding-xss17vw{padding:var(--large-x1ec7iuc)}
         .borderColor-x1bg2uv5{border-color:green}
-        @media (max-width: 1000px){.borderColor-x5ugf7c.borderColor-x5ugf7c{border-color:var(--blue-xpqh4lw)}}
-        @media (max-width: 500px){@media (max-width: 1000px){.borderColor-xqiy1ys.borderColor-xqiy1ys.borderColor-xqiy1ys{border-color:yellow}}}
+        @media (max-width: 1000px){.borderColor-x5ugf7c{border-color:var(--blue-xpqh4lw)}}
+        @media (max-width: 500px){@media (max-width: 1000px){.borderColor-xqiy1ys{border-color:yellow}}}
         .animationName-x13ah0pd{animation-name:x35atj5-B}
         .backgroundColor-xrkmrrc{background-color:red}
         .color-x14rh7hd{color:var(--x-color)}
@@ -817,12 +817,12 @@ describe('@stylexjs/babel-plugin', () => {
         html[dir='rtl'] .float-x1kmio9f{float:right}
         .outlineColor-x184ctg8{outline-color:var(--colorTokens-xkxfyv)}
         .textShadow-x1skrh0i{text-shadow:1px 2px 3px 4px red}
+        @media (max-width: 1000px){.backgroundColor-xahc4vn{background-color:yellow}}
+        @media (min-width: 320px){.textShadow-xtj17id{text-shadow:10px 20px 30px 40px green}}
         .backgroundColor-xfy810d.backgroundColor-xfy810d:where(.x-default-marker:focus *){background-color:green}
-        .backgroundColor-xbrh7vm:hover{background-color:blue}
-        @media (max-width: 1000px){.backgroundColor-xahc4vn.backgroundColor-xahc4vn{background-color:yellow}}
-        @media (min-width: 320px){.textShadow-xtj17id.textShadow-xtj17id{text-shadow:10px 20px 30px 40px green}}
-        @media (max-width: 1000px){.backgroundColor-x1t4kl4c.backgroundColor-x1t4kl4c.backgroundColor-x1t4kl4c:where(:has(.x-default-marker:focus)){background-color:purple}}
-        @media (max-width: 1000px){.backgroundColor-x975j7z.backgroundColor-x975j7z.backgroundColor-x975j7z:where(.x-default-marker:active ~ *, :has(~ .x-default-marker:active)){background-color:orange}}"
+        @media (max-width: 1000px){.backgroundColor-x1t4kl4c.backgroundColor-x1t4kl4c:where(:has(.x-default-marker:focus)){background-color:purple}}
+        @media (max-width: 1000px){.backgroundColor-x975j7z.backgroundColor-x975j7z:where(.x-default-marker:active ~ *, :has(~ .x-default-marker:active)){background-color:orange}}
+        .backgroundColor-xbrh7vm:hover{background-color:blue}"
       `);
     });
 
@@ -1003,8 +1003,8 @@ describe('@stylexjs/babel-plugin', () => {
         .xymmreb{margin:10px 20px}
         .x1s2izit{padding:var(--x1ec7iuc)}
         .x1bg2uv5{border-color:green}
-        @media (max-width: 1000px){.xio2edn.xio2edn{border-color:var(--xpqh4lw)}}
-        @media (max-width: 500px){@media (max-width: 1000px){.xqiy1ys.xqiy1ys.xqiy1ys{border-color:yellow}}}
+        @media (max-width: 1000px){.xio2edn{border-color:var(--xpqh4lw)}}
+        @media (max-width: 500px){@media (max-width: 1000px){.xqiy1ys{border-color:yellow}}}
         .x13ah0pd{animation-name:x35atj5-B}
         .xrkmrrc{background-color:red}
         .x14rh7hd{color:var(--x-color)}
@@ -1012,12 +1012,12 @@ describe('@stylexjs/babel-plugin', () => {
         /* @rtl begin */.x1kmio9f{float:right}/* @rtl end */
         .x18abd1y{outline-color:var(--xkxfyv)}
         .x1skrh0i{text-shadow:1px 2px 3px 4px red}
+        @media (max-width: 1000px){.xahc4vn{background-color:yellow}}
+        @media (min-width: 320px){.xtj17id{text-shadow:10px 20px 30px 40px green}}
         .xfy810d.xfy810d:where(.x-default-marker:focus *){background-color:green}
-        .xbrh7vm:hover{background-color:blue}
-        @media (max-width: 1000px){.xahc4vn.xahc4vn{background-color:yellow}}
-        @media (min-width: 320px){.xtj17id.xtj17id{text-shadow:10px 20px 30px 40px green}}
-        @media (max-width: 1000px){.x1t4kl4c.x1t4kl4c.x1t4kl4c:where(:has(.x-default-marker:focus)){background-color:purple}}
-        @media (max-width: 1000px){.x975j7z.x975j7z.x975j7z:where(.x-default-marker:active ~ *, :has(~ .x-default-marker:active)){background-color:orange}}"
+        @media (max-width: 1000px){.x1t4kl4c.x1t4kl4c:where(:has(.x-default-marker:focus)){background-color:purple}}
+        @media (max-width: 1000px){.x975j7z.x975j7z:where(.x-default-marker:active ~ *, :has(~ .x-default-marker:active)){background-color:orange}}
+        .xbrh7vm:hover{background-color:blue}"
       `);
     });
 
@@ -1047,8 +1047,8 @@ describe('@stylexjs/babel-plugin', () => {
         .x1s2izit{padding:var(--x1ec7iuc)}
         .xymmreb{margin:10px 20px}
         .x1bg2uv5{border-color:green}
-        @media (max-width: 1000px){.xio2edn.xio2edn{border-color:var(--xpqh4lw)}}
-        @media (max-width: 500px){@media (max-width: 1000px){.xqiy1ys.xqiy1ys.xqiy1ys{border-color:yellow}}}
+        @media (max-width: 1000px){.xio2edn{border-color:var(--xpqh4lw)}}
+        @media (max-width: 500px){@media (max-width: 1000px){.xqiy1ys{border-color:yellow}}}
         .x13ah0pd{animation-name:x35atj5-B}
         .x14rh7hd{color:var(--x-color)}
         .x18abd1y{outline-color:var(--xkxfyv)}
@@ -1056,12 +1056,12 @@ describe('@stylexjs/babel-plugin', () => {
         /* @rtl begin */.x1kmio9f{float:right}/* @rtl end */
         .x1skrh0i{text-shadow:1px 2px 3px 4px red}
         .xrkmrrc{background-color:red}
+        @media (max-width: 1000px){.xahc4vn{background-color:yellow}}
+        @media (min-width: 320px){.xtj17id{text-shadow:10px 20px 30px 40px green}}
         .xfy810d.xfy810d:where(.x-default-marker:focus *){background-color:green}
-        .xbrh7vm:hover{background-color:blue}
-        @media (max-width: 1000px){.xahc4vn.xahc4vn{background-color:yellow}}
-        @media (min-width: 320px){.xtj17id.xtj17id{text-shadow:10px 20px 30px 40px green}}
-        @media (max-width: 1000px){.x1t4kl4c.x1t4kl4c.x1t4kl4c:where(:has(.x-default-marker:focus)){background-color:purple}}
-        @media (max-width: 1000px){.x975j7z.x975j7z.x975j7z:where(.x-default-marker:active ~ *, :has(~ .x-default-marker:active)){background-color:orange}}"
+        @media (max-width: 1000px){.x1t4kl4c.x1t4kl4c:where(:has(.x-default-marker:focus)){background-color:purple}}
+        @media (max-width: 1000px){.x975j7z.x975j7z:where(.x-default-marker:active ~ *, :has(~ .x-default-marker:active)){background-color:orange}}
+        .xbrh7vm:hover{background-color:blue}"
       `);
     });
 

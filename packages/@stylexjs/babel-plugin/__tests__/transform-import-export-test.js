@@ -312,10 +312,10 @@ describe('@stylexjs/babel-plugin', () => {
             [
               "x14693no",
               {
-                "ltr": "@media (min-width: 768px){.x14693no.x14693no{color:blue}}",
+                "ltr": "@media (min-width: 768px){.x14693no{color:blue}}",
                 "rtl": null,
               },
-              3200,
+              3000.2,
             ],
             [
               "x15oojuh",

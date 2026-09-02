@@ -688,12 +688,12 @@ describe('@stylexjs/babel-plugin', () => {
           priority: 3000
         });
         _inject2({
-          ltr: "@media (min-width: 1000px){.xc445zv.xc445zv{background-color:blue}}",
-          priority: 3200
+          ltr: "@media (min-width: 1000px){.xc445zv{background-color:blue}}",
+          priority: 3000.2
         });
         _inject2({
-          ltr: "@media (min-width: 2000px){.x1ssfqz5.x1ssfqz5{background-color:purple}}",
-          priority: 3200
+          ltr: "@media (min-width: 2000px){.x1ssfqz5{background-color:purple}}",
+          priority: 3000.2
         });
         "xrkmrrc xc445zv x1ssfqz5";"
       `);
@@ -723,12 +723,12 @@ describe('@stylexjs/babel-plugin', () => {
           priority: 3000
         });
         _inject2({
-          ltr: "@media (min-width: 1000px) and (max-width: 1999.99px){.xw6up8c.xw6up8c{background-color:blue}}",
-          priority: 3200
+          ltr: "@media (min-width: 1000px) and (max-width: 1999.99px){.xw6up8c{background-color:blue}}",
+          priority: 3000.2
         });
         _inject2({
-          ltr: "@media (min-width: 2000px){.x1ssfqz5.x1ssfqz5{background-color:purple}}",
-          priority: 3200
+          ltr: "@media (min-width: 2000px){.x1ssfqz5{background-color:purple}}",
+          priority: 3000.2
         });
         "xrkmrrc xw6up8c x1ssfqz5";"
       `);
@@ -760,12 +760,12 @@ describe('@stylexjs/babel-plugin', () => {
           priority: 3000
         });
         _inject2({
-          ltr: "@supports (hover: hover){.x6m3b6q.x6m3b6q{background-color:blue}}",
-          priority: 3030
+          ltr: "@supports (hover: hover){.x6m3b6q{background-color:blue}}",
+          priority: 3000.03
         });
         _inject2({
-          ltr: "@supports not (hover: hover){.x6um648.x6um648{background-color:purple}}",
-          priority: 3030
+          ltr: "@supports not (hover: hover){.x6um648{background-color:purple}}",
+          priority: 3000.03
         });
         "xrkmrrc x6m3b6q x6um648";"
       `);
@@ -795,12 +795,12 @@ describe('@stylexjs/babel-plugin', () => {
           priority: 3000
         });
         _inject2({
-          ltr: "@supports (hover: hover){.x6m3b6q.x6m3b6q{background-color:blue}}",
-          priority: 3030
+          ltr: "@supports (hover: hover){.x6m3b6q{background-color:blue}}",
+          priority: 3000.03
         });
         _inject2({
-          ltr: "@supports not (hover: hover){.x6um648.x6um648{background-color:purple}}",
-          priority: 3030
+          ltr: "@supports not (hover: hover){.x6um648{background-color:purple}}",
+          priority: 3000.03
         });
         "xrkmrrc x6m3b6q x6um648";"
       `);
@@ -1496,8 +1496,8 @@ describe('@stylexjs/babel-plugin', () => {
           priority: 3130
         });
         _inject2({
-          ltr: "@media (min-width: 1000px){.xc445zv.xc445zv{background-color:blue}}",
-          priority: 3200
+          ltr: "@media (min-width: 1000px){.xc445zv{background-color:blue}}",
+          priority: 3000.2
         });
         export const styles = {
           default: {
@@ -1535,8 +1535,8 @@ describe('@stylexjs/babel-plugin', () => {
           priority: 3130
         });
         _inject2({
-          ltr: "@media (min-width: 1000px){.xc445zv.xc445zv{background-color:blue}}",
-          priority: 3200
+          ltr: "@media (min-width: 1000px){.xc445zv{background-color:blue}}",
+          priority: 3000.2
         });
         export const styles = {
           default: {
@@ -1745,8 +1745,8 @@ describe('@stylexjs/babel-plugin', () => {
             priority: 3130
           });
           _inject2({
-            ltr: "@media (min-width: 1000px){.xc445zv.xc445zv{background-color:blue}}",
-            priority: 3200
+            ltr: "@media (min-width: 1000px){.xc445zv{background-color:blue}}",
+            priority: 3000.2
           });
           export const styles = {
             default: {
@@ -1922,16 +1922,16 @@ describe('@stylexjs/babel-plugin', () => {
           priority: 2000
         });
         _inject2({
-          ltr: "@media (max-width: 640px){.gridTemplateRows-xmr4b4k.gridTemplateRows-xmr4b4k{grid-template-rows:minmax(0,1fr) auto}}",
-          priority: 3200
+          ltr: "@media (max-width: 640px){.gridTemplateRows-xmr4b4k{grid-template-rows:minmax(0,1fr) auto}}",
+          priority: 3000.2
         });
         _inject2({
-          ltr: "@media (max-width: 640px){.gridTemplateAreas-xesbpuc.gridTemplateAreas-xesbpuc{grid-template-areas:\\"content\\" \\"sidebar\\"}}",
-          priority: 2200
+          ltr: "@media (max-width: 640px){.gridTemplateAreas-xesbpuc{grid-template-areas:\\"content\\" \\"sidebar\\"}}",
+          priority: 2000.2
         });
         _inject2({
-          ltr: "@media (max-width: 640px){.gridTemplateColumns-x15nfgh4.gridTemplateColumns-x15nfgh4{grid-template-columns:100%}}",
-          priority: 3200
+          ltr: "@media (max-width: 640px){.gridTemplateColumns-x15nfgh4{grid-template-columns:100%}}",
+          priority: 3000.2
         });
         _inject2({
           ltr: ".gridTemplateColumns-x1mkdm3x{grid-template-columns:minmax(0,1fr)}",
@@ -2023,16 +2023,16 @@ describe('@stylexjs/babel-plugin', () => {
           priority: 2000
         });
         _inject2({
-          ltr: "@media (max-width: 640px){.gridTemplateRows-xmr4b4k.gridTemplateRows-xmr4b4k{grid-template-rows:minmax(0,1fr) auto}}",
-          priority: 3200
+          ltr: "@media (max-width: 640px){.gridTemplateRows-xmr4b4k{grid-template-rows:minmax(0,1fr) auto}}",
+          priority: 3000.2
         });
         _inject2({
-          ltr: "@media (max-width: 640px){.gridTemplateAreas-xesbpuc.gridTemplateAreas-xesbpuc{grid-template-areas:\\"content\\" \\"sidebar\\"}}",
-          priority: 2200
+          ltr: "@media (max-width: 640px){.gridTemplateAreas-xesbpuc{grid-template-areas:\\"content\\" \\"sidebar\\"}}",
+          priority: 2000.2
         });
         _inject2({
-          ltr: "@media (max-width: 640px){.gridTemplateColumns-x15nfgh4.gridTemplateColumns-x15nfgh4{grid-template-columns:100%}}",
-          priority: 3200
+          ltr: "@media (max-width: 640px){.gridTemplateColumns-x15nfgh4{grid-template-columns:100%}}",
+          priority: 3000.2
         });
         _inject2({
           ltr: ".gridTemplateColumns-x1mkdm3x{grid-template-columns:minmax(0,1fr)}",
@@ -2168,16 +2168,16 @@ describe('@stylexjs/babel-plugin', () => {
           priority: 2000
         });
         _inject2({
-          ltr: "@media (max-width: 640px){.gridTemplateRows-xmr4b4k.gridTemplateRows-xmr4b4k{grid-template-rows:minmax(0,1fr) auto}}",
-          priority: 3200
+          ltr: "@media (max-width: 640px){.gridTemplateRows-xmr4b4k{grid-template-rows:minmax(0,1fr) auto}}",
+          priority: 3000.2
         });
         _inject2({
-          ltr: "@media (max-width: 640px){.gridTemplateAreas-xesbpuc.gridTemplateAreas-xesbpuc{grid-template-areas:\\"content\\" \\"sidebar\\"}}",
-          priority: 2200
+          ltr: "@media (max-width: 640px){.gridTemplateAreas-xesbpuc{grid-template-areas:\\"content\\" \\"sidebar\\"}}",
+          priority: 2000.2
         });
         _inject2({
-          ltr: "@media (max-width: 640px){.gridTemplateColumns-x15nfgh4.gridTemplateColumns-x15nfgh4{grid-template-columns:100%}}",
-          priority: 3200
+          ltr: "@media (max-width: 640px){.gridTemplateColumns-x15nfgh4{grid-template-columns:100%}}",
+          priority: 3000.2
         });
         _inject2({
           ltr: ".gridTemplateColumns-x1mkdm3x{grid-template-columns:minmax(0,1fr)}",
@@ -2311,16 +2311,16 @@ describe('@stylexjs/babel-plugin', () => {
           priority: 2000
         });
         _inject2({
-          ltr: "@media (max-width: 640px){.gridTemplateRows-xmr4b4k.gridTemplateRows-xmr4b4k{grid-template-rows:minmax(0,1fr) auto}}",
-          priority: 3200
+          ltr: "@media (max-width: 640px){.gridTemplateRows-xmr4b4k{grid-template-rows:minmax(0,1fr) auto}}",
+          priority: 3000.2
         });
         _inject2({
-          ltr: "@media (max-width: 640px){.gridTemplateAreas-xesbpuc.gridTemplateAreas-xesbpuc{grid-template-areas:\\"content\\" \\"sidebar\\"}}",
-          priority: 2200
+          ltr: "@media (max-width: 640px){.gridTemplateAreas-xesbpuc{grid-template-areas:\\"content\\" \\"sidebar\\"}}",
+          priority: 2000.2
         });
         _inject2({
-          ltr: "@media (max-width: 640px){.gridTemplateColumns-x15nfgh4.gridTemplateColumns-x15nfgh4{grid-template-columns:100%}}",
-          priority: 3200
+          ltr: "@media (max-width: 640px){.gridTemplateColumns-x15nfgh4{grid-template-columns:100%}}",
+          priority: 3000.2
         });
         _inject2({
           ltr: ".gridTemplateColumns-x1mkdm3x{grid-template-columns:minmax(0,1fr)}",

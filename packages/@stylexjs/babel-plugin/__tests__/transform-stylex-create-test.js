@@ -2461,26 +2461,26 @@ describe('@stylexjs/babel-plugin', () => {
                 [
                   "xdm03ys",
                   {
-                    "ltr": "@media (min-width: 500.01px) and (max-width: 900px){.xdm03ys.xdm03ys{background-color:blue}}",
+                    "ltr": "@media (min-width: 500.01px) and (max-width: 900px){.xdm03ys{background-color:blue}}",
                     "rtl": null,
                   },
-                  3200,
+                  3000.2,
                 ],
                 [
                   "xb3e2qq",
                   {
-                    "ltr": "@media (min-width: 400.01px) and (max-width: 500px){.xb3e2qq.xb3e2qq{background-color:purple}}",
+                    "ltr": "@media (min-width: 400.01px) and (max-width: 500px){.xb3e2qq{background-color:purple}}",
                     "rtl": null,
                   },
-                  3200,
+                  3000.2,
                 ],
                 [
                   "x856a2w",
                   {
-                    "ltr": "@media (max-width: 400px){.x856a2w.x856a2w{background-color:green}}",
+                    "ltr": "@media (max-width: 400px){.x856a2w{background-color:green}}",
                     "rtl": null,
                   },
-                  3200,
+                  3000.2,
                 ],
               ],
             }
@@ -2527,26 +2527,26 @@ describe('@stylexjs/babel-plugin', () => {
                 [
                   "x1qc147k",
                   {
-                    "ltr": "@media (((screen) and (max-width: 900px) and (not (screen)) and (not (screen))) or ((screen) and (max-width: 900px) and (not (screen)) and (not (max-width: 400px)))) or (((screen) and (max-width: 900px) and (not (max-width: 500px)) and (not (screen))) or ((screen) and (max-width: 900px) and (not (max-width: 500px)) and (not (max-width: 400px)))){.x1qc147k.x1qc147k{background-color:blue}}",
+                    "ltr": "@media (((screen) and (max-width: 900px) and (not (screen)) and (not (screen))) or ((screen) and (max-width: 900px) and (not (screen)) and (not (max-width: 400px)))) or (((screen) and (max-width: 900px) and (not (max-width: 500px)) and (not (screen))) or ((screen) and (max-width: 900px) and (not (max-width: 500px)) and (not (max-width: 400px)))){.x1qc147k{background-color:blue}}",
                     "rtl": null,
                   },
-                  3200,
+                  3000.2,
                 ],
                 [
                   "x9qmkci",
                   {
-                    "ltr": "@media ((screen) and (max-width: 500px) and (not (screen))) or ((screen) and (max-width: 500px) and (not (max-width: 400px))){.x9qmkci.x9qmkci{background-color:purple}}",
+                    "ltr": "@media ((screen) and (max-width: 500px) and (not (screen))) or ((screen) and (max-width: 500px) and (not (max-width: 400px))){.x9qmkci{background-color:purple}}",
                     "rtl": null,
                   },
-                  3200,
+                  3000.2,
                 ],
                 [
                   "x17z8iku",
                   {
-                    "ltr": "@media (screen) and (max-width: 400px){.x17z8iku.x17z8iku{background-color:green}}",
+                    "ltr": "@media (screen) and (max-width: 400px){.x17z8iku{background-color:green}}",
                     "rtl": null,
                   },
-                  3200,
+                  3000.2,
                 ],
               ],
             }
@@ -2593,26 +2593,26 @@ describe('@stylexjs/babel-plugin', () => {
                 [
                   "xn8cmr1",
                   {
-                    "ltr": "@media (max-width: 900px){.xn8cmr1.xn8cmr1{background-color:blue}}",
+                    "ltr": "@media (max-width: 900px){.xn8cmr1{background-color:blue}}",
                     "rtl": null,
                   },
-                  3200,
+                  3000.2,
                 ],
                 [
                   "x1lr89ez",
                   {
-                    "ltr": "@media (max-width: 500px){.x1lr89ez.x1lr89ez{background-color:purple}}",
+                    "ltr": "@media (max-width: 500px){.x1lr89ez{background-color:purple}}",
                     "rtl": null,
                   },
-                  3200,
+                  3000.2,
                 ],
                 [
                   "x856a2w",
                   {
-                    "ltr": "@media (max-width: 400px){.x856a2w.x856a2w{background-color:green}}",
+                    "ltr": "@media (max-width: 400px){.x856a2w{background-color:green}}",
                     "rtl": null,
                   },
-                  3200,
+                  3000.2,
                 ],
               ],
             }
@@ -2657,18 +2657,18 @@ describe('@stylexjs/babel-plugin', () => {
                 [
                   "xw6up8c",
                   {
-                    "ltr": "@media (min-width: 1000px) and (max-width: 1999.99px){.xw6up8c.xw6up8c{background-color:blue}}",
+                    "ltr": "@media (min-width: 1000px) and (max-width: 1999.99px){.xw6up8c{background-color:blue}}",
                     "rtl": null,
                   },
-                  3200,
+                  3000.2,
                 ],
                 [
                   "x1ssfqz5",
                   {
-                    "ltr": "@media (min-width: 2000px){.x1ssfqz5.x1ssfqz5{background-color:purple}}",
+                    "ltr": "@media (min-width: 2000px){.x1ssfqz5{background-color:purple}}",
                     "rtl": null,
                   },
-                  3200,
+                  3000.2,
                 ],
               ],
             }
@@ -2711,18 +2711,18 @@ describe('@stylexjs/babel-plugin', () => {
                 [
                   "x6m3b6q",
                   {
-                    "ltr": "@supports (hover: hover){.x6m3b6q.x6m3b6q{background-color:blue}}",
+                    "ltr": "@supports (hover: hover){.x6m3b6q{background-color:blue}}",
                     "rtl": null,
                   },
-                  3030,
+                  3000.03,
                 ],
                 [
                   "x6um648",
                   {
-                    "ltr": "@supports not (hover: hover){.x6um648.x6um648{background-color:purple}}",
+                    "ltr": "@supports not (hover: hover){.x6um648{background-color:purple}}",
                     "rtl": null,
                   },
-                  3030,
+                  3000.03,
                 ],
               ],
             }
@@ -2767,18 +2767,18 @@ describe('@stylexjs/babel-plugin', () => {
                 [
                   "x1w3nbkt",
                   {
-                    "ltr": "@media (min-width: 800px){.x1w3nbkt.x1w3nbkt{font-size:2rem}}",
+                    "ltr": "@media (min-width: 800px){.x1w3nbkt{font-size:2rem}}",
                     "rtl": null,
                   },
-                  3200,
+                  3000.2,
                 ],
                 [
                   "xicay7j",
                   {
-                    "ltr": "@media (min-width: 800px){.xicay7j.xicay7j:hover{font-size:2.2rem}}",
+                    "ltr": "@media (min-width: 800px){.xicay7j:hover{font-size:2.2rem}}",
                     "rtl": null,
                   },
-                  3330,
+                  3130.2,
                 ],
               ],
             }
@@ -2820,10 +2820,10 @@ describe('@stylexjs/babel-plugin', () => {
                 [
                   "x1vazst0",
                   {
-                    "ltr": "@media (min-width: 768px){.x1vazst0.x1vazst0{position:sticky;position:fixed}}",
+                    "ltr": "@media (min-width: 768px){.x1vazst0{position:sticky;position:fixed}}",
                     "rtl": null,
                   },
-                  3200,
+                  3000.2,
                 ],
               ],
             }
@@ -5024,18 +5024,18 @@ describe('@stylexjs/babel-plugin', () => {
                 [
                   "x38mdg9",
                   {
-                    "ltr": "@media (min-width: 1000px) and (max-width: 1999.99px){.x38mdg9.x38mdg9{width:var(--x-wm47pl)}}",
+                    "ltr": "@media (min-width: 1000px) and (max-width: 1999.99px){.x38mdg9{width:var(--x-wm47pl)}}",
                     "rtl": null,
                   },
-                  4200,
+                  4000.2,
                 ],
                 [
                   "x1bai16n",
                   {
-                    "ltr": "@media (min-width: 2000px){.x1bai16n.x1bai16n{width:var(--x-1obb2yn)}}",
+                    "ltr": "@media (min-width: 2000px){.x1bai16n{width:var(--x-1obb2yn)}}",
                     "rtl": null,
                   },
-                  4200,
+                  4000.2,
                 ],
                 [
                   "--x-1xmrurk",
@@ -5106,18 +5106,18 @@ describe('@stylexjs/babel-plugin', () => {
                 [
                   "x1iuwwch",
                   {
-                    "ltr": "@supports (hover: hover){.x1iuwwch.x1iuwwch{color:var(--x-b262sw)}}",
+                    "ltr": "@supports (hover: hover){.x1iuwwch{color:var(--x-b262sw)}}",
                     "rtl": null,
                   },
-                  3030,
+                  3000.03,
                 ],
                 [
                   "x5268pl",
                   {
-                    "ltr": "@supports not (hover: hover){.x5268pl.x5268pl{color:var(--x-wu2acw)}}",
+                    "ltr": "@supports not (hover: hover){.x5268pl{color:var(--x-wu2acw)}}",
                     "rtl": null,
                   },
-                  3030,
+                  3000.03,
                 ],
                 [
                   "--x-4xs81a",
@@ -5190,18 +5190,18 @@ describe('@stylexjs/babel-plugin', () => {
                 [
                   "xfqys7t",
                   {
-                    "ltr": "@media (min-width: 800px){.xfqys7t.xfqys7t{font-size:var(--x-1xajcet)}}",
+                    "ltr": "@media (min-width: 800px){.xfqys7t{font-size:var(--x-1xajcet)}}",
                     "rtl": null,
                   },
-                  3200,
+                  3000.2,
                 ],
                 [
                   "x13w7uki",
                   {
-                    "ltr": "@media (min-width: 800px){.x13w7uki.x13w7uki:hover{font-size:var(--x-ke45ok)}}",
+                    "ltr": "@media (min-width: 800px){.x13w7uki:hover{font-size:var(--x-ke45ok)}}",
                     "rtl": null,
                   },
-                  3330,
+                  3130.2,
                 ],
                 [
                   "--x-19zvkyr",
@@ -5274,18 +5274,18 @@ describe('@stylexjs/babel-plugin', () => {
                 [
                   "xqdov8i",
                   {
-                    "ltr": "@media (min-width: 800px) and (max-width: 1279.99px){.xqdov8i.xqdov8i{font-size:var(--x-1bks2es)}}",
+                    "ltr": "@media (min-width: 800px) and (max-width: 1279.99px){.xqdov8i{font-size:var(--x-1bks2es)}}",
                     "rtl": null,
                   },
-                  3200,
+                  3000.2,
                 ],
                 [
                   "x1j86d60",
                   {
-                    "ltr": "@media (min-width: 1280px){.x1j86d60.x1j86d60{font-size:var(--x-q0n1i6)}}",
+                    "ltr": "@media (min-width: 1280px){.x1j86d60{font-size:var(--x-q0n1i6)}}",
                     "rtl": null,
                   },
-                  3200,
+                  3000.2,
                 ],
                 [
                   "--x-19zvkyr",
@@ -5918,12 +5918,12 @@ describe('@stylexjs/babel-plugin', () => {
             priority: 3000
           });
           _inject2({
-            ltr: "@media (min-width: 1000px){.xc445zv.xc445zv{background-color:blue}}",
-            priority: 3200
+            ltr: "@media (min-width: 1000px){.xc445zv{background-color:blue}}",
+            priority: 3000.2
           });
           _inject2({
-            ltr: "@media (min-width: 2000px){.x1ssfqz5.x1ssfqz5{background-color:purple}}",
-            priority: 3200
+            ltr: "@media (min-width: 2000px){.x1ssfqz5{background-color:purple}}",
+            priority: 3000.2
           });"
         `);
       });
@@ -5956,12 +5956,12 @@ describe('@stylexjs/babel-plugin', () => {
             priority: 3000
           });
           _inject2({
-            ltr: "@supports (hover: hover){.x6m3b6q.x6m3b6q{background-color:blue}}",
-            priority: 3030
+            ltr: "@supports (hover: hover){.x6m3b6q{background-color:blue}}",
+            priority: 3000.03
           });
           _inject2({
-            ltr: "@supports not (hover: hover){.x6um648.x6um648{background-color:purple}}",
-            priority: 3030
+            ltr: "@supports not (hover: hover){.x6um648{background-color:purple}}",
+            priority: 3000.03
           });"
         `);
       });

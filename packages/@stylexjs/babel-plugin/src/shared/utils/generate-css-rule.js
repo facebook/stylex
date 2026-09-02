@@ -16,6 +16,11 @@ import generateLtr from '../physical-rtl/generate-ltr';
 import generateRtl from '../physical-rtl/generate-rtl';
 import { getPriority } from '@stylexjs/shared';
 
+// Adjacent pseudo-class ranks are 1 apart, so the at-rules of a rule are summed
+// and then divided down to stay below that gap. The highest at-rule rank is 300
+// (`@container`), leaving room for three nested at-rules.
+const AT_RULE_SCALE = 1000;
+
 const THUMB_VARIANTS = [
   '::-webkit-slider-thumb',
   '::-moz-range-thumb',
@@ -52,21 +57,17 @@ function buildNestedCSSRule(
   const hasWhere = pseudo.includes(':where(');
   const extraClassForWhere = hasWhere ? `.${className}` : '';
 
-  let selectorForAtRules =
-    `.${className}` +
-    extraClassForWhere +
-    combinedAtRules.map(() => `.${className}`).join('') +
-    pseudo;
+  // At-rules add no specificity. Every rule for a property is emitted with the
+  // same weight so that `priority` alone decides which one wins.
+  let selector = `.${className}` + extraClassForWhere + pseudo;
 
   if (pseudos.includes('::thumb')) {
-    selectorForAtRules = THUMB_VARIANTS.map(
-      (suffix) => selectorForAtRules + suffix,
-    ).join(', ');
+    selector = THUMB_VARIANTS.map((suffix) => selector + suffix).join(', ');
   }
 
   return combinedAtRules.reduce(
-    (acc, combinedAtRules) => `${combinedAtRules}{${acc}}`,
-    `${selectorForAtRules}{${decls}}`,
+    (acc, atRule) => `${atRule}{${acc}}`,
+    `${selector}{${decls}}`,
   );
 }
 
@@ -103,11 +104,17 @@ export function generateCSSRule(
     ? null
     : buildNestedCSSRule(className, rtlDecls, pseudos, atRules, constRules);
 
+  const sumPriorities = (keys: $ReadOnlyArray<string>) =>
+    keys.map(getPriority).reduce((a, b) => a + b, 0);
+
+  // An at-rule refines a state rather than outranking it: `:active` has to beat
+  // `:hover` even when the hover styles are nested in a media query. Scaling the
+  // at-rules down leaves them to only break ties between rules that share the
+  // same property and pseudo-classes.
   const priority =
     getPriority(key) +
-    pseudos.map(getPriority).reduce((a, b) => a + b, 0) +
-    atRules.map(getPriority).reduce((a, b) => a + b, 0) +
-    constRules.map(getPriority).reduce((a, b) => a + b, 0);
+    sumPriorities(pseudos) +
+    (sumPriorities(atRules) + sumPriorities(constRules)) / AT_RULE_SCALE;
 
   return { priority, ltr: ltrRule, rtl: rtlRule };
 }

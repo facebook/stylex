@@ -419,10 +419,10 @@ describe('@stylexjs/babel-plugin', () => {
             [
               "xbs0o1n",
               {
-                "ltr": "var(--x1r2wpmh){.xbs0o1n.xbs0o1n{color:blue}}",
+                "ltr": "var(--x1r2wpmh){.xbs0o1n{color:blue}}",
                 "rtl": null,
               },
-              6000,
+              3000.2,
             ],
           ],
         }
@@ -617,10 +617,10 @@ describe('@stylexjs/babel-plugin', () => {
             [
               "xbs0o1n",
               {
-                "ltr": "var(--x1r2wpmh){.xbs0o1n.xbs0o1n{color:blue}}",
+                "ltr": "var(--x1r2wpmh){.xbs0o1n{color:blue}}",
                 "rtl": null,
               },
-              6000,
+              3000.2,
             ],
             [
               "x3d248p",
@@ -684,18 +684,18 @@ describe('@stylexjs/babel-plugin', () => {
             [
               "xbs0o1n",
               {
-                "ltr": "var(--x1r2wpmh){.xbs0o1n.xbs0o1n{color:blue}}",
+                "ltr": "var(--x1r2wpmh){.xbs0o1n{color:blue}}",
                 "rtl": null,
               },
-              6000,
+              3000.2,
             ],
             [
               "x1ru35j7",
               {
-                "ltr": "var(--xr4bctk){.x1ru35j7.x1ru35j7{color:yellow}}",
+                "ltr": "var(--xr4bctk){.x1ru35j7{color:yellow}}",
                 "rtl": null,
               },
-              6000,
+              3000.2,
             ],
           ],
         }
@@ -745,18 +745,18 @@ describe('@stylexjs/babel-plugin', () => {
             [
               "x1iobwbz",
               {
-                "ltr": "var(--xr4bctk){.x1iobwbz.x1iobwbz{color:var(--x1itgfi6)}}",
+                "ltr": "var(--xr4bctk){.x1iobwbz{color:var(--x1itgfi6)}}",
                 "rtl": null,
               },
-              6000,
+              3000.2,
             ],
             [
               "xrf68et",
               {
-                "ltr": "var(--x1r2wpmh){var(--xr4bctk){.xrf68et.xrf68et.xrf68et{color:var(--x9g651j)}}}",
+                "ltr": "var(--x1r2wpmh){var(--xr4bctk){.xrf68et{color:var(--x9g651j)}}}",
                 "rtl": null,
               },
-              9000,
+              3000.4,
             ],
           ],
         }
