@@ -230,7 +230,7 @@ export type StyleXStyles<
   | false
   | GenStylePropType<CSS>
   | Readonly<[GenStylePropType<CSS>, InlineStyles]>
-  | StyleXMarkerToken
+  | StyleXMarker
 >;
 export type StyleXStylesWithout<CSS extends UserAuthoredStyles> = StyleXStyles<
   Omit<CSSPropertiesWithExtras, keyof CSS>
@@ -315,17 +315,13 @@ export type StyleX$CreateTheme = <
   overrides: OverridesForTokenType<TokensFromVarGroup<TVars>>,
 ) => Theme<TVars, ThemeID>;
 
-export type StyleX$DefineMarker = () => MapNamespace<{
+export type StyleXMarker = MapNamespace<{
   readonly marker: symbol;
 }>;
 
-export type StyleX$DefaultMarker = () => MapNamespace<{
-  readonly marker: 'default-marker';
-}>;
+export type StyleX$DefineMarker = () => StyleXMarker;
 
-export type StyleXMarkerToken =
-  | ReturnType<StyleX$DefineMarker>
-  | ReturnType<StyleX$DefaultMarker>;
+export type StyleX$DefaultMarker = () => StyleXMarker;
 
 export type StyleX$When = {
   ancestor: <

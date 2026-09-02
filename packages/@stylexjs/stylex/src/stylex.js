@@ -26,7 +26,7 @@ import type {
   StyleX$DefineConsts,
   StyleXArray,
   StyleXClassNameFor,
-  StyleXMarkerToken,
+  StyleXMarker,
   StyleXStyles,
   StyleXStylesWithout,
   StyleXVar,
@@ -35,7 +35,6 @@ import type {
   PositionTry,
   ViewTransitionClass,
   StyleX$When,
-  MapNamespace,
   StyleX$DefaultMarker,
   StyleX$DefineMarker,
   StyleX$Env,
@@ -53,7 +52,7 @@ export type {
   StaticStylesWithout,
   StyleXArray,
   StyleXClassNameFor,
-  StyleXMarkerToken,
+  StyleXMarker,
   StyleXStyles,
   StyleXStylesWithout,
   StyleXVar,
@@ -211,11 +210,7 @@ export const viewTransitionClass = (
   throw errorForFn('viewTransitionClass');
 };
 
-export const defaultMarker = (): MapNamespace<
-  Readonly<{
-    marker: 'default-marker',
-  }>,
-> => {
+export const defaultMarker: StyleX$DefaultMarker = () => {
   throw errorForFn('defaultMarker');
 };
 

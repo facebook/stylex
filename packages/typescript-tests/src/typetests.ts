@@ -10,7 +10,7 @@
 import * as stylex from '@stylexjs/stylex';
 import type {
   StaticStyles,
-  StyleXMarkerToken,
+  StyleXMarker,
   StyleXStyles,
   StaticStylesWithout,
   StyleXStylesWithout,
@@ -322,27 +322,28 @@ const styles9 = stylex.create({
 /**
  * MARKER STYLES
  *
- * stylex.defaultMarker() and stylex.defineMarker() should be accepted by
- * StyleXStyles<T> for any T, enabling the marker API at component prop boundaries.
+ * `stylex.defaultMarker()` and `stylex.defineMarker()` both return a
+ * `StyleXMarker` which `StyleXStyles<T>` accepts for any `T`, so that markers
+ * can be passed across component prop boundaries.
  */
 
-const defaultMarkerToken = stylex.defaultMarker();
-const customMarkerToken = stylex.defineMarker();
+const defaultMarker = stylex.defaultMarker();
+const customMarker = stylex.defineMarker();
 
-// Marker tokens satisfy StyleXMarkerToken
-defaultMarkerToken satisfies StyleXMarkerToken;
-customMarkerToken satisfies StyleXMarkerToken;
+// Markers satisfy StyleXMarker
+defaultMarker satisfies StyleXMarker;
+customMarker satisfies StyleXMarker;
 
-// Marker tokens are accepted by constrained StyleXStyles<T>
-defaultMarkerToken satisfies StyleXStyles<{ margin?: string }>;
-customMarkerToken satisfies StyleXStyles<{ margin?: string }>;
+// Marker are accepted by constrained StyleXStyles<T>
+defaultMarker satisfies StyleXStyles<{ margin?: string }>;
+customMarker satisfies StyleXStyles<{ margin?: string }>;
 
 // Mixed array: layout styles + marker token through a constrained prop type
 const layoutStyles = stylex.create({ base: { margin: '8px' } });
-[layoutStyles.base, defaultMarkerToken] satisfies StyleXStyles<{
+[layoutStyles.base, defaultMarker] satisfies StyleXStyles<{
   margin?: string;
 }>;
-[layoutStyles.base, customMarkerToken] satisfies StyleXStyles<{
+[layoutStyles.base, customMarker] satisfies StyleXStyles<{
   margin?: string;
 }>;
 
