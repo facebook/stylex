@@ -189,6 +189,45 @@ describe('@stylexjs/unplugin', () => {
     }
   });
 
+  test('forwards `babel` option to the internal transformAsync call', async () => {
+    // Babel will only throw about a bad `configFile` if the option reached transformAsync.
+    const plugin = unplugin.raw({
+      dev: false,
+      devPersistToDisk: false,
+      babel: { configFile: '/definitely/does/not/exist/babel.config.js' },
+    });
+    if (typeof plugin.buildStart === 'function') {
+      plugin.buildStart();
+    }
+    const source = `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({ foo: { color: 'red' } });
+      export default styles;
+    `;
+    await expect(
+      plugin.transform(source, '/virtual/example.js'),
+    ).rejects.toThrow(/definitely\/does\/not\/exist\/babel\.config\.js/);
+  });
+
+  test('consumer-supplied `babel` options cannot override plugin internals', async () => {
+    // Pass-through must not be able to override `babelrc: false` / `filename`.
+    const plugin = unplugin.raw({
+      dev: false,
+      devPersistToDisk: false,
+      babel: { babelrc: true, filename: '/should/be/ignored.js' },
+    });
+    if (typeof plugin.buildStart === 'function') {
+      plugin.buildStart();
+    }
+    const source = `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({ foo: { color: 'red' } });
+      export default styles;
+    `;
+    const result = await plugin.transform(source, '/virtual/example.js');
+    expect(result).not.toBeNull();
+  });
+
   test('marks StyleX deps as non-optimized in Vite', async () => {
     const tempDir = fs.mkdtempSync(
       path.join(os.tmpdir(), 'stylex-unplugin-vite-'),
