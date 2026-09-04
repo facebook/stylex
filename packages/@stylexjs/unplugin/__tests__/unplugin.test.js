@@ -477,24 +477,43 @@ describe('@stylexjs/unplugin', () => {
     });
 
     test('is cleared when the httpServer closes', () => {
-      const plugin = unplugin.vite({ dev: true });
-      const closeListeners = [];
-      const httpServer = {
-        once(event, fn) {
-          if (event === 'close') closeListeners.push(fn);
-        },
-      };
-      const server = makeServer(httpServer);
-      plugin.configureServer(server);
+      jest.useFakeTimers();
+      try {
+        const plugin = unplugin.vite({ dev: true });
+        const closeListeners = [];
+        const httpServer = {
+          once(event, fn) {
+            if (event === 'close') closeListeners.push(fn);
+          },
+        };
+        const sent = [];
+        const server = {
+          middlewares: { use: () => {} },
+          ws: { send: (msg) => sent.push(msg) },
+          httpServer,
+        };
+        plugin.configureServer(server);
+        expect(server.__stylexSharedPollingInterval).toBeDefined();
+        expect(closeListeners).toHaveLength(1);
 
-      const interval = server.__stylexSharedPollingInterval;
-      expect(interval).toBeDefined();
-      expect(closeListeners.length).toBe(1);
-      // Simulate the server closing.
-      closeListeners[0]();
-      // After close the timer is cleared: calling clearInterval again is safe,
-      // and the interval no longer has a ref either way.
-      expect(() => clearInterval(interval)).not.toThrow();
+        const shared = plugin.__stylexGetSharedStore();
+        const updates = () =>
+          sent.filter((m) => m && m.event === 'stylex:css-update');
+
+        // A version bump is picked up on the next poll.
+        shared.version += 1;
+        jest.advanceTimersByTime(150);
+        expect(updates()).toHaveLength(1);
+
+        // Simulate the server closing: the timer is cleared, so later bumps
+        // are never broadcast.
+        closeListeners[0]();
+        shared.version += 1;
+        jest.advanceTimersByTime(1500);
+        expect(updates()).toHaveLength(1);
+      } finally {
+        jest.useRealTimers();
+      }
     });
   });
 });
