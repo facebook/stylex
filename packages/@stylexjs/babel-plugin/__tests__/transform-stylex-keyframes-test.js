@@ -121,7 +121,7 @@ describe('@stylexjs/babel-plugin', () => {
         const name = "x2up61p-B";
         export const styles = {
           root: {
-            kKVMdj: "xx2qnu0",
+            am: "xx2qnu0",
             $$css: true
           }
         };"
@@ -172,7 +172,7 @@ describe('@stylexjs/babel-plugin', () => {
         "import * as stylex from '@stylexjs/stylex';
         export const styles = {
           root: {
-            kKVMdj: "xx2qnu0",
+            am: "xx2qnu0",
             $$css: true
           }
         };"

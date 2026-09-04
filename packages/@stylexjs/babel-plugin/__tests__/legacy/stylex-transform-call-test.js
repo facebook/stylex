@@ -158,11 +158,11 @@ describe('@stylexjs/babel-plugin', () => {
         });
         const styles = {
           "0": {
-            kMwMTN: "x1e2nbdu",
+            c: "x1e2nbdu",
             $$css: true
           },
           "1": {
-            kWkggS: "x1t391ir",
+            bg: "x1t391ir",
             $$css: true
           }
         };
@@ -279,11 +279,11 @@ describe('@stylexjs/babel-plugin', () => {
         });
         const styles = {
           foo: {
-            kMwMTN: "x1e2nbdu",
+            c: "x1e2nbdu",
             $$css: true
           },
           bar: {
-            kWkggS: "x1t391ir",
+            bg: "x1t391ir",
             $$css: true
           }
         };
@@ -367,15 +367,15 @@ describe('@stylexjs/babel-plugin', () => {
         });
         export const styles = {
           foo: {
-            kmVPX3: "x14odnwx",
-            kg3NbH: null,
+            p: "x14odnwx",
+            pi: null,
             kuDDbn: null,
-            kE3dHu: null,
+            pl: null,
             kP0aTx: null,
-            kpe85a: null,
-            k8WAf4: null,
-            kLKAdn: null,
-            kGO01o: null,
+            pr: null,
+            pbk: null,
+            pt: null,
+            pb: null,
             $$css: true
           }
         };
@@ -422,7 +422,7 @@ describe('@stylexjs/babel-plugin', () => {
         });
         const styles = {
           foo: {
-            kmVPX3: "x14odnwx",
+            p: "x14odnwx",
             $$css: true
           }
         };
@@ -473,15 +473,15 @@ describe('@stylexjs/babel-plugin', () => {
         });
         const styles = {
           foo: {
-            kmVPX3: "x14odnwx",
-            kg3NbH: null,
+            p: "x14odnwx",
+            pi: null,
             kuDDbn: null,
-            kE3dHu: null,
+            pl: null,
             kP0aTx: null,
-            kpe85a: null,
-            k8WAf4: null,
-            kLKAdn: null,
-            kGO01o: null,
+            pr: null,
+            pbk: null,
+            pt: null,
+            pb: null,
             $$css: true
           }
         };
@@ -532,12 +532,12 @@ describe('@stylexjs/babel-plugin', () => {
         });
         const styles = {
           foo: {
-            kmVPX3: "x14odnwx",
-            kLKAdn: null,
+            p: "x14odnwx",
+            pt: null,
             $$css: true
           },
           baz: {
-            kLKAdn: "xm7lytj",
+            pt: "xm7lytj",
             $$css: true
           }
         };
@@ -585,12 +585,12 @@ describe('@stylexjs/babel-plugin', () => {
         });
         const styles = {
           foo: {
-            kmVPX3: "x14odnwx",
-            k8WAf4: null,
+            p: "x14odnwx",
+            pbk: null,
             $$css: true
           },
           bar: {
-            k8WAf4: "xp59q4u",
+            pbk: "xp59q4u",
             $$css: true
           }
         };
@@ -873,11 +873,11 @@ describe('@stylexjs/babel-plugin', () => {
           });
           const styles = {
             default: {
-              kWkggS: "xrkmrrc",
+              bg: "xrkmrrc",
               $$css: true
             },
             active: {
-              kMwMTN: "xju2f9n",
+              c: "xju2f9n",
               $$css: true
             }
           };
@@ -1089,11 +1089,11 @@ describe('@stylexjs/babel-plugin', () => {
           });
           const styles = {
             red: {
-              kMwMTN: "x1e2nbdu",
+              c: "x1e2nbdu",
               $$css: true
             },
             blue: {
-              kMwMTN: "xju2f9n",
+              c: "xju2f9n",
               $$css: true
             }
           };
@@ -1159,11 +1159,11 @@ describe('@stylexjs/babel-plugin', () => {
           });
           const styles = {
             red: {
-              kMwMTN: "x1e2nbdu",
+              c: "x1e2nbdu",
               $$css: true
             },
             blue: {
-              kMwMTN: null,
+              c: null,
               $$css: true
             }
           };
@@ -1233,7 +1233,7 @@ describe('@stylexjs/babel-plugin', () => {
           });
           const styles = {
             default: {
-              "color-kMwMTN": "x1e2nbdu",
+              "color-c": "x1e2nbdu",
               $$css: "js/FooBar.react.js:4"
             }
           };
@@ -1243,7 +1243,7 @@ describe('@stylexjs/babel-plugin', () => {
           });
           const otherStyles = {
             default: {
-              "backgroundColor-kWkggS": "x1t391ir",
+              "backgroundColor-bg": "x1t391ir",
               $$css: "js/FooBar.react.js:9"
             }
           };
@@ -1280,11 +1280,11 @@ describe('@stylexjs/babel-plugin', () => {
           });
           const styles = {
             default: {
-              "color-kMwMTN": "x1e2nbdu",
+              "color-c": "x1e2nbdu",
               $$css: "js/FooBar.react.js:4"
             },
             active: {
-              "color-kMwMTN": "xju2f9n",
+              "color-c": "xju2f9n",
               $$css: "js/FooBar.react.js:7"
             }
           };
@@ -1399,11 +1399,11 @@ describe('@stylexjs/babel-plugin', () => {
         });
         const styles = {
           "0": {
-            kMwMTN: "x1e2nbdu",
+            c: "x1e2nbdu",
             $$css: true
           },
           "1": {
-            kWkggS: "x1t391ir",
+            bg: "x1t391ir",
             $$css: true
           }
         };
@@ -1432,7 +1432,7 @@ describe('@stylexjs/babel-plugin', () => {
         });
         const styles = {
           default: {
-            kogj98: "x1d6cl6p",
+            m: "x1d6cl6p",
             $$css: true
           }
         };
@@ -1461,7 +1461,7 @@ describe('@stylexjs/babel-plugin', () => {
         });
         const styles = {
           default: {
-            kMwMTN: "x1e2nbdu",
+            c: "x1e2nbdu",
             $$css: true
           }
         };
@@ -1538,8 +1538,8 @@ describe('@stylexjs/babel-plugin', () => {
         });
         export const styles = {
           default: {
-            kMwMTN: "x17z2mba",
-            kWkggS: "xc445zv",
+            c: "x17z2mba",
+            bg: "xc445zv",
             $$css: true
           }
         };
@@ -1577,11 +1577,11 @@ describe('@stylexjs/babel-plugin', () => {
           });
           const styles = {
             "0": {
-              kMwMTN: "x1e2nbdu",
+              c: "x1e2nbdu",
               $$css: true
             },
             "1": {
-              kWkggS: "x1t391ir",
+              bg: "x1t391ir",
               $$css: true
             }
           };"
@@ -1635,7 +1635,7 @@ describe('@stylexjs/babel-plugin', () => {
           });
           const styles = {
             foo: {
-              kMwMTN: "x1e2nbdu",
+              c: "x1e2nbdu",
               $$css: true
             }
           };"
@@ -1663,7 +1663,7 @@ describe('@stylexjs/babel-plugin', () => {
           });
           const styles = {
             default: {
-              kMwMTN: "x1e2nbdu",
+              c: "x1e2nbdu",
               $$css: true
             }
           };"
@@ -1709,7 +1709,7 @@ describe('@stylexjs/babel-plugin', () => {
               kX8ASl: "x16gpukw",
               kLDBTA: "x13nwy86",
               km2aEK: "x2ekbea",
-              k4EQJz: "x1o3008b",
+              bb: "x1o3008b",
               $$css: true
             }
           };
@@ -2036,43 +2036,43 @@ describe('@stylexjs/babel-plugin', () => {
         });
         export const styles = {
           sidebar: {
-            "boxSizing-kB7OPa": "x9f619",
-            "gridArea-kJuA4N": "x1yc5d2u",
-            "gridRow-kbNqZ1": null,
-            "gridRowStart-k1lYIM": null,
-            "gridRowEnd-kpJH7q": null,
-            "gridColumn-kBCFzs": null,
-            "gridColumnStart-kEXP64": null,
-            "gridColumnEnd-kWZpDQ": null,
+            "boxSizing-bx": "x9f619",
+            "gridArea-ga": "x1yc5d2u",
+            "gridRow-grw": null,
+            "gridRowStart-grs": null,
+            "gridRowEnd-gre": null,
+            "gridColumn-gc": null,
+            "gridColumnStart-gcs": null,
+            "gridColumnEnd-gce": null,
             $$css: "@stylexjs/babel-plugin::4"
           },
           content: {
-            "gridArea-kJuA4N": "x1fdo2jl",
-            "gridRow-kbNqZ1": null,
-            "gridRowStart-k1lYIM": null,
-            "gridRowEnd-kpJH7q": null,
-            "gridColumn-kBCFzs": null,
-            "gridColumnStart-kEXP64": null,
-            "gridColumnEnd-kWZpDQ": null,
+            "gridArea-ga": "x1fdo2jl",
+            "gridRow-grw": null,
+            "gridRowStart-grs": null,
+            "gridRowEnd-gre": null,
+            "gridColumn-gc": null,
+            "gridColumnStart-gcs": null,
+            "gridColumnEnd-gce": null,
             $$css: "@stylexjs/babel-plugin::8"
           },
           root: {
-            "display-k1xSpc": "xrvj5dj",
-            "gridTemplateRows-k9llMU": "x7k18q3",
-            "gridTemplateAreas-kC13JO": "x5gp9wm",
+            "display-d": "xrvj5dj",
+            "gridTemplateRows-gtr": "x7k18q3",
+            "gridTemplateAreas-gta": "x5gp9wm",
             $$css: "@stylexjs/babel-plugin::11"
           },
           withSidebar: {
-            "gridTemplateColumns-kumcoG": "x1rkzygb",
-            "gridTemplateRows-k9llMU": "x7k18q3",
-            "gridTemplateAreas-kC13JO": "x17lh93j",
+            "gridTemplateColumns-gtc": "x1rkzygb",
+            "gridTemplateRows-gtr": "x7k18q3",
+            "gridTemplateAreas-gta": "x17lh93j",
             "@media (max-width: 640px)_gridTemplateRows-k9pwkU": "xmr4b4k",
             "@media (max-width: 640px)_gridTemplateAreas-kOnEH4": "xesbpuc",
             "@media (max-width: 640px)_gridTemplateColumns-k1JLwA": "x15nfgh4",
             $$css: "@stylexjs/babel-plugin::16"
           },
           noSidebar: {
-            "gridTemplateColumns-kumcoG": "x1mkdm3x",
+            "gridTemplateColumns-gtc": "x1mkdm3x",
             $$css: "@stylexjs/babel-plugin::26"
           }
         };
@@ -2180,43 +2180,43 @@ describe('@stylexjs/babel-plugin', () => {
         });
         export const styles = {
           sidebar: {
-            "boxSizing-kB7OPa": "x9f619",
-            "gridArea-kJuA4N": "x1yc5d2u",
-            "gridRow-kbNqZ1": null,
-            "gridRowStart-k1lYIM": null,
-            "gridRowEnd-kpJH7q": null,
-            "gridColumn-kBCFzs": null,
-            "gridColumnStart-kEXP64": null,
-            "gridColumnEnd-kWZpDQ": null,
+            "boxSizing-bx": "x9f619",
+            "gridArea-ga": "x1yc5d2u",
+            "gridRow-grw": null,
+            "gridRowStart-grs": null,
+            "gridRowEnd-gre": null,
+            "gridColumn-gc": null,
+            "gridColumnStart-gcs": null,
+            "gridColumnEnd-gce": null,
             $$css: "@stylexjs/babel-plugin::4"
           },
           content: {
-            "gridArea-kJuA4N": "x1fdo2jl",
-            "gridRow-kbNqZ1": null,
-            "gridRowStart-k1lYIM": null,
-            "gridRowEnd-kpJH7q": null,
-            "gridColumn-kBCFzs": null,
-            "gridColumnStart-kEXP64": null,
-            "gridColumnEnd-kWZpDQ": null,
+            "gridArea-ga": "x1fdo2jl",
+            "gridRow-grw": null,
+            "gridRowStart-grs": null,
+            "gridRowEnd-gre": null,
+            "gridColumn-gc": null,
+            "gridColumnStart-gcs": null,
+            "gridColumnEnd-gce": null,
             $$css: "@stylexjs/babel-plugin::8"
           },
           root: {
-            "display-k1xSpc": "xrvj5dj",
-            "gridTemplateRows-k9llMU": "x7k18q3",
-            "gridTemplateAreas-kC13JO": "x5gp9wm",
+            "display-d": "xrvj5dj",
+            "gridTemplateRows-gtr": "x7k18q3",
+            "gridTemplateAreas-gta": "x5gp9wm",
             $$css: "@stylexjs/babel-plugin::11"
           },
           withSidebar: {
-            "gridTemplateColumns-kumcoG": "x1rkzygb",
-            "gridTemplateRows-k9llMU": "x7k18q3",
-            "gridTemplateAreas-kC13JO": "x17lh93j",
+            "gridTemplateColumns-gtc": "x1rkzygb",
+            "gridTemplateRows-gtr": "x7k18q3",
+            "gridTemplateAreas-gta": "x17lh93j",
             "@media (max-width: 640px)_gridTemplateRows-k9pwkU": "xmr4b4k",
             "@media (max-width: 640px)_gridTemplateAreas-kOnEH4": "xesbpuc",
             "@media (max-width: 640px)_gridTemplateColumns-k1JLwA": "x15nfgh4",
             $$css: "@stylexjs/babel-plugin::16"
           },
           noSidebar: {
-            "gridTemplateColumns-kumcoG": "x1mkdm3x",
+            "gridTemplateColumns-gtc": "x1mkdm3x",
             $$css: "@stylexjs/babel-plugin::26"
           }
         };

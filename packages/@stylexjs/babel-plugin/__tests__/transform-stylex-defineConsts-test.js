@@ -357,7 +357,7 @@ describe('@stylexjs/babel-plugin', () => {
         import { colors } from './constants.stylex';
         export const styles = {
           root: {
-            kWkggS: "xw8d3ix",
+            bg: "xw8d3ix",
             $$css: true
           }
         };"
@@ -399,7 +399,7 @@ describe('@stylexjs/babel-plugin', () => {
         import { breakpoints } from './constants.stylex';
         export const styles = {
           root: {
-            kMwMTN: "x1e2nbdu xbs0o1n",
+            c: "x1e2nbdu xbs0o1n",
             $$css: true
           }
         };"
@@ -538,12 +538,12 @@ describe('@stylexjs/babel-plugin', () => {
         "import * as stylex from '@stylexjs/stylex';
         import { colors } from './constants.stylex';
         const _temp = {
-          kMwMTN: "xy1iwrb",
+          c: "xy1iwrb",
           "$$css": true
         };
         export const styles = {
           node: padding => [_temp, {
-            kmVPX3: padding != null ? "x1fozly0" : padding,
+            p: padding != null ? "x1fozly0" : padding,
             $$css: true
           }, {
             "--x-padding": (val => typeof val === "number" ? val + "px" : val != null ? val : undefined)(padding)
@@ -603,7 +603,7 @@ describe('@stylexjs/babel-plugin', () => {
         import { breakpoints } from './constants.stylex';
         export const styles = {
           node: color => [{
-            kMwMTN: "xbs0o1n " + (color != null ? "x3d248p" : color),
+            c: "xbs0o1n " + (color != null ? "x3d248p" : color),
             $$css: true
           }, {
             "--x-4xs81a": color != null ? color : undefined
@@ -664,7 +664,7 @@ describe('@stylexjs/babel-plugin', () => {
         import { breakpoints } from './constants.stylex';
         export const styles = {
           root: {
-            kMwMTN: "x1e2nbdu xbs0o1n x1ru35j7",
+            c: "x1e2nbdu xbs0o1n x1ru35j7",
             $$css: true
           }
         };"
@@ -725,7 +725,7 @@ describe('@stylexjs/babel-plugin', () => {
         import { breakpoints, colors } from './constants.stylex';
         export const styles = {
           root: {
-            kMwMTN: "x1mqxbix x1iobwbz xrf68et",
+            c: "x1mqxbix x1iobwbz xrf68et",
             $$css: true
           }
         };"

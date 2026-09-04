@@ -56,7 +56,7 @@ describe('@stylexjs/babel-plugin', () => {
         "import { when, create } from '@stylexjs/stylex';
         const styles = {
           container: {
-            kWkggS: "x1t391ir x148kuu",
+            bg: "x1t391ir x148kuu",
             $$css: true
           }
         };
@@ -105,7 +105,7 @@ describe('@stylexjs/babel-plugin', () => {
         "import { when, create } from '@stylexjs/stylex';
         const styles = {
           container: {
-            kWkggS: "x1t391ir x1i6rnlt",
+            bg: "x1t391ir x1i6rnlt",
             $$css: true
           }
         };
@@ -158,7 +158,7 @@ describe('@stylexjs/babel-plugin', () => {
         "import * as stylex from '@stylexjs/stylex';
         const styles = {
           container: {
-            kWkggS: "x1t391ir x148kuu xpijypl xoev4mv x1v1vkh3 x9zntq3",
+            bg: "x1t391ir x148kuu xpijypl xoev4mv x1v1vkh3 x9zntq3",
             $$css: true
           }
         };
@@ -240,7 +240,7 @@ describe('@stylexjs/babel-plugin', () => {
         "import { when as w, create } from '@stylexjs/stylex';
         const styles = {
           container: {
-            kWkggS: "x1t391ir x148kuu xpijypl",
+            bg: "x1t391ir x148kuu xpijypl",
             $$css: true
           }
         };
@@ -369,7 +369,7 @@ describe('@stylexjs/babel-plugin', () => {
         "import { when, create } from '@stylexjs/stylex';
         const styles = {
           container: {
-            kWkggS: "x1t391ir x11omtej",
+            bg: "x1t391ir x11omtej",
             $$css: true
           }
         };
@@ -418,7 +418,7 @@ describe('@stylexjs/babel-plugin', () => {
         "import { when, create } from '@stylexjs/stylex';
         const styles = {
           container: {
-            kWkggS: "x1t391ir x1doj7mj",
+            bg: "x1t391ir x1doj7mj",
             $$css: true
           }
         };
