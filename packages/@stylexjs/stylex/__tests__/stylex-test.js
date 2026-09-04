@@ -24,6 +24,10 @@ describe('stylex', () => {
       'viewTransitionClass',
       'defaultMarker',
       'defineMarker',
+      'unstable_conditional',
+      'unstable_defineVarsNested',
+      'unstable_defineConstsNested',
+      'unstable_createThemeNested',
     ].forEach((api) => {
       test(`stylex.${api}`, () => {
         expect(() => stylex[api]()).toThrow();
@@ -291,6 +295,59 @@ describe('stylex', () => {
           "data-style-src": "components/Foo.react.js:1; components/Bar.react.js:3; components/Baz.react.js:5",
         }
       `);
+    });
+  });
+
+  describe('attrs', () => {
+    test('basic resolve', () => {
+      expect(stylex.attrs({ a: 'aaa', b: 'bbb', $$css: true }).class).toBe(
+        'aaa bbb',
+      );
+    });
+
+    test('with dynamic styles', () => {
+      expect(
+        stylex.attrs([
+          {
+            backgroundColor: 'backgroundColor-red',
+            $$css: 'components/Foo.react.js:1',
+          },
+          {
+            color: 'red',
+            marginTop: '10px',
+            opacity: 0.5,
+            '--foo': 2,
+            MsTransition: 'none',
+            WebkitTapHighlightColor: 'transparent',
+          },
+        ]),
+      ).toMatchInlineSnapshot(`
+        {
+          "class": "backgroundColor-red",
+          "data-style-src": "components/Foo.react.js:1",
+          "style": "color:red;margin-top:10px;opacity:0.5;--foo:2;-ms-transition:none;-webkit-tap-highlight-color:transparent",
+        }
+      `);
+    });
+
+    test('legacyMerge merges classNames', () => {
+      expect(
+        stylex.legacyMerge(
+          { color: 'color-red', $$css: true },
+          { backgroundColor: 'bg-blue', $$css: true },
+        ),
+      ).toBe('color-red bg-blue');
+    });
+
+    test('legacyMerge exposes attrs', () => {
+      expect(
+        stylex.legacyMerge.attrs({
+          color: 'color-red',
+          $$css: true,
+        }),
+      ).toEqual({
+        class: 'color-red',
+      });
     });
   });
 });

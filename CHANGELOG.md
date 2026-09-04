@@ -1,10 +1,48 @@
 # Changelog
 
+## 0.19.0 (Jun 14, 2026)
+- New `@stylexjs/atoms` package for inline atomic styles.
+- ESLint 10 compatibility.
+- Add `gap` auto-fix for `legacy-expand-shorthands` and skip single-value `gap`
+  and `flex` in `valid-shorthands`.
+- Extend `textWrap` validation with `pretty` and `stable` values.
+- Fix `sx` prop runtime stylex import injection.
+- Fix pseudo-element + pseudo-class selector ordering.
+- Fix aliased theme file resolution to absolute paths.
+- Fix `sort-keys` autofix ordering.
+- Fix media type parenthesization in `and` chains in the style value parser.
+
+## 0.18.3 (Apr 29, 2026)
+- Experimental nested APIs for `defineVars`, `defineConsts`, and `createTheme`.
+- Add recursive derivation support for `defineVars`.
+- ESLint auto-fixers for shorthand expansion, gated by `styleResolution` config.
+- Respect project `browserslist` config instead of hardcoding `>= 1%`.
+- Add `:empty` pseudo-class and unclosed string detection to the compiler.
+- StyleX DevTools extension now available in the Chrome Web Store.
+
+## 0.18.2 (Mar 23, 2026)
+- Bring back `stylex.attrs` for SSR and non-React frameworks.
+- Add `layersBefore`, `layersAfter`, and `layersPrefix` for `@layer` control.
+- Add `flex`, `grid`, and `animation` shorthand expansion to ESLint plugin.
+- ESLint fixes: bare number support, false positive fixes in `stylex.create`.
+
+## 0.18.1 (Mar 5, 2026)
+- Add simple `sx={}` JSX prop syntax as an alternative to `stylex.props`.
+- Fix `unplugin` `generateBundle` hook to use `emitFile` instead of direct bundle assignment.
+
+## 0.18.0 (Mar 3, 2026)
+- Add `stylex.env` API for compile-time constants and shareable design tokens.
+- New `@stylexjs/create` CLI for scaffolding projects with `npm create @stylexjs`.
+- Add Bun support and improvements to the `unplugin` bundler plugin.
+- Support attribute selectors in `stylex.when` and conditional styles.
+- Fix priority calculation for compound pseudo selectors.
+
 ## 0.17.5 (Jan 12. 2026)
 - New `no-conflicting-props` lint rule.
 - Add `disallowedPropertiesValidation` config to disable property compiler errors by default.
 - Preserve units in zero values for CSS variables.
 - Fix `unplugin` cache invalidation on style changes.
+- Add `env` compiler option to expose `stylex.env` compile-time constants.
 
 ## 0.17.4 (Dec 18. 2025)
 - New playground within the docs website.

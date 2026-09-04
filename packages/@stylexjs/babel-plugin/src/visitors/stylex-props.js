@@ -12,17 +12,19 @@ import type { FunctionConfig } from '../utils/evaluate-path';
 
 import * as t from '@babel/types';
 import StateManager from '../utils/state-manager';
-import { props } from '@stylexjs/stylex';
+import { attrs, props } from '@stylexjs/stylex';
 import { convertObjectToAST } from '../utils/js-to-ast';
 import { evaluate } from '../utils/evaluate-path';
 import stylexDefaultMarker from '../shared/stylex-defaultMarker';
+import { hoistExpression } from '../utils/ast-helpers';
 
 type ClassNameValue = string | null | boolean | NonStringClassNameValue;
 type NonStringClassNameValue = [t.Expression, ClassNameValue, ClassNameValue];
 
-type StyleObject = {
-  [key: string]: string | null | boolean,
-};
+type StyleObject = $ReadOnly<{
+  [key: string]: string | null,
+  $$css?: true | string,
+}>;
 
 class ConditionalStyle {
   test: t.Expression;
@@ -41,15 +43,14 @@ class ConditionalStyle {
 
 type ResolvedArg = ?StyleObject | ConditionalStyle;
 type ResolvedArgs = Array<ResolvedArg>;
+type PropsLikeFn = typeof props | typeof attrs;
+type StyleXPropsLikeCall = 'attrs' | 'props';
 
 export function skipStylexPropsChildren(
   path: NodePath<t.CallExpression>,
   state: StateManager,
 ) {
-  if (
-    !isCalleeIdentifier(path, state) &&
-    !isCalleeMemberExpression(path, state)
-  ) {
+  if (getPropsLikeCall(path, state) == null) {
     return;
   }
   path.skip();
@@ -62,12 +63,11 @@ export default function transformStylexProps(
   path: NodePath<t.CallExpression>,
   state: StateManager,
 ) {
-  if (
-    !isCalleeIdentifier(path, state) &&
-    !isCalleeMemberExpression(path, state)
-  ) {
+  const propsLikeCall = getPropsLikeCall(path, state);
+  if (propsLikeCall == null) {
     return;
   }
+  const propsLikeFn = propsLikeCall === 'attrs' ? attrs : props;
 
   let bailOut = false;
   let conditional = 0;
@@ -95,6 +95,7 @@ export default function transformStylexProps(
       },
     };
   });
+  state.applyStylexEnv(identifiers);
 
   const evaluatePathFnConfig: FunctionConfig = {
     identifiers,
@@ -109,11 +110,14 @@ export default function transformStylexProps(
     if (
       argPath.isObjectExpression() ||
       argPath.isIdentifier() ||
-      argPath.isMemberExpression()
+      argPath.isMemberExpression() ||
+      argPath.isCallExpression()
     ) {
       const resolved = parseNullableStyle(argPath, state, evaluatePathFnConfig);
       if (resolved === 'other') {
-        bailOutIndex = currentIndex;
+        if (bailOutIndex == null) {
+          bailOutIndex = currentIndex;
+        }
         bailOut = true;
       } else {
         resolvedArgs.push(resolved);
@@ -135,7 +139,9 @@ export default function transformStylexProps(
         evaluatePathFnConfig,
       );
       if (primary === 'other' || fallback === 'other') {
-        bailOutIndex = currentIndex;
+        if (bailOutIndex == null) {
+          bailOutIndex = currentIndex;
+        }
         bailOut = true;
       } else {
         resolvedArgs.push(new ConditionalStyle(test, primary, fallback));
@@ -162,7 +168,9 @@ export default function transformStylexProps(
         evaluatePathFnConfig,
       );
       if (leftResolved !== 'other' || rightResolved === 'other') {
-        bailOutIndex = currentIndex;
+        if (bailOutIndex == null) {
+          bailOutIndex = currentIndex;
+        }
         bailOut = true;
       } else {
         resolvedArgs.push(
@@ -171,14 +179,16 @@ export default function transformStylexProps(
         conditional++;
       }
     } else {
-      bailOutIndex = currentIndex;
+      if (bailOutIndex == null) {
+        bailOutIndex = currentIndex;
+      }
       bailOut = true;
     }
     if (conditional > 4) {
       bailOut = true;
     }
     if (bailOut) {
-      break;
+      continue;
     }
   }
   if (!state.options.enableInlinedConditionalMerge && conditional) {
@@ -263,12 +273,38 @@ export default function transformStylexProps(
           MemberExpression,
         });
       }
+
+      // Hoist inline CSS objects (from atoms) to module level
+      // Raw objects are pre-compiled in compileRawStyleObjects, so this only hoists compiled objects
+      // eslint-disable-next-line no-inner-declarations
+      function ObjectExpression(objPath: NodePath<t.ObjectExpression>) {
+        // Check if this object has $$css: true (compiled utility style object)
+        const hasCssMarker = objPath.node.properties.some(
+          (prop) =>
+            t.isObjectProperty(prop) &&
+            ((t.isIdentifier(prop.key) && prop.key.name === '$$css') ||
+              (t.isStringLiteral(prop.key) && prop.key.value === '$$css')) &&
+            t.isBooleanLiteral(prop.value, { value: true }),
+        );
+        if (hasCssMarker) {
+          const hoisted = hoistExpression(objPath, objPath.node);
+          objPath.replaceWith(hoisted);
+        }
+      }
+
+      if (argPath.isObjectExpression()) {
+        ObjectExpression(argPath);
+      } else {
+        argPath.traverse({
+          ObjectExpression,
+        });
+      }
     }
   } else {
     path.skip();
     // convert resolvedStyles to a string + ternary expressions
     // We no longer need the keys, so we can just use the values.
-    const stringExpression = makeStringExpression(resolvedArgs);
+    const stringExpression = makeStringExpression(resolvedArgs, propsLikeFn);
 
     // Check if this is used as a JSX spread attribute and optimize
     // the output to avoid object creation and Babel helper
@@ -331,6 +367,19 @@ function parseNullableStyle(
     return null;
   }
 
+  // Local dynamic style functions (e.g., styles.opacity(1)) should bail out
+  // so runtime props merging keeps the conditional class/inline var semantics.
+  if (path.isCallExpression()) {
+    const callee = path.get('callee');
+    if (callee.isMemberExpression()) {
+      const obj = callee.get('object');
+      if (obj.isIdentifier() && state.styleMap.has(obj.node.name)) {
+        return 'other';
+      }
+    }
+    return 'other';
+  }
+
   if (t.isMemberExpression(node)) {
     const { object, property, computed: computed } = node;
     let objName = null;
@@ -358,8 +407,14 @@ function parseNullableStyle(
     if (objName != null && propName != null) {
       const style = state.styleMap.get(objName);
       if (style != null && style[String(propName)] != null) {
+        const memberVal = style[String(propName)];
+        // Dynamic style functions (arrow/function expressions) should bail out
+        // so runtime props handling remains intact.
+        if (typeof memberVal === 'function') {
+          return 'other';
+        }
         // $FlowFixMe[incompatible-type]
-        return style[String(propName)];
+        return memberVal;
       }
     }
   }
@@ -380,7 +435,10 @@ function parseNullableStyle(
   return 'other';
 }
 
-function makeStringExpression(values: ResolvedArgs): t.Expression {
+function makeStringExpression(
+  values: ResolvedArgs,
+  propsLikeFn: PropsLikeFn,
+): t.Expression {
   const conditions = values
     .filter(
       (v: ResolvedArg): v is ConditionalStyle => v instanceof ConditionalStyle,
@@ -388,7 +446,7 @@ function makeStringExpression(values: ResolvedArgs): t.Expression {
     .map((v: ConditionalStyle) => v.test);
 
   if (conditions.length === 0) {
-    const result = props(values as any);
+    const result = propsLikeFn(values as any);
     return convertObjectToAST(result);
   }
 
@@ -409,7 +467,7 @@ function makeStringExpression(values: ResolvedArgs): t.Expression {
     );
     return t.objectProperty(
       t.numericLiteral(key),
-      convertObjectToAST(props(args as any)),
+      convertObjectToAST(propsLikeFn(args as any)),
     );
   });
   const objExpressions = t.objectExpression(objEntries);
@@ -451,31 +509,42 @@ function genBitwiseOrOfConditions(
   });
 }
 
-function isCalleeIdentifier(
+function getPropsLikeCall(
   path: NodePath<t.CallExpression>,
   state: StateManager,
-): boolean {
+): StyleXPropsLikeCall | null {
   const { node } = path;
-  return (
+  const callee = node?.callee;
+  if (
     node != null &&
-    node.callee != null &&
-    node.callee.type === 'Identifier' &&
-    state.stylexPropsImport.has(node.callee.name)
-  );
-}
-
-function isCalleeMemberExpression(
-  path: NodePath<t.CallExpression>,
-  state: StateManager,
-): boolean {
-  const { node } = path;
-  return (
+    callee != null &&
+    callee.type === 'Identifier' &&
+    state.stylexPropsImport.has(callee.name)
+  ) {
+    return 'props';
+  }
+  if (
     node != null &&
-    node.callee != null &&
-    node.callee.type === 'MemberExpression' &&
-    node.callee.object.type === 'Identifier' &&
-    node.callee.property.type === 'Identifier' &&
-    node.callee.property.name === 'props' &&
-    state.stylexImport.has(node.callee.object.name)
-  );
+    callee != null &&
+    callee.type === 'Identifier' &&
+    state.stylexAttrsImport.has(callee.name)
+  ) {
+    return 'attrs';
+  }
+  if (
+    node != null &&
+    callee != null &&
+    callee.type === 'MemberExpression' &&
+    callee.object.type === 'Identifier' &&
+    callee.property.type === 'Identifier' &&
+    state.stylexImport.has(callee.object.name)
+  ) {
+    if (callee.property.name === 'props') {
+      return 'props';
+    }
+    if (callee.property.name === 'attrs') {
+      return 'attrs';
+    }
+  }
+  return null;
 }

@@ -477,9 +477,9 @@ const styles = stylex.create({
     display: 'inline-flex',
     gap: 6,
     alignItems: 'center',
-    paddingBlock: 14,
+    paddingBlock: 15,
     paddingInline: 8,
-    fontSize: 14,
+    fontSize: 16,
     fontStyle: 'inherit',
     fontWeight: 'inherit',
     color: 'inherit',
@@ -577,7 +577,7 @@ const styles = stylex.create({
   },
 
   chevronCollapsed: {
-    transform: 'rotate(-90deg)',
+    transform: 'rotate(180deg)',
   },
 });
 

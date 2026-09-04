@@ -4,6 +4,7 @@
       "./vite-react.mdx",
       "./vite-rsc.mdx",
       "./react-router.mdx",
+      "./sveltekit.mdx",
       "./redwoodsdk.mdx",
       "./waku.mdx"
   ]

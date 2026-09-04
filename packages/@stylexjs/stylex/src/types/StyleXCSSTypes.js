@@ -956,14 +956,14 @@ type top = number | string;
 
 type OptionalArray<T> = Array<T> | T;
 
-export type SupportedVendorSpecificCSSProperties = $ReadOnly<{
+export type SupportedVendorSpecificCSSProperties = Readonly<{
   MozOsxFontSmoothing?: null | 'grayscale',
   WebkitAppearance?: null | appearance,
   WebkitFontSmoothing?: null | 'antialiased',
   WebkitTapHighlightColor?: null | color,
 }>;
 
-export type CSSProperties = $ReadOnly<{
+export type CSSProperties = Readonly<{
   // NOTE: adding a non-CSS property here for support themes in Stylex.
   theme?: all | string,
 
@@ -1551,7 +1551,7 @@ export type CSSProperties = $ReadOnly<{
   textTransform?: all | textTransform,
   textUnderlineOffset?: all | number | string,
   textUnderlinePosition?: all | textUnderlinePosition,
-  textWrap?: all | 'wrap' | 'nowrap' | 'balance',
+  textWrap?: all | 'wrap' | 'nowrap' | 'balance' | 'pretty' | 'stable',
 
   timelineScope?: all | string,
   top?: all | top,

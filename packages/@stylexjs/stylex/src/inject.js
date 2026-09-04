@@ -111,7 +111,7 @@ function updateDependentRules(constKey: string): void {
   });
 }
 
-type InjectArgs = $ReadOnly<{
+type InjectArgs = Readonly<{
   ltr: string,
   rtl?: ?string,
   priority: number,

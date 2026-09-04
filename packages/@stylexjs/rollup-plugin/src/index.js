@@ -37,7 +37,13 @@ export type PluginOptions = $ReadOnly<{
     plugins?: $ReadOnlyArray<PluginItem>,
     presets?: $ReadOnlyArray<PluginItem>,
   }>,
-  useCSSLayers?: boolean,
+  useCSSLayers?:
+    | boolean
+    | $ReadOnly<{
+        before?: $ReadOnlyArray<string>,
+        after?: $ReadOnlyArray<string>,
+        prefix?: string,
+      }>,
   lightningcssOptions?: Omit<
     TransformOptions<{}>,
     'code' | 'filename' | 'visitor',
@@ -83,7 +89,7 @@ export default function stylexPlugin({
 
         // Process the CSS using lightningcss
         const { code } = transform({
-          targets: browserslistToTargets(browserslist('>= 1%')),
+          targets: browserslistToTargets(browserslist()),
           ...lightningcssOptions,
           filename: 'stylex.css',
           code: Buffer.from(collectedCSS),

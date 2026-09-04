@@ -5,6 +5,7 @@
         "./descendant-styles.mdx",
         "./reset-themes.mdx",
         "./merge-themes.mdx",
-        "./light-dark-themes.mdx"
+        "./light-dark-themes.mdx",
+        "./shareable-tokens.mdx"
     ]
 }

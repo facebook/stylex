@@ -31,6 +31,24 @@ const config = {
       babelHelpers: 'bundled',
       configFile: path.resolve(__dirname, '.babelrc.js'),
     }),
+    {
+      name: 'legacy-merge-export-pure',
+      transform(code, id) {
+        if (id === path.resolve(__dirname, 'src/stylex.js')) {
+          const newCode = code.replace(
+            'export const legacyMerge =',
+            'export const legacyMerge = /*@__PURE__*/',
+          );
+          if (newCode === code) {
+            throw new Error(
+              'Expect to find to "export const legacyMerge =" in src/stylex.js',
+            );
+          }
+          return newCode;
+        }
+        return code;
+      },
+    },
     resolve(),
     commonjs(),
   ],

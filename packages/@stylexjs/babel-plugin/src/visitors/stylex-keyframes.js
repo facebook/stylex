@@ -81,6 +81,7 @@ export default function transformStyleXKeyframes(
       }
       memberExpressions[name].firstThatWorks = { fn: stylexFirstThatWorks };
     });
+    state.applyStylexEnv(identifiers);
 
     const { confident, value } = evaluate(firstArg, state, {
       identifiers,

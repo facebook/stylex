@@ -34,22 +34,145 @@ import fs from 'node:fs';
 // This file contains Babels metainterpreter that can evaluate static code.
 
 const VALID_CALLEES = ['String', 'Number', 'Math', 'Object', 'Array'];
-const INVALID_METHODS = [
-  'random',
-  'assign',
-  'defineProperties',
-  'defineProperty',
-  'freeze',
-  'seal',
-  'splice',
-];
+
+// The static methods that may be called on the globals in `VALID_CALLEES`.
+//
+// This is an allowlist rather than a denylist because `Object` exposes
+// reflective methods — `getPrototypeOf`, `getOwnPropertyDescriptor`, `create`
+// — that hand back objects from the prototype chain. Any one of them is a path
+// from a plain object to `Function`, and therefore to arbitrary code execution
+// inside the compiler. Only pure methods that return plain data belong here.
+//
+// A `Map` is used so that a crafted callee name such as `constructor` cannot
+// match a property inherited from `Object.prototype`.
+const VALID_CALLEE_METHODS: Map<string, Set<string>> = new Map([
+  ['String', new Set(['fromCharCode', 'fromCodePoint', 'raw'])],
+  [
+    'Number',
+    new Set([
+      'isFinite',
+      'isInteger',
+      'isNaN',
+      'isSafeInteger',
+      'parseFloat',
+      'parseInt',
+    ]),
+  ],
+  [
+    'Math',
+    new Set([
+      // `random` is deliberately absent: compilation must be deterministic.
+      'abs',
+      'acos',
+      'acosh',
+      'asin',
+      'asinh',
+      'atan',
+      'atan2',
+      'atanh',
+      'cbrt',
+      'ceil',
+      'clz32',
+      'cos',
+      'cosh',
+      'exp',
+      'expm1',
+      'f16round',
+      'floor',
+      'fround',
+      'hypot',
+      'imul',
+      'log',
+      'log10',
+      'log1p',
+      'log2',
+      'max',
+      'min',
+      'pow',
+      'round',
+      'sign',
+      'sin',
+      'sinh',
+      'sqrt',
+      'tan',
+      'tanh',
+      'trunc',
+    ]),
+  ],
+  [
+    'Object',
+    // Everything here returns plain data: own values, names or booleans.
+    // Excluded are the mutating methods (`assign`, `defineProperty`, `freeze`,
+    // `seal`, `preventExtensions`), which were already rejected before, and the
+    // reflective ones (`create`, `getPrototypeOf`, `setPrototypeOf`,
+    // `getOwnPropertyDescriptor`), which hand back prototype chain objects.
+    new Set([
+      'entries',
+      'fromEntries',
+      'getOwnPropertyNames',
+      'getOwnPropertySymbols',
+      'groupBy',
+      'hasOwn',
+      'is',
+      'isExtensible',
+      'isFrozen',
+      'isSealed',
+      'keys',
+      'values',
+    ]),
+  ],
+  ['Array', new Set(['from', 'isArray', 'of'])],
+]);
 
 function isValidCallee(val: string): boolean {
   return (VALID_CALLEES as $ReadOnlyArray<string>).includes(val);
 }
 
-function isInvalidMethod(val: string): boolean {
-  return INVALID_METHODS.includes(val);
+function isValidCalleeMethod(callee: string, method: string): boolean {
+  return VALID_CALLEE_METHODS.get(callee)?.has(method) === true;
+}
+
+// Properties that expose the prototype chain. Reading any of these off an
+// evaluated value lets an attacker walk from a plain object to `Function`
+// (e.g. `({}).constructor.constructor`), which is enough to construct and run
+// arbitrary code. Access to these is always blocked during static evaluation.
+const BLOCKED_PROPERTIES = new Set(['constructor', '__proto__', 'prototype']);
+
+function isBlockedProperty(property: mixed): boolean {
+  return typeof property === 'string' && BLOCKED_PROPERTIES.has(property);
+}
+
+// Functions that turn data into executable code. Reaching one of these through
+// a gadget this file does not yet know about would mean arbitrary code
+// execution at build time, so invoking them is refused outright. This is the
+// backstop behind `BLOCKED_PROPERTIES` and `VALID_CALLEE_METHODS`.
+function isBlockedFunction(fn: mixed): boolean {
+  if (typeof fn !== 'function') {
+    return false;
+  }
+  const callable: $FlowFixMe = fn;
+  return (
+    // `Function` itself, plus the async, generator and async-generator function
+    // constructors, which are the only functions that inherit directly from
+    // `Function` rather than from `Function.prototype`.
+    callable === Function ||
+    Object.getPrototypeOf(callable) === Function ||
+    // Referenced, never called: this is a value the evaluator refuses to run.
+    // eslint-disable-next-line no-eval
+    callable === global.eval
+  );
+}
+
+// `state.functions.identifiers` and `state.functions.memberExpressions` are
+// plain objects, so a bare `config[name]` lookup also finds inherited members:
+// `memberExpressions['constructor']` resolves to `Object`, from which
+// `constructor.constructor` resolves to `Function`. Only ever read own keys.
+function getOwnProperty(obj: $FlowFixMe, key: string): $FlowFixMe {
+  if (obj == null) {
+    return undefined;
+  }
+  // $FlowFixMe[method-unbinding]
+  return Object.prototype.hasOwnProperty.call(obj, key) ? obj[key] : undefined;
 }
 
 const MUTATING_ARRAY_METHODS = new Set([
@@ -156,6 +279,77 @@ type Result =
       resolved: false,
       reason: string,
     };
+
+type VarGroupProxyOptions = {
+  fileName: string,
+  exportName: string,
+  traversalState: StateManager,
+  onAccess?: (key: string) => void,
+};
+
+function getVarGroupHash(
+  fileName: string,
+  exportName: string,
+  traversalState: StateManager,
+): string {
+  return (
+    traversalState.options.classNamePrefix +
+    utils.hash(utils.genFileBasedIdentifier({ fileName, exportName }))
+  );
+}
+
+function resolveVarGroupKey(
+  key: string,
+  fileName: string,
+  exportName: string,
+  traversalState: StateManager,
+): string {
+  if (key.startsWith('--')) {
+    return `var(${key})`;
+  }
+
+  const strToHash = utils.genFileBasedIdentifier({ fileName, exportName, key });
+  const { classNamePrefix } = traversalState.options;
+  const varName = classNamePrefix + utils.hash(strToHash);
+
+  return `var(--${varName})`;
+}
+
+export function createVarGroupProxy({
+  fileName,
+  exportName,
+  traversalState,
+  onAccess,
+}: VarGroupProxyOptions): { [string]: string } {
+  const varGroupHash = getVarGroupHash(fileName, exportName, traversalState);
+
+  return new Proxy(
+    {},
+    {
+      get(_, key: string | symbol) {
+        if (typeof key !== 'string') {
+          return undefined;
+        }
+        if (key === '__IS_PROXY') {
+          return true;
+        }
+        if (key === 'toString') {
+          return () => varGroupHash;
+        }
+        if (key === '__varGroupHash__') {
+          return varGroupHash;
+        }
+        onAccess?.(key);
+        return resolveVarGroupKey(key, fileName, exportName, traversalState);
+      },
+      set(_, key: string, value: string) {
+        throw new Error(
+          `Cannot set value ${value} to key ${key} in theme ${fileName}`,
+        );
+      },
+    },
+  );
+}
 /**
  * Deopts the evaluation
  */
@@ -234,63 +428,11 @@ function evaluateThemeRef(
   exportName: string,
   state: State,
 ): { [key: string]: string } {
-  const resolveKey = (key: string) => {
-    if (key.startsWith('--')) {
-      return `var(${key})`;
-    }
-
-    const strToHash =
-      key === '__varGroupHash__'
-        ? utils.genFileBasedIdentifier({ fileName, exportName })
-        : utils.genFileBasedIdentifier({ fileName, exportName, key });
-
-    const { debug, enableDebugClassNames } = state.traversalState.options;
-
-    const varSafeKey =
-      key === '__varGroupHash__'
-        ? ''
-        : (key[0] >= '0' && key[0] <= '9' ? `_${key}` : key).replace(
-            /[^a-zA-Z0-9]/g,
-            '_',
-          ) + '-';
-
-    const varName =
-      debug && enableDebugClassNames
-        ? varSafeKey +
-          state.traversalState.options.classNamePrefix +
-          utils.hash(strToHash)
-        : state.traversalState.options.classNamePrefix + utils.hash(strToHash);
-
-    if (key === '__varGroupHash__') {
-      return varName;
-    }
-    return `var(--${varName})`;
-  };
-
-  // A JS proxy that uses the key to generate a string value using the `resolveKey` function
-  const proxy = new Proxy(
-    {},
-    {
-      get(_, key: string) {
-        if (key === '__IS_PROXY') {
-          return true;
-        }
-        if (key === 'toString') {
-          return () =>
-            state.traversalState.options.classNamePrefix +
-            utils.hash(utils.genFileBasedIdentifier({ fileName, exportName }));
-        }
-        return resolveKey(key);
-      },
-      set(_, key: string, value: string) {
-        throw new Error(
-          `Cannot set value ${value} to key ${key} in theme ${fileName}`,
-        );
-      },
-    },
-  );
-
-  return proxy;
+  return createVarGroupProxy({
+    fileName,
+    exportName,
+    traversalState: state.traversalState,
+  });
 }
 
 /**
@@ -349,19 +491,27 @@ function _evaluate(path: NodePath<>, state: State): any {
         ): param is NodePath<t.Identifier> => param.isIdentifier(),
       )
       .map((paramPath) => paramPath.node.name);
+
     if (body.isExpression() && identParams.length === params.length) {
-      const expr: NodePath<t.Expression> = body;
-      return (...args) => {
+      const evaluatedExpr: NodePath<t.Expression> = body;
+      const evaluatedFn: any = (...args: Array<any>) => {
         const identifierEntries = identParams.map(
           (ident, index): [string, any] => [ident, args[index]],
         );
         const identifiersObj = Object.fromEntries(identifierEntries);
-        const result = evaluate(expr, state.traversalState, {
+        const result = evaluate(evaluatedExpr, state.traversalState, {
           ...state.functions,
           identifiers: { ...state.functions.identifiers, ...identifiersObj },
         });
+        if (!result.confident) {
+          throw new Error(result.reason ?? errMsgs.NON_CONSTANT);
+        }
         return result.value;
       };
+      Object.defineProperty(evaluatedFn, '__stylexParamCount', {
+        value: identParams.length,
+      });
+      return evaluatedFn;
     }
   }
 
@@ -442,11 +592,95 @@ function _evaluate(path: NodePath<>, state: State): any {
     return evaluateCached(path.get('expression'), state);
   }
 
+  /**
+   * Collects the full member expression chain for cross-file nested token resolution.
+   *
+   * When tokens are imported from another .stylex.js file, the plugin creates a
+   * themeNameRef proxy that only handles single-level access. Multi-level access like
+   * tokens.button.primary.background would fail because proxy['button'] returns a
+   * string, and "var(--hash)"['primary'] is undefined.
+   *
+   * This function walks the MemberExpression AST chain from outermost to innermost,
+   * collecting all property names. The caller can then resolve the full dotted key
+   * against the proxy in one shot: proxy['button.primary.background'].
+   *
+   * Example:
+   *   AST for tokens.button.primary.background
+   *   → { basePath: <Identifier:tokens>, parts: ['button', 'primary', 'background'] }
+   *
+   * Returns null for:
+   *   - Single-level access (no benefit from path collection)
+   *   - Dynamic computed properties that can't be resolved statically
+   *
+   * @param memberPath - The outermost MemberExpression NodePath
+   * @returns { basePath, parts } or null
+   */
+  function getFullMemberPath(
+    memberPath: NodePath<t.MemberExpression>,
+  ): ?{ basePath: NodePath<>, parts: Array<string> } {
+    const parts: Array<string> = [];
+    let current: NodePath<> = memberPath;
+
+    while (current.isMemberExpression()) {
+      const propPath = current.get('property');
+      if (current.node.computed) {
+        // Only handle static computed properties (string/number literals)
+        if (propPath.isStringLiteral()) {
+          parts.unshift(propPath.node.value);
+        } else if (propPath.isNumericLiteral()) {
+          parts.unshift(String(propPath.node.value));
+        } else {
+          return null; // Dynamic computed property — can't collect statically
+        }
+      } else if (propPath.isIdentifier()) {
+        parts.unshift(propPath.node.name);
+      } else {
+        return null;
+      }
+      current = current.get('object');
+    }
+
+    if (parts.length < 2) {
+      return null; // Single-level access — no benefit from collecting path
+    }
+
+    return { basePath: current, parts };
+  }
+
   // "foo".length
   if (
     path.isMemberExpression() &&
     !path.parentPath.isCallExpression({ callee: path.node })
   ) {
+    // Cross-file nested token resolution:
+    // When tokens are imported from another .stylex.js file, the evaluator creates
+    // a themeNameRef proxy. For flat tokens (tokens.color), single-level proxy access
+    // works fine. For nested tokens (tokens.button.primary.background), multi-level
+    // access fails because proxy['button'] returns "var(--hash)" (a string) and
+    // "var(--hash)"['primary'] is undefined.
+    //
+    // Fix: collect the full member chain ['button', 'primary', 'background'] and
+    // resolve it as a single dotted key: proxy['button.primary.background'].
+    // The dotted key produces the same hash as defineVarsNested compilation
+    // (which internally flattens to the same dotted key).
+    const fullPath = getFullMemberPath(path);
+    if (fullPath != null) {
+      const { basePath, parts } = fullPath;
+      const baseObject = evaluateCached(basePath, state);
+      if (!state.confident) {
+        return;
+      }
+      if (
+        baseObject != null &&
+        typeof baseObject === 'object' &&
+        baseObject.__IS_PROXY === true
+      ) {
+        // Resolve the full dotted path at once against the proxy
+        return baseObject[parts.join('.')];
+      }
+      // Not a proxy — fall through to standard recursive evaluation
+    }
+
     const object = evaluateCached(path.get('object'), state);
     if (!state.confident) {
       return;
@@ -456,16 +690,28 @@ function _evaluate(path: NodePath<>, state: State): any {
 
     let property;
     if (path.node.computed) {
-      property = evaluateCached(propPath, state);
+      const computedKey = evaluateCached(propPath, state);
       if (!state.confident) {
         return;
       }
+      if (typeof computedKey === 'symbol') {
+        return deopt(propPath, state, errMsgs.UNEXPECTED_MEMBER_LOOKUP);
+      }
+      // Normalize the key the way the runtime would before checking it against
+      // the blocklist, and then look the property up with the normalized key.
+      // Without this a boxed value such as `Object('constructor')` slips past
+      // the check as a non-string yet still resolves to `constructor`.
+      property = String(computedKey);
     } else if (propPath.isIdentifier()) {
       property = propPath.node.name;
     } else if (propPath.isStringLiteral()) {
       property = propPath.node.value;
     } else {
       return deopt(propPath, state, errMsgs.UNEXPECTED_MEMBER_LOOKUP);
+    }
+
+    if (isBlockedProperty(property)) {
+      return deopt(propPath, state, errMsgs.BLOCKED_PROPERTY_ACCESS);
     }
 
     return object[property];
@@ -835,9 +1081,9 @@ function _evaluate(path: NodePath<>, state: State): any {
       func = global[callee.node.name];
     } else if (
       callee.isIdentifier() &&
-      state.functions.identifiers[callee.node.name]
+      getOwnProperty(state.functions.identifiers, callee.node.name)
     ) {
-      func = state.functions.identifiers[callee.node.name];
+      func = getOwnProperty(state.functions.identifiers, callee.node.name);
     } else if (callee.isIdentifier()) {
       const maybeFunction = evaluateCached(callee, state);
       if (state.confident) {
@@ -855,30 +1101,34 @@ function _evaluate(path: NodePath<>, state: State): any {
       if (object.isIdentifier() && property.isIdentifier()) {
         if (
           isValidCallee(object.node.name) &&
-          !isInvalidMethod(property.node.name)
+          isValidCalleeMethod(object.node.name, property.node.name)
         ) {
           context = global[object.node.name];
           // @ts-expect-error property may not exist in context object
           func = context[property.node.name];
-        } else if (
-          state.functions.memberExpressions[object.node.name] &&
-          state.functions.memberExpressions[object.node.name][
-            property.node.name
-          ]
-        ) {
-          context = state.functions.memberExpressions[object.node.name];
-          func = context[property.node.name];
+        } else {
+          const memberFns = getOwnProperty(
+            state.functions.memberExpressions,
+            object.node.name,
+          );
+          const memberFn = getOwnProperty(memberFns, property.node.name);
+          if (memberFn) {
+            context = memberFns;
+            func = memberFn;
+          }
         }
       }
 
-      if (
-        object.isIdentifier() &&
-        property.isStringLiteral() &&
-        state.functions.memberExpressions[object.node.name] &&
-        state.functions.memberExpressions[object.node.name][property.node.value]
-      ) {
-        context = state.functions.memberExpressions[object.node.name];
-        func = context[property.node.value];
+      if (object.isIdentifier() && property.isStringLiteral()) {
+        const memberFns = getOwnProperty(
+          state.functions.memberExpressions,
+          object.node.name,
+        );
+        const memberFn = getOwnProperty(memberFns, property.node.value);
+        if (memberFn) {
+          context = memberFns;
+          func = memberFn;
+        }
       }
 
       // "abc".charCodeAt(4)
@@ -886,6 +1136,9 @@ function _evaluate(path: NodePath<>, state: State): any {
         (object.isStringLiteral() || object.isNumericLiteral()) &&
         property.isIdentifier()
       ) {
+        if (isBlockedProperty(property.node.name)) {
+          return deopt(property, state, errMsgs.BLOCKED_PROPERTY_ACCESS);
+        }
         const val: number | string = object.node.value;
         func = (val as $FlowFixMe)[property.node.name];
         if (typeof val === 'string') {
@@ -900,10 +1153,16 @@ function _evaluate(path: NodePath<>, state: State): any {
           state.functions,
         );
         if (parsedObj.confident && property.isIdentifier()) {
+          if (isBlockedProperty(property.node.name)) {
+            return deopt(property, state, errMsgs.BLOCKED_PROPERTY_ACCESS);
+          }
           func = parsedObj.value[property.node.name];
           context = parsedObj.value;
         }
         if (parsedObj.confident && property.isStringLiteral()) {
+          if (isBlockedProperty(property.node.value)) {
+            return deopt(property, state, errMsgs.BLOCKED_PROPERTY_ACCESS);
+          }
           func = parsedObj.value[property.node.value];
           context = parsedObj.value;
         }
@@ -911,6 +1170,10 @@ function _evaluate(path: NodePath<>, state: State): any {
     }
 
     if (func) {
+      if (isBlockedFunction(func) || isBlockedFunction(func.fn)) {
+        return deopt(path, state, errMsgs.BLOCKED_FUNCTION_CALL);
+      }
+
       if (func.takesPath) {
         const args = path.get('arguments');
         return func.fn(...args);

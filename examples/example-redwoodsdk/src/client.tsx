@@ -7,3 +7,8 @@
 import { initClient } from 'rwsdk/client';
 
 initClient();
+
+if (import.meta.env.DEV) {
+  // @ts-ignore
+  import('virtual:stylex:css-only');
+}

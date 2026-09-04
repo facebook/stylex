@@ -300,6 +300,7 @@ declare module '@babel/traverse' {
     state: any;
     opts: object;
     skipKeys: object;
+    // $FlowFixMe[incompatible-variance]
     parentPath: TParentPath<T>;
     context: TraversalContext;
     container: object | $ReadOnlyArray<object>;
@@ -307,6 +308,7 @@ declare module '@babel/traverse' {
     inList: boolean;
     parentKey: string;
     key: string | number;
+    // $FlowFixMe[incompatible-variance]
     node: T;
     scope: Scope;
 

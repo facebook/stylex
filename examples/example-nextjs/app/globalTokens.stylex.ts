@@ -283,6 +283,17 @@ export const globalTokens = stylex.defineVars({
       'rgba(1, 65, 255, 0.3)',
     ].join(', ')})`,
   },
+
+  surfaceBg: { default: '#fafafa', [DARK_MODE]: '#0f1117' },
+  surfaceCard: { default: 'white', [DARK_MODE]: '#1a1b26' },
+  surfaceCardShadow: {
+    default: '0 4px 24px rgba(0,0,0,0.06)',
+    [DARK_MODE]: '0 4px 24px rgba(0,0,0,0.3)',
+  },
+  surfaceHover: {
+    default: 'rgba(0,0,0,0.02)',
+    [DARK_MODE]: 'rgba(255,255,255,0.04)',
+  },
 });
 
 export const scales = stylex.defineVars({
@@ -292,10 +303,20 @@ export const scales = stylex.defineVars({
 });
 
 export const colors = stylex.defineVars({
+  accent: '#1c7ed6',
+  accentLight: 'rgba(28, 126, 214, 0.08)',
+  accentFaded: 'rgba(28, 126, 214, 0.19)',
   blue3: '#74c0fc',
+  blue5: '#4285F4',
   blue7: '#1c7ed6',
+  purple: '#5B45DE',
+  purple6: '#7C6AE8',
+  emerald: '#0ca678',
+  gray2: '#e9ecef',
   gray3: '#dee2e6',
   gray4: '#ced4da',
+  gray5: '#adb5bd',
+  gray6: '#868e96',
   gray8: '#343a40',
   gray9: '#212529',
   lime7: '#74b816',

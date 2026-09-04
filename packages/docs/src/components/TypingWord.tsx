@@ -9,6 +9,7 @@
 
 import { vars } from '@/theming/vars.stylex';
 import * as stylex from '@stylexjs/stylex';
+import { Fragment } from 'react';
 
 const WORDS = [
   'expressive',
@@ -20,11 +21,20 @@ const WORDS = [
 
 export default function TypingWord() {
   return (
-    <span {...stylex.props(styles.container)}>
+    <span {...stylex.props(styles.container)} aria-hidden="true">
       {WORDS.map((word, index) => (
-        <span key={index} {...stylex.props(styles.word)}>
-          {word}
-        </span>
+        <Fragment key={word}>
+          <span {...stylex.props(styles.word)}>
+            {word}
+            <span {...stylex.props(styles.hidden)}>
+              {index < WORDS.length - 2
+                ? ', '
+                : index === WORDS.length - 2
+                  ? ' and '
+                  : ''}
+            </span>
+          </span>
+        </Fragment>
       ))}
     </span>
   );
@@ -113,5 +123,12 @@ const styles = stylex.create({
       ]),
     ),
     animationIterationCount: 'infinite',
+  },
+  hidden: {
+    position: 'absolute',
+    top: -9999,
+    left: -9999,
+    fontSize: '0.01em',
+    opacity: 0.0001,
   },
 });
