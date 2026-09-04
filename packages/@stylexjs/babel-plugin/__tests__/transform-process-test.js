@@ -1169,13 +1169,13 @@ describe('@stylexjs/babel-plugin', () => {
         legacyDisableLayers: true,
       });
       expect(css).toMatchInlineSnapshot(`
-        ":root, .xsg933n{--blue-xpqh4lw:blue;--marginTokens-x8nt2k2:10px;--colorTokens-xkxfyv:red;}
-        :root, .xbiwvf9{--small-x19twipt:2px;--medium-xypjos2:4px;--large-x1ec7iuc:8px;}
-        @media (prefers-color-scheme: dark){:root, .xsg933n{--colorTokens-xkxfyv:lightblue;}}
-        @media (min-width: 600px){:root, .xsg933n{--marginTokens-x8nt2k2:20px;}}
-        @supports (color: oklab(0 0 0)){@media (prefers-color-scheme: dark){:root, .xsg933n{--colorTokens-xkxfyv:oklab(0.7 -0.3 -0.4);}}}
-        @media (max-width: 1000px){.color-xz4zmo0.color-xz4zmo0{color:red}}
-        @media (max-width: 500px){.color-x100plp.color-x100plp{color:blue}}"
+        ":root, .xbiwvf9{--x19twipt:2px;--xypjos2:4px;--x1ec7iuc:8px;}
+        :root, .xsg933n{--xpqh4lw:blue;--x8nt2k2:10px;--xkxfyv:red;}
+        @media (min-width: 600px){:root, .xsg933n{--x8nt2k2:20px;}}
+        @media (prefers-color-scheme: dark){:root, .xsg933n{--xkxfyv:lightblue;}}
+        @supports (color: oklab(0 0 0)){@media (prefers-color-scheme: dark){:root, .xsg933n{--xkxfyv:oklab(0.7 -0.3 -0.4);}}}
+        @media (max-width: 1000px){.xz4zmo0.xz4zmo0{color:red}}
+        @media (max-width: 500px){.x100plp.x100plp{color:blue}}"
       `);
     });
 
