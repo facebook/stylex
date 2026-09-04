@@ -447,4 +447,54 @@ describe('@stylexjs/unplugin', () => {
       expect(css).toContain('.x1aif7nf');
     });
   });
+
+  // Regression: https://github.com/facebook/stylex/issues/1836
+  // The Vite adapter's shared-store polling timer must never keep the process
+  // alive. Vitest's Vite server has no `httpServer`, so the `close` cleanup is
+  // skipped and a still-referenced interval would hang `vitest run` on exit.
+  describe('Vite dev shared-store polling timer', () => {
+    function makeServer(httpServer) {
+      return {
+        middlewares: { use: () => {} },
+        ws: { send: () => {} },
+        httpServer,
+      };
+    }
+
+    test('is unref’d when the server has no httpServer (Vitest)', () => {
+      const plugin = unplugin.vite({ dev: true });
+      expect(typeof plugin.configureServer).toBe('function');
+
+      const server = makeServer(null);
+      plugin.configureServer(server);
+
+      const interval = server.__stylexSharedPollingInterval;
+      expect(interval).toBeDefined();
+      // The timer must not hold the event loop open.
+      expect(typeof interval.hasRef).toBe('function');
+      expect(interval.hasRef()).toBe(false);
+      clearInterval(interval);
+    });
+
+    test('is cleared when the httpServer closes', () => {
+      const plugin = unplugin.vite({ dev: true });
+      const closeListeners = [];
+      const httpServer = {
+        once(event, fn) {
+          if (event === 'close') closeListeners.push(fn);
+        },
+      };
+      const server = makeServer(httpServer);
+      plugin.configureServer(server);
+
+      const interval = server.__stylexSharedPollingInterval;
+      expect(interval).toBeDefined();
+      expect(closeListeners.length).toBe(1);
+      // Simulate the server closing.
+      closeListeners[0]();
+      // After close the timer is cleared: calling clearInterval again is safe,
+      // and the interval no longer has a ref either way.
+      expect(() => clearInterval(interval)).not.toThrow();
+    });
+  });
 });
