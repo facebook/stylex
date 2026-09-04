@@ -505,8 +505,29 @@ function getLogicalFloatVars(rules: Array<Rule>): string {
     : '';
 }
 
-function findWidthPxInRule(rule: MediaQueryRule, type: string): number | null {
-  if (rule.type === 'pair' && rule.key === type) {
+type WidthBound = $ReadOnly<{ kind: 'min' | 'max', value: number }>;
+
+// A rule's width bound plus the at-rule context it sits in. Only rules with
+// an identical context are comparable: a breakpoint nested under `@supports`
+// says nothing about one nested under a different condition.
+type WidthSortKey = $ReadOnly<{ context: string, bound: WidthBound }>;
+
+// The `min-width`/`max-width` px bounds a media query imposes, or null if it
+// has none to sort by: `not` and `or` can widen the matched range or split it
+// in two, and rem/em bounds are unreadable at build time.
+function collectWidthBounds(rule: MediaQueryRule): Array<WidthBound> | null {
+  if (rule.type === 'pair') {
+    const kind =
+      rule.key === 'min-width'
+        ? 'min'
+        : rule.key === 'max-width'
+          ? 'max'
+          : null;
+    // A non-width feature (e.g. `orientation`) constrains no width.
+    if (kind == null) {
+      return [];
+    }
+
     const v = rule.value;
     if (
       v != null &&
@@ -514,39 +535,97 @@ function findWidthPxInRule(rule: MediaQueryRule, type: string): number | null {
       typeof v.value === 'number' &&
       v.unit === 'px'
     ) {
-      return v.value;
+      return [{ kind, value: v.value }];
     }
     return null;
   }
   if (rule.type === 'and') {
-    // A negated media type (e.g. "not screen") inverts the whole expression
-    if (rule.rules.some((r) => r.type === 'media-keyword' && r.not)) {
-      return null;
-    }
+    const bounds: Array<WidthBound> = [];
     for (const r of rule.rules) {
-      const found = findWidthPxInRule(r, type);
-      if (found !== null) return found;
+      const found = collectWidthBounds(r);
+      if (found == null) {
+        return null;
+      }
+
+      bounds.push(...found);
     }
+
+    return bounds;
   }
-  // 'not' and 'or' are intentionally skipped — negated queries have inverted
-  // semantics and OR queries have no single value to sort by.
+
+  // A negated media type (e.g. `not screen`) inverts the whole expression.
+  if (rule.type === 'media-keyword') {
+    return rule.not ? null : [];
+  }
+
   return null;
 }
 
-function extractMediaQueryWidthPx(
-  rule: string,
-  type: 'min-width' | 'max-width',
-): number | null {
-  const firstBrace = rule.indexOf('{');
-  if (firstBrace === -1) return null;
+// The single width bound a media query sorts by, or null if it has none.
+function mediaQueryWidthSortKey(prelude: string): WidthBound | null {
+  let parsed;
   try {
-    const parsed = MediaQuery.parser.parseToEnd(
-      rule.slice(0, firstBrace).trimEnd(),
-    );
-    return findWidthPxInRule(parsed.queries, type);
+    parsed = MediaQuery.parser.parseToEnd(prelude);
   } catch {
     return null;
   }
+  const bounds = collectWidthBounds(parsed.queries);
+  // Zero bounds means no width condition; more than one (a range, or a
+  // redundant pair like `(min-width: 500px) and (min-width: 900px)`) has no
+  // single value to sort by.
+  if (bounds == null || bounds.length !== 1) {
+    return null;
+  }
+
+  return bounds[0];
+}
+
+// The leading at-rule preludes of a rule, outermost first, e.g.
+// `@supports (x){@media (y){.a{…}}}` -> ['@supports (x)', '@media (y)'].
+function atRulePreludes(rule: string): Array<string> {
+  const preludes = [];
+  let index = 0;
+  while (rule[index] === '@') {
+    const brace = rule.indexOf('{', index);
+    if (brace === -1) {
+      break;
+    }
+
+    preludes.push(rule.slice(index, brace).trimEnd());
+    index = brace + 1;
+  }
+
+  return preludes;
+}
+
+// The sort key for a rule's at-rule chain, or null if it has no single
+// `@media` to sort by. Media queries nested in other at-rules still sort, but
+// only against rules sharing the same surrounding conditions.
+function widthSortKeyForChain(preludes: Array<string>): WidthSortKey | null {
+  const mediaIndexes = [];
+  preludes.forEach((prelude, i) => {
+    if (prelude.startsWith('@media ')) {
+      mediaIndexes.push(i);
+    }
+  });
+  // Zero means nothing to sort by; more than one means nested media queries
+  // whose combined bound isn't a single value.
+  if (mediaIndexes.length !== 1) {
+    return null;
+  }
+
+  const mediaIndex = mediaIndexes[0];
+  const bound = mediaQueryWidthSortKey(preludes[mediaIndex]);
+  if (bound == null) {
+    return null;
+  }
+
+  // Blank out the media query itself so the context captures the surrounding
+  // at-rules and the query's depth among them, but not its breakpoint.
+  const context = preludes
+    .map((p, i) => (i === mediaIndex ? '@media' : p))
+    .join('{');
+  return { context, bound };
 }
 
 function processStylexRules(
@@ -633,6 +712,27 @@ function processStylexRules(
     constsMap.set(key, resolveConstant(value));
   }
 
+  // Parsing is expensive and the comparator runs O(n log n) times. Key on the
+  // at-rule chain, not the whole rule — every rule has a distinct class name,
+  // so a full-rule key would never hit.
+  const widthSortKeys: Map<string, WidthSortKey | null> = new Map();
+  const getWidthSortKey = (rule: string): WidthSortKey | null => {
+    if (rule[0] !== '@') {
+      return null;
+    }
+
+    const preludes = atRulePreludes(rule);
+    const chain = preludes.join('{');
+    const cached = widthSortKeys.get(chain);
+    if (cached !== undefined) {
+      return cached;
+    }
+
+    const key = widthSortKeyForChain(preludes);
+    widthSortKeys.set(chain, key);
+    return key;
+  };
+
   const sortedRules: Array<Rule> = nonConstantRules
     .map(([key, { ...styleObj }, priority]): Rule => {
       Object.keys(styleObj).forEach((dir) => {
@@ -666,39 +766,22 @@ function processStylexRules(
         if (useLegacyClassnamesSort) {
           return classname1.localeCompare(classname2);
         } else {
-          // Deterministic ordering for px min/max-width media queries.
-          // Sorts min-width ascending and max-width descending so that larger
-          // breakpoints appear later in the sheet and win the cascade.
-          // rem/em and negated/complex queries fall through to the existing
-          // property + rule comparison.
-          if (rule1.startsWith('@media ') && rule2.startsWith('@media ')) {
-            const minWidth1 = extractMediaQueryWidthPx(rule1, 'min-width');
-            const minWidth2 = extractMediaQueryWidthPx(rule2, 'min-width');
-            const maxWidth1 = extractMediaQueryWidthPx(rule1, 'max-width');
-            const maxWidth2 = extractMediaQueryWidthPx(rule2, 'max-width');
-            // Only sort queries of the same shape. Mixing pure min-width, pure
-            // max-width, and range queries (which have both) in a single
-            // comparator can produce non-transitive orderings — a range query
-            // can compare by min-width against one rule and by max-width against
-            // another, creating a cycle. Range queries fall through to the
-            // existing property + rule comparison.
-            if (
-              minWidth1 !== null &&
-              minWidth2 !== null &&
-              maxWidth1 === null &&
-              maxWidth2 === null
-            ) {
-              const mqComparison = minWidth1 - minWidth2;
-              if (mqComparison !== 0) return mqComparison;
-            } else if (
-              maxWidth1 !== null &&
-              maxWidth2 !== null &&
-              minWidth1 === null &&
-              minWidth2 === null
-            ) {
-              const mqComparison = maxWidth2 - maxWidth1;
-              if (mqComparison !== 0) return mqComparison;
-            }
+          // min-width ascending, max-width descending, so the
+          // narrower-matching rule comes later and wins the cascade. Queries
+          // with no bound, or bounded on opposite sides, fall through below.
+          const widthKey1 = getWidthSortKey(rule1);
+          const widthKey2 = getWidthSortKey(rule2);
+          if (
+            widthKey1 != null &&
+            widthKey2 != null &&
+            widthKey1.context === widthKey2.context &&
+            widthKey1.bound.kind === widthKey2.bound.kind
+          ) {
+            const mqComparison =
+              widthKey1.bound.kind === 'min'
+                ? widthKey1.bound.value - widthKey2.bound.value
+                : widthKey2.bound.value - widthKey1.bound.value;
+            if (mqComparison !== 0) return mqComparison;
           }
           const property1 = rule1.slice(rule1.lastIndexOf('{'));
           const property2 = rule2.slice(rule2.lastIndexOf('{'));

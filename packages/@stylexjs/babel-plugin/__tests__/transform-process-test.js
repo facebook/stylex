@@ -1182,6 +1182,65 @@ describe('@stylexjs/babel-plugin', () => {
       `);
     });
 
+    test('does not sort a min-width paired with a negated max-width', () => {
+      // "(min-width: 500px) and (not (max-width: 700px))" is effectively
+      // "width > 700px", so its 500px bound must not be used as a sort key —
+      // that would place it before (min-width: 600px) and let the 600px rule
+      // win at widths above 700px. It falls through to the existing sort.
+      const mk = (cls, query, decl) => [
+        cls,
+        { ltr: `${query}{.${cls}.${cls}{${decl}}}`, rtl: null },
+        3000,
+      ];
+      const rules = [
+        mk(
+          'xNarrow',
+          '@media screen and (min-width: 500px) and (not (max-width: 700px))',
+          'color:red',
+        ),
+        mk('x600', '@media (min-width: 600px)', 'color:blue'),
+      ];
+
+      const css = stylexPlugin.processStylexRules(rules, {
+        useLayers: false,
+        legacyDisableLayers: true,
+      });
+      expect(css).toMatchInlineSnapshot(`
+        "@media (min-width: 600px){.x600.x600{color:blue}}
+        @media screen and (min-width: 500px) and (not (max-width: 700px)){.xNarrow.xNarrow{color:red}}"
+      `);
+    });
+
+    test('sorts min-width breakpoints nested inside another at-rule', () => {
+      // The media query is not at the start of the rule, so the sort has to
+      // find it within the at-rule chain. Breakpoints only sort against rules
+      // sharing the same surrounding conditions — the differing `@supports`
+      // pair below must not cross-sort.
+      const mk = (cls, prelude) => [
+        cls,
+        { ltr: `${prelude}{.${cls}.${cls}{color:red}}}`, rtl: null },
+        3000,
+      ];
+      const rules = [
+        mk('xWide', '@supports (display:grid){@media (min-width: 1500px)'),
+        mk('xNarrow', '@supports (display:grid){@media (min-width: 500px)'),
+        mk(
+          'yOther',
+          '@supports (color:oklab(0 0 0)){@media (min-width: 900px)',
+        ),
+      ];
+
+      const css = stylexPlugin.processStylexRules(rules, {
+        useLayers: false,
+        legacyDisableLayers: true,
+      });
+      expect(css).toMatchInlineSnapshot(`
+        "@supports (color:oklab(0 0 0)){@media (min-width: 900px){.yOther.yOther{color:red}}}
+        @supports (display:grid){@media (min-width: 500px){.xNarrow.xNarrow{color:red}}}
+        @supports (display:grid){@media (min-width: 1500px){.xWide.xWide{color:red}}}"
+      `);
+    });
+
     test('sorts max-width defineConsts breakpoints using real transform metadata', () => {
       // Uses constants.mediaBig = '@media (max-width: 1000px)' and
       // constants.mediaSmall = '@media (max-width: 500px)' from the test fixture.
