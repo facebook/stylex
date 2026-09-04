@@ -608,36 +608,60 @@ function processStylexRules(
   );
 
   let lastKPri = -1;
+  // A `--<key>` custom-property name up to the first unescaped CSS delimiter,
+  // used by both regexes below. Broader than resolveConstant's ASCII regex, so
+  // it matches non-ASCII keys -- but resolveConstant doesn't pre-collapse
+  // non-ASCII alias chains, so those resolve only one step here.
+  const CUSTOM_PROPERTY_KEY = '--[^\\s,:;)(}{\'"]+';
+  // `var(--key)` value usages and `--key:` override declarations, both built
+  // from CUSTOM_PROPERTY_KEY. `var(--key)` won't match `var(--key, fallback)`
+  // -- those stay overridable, so we leave them.
+  const varUsageRegex = new RegExp(`var\\(${CUSTOM_PROPERTY_KEY}\\)`, 'g');
+  const overrideKeyRegex = new RegExp(`(${CUSTOM_PROPERTY_KEY}):`, 'g');
+  const hasConsts = constsMap.size > 0;
   const grouped = sortedRules.reduce((acc: Array<Array<Rule>>, rule) => {
     const [key, { ...styleObj }, priority] = rule;
     const priorityLevel = Math.floor(priority / 1000);
 
-    Object.keys(styleObj).forEach((dir) => {
-      let original = styleObj[dir];
-
-      for (const [varRef, constValue] of constsMap.entries()) {
-        if (typeof original !== 'string') continue;
-
-        const replacement = String(constValue);
-
-        original = original.replaceAll(varRef, replacement);
-
-        // When the replacement is a variable, we need to replace the key to allow variable overrides
-        if (replacement.startsWith('var(') && replacement.endsWith(')')) {
-          const inside = replacement.slice(4, -1).trim();
-          // Account for fallback variables
-          const commaIdx = inside.indexOf(',');
-          const targetName = (
-            commaIdx >= 0 ? inside.slice(0, commaIdx) : inside
-          ).trim();
-
-          const constName = varRef.slice(4, -1);
-          original = original.replaceAll(`${constName}:`, `${targetName}:`);
+    if (hasConsts) {
+      Object.keys(styleObj).forEach((dir) => {
+        let original = styleObj[dir];
+        if (typeof original !== 'string' || !original.includes('--')) {
+          return;
         }
 
+        // Pass 1: substitute `var(--key)` usages. One pass is enough --
+        // resolveConstant pre-collapsed the alias chains, so values are terminal.
+        original = original.replace(varUsageRegex, (match) => {
+          const constValue = constsMap.get(match);
+          return constValue == null ? match : String(constValue);
+        });
+
+        // Pass 2 -- rewrite `--key:` override declarations (#1219): a single
+        // `replace` (not cumulative replaceAll) so one declaration's rewrite
+        // can't cascade into another's; each resolves one independent step.
+        original = original.replace(overrideKeyRegex, (match, cssVar) => {
+          const constValue = constsMap.get(`var(${cssVar})`);
+          if (constValue == null) {
+            return match;
+          }
+          const replacement = String(constValue);
+          // When the replacement is a variable, we need to replace the key to allow variable overrides
+          if (replacement.startsWith('var(') && replacement.endsWith(')')) {
+            const inside = replacement.slice(4, -1).trim();
+            // Account for fallback variables
+            const commaIdx = inside.indexOf(',');
+            const targetName = (
+              commaIdx >= 0 ? inside.slice(0, commaIdx) : inside
+            ).trim();
+            return `${targetName}:`;
+          }
+          return match;
+        });
+
         styleObj[dir] = original;
-      }
-    });
+      });
+    }
 
     if (priorityLevel === lastKPri) {
       acc[acc.length - 1].push([key, styleObj, priority]);
