@@ -263,7 +263,9 @@ eslintTester.run('stylex-valid-styles', rule.default, {
             width: {
               default: 10,
               [when.descendant(":focus")]: 20,
-              [when.siblingAfter(":active")]: 30,
+              [when.anySibling(":focus")]: 30,
+              [when.siblingBefore(":active")]: 40,
+              [when.siblingAfter(":active")]: 50,
             },
           },
         })
@@ -354,6 +356,78 @@ eslintTester.run('stylex-valid-styles', rule.default, {
         })
       `,
       options: [{ allowOuterPseudoAndMedia: true }],
+    },
+    // test for nested media query inside stylex.when.ancestor()
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          icon: {
+            transitionDuration: {
+              default: '0.5s',
+              [stylex.when.ancestor(":active")]: '0.1s',
+              [stylex.when.ancestor(":hover")]: {
+                default: null,
+                "@media (hover: hover)": '0.1s',
+              },
+            },
+          },
+        })
+      `,
+    },
+    // test for nested media query inside when.descendant() with destructured import
+    {
+      code: `
+        import { when, create } from '@stylexjs/stylex';
+        const styles = create({
+          icon: {
+            transitionDuration: {
+              default: '0.5s',
+              [when.descendant(":hover")]: {
+                default: null,
+                "@media (hover: hover)": '0.1s',
+              },
+            },
+          },
+        })
+      `,
+    },
+    // test for nested attribute selector inside stylex.when.ancestor()
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          icon: {
+            color: {
+              default: 'black',
+              [stylex.when.ancestor(':hover')]: {
+                default: 'blue',
+                '[data-state="open"]': 'red',
+              },
+            },
+          },
+        })
+      `,
+    },
+    // test for functional pseudo selectors in conditional style values
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          input: {
+            color: {
+              default: 'black',
+              ':where([data-state="open"])': {
+                default: 'red',
+                '@media (hover: hover)': 'orange',
+              },
+              ':is([data-state="closed"])': 'blue',
+              ':dir(rtl)': 'green',
+              '::placeholder': 'gray',
+            },
+          },
+        })
+      `,
     },
     // test for positive numbers
     "import * as stylex from '@stylexjs/stylex'; stylex.create({default: {marginInlineStart: 5}});",
@@ -2909,6 +2983,120 @@ revert`,
         {
           message:
             'float value must be one of:\nleft\nright\nnone\ninline-start\ninline-end\nnull\ninitial\ninherit\nunset\nrevert',
+        },
+      ],
+    },
+    // test for unsupported stylex.when method with an object value
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          base: {
+            width: {
+              default: 10,
+              [stylex.when.notAMethod(":hover")]: {
+                default: 20,
+                "@media (hover: hover)": 30,
+              },
+            },
+          },
+        })
+      `,
+      errors: [
+        {
+          message: 'Keys must be strings',
+        },
+      ],
+    },
+    // test for invalid keys nested inside a stylex.when object
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          base: {
+            transitionDuration: {
+              default: '0.5s',
+              [stylex.when.ancestor(':hover')]: {
+                foo: '0.1s',
+              },
+            },
+          },
+        })
+      `,
+      errors: [
+        {
+          message:
+            'Invalid Pseudo class or At Rule used for conditional style value',
+        },
+      ],
+    },
+    // test for invalid numeric keys nested inside a stylex.when object
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const INVALID_CONDITION = 456;
+        const styles = stylex.create({
+          base: {
+            transitionDuration: {
+              default: '0.5s',
+              [stylex.when.ancestor(':hover')]: {
+                123: '0.1s',
+                [INVALID_CONDITION]: '0.2s',
+              },
+            },
+          },
+        })
+      `,
+      errors: [
+        {
+          message:
+            'Invalid Pseudo class or At Rule used for conditional style value',
+        },
+        {
+          message:
+            'Invalid Pseudo class or At Rule used for conditional style value',
+        },
+      ],
+    },
+    // test for unsupported destructured when method with an object value
+    {
+      code: `
+        import { create, when } from '@stylexjs/stylex';
+        const styles = create({
+          base: {
+            width: {
+              default: 10,
+              [when.notAMethod(":hover")]: {
+                default: 20,
+                "@media (hover: hover)": 30,
+              },
+            },
+          },
+        })
+      `,
+      errors: [
+        {
+          message: 'Keys must be strings',
+        },
+      ],
+    },
+    // test for stylex.when group nested inside a pseudo-element
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          base: {
+            '::after': {
+              [stylex.when.ancestor(":hover")]: {
+                width: 20,
+              },
+            },
+          },
+        })
+      `,
+      errors: [
+        {
+          message: 'Keys must be strings',
         },
       ],
     },
