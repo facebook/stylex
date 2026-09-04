@@ -628,6 +628,45 @@ function widthSortKeyForChain(preludes: Array<string>): WidthSortKey | null {
   return { context, bound };
 }
 
+// The property name a rule declares, e.g. `.a{width:500px}` -> `width`.
+// Breakpoints are ordered within a property, so the property has to be
+// compared without its value — two breakpoints for the same property differ
+// in value by definition, and comparing that first would preempt the order.
+function declaredPropertyName(rule: string): string {
+  const declaration = rule.slice(rule.lastIndexOf('{') + 1);
+  const colon = declaration.indexOf(':');
+  return colon === -1 ? declaration : declaration.slice(0, colon);
+}
+
+// A total ordering over width sort keys, so the sort stays consistent no
+// matter which pairs get compared: rules with a bound first, then grouped by
+// at-rule context, then `min-width` ascending ahead of `max-width` descending
+// — the conventional mobile-first order.
+function compareWidthSortKeys(
+  a: WidthSortKey | null,
+  b: WidthSortKey | null,
+): number {
+  if (a == null || b == null) {
+    if (a == null && b == null) {
+      return 0;
+    }
+
+    return a == null ? 1 : -1;
+  }
+
+  if (a.context !== b.context) {
+    return a.context.localeCompare(b.context);
+  }
+
+  if (a.bound.kind !== b.bound.kind) {
+    return a.bound.kind === 'min' ? -1 : 1;
+  }
+
+  return a.bound.kind === 'min'
+    ? a.bound.value - b.bound.value
+    : b.bound.value - a.bound.value;
+}
+
 function processStylexRules(
   rules: Array<Rule>,
   config?:
@@ -766,23 +805,21 @@ function processStylexRules(
         if (useLegacyClassnamesSort) {
           return classname1.localeCompare(classname2);
         } else {
-          // min-width ascending, max-width descending, so the
-          // narrower-matching rule comes later and wins the cascade. Queries
-          // with no bound, or bounded on opposite sides, fall through below.
-          const widthKey1 = getWidthSortKey(rule1);
-          const widthKey2 = getWidthSortKey(rule2);
-          if (
-            widthKey1 != null &&
-            widthKey2 != null &&
-            widthKey1.context === widthKey2.context &&
-            widthKey1.bound.kind === widthKey2.bound.kind
-          ) {
-            const mqComparison =
-              widthKey1.bound.kind === 'min'
-                ? widthKey1.bound.value - widthKey2.bound.value
-                : widthKey2.bound.value - widthKey1.bound.value;
-            if (mqComparison !== 0) return mqComparison;
-          }
+          const nameComparison = declaredPropertyName(rule1).localeCompare(
+            declaredPropertyName(rule2),
+          );
+          if (nameComparison !== 0) return nameComparison;
+
+          // Only rules for the same property compete in the cascade, so the
+          // breakpoint order applies within a property, after it. Ordering by
+          // width first would decide some pairs by width and others by
+          // declaration text, which is not a consistent ordering.
+          const mqComparison = compareWidthSortKeys(
+            getWidthSortKey(rule1),
+            getWidthSortKey(rule2),
+          );
+          if (mqComparison !== 0) return mqComparison;
+
           const property1 = rule1.slice(rule1.lastIndexOf('{'));
           const property2 = rule2.slice(rule2.lastIndexOf('{'));
           const propertyComparison = property1.localeCompare(property2);

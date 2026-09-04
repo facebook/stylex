@@ -1501,6 +1501,122 @@ describe('@stylexjs/babel-plugin', () => {
       `);
     });
 
+    test('sort is a total order across px min- and max-width rules', () => {
+      // Three rules with different properties and mixed bound directions. The
+      // width order applies to some pairs and the declaration order to others,
+      // so an inconsistent comparator produces a cycle here and lets the
+      // output depend on input order.
+      const mk = (cls, query, decl) => [
+        cls,
+        { ltr: `${query}{.${cls}.${cls}{${decl}}}`, rtl: null },
+        3000,
+      ];
+      const a = mk('a', '@media (min-width: 500px)', 'z-index:1');
+      const b = mk('b', '@media (max-width: 300px)', 'margin:0');
+      const c = mk('c', '@media (min-width: 900px)', 'align-items:start');
+
+      const outputs = [
+        [a, b, c],
+        [a, c, b],
+        [b, a, c],
+        [b, c, a],
+        [c, a, b],
+        [c, b, a],
+      ].map((permutation) =>
+        stylexPlugin.processStylexRules(
+          permutation.map(([key, styleObj, priority]) => [
+            key,
+            { ...styleObj },
+            priority,
+          ]),
+          { useLayers: false, legacyDisableLayers: true },
+        ),
+      );
+
+      expect(new Set(outputs).size).toBe(1);
+      expect(outputs[0]).toMatchInlineSnapshot(`
+        "@media (min-width: 900px){.c.c{align-items:start}}
+        @media (max-width: 300px){.b.b{margin:0}}
+        @media (min-width: 500px){.a.a{z-index:1}}"
+      `);
+    });
+
+    test('orders the min-width group before the max-width group', () => {
+      // Matches the conventional mobile-first order used by
+      // sort-css-media-queries: min-width ascending, then max-width
+      // descending.
+      const mk = (cls, query) => [
+        cls,
+        { ltr: `${query}{.${cls}.${cls}{color:red}}`, rtl: null },
+        3000,
+      ];
+      const rules = [
+        mk('xMaxNarrow', '@media (max-width: 300px)'),
+        mk('xMinWide', '@media (min-width: 900px)'),
+        mk('xMaxWide', '@media (max-width: 800px)'),
+        mk('xMinNarrow', '@media (min-width: 400px)'),
+      ];
+
+      const css = stylexPlugin.processStylexRules(rules, {
+        useLayers: false,
+        legacyDisableLayers: true,
+      });
+      expect(css).toMatchInlineSnapshot(`
+        "@media (min-width: 400px){.xMinNarrow.xMinNarrow{color:red}}
+        @media (min-width: 900px){.xMinWide.xMinWide{color:red}}
+        @media (max-width: 800px){.xMaxWide.xMaxWide{color:red}}
+        @media (max-width: 300px){.xMaxNarrow.xMaxNarrow{color:red}}"
+      `);
+    });
+
+    test('does not sort rem breakpoints', () => {
+      // A rem bound needs a root font size that is unknown at build time, so
+      // these fall through to the existing sort rather than being guessed at.
+      const mk = (cls, query) => [
+        cls,
+        { ltr: `${query}{.${cls}.${cls}{color:red}}`, rtl: null },
+        3000,
+      ];
+      // 100rem vs 48rem: numerically ascending order would put 48rem first,
+      // so the fall-through order is distinguishable from a width sort.
+      const rules = [
+        mk('xWide', '@media (min-width: 100rem)'),
+        mk('xNarrow', '@media (min-width: 48rem)'),
+      ];
+
+      const css = stylexPlugin.processStylexRules(rules, {
+        useLayers: false,
+        legacyDisableLayers: true,
+      });
+      expect(css).toMatchInlineSnapshot(`
+        "@media (min-width: 100rem){.xWide.xWide{color:red}}
+        @media (min-width: 48rem){.xNarrow.xNarrow{color:red}}"
+      `);
+    });
+
+    test('does not sort a query with two bounds on the same side', () => {
+      // "(min-width: 500px) and (min-width: 900px)" is really a 900px bound,
+      // but taking either value alone would be wrong, so it falls through.
+      const mk = (cls, query) => [
+        cls,
+        { ltr: `${query}{.${cls}.${cls}{color:red}}`, rtl: null },
+        3000,
+      ];
+      const rules = [
+        mk('xBoth', '@media (min-width: 500px) and (min-width: 900px)'),
+        mk('xSingle', '@media (min-width: 700px)'),
+      ];
+
+      const css = stylexPlugin.processStylexRules(rules, {
+        useLayers: false,
+        legacyDisableLayers: true,
+      });
+      expect(css).toMatchInlineSnapshot(`
+        "@media (min-width: 700px){.xSingle.xSingle{color:red}}
+        @media (min-width: 500px) and (min-width: 900px){.xBoth.xBoth{color:red}}"
+      `);
+    });
+
     test('sort is deterministic regardless of input order', () => {
       // These rules mix @media, @container, @starting-style, var()-wrapped,
       // and plain pseudo-element rules at the same priority.
