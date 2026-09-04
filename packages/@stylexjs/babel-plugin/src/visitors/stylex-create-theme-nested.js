@@ -19,7 +19,12 @@ import {
 import { convertObjectToAST } from '../utils/js-to-ast';
 import { evaluate } from '../utils/evaluate-path';
 import path from 'node:path';
-import { isCallTo, validateDefineCall, buildEvalConfig } from './visitor-utils';
+import {
+  isCallTo,
+  validateDefineCall,
+  buildEvalConfig,
+  evaluationError,
+} from './visitor-utils';
 
 /// Transforms `stylex.unstable_createThemeNested` calls.
 /// Validates, evaluates both arguments, delegates to the shared
@@ -61,11 +66,18 @@ export default function transformStyleXCreateThemeNested(
   const secondArg = args[1];
 
   // Evaluate first arg (the defineVarsNested result) without eval config
-  const { confident: confident1, value: variables } = evaluate(firstArg, state);
+  const {
+    confident: confident1,
+    value: variables,
+    reason: reason1,
+    deopt: deopt1,
+  } = evaluate(firstArg, state);
   if (!confident1) {
-    throw callExpressionPath.buildCodeFrameError(
+    throw evaluationError(
+      deopt1,
+      reason1,
+      callExpressionPath,
       messages.nonStaticValue('unstable_createThemeNested'),
-      SyntaxError,
     );
   }
 
@@ -87,15 +99,18 @@ export default function transformStyleXCreateThemeNested(
     otherInjectedCSSRules,
   );
 
-  const { confident: confident2, value: overrides } = evaluate(
-    secondArg,
-    state,
-    { identifiers, memberExpressions },
-  );
+  const {
+    confident: confident2,
+    value: overrides,
+    reason: reason2,
+    deopt: deopt2,
+  } = evaluate(secondArg, state, { identifiers, memberExpressions });
   if (!confident2) {
-    throw callExpressionPath.buildCodeFrameError(
+    throw evaluationError(
+      deopt2,
+      reason2,
+      callExpressionPath,
       messages.nonStaticValue('unstable_createThemeNested'),
-      SyntaxError,
     );
   }
   if (typeof overrides !== 'object' || overrides == null) {

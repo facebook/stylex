@@ -14,6 +14,7 @@ import * as t from '@babel/types';
 import StateManager from '../utils/state-manager';
 import * as messages from '../shared/messages';
 import { evaluate } from '../utils/evaluate-path';
+import { evaluationError } from './visitor-utils';
 import {
   firstThatWorks as stylexFirstThatWorks,
   keyframes as stylexKeyframes,
@@ -104,14 +105,16 @@ export default function transformStyleXViewTransitionClass(
     });
     state.applyStylexEnv(identifiers);
 
-    const { confident, value } = evaluate(firstArgPath, state, {
+    const { confident, value, reason, deopt } = evaluate(firstArgPath, state, {
       identifiers,
       memberExpressions,
     });
     if (!confident) {
-      throw callExpressionPath.buildCodeFrameError(
+      throw evaluationError(
+        deopt,
+        reason,
+        callExpressionPath,
         messages.nonStaticValue('viewTransitionClass'),
-        SyntaxError,
       );
     }
 

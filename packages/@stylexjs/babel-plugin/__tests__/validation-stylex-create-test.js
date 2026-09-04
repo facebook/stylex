@@ -112,7 +112,7 @@ describe('@stylexjs/babel-plugin', () => {
             }
           });
         `);
-        }).toThrow(messages.nonStaticValue('create'));
+        }).toThrow('Referenced constant is not defined.');
       });
 
       /* Style rules */

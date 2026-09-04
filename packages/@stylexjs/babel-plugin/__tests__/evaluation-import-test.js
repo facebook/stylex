@@ -476,4 +476,264 @@ describe('Evaluation of imported values works based on configuration', () => {
       `);
     });
   });
+
+  describe('Arithmetic on imported tokens compiles to calc()', () => {
+    const varName = (key) =>
+      `var(--${options.classNamePrefix}${hash(
+        `otherFile.stylex.js//MyTheme.${key}`,
+      )})`;
+
+    const transformStyle = (value) =>
+      transform(`
+        import stylex from 'stylex';
+        import { MyTheme } from 'otherFile.stylex';
+        const styles = stylex.create({
+          box: {
+            zIndex: ${value},
+          }
+        });
+        stylex(styles.box);
+      `).code;
+
+    test('token + token', () => {
+      expect(transformStyle('MyTheme.a + MyTheme.b')).toContain(
+        `calc(${varName('a')} + ${varName('b')})`,
+      );
+    });
+
+    test('token + number and number + token', () => {
+      expect(transformStyle('MyTheme.a + 4')).toContain(
+        `calc(${varName('a')} + 4)`,
+      );
+      expect(transformStyle('4 + MyTheme.a')).toContain(
+        `calc(4 + ${varName('a')})`,
+      );
+    });
+
+    test('token - number, token * number, token / number', () => {
+      expect(transformStyle('MyTheme.a - 1')).toContain(
+        `calc(${varName('a')} - 1)`,
+      );
+      expect(transformStyle('MyTheme.a * 2')).toContain(
+        `calc(${varName('a')} * 2)`,
+      );
+      expect(transformStyle('MyTheme.a / 2')).toContain(
+        `calc(${varName('a')} / 2)`,
+      );
+    });
+
+    test('unary minus on a token', () => {
+      expect(transformStyle('-MyTheme.a')).toContain(
+        `calc(-1 * ${varName('a')})`,
+      );
+    });
+
+    test('nested arithmetic flattens to parens', () => {
+      expect(transformStyle('MyTheme.a + MyTheme.b * MyTheme.c')).toContain(
+        `calc(${varName('a')} + (${varName('b')} * ${varName('c')}))`,
+      );
+      expect(transformStyle('(MyTheme.a + MyTheme.b) * 2')).toContain(
+        `calc((${varName('a')} + ${varName('b')}) * 2)`,
+      );
+      expect(
+        transformStyle('(MyTheme.a + (MyTheme.b - MyTheme.c)) / 2'),
+      ).toContain(
+        `calc((${varName('a')} + (${varName('b')} - ${varName('c')})) / 2)`,
+      );
+    });
+
+    test('token + jammed string throws instead of emitting broken CSS', () => {
+      // A unit-string operand is excluded from calc() addition on purpose:
+      // `token + '4px'` vs `token + ' 4px'` (list shorthand) must not
+      // silently mean different things. And since the concatenation
+      // 'var(--x)10px' is invalid CSS, it fails instead.
+      expect(() => transformStyle("MyTheme.a + '10px'")).toThrow(
+        /would\s+produce invalid CSS/,
+      );
+      expect(() => transformStyle("MyTheme.a + 'px'")).toThrow(
+        /would\s+produce invalid CSS/,
+      );
+      expect(() => transformStyle("'10px' + MyTheme.a")).toThrow(
+        /would\s+produce invalid CSS/,
+      );
+    });
+
+    test('token + separated string stays list concatenation', () => {
+      const code = transformStyle("MyTheme.a + ' 4px'");
+      expect(code).not.toContain('calc');
+      expect(code).toContain(`${varName('a')} 4px`);
+    });
+
+    test('string concatenation with non-numeric strings is preserved', () => {
+      const code = transform(`
+        import stylex from 'stylex';
+        import { MyTheme } from 'otherFile.stylex';
+        const styles = stylex.create({
+          box: {
+            fontFamily: 'Arial, ' + MyTheme.font,
+          }
+        });
+        stylex(styles.box);
+      `).code;
+      // The whitespace normalizer removes the space after the comma.
+      expect(code).toContain(`Arial,${varName('font')}`);
+      expect(code).not.toContain('calc');
+    });
+
+    test('function-like string concatenation around a token is preserved', () => {
+      const code = transform(`
+        import stylex from 'stylex';
+        import { MyTheme } from 'otherFile.stylex';
+        const styles = stylex.create({
+          box: {
+            transform: 'translateX(' + MyTheme.a + ')',
+          }
+        });
+        stylex(styles.box);
+      `).code;
+      expect(code).toContain(`translateX(${varName('a')})`);
+      expect(code).not.toContain('calc');
+    });
+
+    test('template literal interpolation uses the same concat rules', () => {
+      expect(() =>
+        transform(`
+        import stylex from 'stylex';
+        import { MyTheme } from 'otherFile.stylex';
+        const styles = stylex.create({
+          box: {
+            width: \`\${MyTheme.a}px\`,
+          }
+        });
+        stylex(styles.box);
+      `),
+      ).toThrow(/would\s+produce invalid CSS/);
+
+      const code = transform(`
+        import stylex from 'stylex';
+        import { MyTheme } from 'otherFile.stylex';
+        const styles = stylex.create({
+          box: {
+            margin: \`\${MyTheme.a} 4px\`,
+          }
+        });
+        stylex(styles.box);
+      `).code;
+      expect(code).toContain(`${varName('a')} 4px`);
+      expect(code).not.toContain('calc');
+    });
+
+    test('unsupported operators throw a compile error', () => {
+      const unsupported = [
+        'MyTheme.a % 2',
+        'MyTheme.a ** 2',
+        'MyTheme.a & 1',
+        '~MyTheme.a',
+        '!MyTheme.a',
+        '+MyTheme.a',
+      ];
+      for (const value of unsupported) {
+        expect(() => transformStyle(value)).toThrow(
+          /cannot be applied to a StyleX variable or constant/,
+        );
+      }
+    });
+
+    test('comparisons on tokens throw a compile error', () => {
+      expect(() => transformStyle('MyTheme.a > MyTheme.b ? 1 : 2')).toThrow(
+        /cannot be compared with ">" at compile time/,
+      );
+      expect(() => transformStyle("MyTheme.a === 'red' ? 1 : 2")).toThrow(
+        /cannot be compared with "===" at compile time/,
+      );
+    });
+
+    test('null and undefined guards on tokens still compile', () => {
+      expect(transformStyle('MyTheme.a != null ? 5 : 7')).toContain(
+        'z-index:5',
+      );
+      expect(transformStyle('MyTheme.a === undefined ? 5 : 7')).toContain(
+        'z-index:7',
+      );
+      expect(transformStyle('MyTheme.a ?? 7')).toContain(
+        `z-index:${varName('a')}`,
+      );
+    });
+
+    test('arithmetic in a computed style key throws a compile error', () => {
+      expect(() =>
+        transform(`
+        import stylex from 'stylex';
+        import { MyTheme } from 'otherFile.stylex';
+        const styles = stylex.create({
+          box: {
+            [MyTheme.a + MyTheme.b]: 'red',
+          }
+        });
+        stylex(styles.box);
+      `),
+      ).toThrow(/cannot be used as a style property key/);
+    });
+
+    test('token misuse inside a dynamic style throws instead of degrading', () => {
+      expect(() =>
+        transform(`
+        import stylex from 'stylex';
+        import { MyTheme } from 'otherFile.stylex';
+        const styles = stylex.create({
+          box: (opacity) => ({
+            opacity,
+            zIndex: MyTheme.a === 'big' ? 1 : 2,
+          }),
+        });
+        stylex.props(styles.box(0.5));
+      `),
+      ).toThrow(/cannot be compared with "===" at compile time/);
+    });
+
+    test('unicode custom property keys work with arithmetic', () => {
+      const { metadata } = transform(`
+        import stylex from 'stylex';
+        import { MyTheme } from 'otherFile.stylex';
+        const styles = stylex.create({
+          box: {
+            zIndex: MyTheme['--größe'] * 2,
+          }
+        });
+        stylex(styles.box);
+      `);
+      expect(metadata.stylex[0][1].ltr).toContain('calc(var(--größe) * 2)');
+    });
+
+    test('arithmetic with a non-numeric operand throws a compile error', () => {
+      expect(() => transformStyle("MyTheme.a - 'foo'")).toThrow(
+        /requires the other operand/,
+      );
+      expect(() => transformStyle("MyTheme.a * 'auto'")).toThrow(
+        /requires the other operand/,
+      );
+    });
+
+    test('Number() wrapped token arithmetic in a local constant compiles to calc()', () => {
+      const code = transform(`
+        import stylex from 'stylex';
+        import { MyTheme } from 'otherFile.stylex';
+        const PRESENTER_Z_INDEX = Number(MyTheme.dialog) + 1;
+        const styles = stylex.create({
+          box: {
+            zIndex: PRESENTER_Z_INDEX,
+          }
+        });
+        stylex(styles.box);
+      `).code;
+
+      expect(code).toContain(`calc(${varName('dialog')} + 1)`);
+    });
+
+    test('global numeric functions on tokens throw instead of coercing to NaN', () => {
+      expect(() => transformStyle('Math.round(MyTheme.a) + 1')).toThrow(
+        /"Math.round" function cannot be applied/,
+      );
+    });
+  });
 });
