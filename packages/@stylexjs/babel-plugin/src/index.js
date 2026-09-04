@@ -514,26 +514,35 @@ type WidthSortKey = $ReadOnly<{ context: string, bound: WidthBound }>;
 
 // The `min-width`/`max-width` px bounds a media query imposes, or null if it
 // has none to sort by: `not` and `or` can widen the matched range or split it
-// in two, and rem/em bounds are unreadable at build time.
+// in two, and rem/em bounds are unreadable at build time. Zero counts as a
+// bound whatever unit it carries, or none at all.
 function collectWidthBounds(rule: MediaQueryRule): Array<WidthBound> | null {
   if (rule.type === 'pair') {
+    // Media feature names are ASCII case-insensitive.
+    const key = rule.key.toLowerCase();
     const kind =
-      rule.key === 'min-width'
-        ? 'min'
-        : rule.key === 'max-width'
-          ? 'max'
-          : null;
+      key === 'min-width' ? 'min' : key === 'max-width' ? 'max' : null;
     // A non-width feature (e.g. `orientation`) constrains no width.
     if (kind == null) {
       return [];
     }
 
     const v = rule.value;
+    // Zero is the one length that needs no unit. Any other unitless number is
+    // invalid CSS for a media feature — the browser drops the whole query — so
+    // leave those unsorted rather than assume px.
+    if (v === 0) {
+      return [{ kind, value: 0 }];
+    }
+
     if (
       v != null &&
       typeof v === 'object' &&
+      // A `Fraction` value (e.g. `aspect-ratio`) is array-shaped, not a length.
+      !Array.isArray(v) &&
       typeof v.value === 'number' &&
-      v.unit === 'px'
+      // Units are ASCII case-insensitive, and zero is zero in any unit.
+      (v.value === 0 || String(v.unit).toLowerCase() === 'px')
     ) {
       return [{ kind, value: v.value }];
     }

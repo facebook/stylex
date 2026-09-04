@@ -1569,6 +1569,82 @@ describe('@stylexjs/babel-plugin', () => {
       `);
     });
 
+    test('sorts unitless zero, any-unit zero, and mixed-case px', () => {
+      // Media feature names and units are both ASCII case-insensitive, and
+      // zero is the one length valid without a unit (and zero in any unit).
+      const mk = (cls, query) => [
+        cls,
+        { ltr: `${query}{.${cls}.${cls}{color:red}}`, rtl: null },
+        3000,
+      ];
+      const rules = [
+        mk('xUpper', '@media (min-width: 900PX)'),
+        mk('xZero', '@media (min-width: 0)'),
+        mk('xMixed', '@media (MIN-WIDTH: 700Px)'),
+        mk('xZeroEm', '@media (max-width: 0em)'),
+      ];
+
+      const css = stylexPlugin.processStylexRules(rules, {
+        useLayers: false,
+        legacyDisableLayers: true,
+      });
+      expect(css).toMatchInlineSnapshot(`
+        "@media (min-width: 0){.xZero.xZero{color:red}}
+        @media (MIN-WIDTH: 700Px){.xMixed.xMixed{color:red}}
+        @media (min-width: 900PX){.xUpper.xUpper{color:red}}
+        @media (max-width: 0em){.xZeroEm.xZeroEm{color:red}}"
+      `);
+    });
+
+    test('does not sort a width whose value is a ratio', () => {
+      // "(min-width: 16/9)" is invalid CSS but does parse, as a ratio rather
+      // than a length. It must not sort, and — as with a negated bound — must
+      // not let a sibling px bound stand in for it.
+      const mk = (cls, query) => [
+        cls,
+        { ltr: `${query}{.${cls}.${cls}{color:red}}`, rtl: null },
+        3000,
+      ];
+      const rules = [
+        mk('xRatio', '@media (min-width: 16/9)'),
+        mk('xPaired', '@media (min-width: 16/9) and (min-width: 400px)'),
+        mk('xReal', '@media (min-width: 900px)'),
+      ];
+
+      const css = stylexPlugin.processStylexRules(rules, {
+        useLayers: false,
+        legacyDisableLayers: true,
+      });
+      expect(css).toMatchInlineSnapshot(`
+        "@media (min-width: 900px){.xReal.xReal{color:red}}
+        @media (min-width: 16/9) and (min-width: 400px){.xPaired.xPaired{color:red}}
+        @media (min-width: 16/9){.xRatio.xRatio{color:red}}"
+      `);
+    });
+
+    test('does not sort a unitless non-zero width', () => {
+      // "(min-width: 700)" is invalid CSS — the browser drops the query — so
+      // it must not be treated as 700px.
+      const mk = (cls, query) => [
+        cls,
+        { ltr: `${query}{.${cls}.${cls}{color:red}}`, rtl: null },
+        3000,
+      ];
+      const rules = [
+        mk('xBare', '@media (min-width: 700)'),
+        mk('xReal', '@media (min-width: 900px)'),
+      ];
+
+      const css = stylexPlugin.processStylexRules(rules, {
+        useLayers: false,
+        legacyDisableLayers: true,
+      });
+      expect(css).toMatchInlineSnapshot(`
+        "@media (min-width: 900px){.xReal.xReal{color:red}}
+        @media (min-width: 700){.xBare.xBare{color:red}}"
+      `);
+    });
+
     test('does not sort rem breakpoints', () => {
       // A rem bound needs a root font size that is unknown at build time, so
       // these fall through to the existing sort rather than being guessed at.
