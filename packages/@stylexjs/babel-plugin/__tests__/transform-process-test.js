@@ -914,6 +914,36 @@ describe('@stylexjs/babel-plugin', () => {
       `);
     });
 
+    // The `float` value arrives via a constant, so it is only recognizable as a
+    // logical float after constants are substituted.
+    test('logical float vars are emitted when the float comes from a constant', () => {
+      const rules = [
+        [
+          'cHash',
+          { constKey: 'cHash', constVal: 'var(--stylex-logical-start)' },
+          0,
+        ],
+        ['x1', { ltr: '.x1{float:var(--cHash)}', rtl: null }, 3000],
+      ];
+
+      expect(stylexPlugin.processStylexRules(rules, true))
+        .toMatchInlineSnapshot(`
+        ":root, [dir="ltr"] {
+          --stylex-logical-start: left;
+          --stylex-logical-end: right;
+        }
+        [dir="rtl"] {
+          --stylex-logical-start: right;
+          --stylex-logical-end: left;
+        }
+
+        @layer priority1;
+        @layer priority1{
+        .x1{float:var(--stylex-logical-start)}
+        }"
+      `);
+    });
+
     test('legacy-expand-shorthands duplicates theme selectors for higher precedence', () => {
       const { _code, metadata } = transform(
         `
