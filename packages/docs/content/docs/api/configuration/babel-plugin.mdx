@@ -23,7 +23,25 @@ Example: `'@/components/*': [path.join(__dirname, './src/components/*')]`
 classNamePrefix: string; // Default: 'x'
 ```
 
-Prefix to be applied to every generated className.
+Prefix applied to hashed class names. When `enableCompressedClassnames` is
+enabled, readable compressed names use their property shorthand instead.
+
+---
+
+### `enableCompressedClassnames`
+
+```ts
+enableCompressedClassnames: boolean; // Default: false
+```
+
+When `true`, StyleX uses short, deterministic class names for common properties
+with simple values. For example, `margin: 0` becomes `m0`, `paddingTop: 16`
+becomes `pt16`, `display: 'flex'` becomes `d-f`, and `position: 'absolute'`
+becomes `po-a`.
+
+Compressed names are never longer than six characters. Declarations with
+complex values, conditions, or no safe short form continue to use hashing and
+the configured `classNamePrefix`.
 
 ---
 

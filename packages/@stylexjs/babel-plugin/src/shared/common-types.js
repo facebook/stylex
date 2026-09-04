@@ -50,6 +50,7 @@ export type StyleXOptions = $ReadOnly<{
   env?: $ReadOnly<{ [string]: any }>,
   dev: boolean,
   propertyValidationMode?: 'throw' | 'warn' | 'silent',
+  enableCompressedClassnames?: ?boolean,
   enableDebugDataProp?: ?boolean,
   enableDevClassNames?: ?boolean,
   enableFontSizePxToRem?: ?boolean,

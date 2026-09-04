@@ -196,7 +196,8 @@ import './index.css';
 | `treeshakeCompensation` | boolean | false | Prevent tree-shaking from removing styles |
 | `aliases` | object | {} | Path aliases matching your bundler config |
 | `unstable_moduleResolution` | object | undefined | Module resolution strategy for theming APIs |
-| `classNamePrefix` | string | 'x' | Prefix for generated class names |
+| `classNamePrefix` | string | 'x' | Prefix for hashed generated class names |
+| `enableCompressedClassnames` | boolean | false | Use class names of six characters or fewer for common simple declarations |
 | `importSources` | array | ['@stylexjs/stylex'] | Custom import sources for StyleX |
 | `styleResolution` | string | 'property-specificity' | Style merge strategy: 'application-order' (last style wins) or 'property-specificity' (more specific property wins) |
 
