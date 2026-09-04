@@ -123,6 +123,24 @@ describe('custom path evaluation works as expected', () => {
     expect(evaluateFirstStatement('const x = Math.min(1, 2, 3);', {})).toBe(1);
   });
 
+  test('Evaluates built-in functions without the Node global alias', () => {
+    const globalDescriptor = Object.getOwnPropertyDescriptor(
+      globalThis,
+      'global',
+    );
+    Reflect.deleteProperty(globalThis, 'global');
+
+    try {
+      expect(
+        evaluateFirstStatement('const x = Math.max(Number(1), Number(2));', {}),
+      ).toBe(2);
+    } finally {
+      if (globalDescriptor) {
+        Object.defineProperty(globalThis, 'global', globalDescriptor);
+      }
+    }
+  });
+
   test('Evaluates custom functions', () => {
     function makeArray(...args) {
       return [...args].reverse();
