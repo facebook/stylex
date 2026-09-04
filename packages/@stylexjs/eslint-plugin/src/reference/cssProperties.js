@@ -329,7 +329,11 @@ const absoluteSize: RuleCheck = makeUnionRule(
   makeLiteralRule('xx-large'),
 );
 const fontFamily: RuleCheck = isString;
-const gridLine: RuleCheck = makeUnionRule(makeLiteralRule('auto'), isString);
+const gridLine: RuleCheck = makeUnionRule(
+  makeLiteralRule('auto'),
+  isString,
+  isNumber,
+);
 const gridTemplate: RuleCheck = makeUnionRule(
   makeLiteralRule('none'),
   makeLiteralRule('subgrid'),
@@ -2094,7 +2098,11 @@ const CSSProperties = {
     'inset',
     'outset',
   ) as RuleCheck,
-  outlineWidth: makeUnionRule(isNumber, isLength, isNonNumericString) as RuleCheck,
+  outlineWidth: makeUnionRule(
+    isNumber,
+    isLength,
+    isNonNumericString,
+  ) as RuleCheck,
   blockOverflow: overflow, // TODO - Add support to Babel Plugin
   inlineOverflow: overflow, // TODO - Add support to Babel Plugin
   overflow: overflow,

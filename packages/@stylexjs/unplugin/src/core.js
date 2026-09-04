@@ -21,9 +21,21 @@ import { transform as lightningTransform } from 'lightningcss';
 import browserslist from 'browserslist';
 import { browserslistToTargets } from 'lightningcss';
 
+// Vite and Rollup hash asset file names by default, so `index.css` reaches the
+// output directory as e.g. `assets/index-B5Jdbbfd.css`. Both patterns therefore
+// allow an optional content hash.
+//
+// Rollup's default `hashCharacters` is `base64`, which is base64url, so a hash
+// may contain `-` and `_` alongside letters and digits (about one in five
+// eight character hashes does, e.g. `assets/index-BVm_Qe95.css`). The character
+// class has to cover the whole base64url alphabet or the miss this is meant to
+// fix simply comes back for those builds.
+export const INDEX_CSS_RE = /(^|\/)index(-[\w-]{8,})?\.css$/i;
+export const STYLE_CSS_RE = /(^|\/)style(-[\w-]{8,})?\.css$/i;
+
 /**
  * Try to pick a stable CSS asset to inject into.
- * - Prefer files named like `style.css` or `index.css`
+ * - Prefer files named like `style.css` or `index.css`, hashed or not
  * - Otherwise, first .css asset encountered
  */
 export function pickCssAssetFromRollupBundle(bundle, choose) {
@@ -40,8 +52,8 @@ export function pickCssAssetFromRollupBundle(bundle, choose) {
     if (chosen) return chosen;
   }
   const best =
-    assets.find((a) => /(^|\/)index\.css$/.test(a.fileName)) ||
-    assets.find((a) => /(^|\/)style\.css$/.test(a.fileName));
+    assets.find((a) => INDEX_CSS_RE.test(a.fileName)) ||
+    assets.find((a) => STYLE_CSS_RE.test(a.fileName));
   return best || assets[0];
 }
 
