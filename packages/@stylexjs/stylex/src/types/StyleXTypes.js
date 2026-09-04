@@ -195,6 +195,10 @@ export type StyleXStylesWithout<
   out CSS extends { readonly [string]: unknown },
 > = StyleXStyles<Omit<CSSPropertiesWithExtras, keyof CSS>>;
 
+export type StyleXSxProp = StyleXArray<
+  ?CompiledStyles | boolean | Readonly<[CompiledStyles, InlineStyles]>,
+>;
+
 export type VarGroup<
   out Tokens extends { readonly [string]: unknown },
   out _ID extends string = string,
