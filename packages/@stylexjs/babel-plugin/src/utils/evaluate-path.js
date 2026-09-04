@@ -159,7 +159,7 @@ function isBlockedFunction(fn: mixed): boolean {
     Object.getPrototypeOf(callable) === Function ||
     // Referenced, never called: this is a value the evaluator refuses to run.
     // eslint-disable-next-line no-eval
-    callable === global.eval
+    callable === (globalThis as $FlowFixMe).eval
   );
 }
 
@@ -1078,7 +1078,7 @@ function _evaluate(path: NodePath<>, state: State): any {
       !path.scope.getBinding(callee.node.name) &&
       isValidCallee(callee.node.name)
     ) {
-      func = global[callee.node.name];
+      func = (globalThis as $FlowFixMe)[callee.node.name];
     } else if (
       callee.isIdentifier() &&
       getOwnProperty(state.functions.identifiers, callee.node.name)
@@ -1103,7 +1103,7 @@ function _evaluate(path: NodePath<>, state: State): any {
           isValidCallee(object.node.name) &&
           isValidCalleeMethod(object.node.name, property.node.name)
         ) {
-          context = global[object.node.name];
+          context = (globalThis as $FlowFixMe)[object.node.name];
           // @ts-expect-error property may not exist in context object
           func = context[property.node.name];
         } else {
