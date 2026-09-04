@@ -9,6 +9,7 @@
     "./createTheme.mdx",
     "./when.mdx",
     "./env.mdx",
+    "./atoms.mdx",
     "./keyframes.mdx",
     "./viewTransitionClass.mdx",
     "./positionTry.mdx",

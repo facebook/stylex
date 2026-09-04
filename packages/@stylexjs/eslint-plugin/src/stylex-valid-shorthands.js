@@ -15,7 +15,7 @@ import {
   createSpecificTransformer,
   createDirectionalTransformer,
 } from './utils/splitShorthands.js';
-import { CANNOT_FIX } from './utils/splitShorthands.js';
+import { CANNOT_FIX, isSingleToken } from './utils/splitShorthands.js';
 import getSourceCode from './utils/getSourceCode';
 import getNodeIndentation from './utils/getNodeIndentation';
 import createImportTracker from './utils/createImportTracker';
@@ -187,6 +187,10 @@ const stylexValidShorthands = {
         return;
       }
 
+      if (key === 'flex' && isSingleToken(String(v))) {
+        return;
+      }
+
       const newValues = shorthandAliasesForKey(v, allowImportant, preferInline);
 
       const isUnfixableError =
@@ -200,6 +204,18 @@ const stylexValidShorthands = {
             newValues[0][1] === property.value?.value?.toString() ||
             newValues[0][1] === parseInt(property.value?.value, 10)) &&
           !isUnfixableError)
+      ) {
+        return;
+      }
+
+      if (
+        key === 'gap' &&
+        newValues.length === 2 &&
+        newValues.every(
+          ([, val]) =>
+            val === property.value.value ||
+            val === Number(property.value.value),
+        )
       ) {
         return;
       }

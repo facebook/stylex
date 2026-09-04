@@ -329,7 +329,11 @@ const absoluteSize: RuleCheck = makeUnionRule(
   makeLiteralRule('xx-large'),
 );
 const fontFamily: RuleCheck = isString;
-const gridLine: RuleCheck = makeUnionRule(makeLiteralRule('auto'), isString);
+const gridLine: RuleCheck = makeUnionRule(
+  makeLiteralRule('auto'),
+  isString,
+  isNumber,
+);
 const gridTemplate: RuleCheck = makeUnionRule(
   makeLiteralRule('none'),
   makeLiteralRule('subgrid'),
@@ -607,6 +611,11 @@ const borderCollapse: RuleCheck = makeUnionRule(
   makeLiteralRule('separate'),
 );
 const borderColor: RuleCheck = color;
+const borderBlockOrInline: RuleCheck = makeUnionRule(
+  borderWidth,
+  borderStyle,
+  color,
+);
 const borderImage: RuleCheck = makeUnionRule(
   borderImageSource,
   borderImageSlice,
@@ -1105,6 +1114,8 @@ const overscrollBehavior: RuleCheck = makeUnionRule(
   makeLiteralRule('contain'),
   makeLiteralRule('auto'),
 );
+const scrollSpacing: RuleCheck = makeUnionRule(isNumber, isString);
+const timelineAxis: RuleCheck = makeUnionRule('block', 'inline', 'x', 'y');
 
 const pageBreak: RuleCheck = makeUnionRule(
   makeLiteralRule('auto'),
@@ -1261,6 +1272,13 @@ const textIndent: RuleCheck = makeUnionRule(
   lengthPercentage,
   makeLiteralRule('hanging'),
   makeLiteralRule('each-line'),
+);
+const textJustify: RuleCheck = makeUnionRule(
+  'none',
+  'auto',
+  'inter-word',
+  'inter-character',
+  'distribute',
 );
 const textOrientation: RuleCheck = makeUnionRule(
   makeLiteralRule('mixed'),
@@ -1728,6 +1746,7 @@ const CSSProperties = {
   borderRightColor: borderLeftColor,
   borderRightStyle: borderLeftStyle,
   borderRightWidth: borderLeftWidth,
+  borderInline: borderBlockOrInline,
   borderInlineEnd: showError(
     [
       '`borderInlineEnd` is not supported. Please use',
@@ -1753,6 +1772,7 @@ const CSSProperties = {
   borderInlineStartColor: borderLeftColor,
   borderInlineStartStyle: borderLeftStyle,
   borderInlineStartWidth: borderLeftWidth,
+  borderBlock: borderBlockOrInline,
   borderBlockEnd: showError(
     [
       '`borderBlockEnd` is not supported. Please use',
@@ -1841,6 +1861,7 @@ const CSSProperties = {
   containIntrinsicInlineSize: makeUnionRule(isNumber, isString) as RuleCheck,
   containIntrinsicHeight: makeUnionRule(isNumber, isString) as RuleCheck,
   containIntrinsicWidth: makeUnionRule(isNumber, isString) as RuleCheck,
+  container: isString,
   containerType: makeUnionRule('normal', 'size', 'inline-size') as RuleCheck,
   containerName: isString,
   content: content,
@@ -2077,22 +2098,25 @@ const CSSProperties = {
     'inset',
     'outset',
   ) as RuleCheck,
-  outlineWidth: makeUnionRule(isNumber, isLength) as RuleCheck,
+  outlineWidth: makeUnionRule(
+    isNumber,
+    isLength,
+    isNonNumericString,
+  ) as RuleCheck,
   blockOverflow: overflow, // TODO - Add support to Babel Plugin
   inlineOverflow: overflow, // TODO - Add support to Babel Plugin
   overflow: overflow,
   overflowAnchor: overflowAnchor,
   overflowClipBox: overflowClipBox,
   overflowWrap: overflowWrap,
+  overflowBlock: overflowDir,
   overflowX: overflowDir,
   overflowY: overflowDir,
   overscrollBehavior: overscrollBehavior,
-  // Currently Unsupported
-  // overscrollBehaviorInline: overscrollBehaviorX,
+  overscrollBehaviorInline: overscrollBehavior,
   overscrollBehaviorX: overscrollBehavior,
   overscrollBehaviorY: overscrollBehavior,
-  // Currently Unsupported
-  // overscrollBehaviorBlock: overscrollBehaviorY,
+  overscrollBehaviorBlock: overscrollBehavior,
   overflowClipMargin: makeUnionRule(isNumber, isString) as RuleCheck,
 
   paintOrder: makeUnionRule(
@@ -2162,27 +2186,36 @@ const CSSProperties = {
   scrollSnapType: scrollSnapType,
   scrollSnapStop: makeUnionRule('normal', 'always') as RuleCheck,
 
-  // scrollMargin: makeUnionRule(isNumber, isString),
-  scrollMarginBlockEnd: makeUnionRule(isNumber, isString) as RuleCheck,
-  scrollMarginBlockStart: makeUnionRule(isNumber, isString) as RuleCheck,
-  scrollMarginBottom: makeUnionRule(isNumber, isString) as RuleCheck,
-  scrollMarginInlineEnd: makeUnionRule(isNumber, isString) as RuleCheck,
-  scrollMarginInlineStart: makeUnionRule(isNumber, isString) as RuleCheck,
-  scrollMarginLeft: makeUnionRule(isNumber, isString) as RuleCheck,
-  scrollMarginRight: makeUnionRule(isNumber, isString) as RuleCheck,
-  scrollMarginTop: makeUnionRule(isNumber, isString) as RuleCheck,
-  scrollPaddingBlockEnd: makeUnionRule(isNumber, isString) as RuleCheck,
-  scrollPaddingBlockStart: makeUnionRule(isNumber, isString) as RuleCheck,
-  scrollPaddingBottom: makeUnionRule(isNumber, isString) as RuleCheck,
-  scrollPaddingInlineEnd: makeUnionRule(isNumber, isString) as RuleCheck,
-  scrollPaddingInlineStart: makeUnionRule(isNumber, isString) as RuleCheck,
-  scrollPaddingLeft: makeUnionRule(isNumber, isString) as RuleCheck,
-  scrollPaddingRight: makeUnionRule(isNumber, isString) as RuleCheck,
-  scrollPaddingTop: makeUnionRule(isNumber, isString) as RuleCheck,
-  scrollSnapMarginBottom: makeUnionRule(isNumber, isString) as RuleCheck,
-  scrollSnapMarginLeft: makeUnionRule(isNumber, isString) as RuleCheck,
-  scrollSnapMarginRight: makeUnionRule(isNumber, isString) as RuleCheck,
-  scrollSnapMarginTop: makeUnionRule(isNumber, isString) as RuleCheck,
+  scrollMargin: scrollSpacing,
+  scrollMarginBlock: scrollSpacing,
+  scrollMarginBlockEnd: scrollSpacing,
+  scrollMarginBlockStart: scrollSpacing,
+  scrollMarginBottom: scrollSpacing,
+  scrollMarginInline: scrollSpacing,
+  scrollMarginInlineEnd: scrollSpacing,
+  scrollMarginInlineStart: scrollSpacing,
+  scrollMarginLeft: scrollSpacing,
+  scrollMarginRight: scrollSpacing,
+  scrollMarginTop: scrollSpacing,
+  scrollPadding: scrollSpacing,
+  scrollPaddingBlock: scrollSpacing,
+  scrollPaddingBlockEnd: scrollSpacing,
+  scrollPaddingBlockStart: scrollSpacing,
+  scrollPaddingBottom: scrollSpacing,
+  scrollPaddingInline: scrollSpacing,
+  scrollPaddingInlineEnd: scrollSpacing,
+  scrollPaddingInlineStart: scrollSpacing,
+  scrollPaddingLeft: scrollSpacing,
+  scrollPaddingRight: scrollSpacing,
+  scrollPaddingTop: scrollSpacing,
+  scrollSnapMarginBottom: scrollSpacing,
+  scrollSnapMarginLeft: scrollSpacing,
+  scrollSnapMarginRight: scrollSpacing,
+  scrollSnapMarginTop: scrollSpacing,
+
+  scrollTimeline: isString,
+  scrollTimelineAxis: timelineAxis,
+  scrollTimelineName: isString,
 
   shapeImageThreshold: shapeImageThreshold,
   shapeMargin: lengthPercentage,
@@ -2226,6 +2259,7 @@ const CSSProperties = {
   textEmphasisPosition: textEmphasisPosition,
   textEmphasisStyle: textEmphasisStyle,
   textIndent: textIndent,
+  textJustify: textJustify,
   textOrientation: textOrientation,
   textOverflow: textOverflow,
   textRendering: textRendering,
@@ -2234,8 +2268,15 @@ const CSSProperties = {
   textTransform: textTransform,
   textUnderlineOffset: textUnderlineOffset,
   textUnderlinePosition: textUnderlinePosition,
-  textWrap: makeUnionRule('wrap', 'nowrap', 'balance', 'pretty') as RuleCheck,
+  textWrap: makeUnionRule(
+    'wrap',
+    'nowrap',
+    'balance',
+    'pretty',
+    'stable',
+  ) as RuleCheck,
 
+  timelineScope: isString,
   touchAction: touchAction,
   transform: transform,
   transformBox: transformBox,
@@ -2249,6 +2290,10 @@ const CSSProperties = {
   unicodeBidi: unicodeBidi,
   unicodeRange: unicodeRange,
   userSelect: userSelect,
+  viewTimeline: isString,
+  viewTimelineAxis: timelineAxis,
+  viewTimelineName: isString,
+  viewTimelineInset: scrollSpacing,
   viewTransitionName: makeUnionRule(all, isString) as RuleCheck,
   verticalAlign: verticalAlign,
   visibility: visibility,

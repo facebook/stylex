@@ -5322,7 +5322,6 @@ describe('@stylexjs/babel-plugin', () => {
       test('adds debug data', () => {
         const options = {
           debug: true,
-          enableDebugClassNames: true,
           filename: '/html/js/components/Foo.react.js',
         };
         const { code, metadata } = transform(
@@ -5346,15 +5345,15 @@ describe('@stylexjs/babel-plugin', () => {
           "import * as stylex from '@stylexjs/stylex';
           export const styles = {
             "1": {
-              "fontSize-kGuDYH": "fontSize-xrv4cvt",
+              "fontSize-kGuDYH": "xrv4cvt",
               $$css: "components/Foo.react.js:10"
             },
             foo: {
-              "color-kMwMTN": "color-x1e2nbdu",
+              "color-kMwMTN": "x1e2nbdu",
               $$css: "components/Foo.react.js:4"
             },
             "bar-baz": {
-              "display-k1xSpc": "display-x1lliihq",
+              "display-k1xSpc": "x1lliihq",
               $$css: "components/Foo.react.js:7"
             }
           };"
@@ -5363,25 +5362,25 @@ describe('@stylexjs/babel-plugin', () => {
           {
             "stylex": [
               [
-                "fontSize-xrv4cvt",
+                "xrv4cvt",
                 {
-                  "ltr": ".fontSize-xrv4cvt{font-size:1em}",
+                  "ltr": ".xrv4cvt{font-size:1em}",
                   "rtl": null,
                 },
                 3000,
               ],
               [
-                "color-x1e2nbdu",
+                "x1e2nbdu",
                 {
-                  "ltr": ".color-x1e2nbdu{color:red}",
+                  "ltr": ".x1e2nbdu{color:red}",
                   "rtl": null,
                 },
                 3000,
               ],
               [
-                "display-x1lliihq",
+                "x1lliihq",
                 {
-                  "ltr": ".display-x1lliihq{display:block}",
+                  "ltr": ".x1lliihq{display:block}",
                   "rtl": null,
                 },
                 3000,
@@ -5394,7 +5393,6 @@ describe('@stylexjs/babel-plugin', () => {
       test('adds debug data for npm packages', () => {
         const options = {
           debug: true,
-          enableDebugClassNames: true,
           filename: '/js/node_modules/npm-package/dist/components/Foo.react.js',
         };
         const { code, metadata } = transform(
@@ -5418,15 +5416,15 @@ describe('@stylexjs/babel-plugin', () => {
           "import * as stylex from '@stylexjs/stylex';
           export const styles = {
             "1": {
-              "fontSize-kGuDYH": "fontSize-xrv4cvt",
+              "fontSize-kGuDYH": "xrv4cvt",
               $$css: "npm-package:components/Foo.react.js:10"
             },
             foo: {
-              "color-kMwMTN": "color-x1e2nbdu",
+              "color-kMwMTN": "x1e2nbdu",
               $$css: "npm-package:components/Foo.react.js:4"
             },
             "bar-baz": {
-              "display-k1xSpc": "display-x1lliihq",
+              "display-k1xSpc": "x1lliihq",
               $$css: "npm-package:components/Foo.react.js:7"
             }
           };"
@@ -5435,25 +5433,25 @@ describe('@stylexjs/babel-plugin', () => {
           {
             "stylex": [
               [
-                "fontSize-xrv4cvt",
+                "xrv4cvt",
                 {
-                  "ltr": ".fontSize-xrv4cvt{font-size:1em}",
+                  "ltr": ".xrv4cvt{font-size:1em}",
                   "rtl": null,
                 },
                 3000,
               ],
               [
-                "color-x1e2nbdu",
+                "x1e2nbdu",
                 {
-                  "ltr": ".color-x1e2nbdu{color:red}",
+                  "ltr": ".x1e2nbdu{color:red}",
                   "rtl": null,
                 },
                 3000,
               ],
               [
-                "display-x1lliihq",
+                "x1lliihq",
                 {
-                  "ltr": ".display-x1lliihq{display:block}",
+                  "ltr": ".x1lliihq{display:block}",
                   "rtl": null,
                 },
                 3000,
@@ -5466,7 +5464,6 @@ describe('@stylexjs/babel-plugin', () => {
       test('adds debug data (haste)', () => {
         const options = {
           debug: true,
-          enableDebugClassNames: true,
           filename: '/html/js/components/Foo.react.js',
           unstable_moduleResolution: { type: 'haste' },
         };
@@ -5491,15 +5488,15 @@ describe('@stylexjs/babel-plugin', () => {
           "import * as stylex from '@stylexjs/stylex';
           export const styles = {
             "1": {
-              "fontSize-kGuDYH": "fontSize-xrv4cvt",
+              "fontSize-kGuDYH": "xrv4cvt",
               $$css: "Foo.react.js:10"
             },
             foo: {
-              "color-kMwMTN": "color-x1e2nbdu",
+              "color-kMwMTN": "x1e2nbdu",
               $$css: "Foo.react.js:4"
             },
             "bar-baz": {
-              "display-k1xSpc": "display-x1lliihq",
+              "display-k1xSpc": "x1lliihq",
               $$css: "Foo.react.js:7"
             }
           };"
@@ -5508,25 +5505,25 @@ describe('@stylexjs/babel-plugin', () => {
           {
             "stylex": [
               [
-                "fontSize-xrv4cvt",
+                "xrv4cvt",
                 {
-                  "ltr": ".fontSize-xrv4cvt{font-size:1em}",
+                  "ltr": ".xrv4cvt{font-size:1em}",
                   "rtl": null,
                 },
                 3000,
               ],
               [
-                "color-x1e2nbdu",
+                "x1e2nbdu",
                 {
-                  "ltr": ".color-x1e2nbdu{color:red}",
+                  "ltr": ".x1e2nbdu{color:red}",
                   "rtl": null,
                 },
                 3000,
               ],
               [
-                "display-x1lliihq",
+                "x1lliihq",
                 {
-                  "ltr": ".display-x1lliihq{display:block}",
+                  "ltr": ".x1lliihq{display:block}",
                   "rtl": null,
                 },
                 3000,
@@ -5539,7 +5536,6 @@ describe('@stylexjs/babel-plugin', () => {
       test('adds debug data for npm packages (haste)', () => {
         const options = {
           debug: true,
-          enableDebugClassNames: true,
           filename: '/node_modules/npm-package/dist/components/Foo.react.js',
           unstable_moduleResolution: { type: 'haste' },
         };
@@ -5564,15 +5560,15 @@ describe('@stylexjs/babel-plugin', () => {
           "import * as stylex from '@stylexjs/stylex';
           export const styles = {
             "1": {
-              "fontSize-kGuDYH": "fontSize-xrv4cvt",
+              "fontSize-kGuDYH": "xrv4cvt",
               $$css: "npm-package:components/Foo.react.js:10"
             },
             foo: {
-              "color-kMwMTN": "color-x1e2nbdu",
+              "color-kMwMTN": "x1e2nbdu",
               $$css: "npm-package:components/Foo.react.js:4"
             },
             "bar-baz": {
-              "display-k1xSpc": "display-x1lliihq",
+              "display-k1xSpc": "x1lliihq",
               $$css: "npm-package:components/Foo.react.js:7"
             }
           };"
@@ -5581,25 +5577,25 @@ describe('@stylexjs/babel-plugin', () => {
           {
             "stylex": [
               [
-                "fontSize-xrv4cvt",
+                "xrv4cvt",
                 {
-                  "ltr": ".fontSize-xrv4cvt{font-size:1em}",
+                  "ltr": ".xrv4cvt{font-size:1em}",
                   "rtl": null,
                 },
                 3000,
               ],
               [
-                "color-x1e2nbdu",
+                "x1e2nbdu",
                 {
-                  "ltr": ".color-x1e2nbdu{color:red}",
+                  "ltr": ".x1e2nbdu{color:red}",
                   "rtl": null,
                 },
                 3000,
               ],
               [
-                "display-x1lliihq",
+                "x1lliihq",
                 {
-                  "ltr": ".display-x1lliihq{display:block}",
+                  "ltr": ".x1lliihq{display:block}",
                   "rtl": null,
                 },
                 3000,

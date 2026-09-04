@@ -69,7 +69,7 @@ const errorForFn = (name: string) =>
 const errorForType = (key: keyof typeof types) => errorForFn(`types.${key}`);
 
 export const create: StyleX$Create = function stylexCreate<
-  const S extends { +[string]: unknown },
+  const S extends { readonly [string]: unknown },
 >(_styles: S): MapNamespaces<S> {
   throw errorForFn('create');
 };
@@ -79,7 +79,7 @@ export const createTheme: StyleX$CreateTheme = (_baseTokens, _overrides) => {
 };
 
 export const defineConsts: StyleX$DefineConsts = function stylexDefineConsts<
-  const T extends { +[string]: number | string },
+  const T extends { readonly [string]: number | string },
 >(_styles: T): T {
   throw errorForFn('defineConsts');
 };
@@ -91,26 +91,26 @@ export const defineVars: StyleX$DefineVars = function stylexDefineVars(
 };
 
 export const unstable_conditional = function stylexConditional<
-  const T extends { +default: unknown, +[string]: unknown },
+  const T extends { readonly default: unknown, readonly [string]: unknown },
 >(_value: T): T {
   throw errorForFn('unstable_conditional');
 };
 
 export const unstable_defineVarsNested = function stylexDefineVarsNested<
-  const T extends { +[string]: NestedVarsValue },
+  const T extends { readonly [string]: NestedVarsValue },
 >(_styles: T): T {
   throw errorForFn('unstable_defineVarsNested');
 };
 
 export const unstable_defineConstsNested = function stylexDefineConstsNested<
-  const T extends { +[string]: NestedConstsValue },
+  const T extends { readonly [string]: NestedConstsValue },
 >(_styles: T): T {
   throw errorForFn('unstable_defineConstsNested');
 };
 
 export const unstable_createThemeNested = (
-  _baseTokens: { +[string]: NestedStringValue },
-  _overrides: { +[string]: NestedVarsValue },
+  _baseTokens: { readonly [string]: NestedStringValue },
+  _overrides: { readonly [string]: NestedVarsValue },
 ): CompiledStyles => {
   throw errorForFn('unstable_createThemeNested');
 };
@@ -352,21 +352,23 @@ type IStyleX = {
   types: typeof types,
   when: typeof when,
   unstable_conditional: <
-    const T extends { +default: unknown, +[string]: unknown },
+    const T extends { readonly default: unknown, readonly [string]: unknown },
   >(
     value: T,
   ) => T,
-  unstable_defineVarsNested: <const T extends { +[string]: NestedVarsValue }>(
+  unstable_defineVarsNested: <
+    const T extends { readonly [string]: NestedVarsValue },
+  >(
     tokens: T,
   ) => T,
   unstable_defineConstsNested: <
-    const T extends { +[string]: NestedConstsValue },
+    const T extends { readonly [string]: NestedConstsValue },
   >(
     tokens: T,
   ) => T,
   unstable_createThemeNested: (
-    baseTokens: { +[string]: NestedStringValue },
-    overrides: { +[string]: NestedVarsValue },
+    baseTokens: { readonly [string]: NestedStringValue },
+    overrides: { readonly [string]: NestedVarsValue },
   ) => CompiledStyles,
   __customProperties?: { [string]: unknown },
   ...
