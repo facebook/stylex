@@ -100,6 +100,22 @@ describe('style-value-parser/at-queries', () => {
         );
       });
 
+      test('@container (width >= 360px)', () => {
+        const parsed = MediaQuery.parser.parseToEnd('@container (width >= 360px)');
+        expect(parsed.queries).toMatchInlineSnapshot(`
+          {
+            "key": "min-width",
+            "type": "pair",
+            "value": {
+              "signCharacter": undefined,
+              "type": "integer",
+              "unit": "px",
+              "value": 360,
+            },
+          }
+        `);
+      });
+
       test('@media only screen and (max-width: 38em)', () => {
         const parsed = MediaQuery.parser.parseToEnd(
           '@media only screen and (max-width: 38em)',

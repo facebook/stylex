@@ -8,8 +8,37 @@
  */
 
 import { lastMediaQueryWinsTransform } from '../media-query-transform.js';
+import { MediaQuery } from '../media-query.js';
 
 describe('Media Query Transformer', () => {
+  test('parses container query syntax', () => {
+    const query = '@container (width >= 360px)';
+
+    expect(() => MediaQuery.parser.parseToEnd(query)).not.toThrow();
+  });
+  test('basic usage: container queries preserve ordering', () => {
+    const originalStyles = {
+      gridColumn: {
+        default: '1 / 2',
+        '@container (max-width: 1440px)': '1 / 4',
+        '@container (max-width: 1024px)': '1 / 3',
+        '@container (max-width: 768px)': '1 / -1',
+      },
+    };
+
+    const expectedStyles = {
+      gridColumn: {
+        default: '1 / 2',
+        '@container (min-width: 1024.01px) and (max-width: 1440px)': '1 / 4',
+        '@container (min-width: 768.01px) and (max-width: 1024px)': '1 / 3',
+        '@container (max-width: 768px)': '1 / -1',
+      },
+    };
+
+    const result = lastMediaQueryWinsTransform(originalStyles);
+    expect(JSON.stringify(result)).toBe(JSON.stringify(expectedStyles));
+  });
+
   test('basic usage: multiple widths', () => {
     const originalStyles = {
       gridColumn: {
