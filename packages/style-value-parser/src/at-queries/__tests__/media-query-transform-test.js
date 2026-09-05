@@ -696,4 +696,29 @@ describe('Media Query Transformer', () => {
     const result = lastMediaQueryWinsTransform(originalStyles);
     expect(JSON.stringify(result)).toBe(JSON.stringify(expectedStyles));
   });
+
+  test('issue 1793: nested range media queries use strict comparison and leave no gaps', () => {
+    const originalStyles = {
+      foo: {
+        gridColumn: {
+          default: '1 / 2',
+          '@media (width >= 48rem)': '1 / 3',
+          '@media (width >= 64rem)': '1 / -1',
+        },
+      },
+    };
+
+    const expectedStyles = {
+      foo: {
+        gridColumn: {
+          default: '1 / 2',
+          '@media (width >= 48rem) and (width < 64rem)': '1 / 3',
+          '@media (width >= 64rem)': '1 / -1',
+        },
+      },
+    };
+
+    const result = lastMediaQueryWinsTransform(originalStyles);
+    expect(JSON.stringify(result)).toBe(JSON.stringify(expectedStyles));
+  });
 });

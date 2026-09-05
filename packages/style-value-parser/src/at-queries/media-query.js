@@ -30,6 +30,7 @@ type MediaRulePair = {
   type: 'pair',
   key: string,
   value: MediaRuleValue,
+  operator?: string,
 };
 type MediaNotRule = { type: 'not', rule: MediaQueryRule };
 type MediaAndRules = { type: 'and', rules: $ReadOnlyArray<MediaQueryRule> };
@@ -42,25 +43,6 @@ export type MediaQueryRule =
   | MediaNotRule
   | MediaAndRules
   | MediaOrRules;
-
-// helper to adjust the numeric value when no equality sign is present.
-function adjustDimension(
-  dimension: Length,
-  op: string,
-  eq: string | void,
-  isMaxWidth: boolean = false,
-): Length {
-  let adjustedValue = dimension.value;
-  const epsilon = 0.01;
-  if (eq !== '=') {
-    if (isMaxWidth) {
-      adjustedValue -= epsilon;
-    } else {
-      adjustedValue += epsilon;
-    }
-  }
-  return { ...dimension, value: adjustedValue };
-}
 
 const basicMediaTypeParser: TokenParser<'screen' | 'print' | 'all'> =
   TokenParser.tokens.Ident.map((token) => token[4].value, '.stringValue').where(
@@ -145,14 +127,11 @@ const mediaInequalityRuleParser: TokenParser<MediaRulePair> =
   )
     .separatedBy(TokenParser.tokens.Whitespace.optional)
     .map(([_openParen, key, op, eq, dimension, _closeParen]) => {
-      // for forward inequality, e.g. (width < 1250px) becomes max-width
-      const finalKey = op === '>' ? `min-${key}` : `max-${key}`;
-      const isMaxWidth = finalKey.startsWith('max-');
-      const adjustedDimension = adjustDimension(dimension, op, eq, isMaxWidth);
       return {
         type: 'pair',
-        key: finalKey,
-        value: adjustedDimension,
+        key,
+        value: dimension,
+        operator: op + (eq || ''),
       };
     });
 
@@ -175,14 +154,12 @@ const mediaInequalityRuleParserReversed: TokenParser<MediaRulePair> =
   )
     .separatedBy(TokenParser.tokens.Whitespace.optional)
     .map(([_openParen, dimension, op, eq, key, _closeParen]) => {
-      // reversed inequality: (1250px > width) becomes max-width
-      const finalKey = op === '>' ? `max-${key}` : `min-${key}`;
-      const isMaxWidth = finalKey.startsWith('max-');
-      const adjustedDimension = adjustDimension(dimension, op, eq, isMaxWidth);
+      const forwardOp = (op === '>' ? '<' : '>') + (eq || '');
       return {
         type: 'pair',
-        key: finalKey,
-        value: adjustedDimension,
+        key,
+        value: dimension,
+        operator: forwardOp,
       };
     });
 
@@ -217,17 +194,13 @@ const doubleInequalityRuleParser: TokenParser<MediaAndRules> =
   )
     .separatedBy(TokenParser.tokens.Whitespace.optional)
     .map(([_openParen, lower, op, eq, key, op2, eq2, upper, _closeParen]) => {
-      const lowerKey = op === '>' ? `max-${key}` : `min-${key}`;
-      const upperKey = op2 === '>' ? `min-${key}` : `max-${key}`;
-      const lowerIsMaxWidth = lowerKey.startsWith('max-');
-      const upperIsMaxWidth = upperKey.startsWith('max-');
-      const lowerValue = adjustDimension(lower, op, eq, lowerIsMaxWidth);
-      const upperValue = adjustDimension(upper, op2, eq2, upperIsMaxWidth);
+      const lowerOp = (op === '>' ? '<' : '>') + (eq || '');
+      const upperOp = op2 + (eq2 || '');
       return {
         type: 'and',
         rules: [
-          { type: 'pair', key: lowerKey, value: lowerValue },
-          { type: 'pair', key: upperKey, value: upperValue },
+          { type: 'pair', key, value: lower, operator: lowerOp },
+          { type: 'pair', key, value: upper, operator: upperOp },
         ],
       };
     });
@@ -358,13 +331,29 @@ function mergeIntervalsForAnd(
 ): Array<MediaQueryRule> {
   const epsilon: number = 0.01;
   const dimensions = ['width', 'height'];
-  const intervals: { [dim: string]: Array<[number, number]> } = {
+
+  const useRangeSyntax = rules.some((rule) => {
+    let target = rule;
+    if (rule.type === 'not') {
+      target = rule.rule;
+    }
+    return target && target.type === 'pair' && target.operator != null;
+  });
+
+  const lowerBounds: {
+    [dim: string]: Array<{ value: number, inclusive: boolean }>,
+  } = {
+    width: [],
+    height: [],
+  };
+  const upperBounds: {
+    [dim: string]: Array<{ value: number, inclusive: boolean }>,
+  } = {
     width: [],
     height: [],
   };
 
   const units: { [dim: string]: string } = {};
-
   let hasAnyUnitConflicts = false;
 
   for (const rule of rules) {
@@ -399,65 +388,69 @@ function mergeIntervalsForAnd(
   }
 
   for (const rule: MediaQueryRule of rules) {
-    for (const dim of dimensions) {
-      if (
-        rule.type === 'pair' &&
-        (rule.key === `min-${dim}` || rule.key === `max-${dim}`) &&
-        isNumericLength(rule.value)
-      ) {
-        const val = rule.value as any;
+    let isHandled = false;
+    let dim: ?string = null;
+    let val: ?any = null;
+    let op: ?string = null;
+    let isNot = false;
 
-        if (intervals[dim].length === 0) {
-          units[dim] = val.unit;
-        } else if (units[dim] !== val.unit) {
-          hasAnyUnitConflicts = true;
-        }
-        intervals[dim].push(
-          rule.key === `min-${dim}`
-            ? [val.value, Infinity]
-            : [-Infinity, val.value],
-        );
-        break;
-      } else if (
-        rule.type === 'not' &&
-        rule.rule &&
-        rule.rule.type === 'pair' &&
-        (rule.rule.key === `min-${dim}` || rule.rule.key === `max-${dim}`) &&
-        isNumericLength(rule.rule.value)
+    let targetRule = rule;
+    if (rule.type === 'not') {
+      isNot = true;
+      targetRule = rule.rule;
+    }
+
+    if (
+      targetRule &&
+      targetRule.type === 'pair' &&
+      isNumericLength(targetRule.value)
+    ) {
+      val = targetRule.value;
+      const key = targetRule.key;
+      if (
+        key === 'min-width' ||
+        key === 'max-width' ||
+        key === 'min-height' ||
+        key === 'max-height'
       ) {
-        const val = rule.rule.value as any;
-        if (intervals[dim].length === 0) {
-          units[dim] = val.unit;
-        } else if (units[dim] !== val.unit) {
-          hasAnyUnitConflicts = true;
-        }
-        if (rule.rule.key === `min-${dim}`) {
-          intervals[dim].push([-Infinity, val.value - epsilon]);
-        } else {
-          intervals[dim].push([val.value + epsilon, Infinity]);
-        }
-        break;
+        dim = key.split('-')[1];
+        op = key.startsWith('min-') ? '>=' : '<=';
+        isHandled = true;
+      } else if ((key === 'width' || key === 'height') && targetRule.operator) {
+        dim = key;
+        op = targetRule.operator;
+        isHandled = true;
       }
     }
-    if (
-      !(
-        (rule.type === 'pair' &&
-          (rule.key === 'min-width' ||
-            rule.key === 'max-width' ||
-            rule.key === 'min-height' ||
-            rule.key === 'max-height') &&
-          isNumericLength(rule.value)) ||
-        (rule.type === 'not' &&
-          rule.rule &&
-          rule.rule.type === 'pair' &&
-          (rule.rule.key === 'min-width' ||
-            rule.rule.key === 'max-width' ||
-            rule.rule.key === 'min-height' ||
-            rule.rule.key === 'max-height') &&
-          isNumericLength(rule.rule.value))
-      )
-    ) {
+
+    if (!isHandled || dim == null || val == null || op == null) {
       return rules;
+    }
+
+    if (units[dim] === undefined) {
+      units[dim] = val.unit;
+    } else if (units[dim] !== val.unit) {
+      hasAnyUnitConflicts = true;
+    }
+
+    let effectiveOp = op;
+    if (isNot) {
+      if (op === '>=') effectiveOp = '<';
+      else if (op === '>') effectiveOp = '<=';
+      else if (op === '<=') effectiveOp = '>';
+      else if (op === '<') effectiveOp = '>=';
+    }
+
+    if (effectiveOp === '>=' || effectiveOp === '>') {
+      lowerBounds[dim].push({
+        value: val.value,
+        inclusive: effectiveOp === '>=',
+      });
+    } else if (effectiveOp === '<=' || effectiveOp === '<') {
+      upperBounds[dim].push({
+        value: val.value,
+        inclusive: effectiveOp === '<=',
+      });
     }
   }
 
@@ -468,33 +461,98 @@ function mergeIntervalsForAnd(
   }
 
   for (const dim of dimensions) {
-    const dimIntervals = intervals[dim];
-    if (dimIntervals.length === 0) continue;
+    const dimLower = lowerBounds[dim];
+    const dimUpper = upperBounds[dim];
+    if (dimLower.length === 0 && dimUpper.length === 0) continue;
 
-    let lower: number = -Infinity;
-    let upper: number = Infinity;
-    for (const [l, u]: [number, number] of dimIntervals) {
-      if (l > lower) lower = l;
-      if (u < upper) upper = u;
+    let lowerValue = -Infinity;
+    let lowerInclusive = false;
+    if (dimLower.length > 0) {
+      lowerValue = -Infinity;
+      lowerInclusive = false;
+      for (const b of dimLower) {
+        if (b.value > lowerValue) {
+          lowerValue = b.value;
+          lowerInclusive = b.inclusive;
+        } else if (b.value === lowerValue) {
+          lowerInclusive = lowerInclusive && b.inclusive;
+        }
+      }
     }
-    if (lower > upper) {
+
+    let upperValue = Infinity;
+    let upperInclusive = false;
+    if (dimUpper.length > 0) {
+      upperValue = Infinity;
+      upperInclusive = false;
+      for (const b of dimUpper) {
+        if (b.value < upperValue) {
+          upperValue = b.value;
+          upperInclusive = b.inclusive;
+        } else if (b.value === upperValue) {
+          upperInclusive = upperInclusive && b.inclusive;
+        }
+      }
+    }
+
+    if (lowerValue > upperValue) {
       return [];
     }
-    if (lower !== -Infinity) {
-      result.push({
-        type: 'pair',
-        key: `min-${dim}`,
-        value: { value: lower, unit: units[dim], type: 'integer' } as any,
-      });
+    if (lowerValue === upperValue && (!lowerInclusive || !upperInclusive)) {
+      return [];
     }
-    if (upper !== Infinity) {
-      result.push({
-        type: 'pair',
-        key: `max-${dim}`,
-        value: { value: upper, unit: units[dim], type: 'integer' } as any,
-      });
+
+    if (useRangeSyntax) {
+      if (lowerValue !== -Infinity) {
+        result.push({
+          type: 'pair',
+          key: dim,
+          value: {
+            value: lowerValue,
+            unit: units[dim],
+            type: 'integer',
+          } as any,
+          operator: lowerInclusive ? '>=' : '>',
+        });
+      }
+      if (upperValue !== Infinity) {
+        result.push({
+          type: 'pair',
+          key: dim,
+          value: {
+            value: upperValue,
+            unit: units[dim],
+            type: 'integer',
+          } as any,
+          operator: upperInclusive ? '<=' : '<',
+        });
+      }
+    } else {
+      if (lowerValue !== -Infinity) {
+        result.push({
+          type: 'pair',
+          key: `min-${dim}`,
+          value: {
+            value: lowerValue + (lowerInclusive ? 0 : epsilon),
+            unit: units[dim],
+            type: 'integer',
+          } as any,
+        });
+      }
+      if (upperValue !== Infinity) {
+        result.push({
+          type: 'pair',
+          key: `max-${dim}`,
+          value: {
+            value: upperValue - (upperInclusive ? 0 : epsilon),
+            unit: units[dim],
+            type: 'integer',
+          } as any,
+        });
+      }
     }
   }
+
   return result.length > 0 ? result : rules;
 }
 
@@ -531,7 +589,23 @@ export class MediaQuery {
       case 'word-rule':
         return `(${queries.keyValue})`;
       case 'pair': {
-        const { key, value } = queries;
+        const { key, value, operator } = queries;
+
+        if (operator != null) {
+          if (
+            value != null &&
+            typeof value === 'object' &&
+            typeof (value as any).value === 'number' &&
+            typeof (value as any).unit === 'string'
+          ) {
+            const len = value as Length;
+            return `(${key} ${operator} ${len.value}${len.unit})`;
+          }
+          if (value != null && typeof value.toString === 'function') {
+            return `(${key} ${operator} ${value.toString()})`;
+          }
+          return `(${key} ${operator} ${String(value)})`;
+        }
 
         if (Array.isArray(value)) {
           return `(${key}: ${value[0]} / ${value[2]})`;
