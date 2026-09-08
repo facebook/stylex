@@ -196,5 +196,47 @@ describe('@stylexjs/babel-plugin', () => {
         }
       `);
     });
+
+    test('processStylexRules does not inject ancestor selector into @position-try', () => {
+      const { metadata } = transform(`
+        import * as stylex from '@stylexjs/stylex';
+        export const name = stylex.positionTry({
+          positionAnchor: '--anchor',
+          top: '0',
+          left: '0',
+          width: '100px',
+          height: '100px'
+        });
+      `);
+
+      const css = stylexPlugin.processStylexRules(metadata.stylex, {
+        enableLTRRTLComments: false,
+      });
+
+      expect(css).not.toContain("html[dir='rtl'] height");
+      expect(css).not.toContain("html[dir='rtl'] width");
+      expect(css).toContain('@position-try --xhs37kq {height:');
+    });
+
+    test('processStylexRules does not inject specificity into @position-try', () => {
+      const { metadata } = transform(`
+        import * as stylex from '@stylexjs/stylex';
+        export const name = stylex.positionTry({
+          positionAnchor: '--anchor',
+          top: '0',
+          left: '0',
+          width: '100px',
+          height: '100px'
+        });
+      `);
+
+      const css = stylexPlugin.processStylexRules(metadata.stylex, {
+        useLayers: false,
+        legacyDisableLayers: false,
+      });
+
+      expect(css).not.toContain('@position-try --xhs37kq :not(#\\#)');
+      expect(css).toContain('@position-try --xhs37kq {height:');
+    });
   });
 });
