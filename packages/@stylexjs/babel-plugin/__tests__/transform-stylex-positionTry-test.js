@@ -209,7 +209,7 @@ describe('@stylexjs/babel-plugin', () => {
         });
       `);
 
-      const css = stylexPlugin.processStylexRules(metadata.stylex, {
+      const css = stylexPlugin.default.processStylexRules(metadata.stylex, {
         enableLTRRTLComments: false,
       });
 
@@ -230,7 +230,7 @@ describe('@stylexjs/babel-plugin', () => {
         });
       `);
 
-      const css = stylexPlugin.processStylexRules(metadata.stylex, {
+      const css = stylexPlugin.default.processStylexRules(metadata.stylex, {
         useLayers: false,
         legacyDisableLayers: false,
       });
