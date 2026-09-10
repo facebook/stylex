@@ -546,7 +546,7 @@ type minWidth =
   | 'min-content'
   | 'fit-content'
   | 'fill-available';
-type mixBlendMode = blendMode;
+type mixBlendMode = blendMode | 'plus-darker' | 'plus-lighter';
 type motion = motionPath | motionOffset | motionRotation;
 type motionOffset = lengthPercentage;
 type motionPath = string | geometryBox | 'none';

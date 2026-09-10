@@ -562,7 +562,6 @@ const INCOMPLETE_UNIONS = {
   justifySelf: ['anchor-center'],
   lineBreak: ['anywhere'],
   marginTrim: ['all', 'in-flow'],
-  mixBlendMode: ['plus-darker', 'plus-lighter'],
   overflow: [
     '-moz-hidden-unscrollable',
     '-moz-scrollbars-horizontal',
