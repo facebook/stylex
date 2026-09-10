@@ -1,0 +1,285 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`enum-only condition negation active excludes hover even though it has higher StyleX precedence 1`] = `
+[
+  {
+    "clear": [],
+    "paths": [
+      {
+        "atRules": [],
+        "selector": "",
+      },
+    ],
+    "value": "comfortable",
+  },
+  {
+    "clear": [
+      "comfortable",
+    ],
+    "paths": [
+      {
+        "atRules": [],
+        "selector": ":where(:hover):not(:where(:active))",
+      },
+    ],
+    "value": "compact",
+  },
+  {
+    "clear": [
+      "comfortable",
+    ],
+    "paths": [
+      {
+        "atRules": [],
+        "selector": ":where(:active)",
+      },
+    ],
+    "value": "spacious",
+  },
+]
+`;
+
+exports[`enum-only condition negation container and unknown-media branches use positive resets 1`] = `
+[
+  {
+    "clear": [],
+    "paths": [
+      {
+        "atRules": [],
+        "selector": "",
+      },
+    ],
+    "value": "comfortable",
+  },
+  {
+    "clear": [
+      "comfortable",
+    ],
+    "paths": [
+      {
+        "atRules": [],
+        "selector": ":where(:hover)",
+      },
+    ],
+    "value": "compact",
+  },
+  {
+    "clear": [
+      "comfortable",
+      "compact",
+    ],
+    "paths": [
+      {
+        "atRules": [
+          "@media (future-feature)",
+        ],
+        "selector": "",
+      },
+    ],
+    "value": "roomy",
+  },
+  {
+    "clear": [
+      "comfortable",
+      "compact",
+      "roomy",
+    ],
+    "paths": [
+      {
+        "atRules": [
+          "@container card (min-width: 600px)",
+        ],
+        "selector": "",
+      },
+    ],
+    "value": "spacious",
+  },
+]
+`;
+
+exports[`enum-only condition negation negates the whole nested conjunction 1`] = `
+[
+  {
+    "clear": [],
+    "paths": [
+      {
+        "atRules": [],
+        "selector": "",
+      },
+    ],
+    "value": "comfortable",
+  },
+  {
+    "clear": [
+      "comfortable",
+    ],
+    "paths": [
+      {
+        "atRules": [],
+        "selector": ":where(:hover):not(:where(:active))",
+      },
+      {
+        "atRules": [
+          "@media (max-width: 599.99px)",
+        ],
+        "selector": ":where(:hover)",
+      },
+    ],
+    "value": "compact",
+  },
+  {
+    "clear": [
+      "comfortable",
+    ],
+    "paths": [
+      {
+        "atRules": [
+          "@media (min-width: 600px)",
+        ],
+        "selector": ":where(:active)",
+      },
+    ],
+    "value": "spacious",
+  },
+]
+`;
+
+exports[`enum-only condition negation nested selectors can exclude within a shared container 1`] = `
+[
+  {
+    "clear": [],
+    "paths": [
+      {
+        "atRules": [],
+        "selector": "",
+      },
+    ],
+    "value": "comfortable",
+  },
+  {
+    "clear": [
+      "comfortable",
+    ],
+    "paths": [
+      {
+        "atRules": [
+          "@container card (min-width: 600px)",
+        ],
+        "selector": ":where(:hover):not(:where(:active))",
+      },
+    ],
+    "value": "compact",
+  },
+  {
+    "clear": [
+      "comfortable",
+    ],
+    "paths": [
+      {
+        "atRules": [
+          "@container card (min-width: 600px)",
+        ],
+        "selector": ":where(:active)",
+      },
+    ],
+    "value": "spacious",
+  },
+]
+`;
+
+exports[`enum-only condition negation overlapping and disjoint media ranges 1`] = `
+[
+  {
+    "clear": [],
+    "paths": [
+      {
+        "atRules": [],
+        "selector": "",
+      },
+    ],
+    "value": "comfortable",
+  },
+  {
+    "clear": [
+      "comfortable",
+    ],
+    "paths": [
+      {
+        "atRules": [
+          "@media (min-width: 400px) and (max-width: 899.99px)",
+        ],
+        "selector": "",
+      },
+    ],
+    "value": "compact",
+  },
+  {
+    "clear": [
+      "comfortable",
+    ],
+    "paths": [
+      {
+        "atRules": [
+          "@media (min-width: 900px)",
+          "@media not print",
+        ],
+        "selector": "",
+      },
+    ],
+    "value": "spacious",
+  },
+  {
+    "clear": [
+      "comfortable",
+    ],
+    "paths": [
+      {
+        "atRules": [
+          "@media print",
+        ],
+        "selector": "",
+      },
+    ],
+    "value": "compact",
+  },
+]
+`;
+
+exports[`enum-only condition negation same-state branches need no exclusions 1`] = `
+[
+  {
+    "clear": [],
+    "paths": [
+      {
+        "atRules": [],
+        "selector": "",
+      },
+    ],
+    "value": "comfortable",
+  },
+  {
+    "clear": [
+      "comfortable",
+    ],
+    "paths": [
+      {
+        "atRules": [],
+        "selector": ":where(:hover)",
+      },
+    ],
+    "value": "compact",
+  },
+  {
+    "clear": [
+      "comfortable",
+    ],
+    "paths": [
+      {
+        "atRules": [],
+        "selector": ":where(:active)",
+      },
+    ],
+    "value": "compact",
+  },
+]
+`;
