@@ -25,10 +25,11 @@ export type AtRule = {
 };
 
 export function parseAtRule(source: string): AtRule {
-  const match = /^@(media|supports|container)\s+([\s\S]+)$/.exec(source.trim());
+  const trimmed = source.trim();
+  const match = /^@(media|supports|container)\s/.exec(trimmed);
   if (!match) throw new Error(`Unsupported conditional at-rule: ${source}`);
   const kind = match[1];
-  let text = match[2];
+  let text = trimmed.slice(match[0].length).trim();
   let name = '';
   if (kind === 'container') {
     const named =

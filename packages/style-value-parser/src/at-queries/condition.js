@@ -103,7 +103,13 @@ export function parseCondition(source: string): Condition {
     // parentheses that group complete boolean expressions.
     if (/^(?:\(|not\s|[a-z-]+\()/i.test(inner)) return parseCondition(inner);
   }
-  if (/^\(.*(?:width|height).*?[<>]/i.test(text)) {
+  if (
+    tokens[0][0] === '(-token' &&
+    tokens.some(
+      (t) => t[0] === 'ident-token' && /^(width|height)$/i.test(t[1]),
+    ) &&
+    tokens.some((t) => t[0] === 'delim-token' && (t[1] === '<' || t[1] === '>'))
+  ) {
     try {
       const parsed = MediaQuery.parser.parseToEnd('@media ' + text).queries;
       if (

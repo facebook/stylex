@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
-exports[`regular condition negation compiles (a, b) => ({color: {'@supports (display: grid)': a, '@supports (display: flex)': b}}) 1`] = `
+exports[`regular condition negation compiles (a, b) => ({color: {"@supports (display: grid)": a, "@supports (display: flex)": b}}) 1`] = `
 {
   "code": "import * as stylex from '@stylexjs/stylex';
 export const styles = {
@@ -19,7 +19,7 @@ export const styles = {
 }
 `;
 
-exports[`regular condition negation compiles {color: {'@media (min-width: 400px)': 'red', '@media (min-width: 600px)': {'@media (min-height: 500px)': 'blue'}}} 1`] = `
+exports[`regular condition negation compiles {color: {"@media (min-width: 400px)": "red", "@media (min-width: 600px)": {"@media (min-height: 500px)": "blue"}}} 1`] = `
 {
   "code": "import * as stylex from '@stylexjs/stylex';
 export const styles = {
@@ -33,7 +33,7 @@ export const styles = {
 }
 `;
 
-exports[`regular condition negation compiles {color: {'@media (min-width: 400px)': 'red', '@media screen, (max-width: 300px)': 'blue'}} 1`] = `
+exports[`regular condition negation compiles {color: {"@media (min-width: 400px)": "red", "@media screen, (max-width: 300px)": "blue"}} 1`] = `
 {
   "code": "import * as stylex from '@stylexjs/stylex';
 export const styles = {
@@ -47,7 +47,7 @@ export const styles = {
 }
 `;
 
-exports[`regular condition negation compiles {color: {'@supports (display: grid)': 'red', '@supports (display: flex)': 'blue'}} 1`] = `
+exports[`regular condition negation compiles {color: {"@supports (display: grid)": "red", "@supports (display: flex)": "blue"}} 1`] = `
 {
   "code": "import * as stylex from '@stylexjs/stylex';
 export const styles = {
@@ -61,7 +61,7 @@ export const styles = {
 }
 `;
 
-exports[`regular condition negation compiles {color: {default: 'black', ':hover': 'red', ':active': 'blue'}} 1`] = `
+exports[`regular condition negation compiles {color: {default: "black", ":hover": "red", ":active": "blue"}} 1`] = `
 {
   "code": "import * as stylex from '@stylexjs/stylex';
 export const styles = {
@@ -76,7 +76,7 @@ export const styles = {
 }
 `;
 
-exports[`regular condition negation compiles {color: {default: 'black', '@media screen and (min-width: 400px)': 'red', '@media print': 'blue'}} 1`] = `
+exports[`regular condition negation compiles {color: {default: "black", "@media screen and (min-width: 400px)": "red", "@media print": "blue"}} 1`] = `
 {
   "code": "import * as stylex from '@stylexjs/stylex';
 export const styles = {

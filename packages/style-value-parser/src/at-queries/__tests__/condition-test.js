@@ -7,7 +7,11 @@
  */
 
 import { parseCondition, simplifyCondition, andConditions } from '../condition';
-import { simplifyAtRule, subtractAtRule } from '../condition-at-rule';
+import {
+  parseAtRule,
+  simplifyAtRule,
+  subtractAtRule,
+} from '../condition-at-rule';
 import { lastMediaQueryWinsTransform } from '../media-query-transform';
 
 describe('condition simplification', () => {
@@ -92,6 +96,19 @@ describe('condition simplification', () => {
     '(color); x',
   ])('rejects malformed groups: %s', (source) => {
     expect(() => parseCondition(source)).toThrow();
+  });
+
+  test('parses long at-rule whitespace without ambiguous prefix scanning', () => {
+    const whitespace = ' '.repeat(50000);
+    expect(parseAtRule(`@media${whitespace}(color)`)).toEqual(
+      parseAtRule('@media (color)'),
+    );
+    expect(() => parseAtRule(`@media${whitespace}`)).toThrow();
+  });
+
+  test('keeps long feature names opaque without repeated range scans', () => {
+    const source = `(${'width'.repeat(10000)})`;
+    expect(parseCondition(source)).toEqual({ type: 'atom', value: source });
   });
 
   test('expansion is bounded without losing the original expression', () => {
