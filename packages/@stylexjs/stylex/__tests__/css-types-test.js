@@ -482,7 +482,6 @@ const NOT_TYPED = new Set([
   // awaiting exactly this, and `overflowInline` is the logical counterpart of
   // `overflowBlock`, which is typed.
   'fieldSizing',
-  'overflowInline',
   'textWrapMode',
   'textWrapStyle',
   'transitionBehavior',
@@ -575,6 +574,13 @@ const INCOMPLETE_UNIONS = {
     'overlay',
   ],
   overflowBlock: [
+    '-moz-hidden-unscrollable',
+    '-moz-scrollbars-horizontal',
+    '-moz-scrollbars-none',
+    '-moz-scrollbars-vertical',
+    'overlay',
+  ],
+  overflowInline: [
     '-moz-hidden-unscrollable',
     '-moz-scrollbars-horizontal',
     '-moz-scrollbars-none',
