@@ -28,6 +28,20 @@ eslintTester.run('stylex-valid-styles', rule.default, {
 
       const styles = stylex.create({
         root: {
+          ...density({
+            default: 'compact',
+            ':hover': 'comfortable',
+          }),
+          padding: 8,
+        },
+      });
+    `,
+    `
+      import * as stylex from '@stylexjs/stylex';
+      import { density } from './density.stylex';
+
+      const styles = stylex.create({
+        root: {
           padding: stylex.match(density, {
             compact: 8,
             comfortable: 16,

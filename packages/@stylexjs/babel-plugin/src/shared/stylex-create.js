@@ -16,6 +16,12 @@ import type {
 import type { ComputedStyle, IPreRule } from './preprocess-rules/PreRule';
 
 import { createShortHash } from './hash';
+import { isPlainObject } from './utils/object-utils';
+import {
+  type EnumAssignment,
+  getEnumAssignment,
+  compileEnumAssignment,
+} from './stylex-enum';
 import { defaultOptions } from './utils/default-options';
 import { flattenRawStyleObject } from './preprocess-rules/flatten-raw-style-obj';
 import { validateNamespace } from './preprocess-rules/basic-validation';
@@ -51,7 +57,19 @@ export default function styleXCreateSet(
   const namespaceToClassPaths: { [string]: ClassPathsInNamespace } = {};
 
   for (const namespaceName of Object.keys(namespaces)) {
-    const namespace = namespaces[namespaceName];
+    const input = namespaces[namespaceName];
+    if (!isPlainObject(input)) validateNamespace(input);
+    const enumAssignments: Array<EnumAssignment> = [];
+    const namespace = Object.fromEntries(
+      Object.entries(input).filter(([, value]) => {
+        const assignment = getEnumAssignment(value);
+        if (assignment != null) {
+          enumAssignments.push(assignment);
+          return false;
+        }
+        return true;
+      }),
+    );
     const classPathsInNamespace: { [string]: $ReadOnlyArray<string> } = {};
 
     validateNamespace(namespace);
@@ -110,6 +128,18 @@ export default function styleXCreateSet(
           injectedStyles[className] = injectable;
         }
       }
+    }
+    for (const assignment of enumAssignments) {
+      const [compiled, css] = compileEnumAssignment(
+        assignment.ref,
+        assignment.value,
+        options,
+      );
+      const classes = compiled[assignment.ref.id];
+      if (typeof classes === 'string')
+        namespaceObj[assignment.ref.id] = classes;
+      for (const [className, rule] of Object.entries(css))
+        injectedStyles[className] = rule;
     }
     resolvedNamespaces[namespaceName] = { ...namespaceObj, $$css: true };
     namespaceToClassPaths[namespaceName] = classPathsInNamespace;

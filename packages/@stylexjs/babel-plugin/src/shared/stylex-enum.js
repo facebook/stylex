@@ -10,6 +10,9 @@
 import type { InjectableStyle, StyleXOptions } from './common-types';
 import hash from './hash';
 import { isPlainObject } from './utils/object-utils';
+import { enumValueBranches } from './enum-value';
+import { planEnumConditions } from './enum-condition-negation';
+import { enumConditionSelector } from './enum-condition-path';
 import { defaultOptions } from './utils/default-options';
 
 export type EnumState = string | boolean;
@@ -146,6 +149,34 @@ export function compileEnumAssignment(
   value: mixed,
   options: StyleXOptions = defaultOptions,
 ): [{ $$css: true, [string]: string | true }, { [string]: InjectableStyle }] {
+  if (value != null && typeof value === 'object' && !Array.isArray(value)) {
+    const branches = enumValueBranches(value, (state) =>
+      validateEnumState(state, ref),
+    );
+    const className =
+      options.classNamePrefix +
+      hash(`enum:${ref.id}:${JSON.stringify(branches)}`);
+    const rules = planEnumConditions(branches).flatMap((branch) => {
+      const declarations = [
+        ...branch.clear.map(
+          (state) => `${getEnumVariableName(ref, String(state))}: ;`,
+        ),
+        `${getEnumVariableName(ref, String(branch.value))}:initial;`,
+      ].join('');
+      return branch.paths.map(({ selector, atRules }) =>
+        atRules.reduceRight(
+          (text, condition) => `${condition}{${text}}`,
+          `.${className}${enumConditionSelector(selector)}{${declarations}}`,
+        ),
+      );
+    });
+    return [
+      { [ref.id]: `${ref.id} ${className}`, $$css: true },
+      {
+        [className]: { ltr: rules.join(''), rtl: null, priority: 1 },
+      },
+    ];
+  }
   const state = validateEnumState(value, ref);
   const declaration = `${getEnumVariableName(ref, String(state))}:initial`;
   const className =
@@ -160,4 +191,25 @@ export function compileEnumAssignment(
       },
     },
   ];
+}
+
+// A compiler value carried through object spreads. The public JavaScript
+// assignment is still just a compiled StyleX object; no callable export exists.
+export type EnumAssignment = {
+  +type: 'enum-assignment',
+  +ref: EnumRef,
+  +value: mixed,
+};
+
+export function createEnumAssignment(
+  ref: EnumRef,
+  value: mixed,
+): EnumAssignment {
+  return { type: 'enum-assignment', ref, value };
+}
+
+export function getEnumAssignment(value: mixed): EnumAssignment | null {
+  if (!isPlainObject(value) || value.type !== 'enum-assignment') return null;
+  const ref = getEnumRef({ __enumRef: value.ref });
+  return ref == null ? null : createEnumAssignment(ref, value.value);
 }

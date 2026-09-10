@@ -30,7 +30,11 @@ import StateManager from './state-manager';
 import { utils } from '../shared';
 import * as errMsgs from './evaluation-errors';
 import fs from 'node:fs';
-import { enumRef } from '../shared/stylex-enum';
+import {
+  enumRef,
+  getEnumRef,
+  createEnumAssignment,
+} from '../shared/stylex-enum';
 
 // This file contains Babels metainterpreter that can evaluate static code.
 
@@ -1098,14 +1102,14 @@ function _evaluate(path: NodePath<>, state: State): any {
       func = getOwnProperty(state.functions.identifiers, callee.node.name);
     } else if (callee.isIdentifier()) {
       const maybeFunction = evaluateCached(callee, state);
-      if (
-        state.confident &&
-        maybeFunction?.__enumRef != null &&
-        state.traversalState.inStyleXCreate
-      ) {
-        throw new Error(
-          'Enum overrides within stylex.create are not supported yet.',
-        );
+      const ref = state.confident ? getEnumRef(maybeFunction) : null;
+      if (ref != null && state.traversalState.inStyleXCreate) {
+        const args = path.get('arguments');
+        if (args.length !== 1)
+          throw new Error('An enum call requires one state.');
+        const value = evaluateCached(args[0], state);
+        if (!state.confident) return;
+        return { [ref.id]: createEnumAssignment(ref, value) };
       }
       if (state.confident) {
         func = maybeFunction;

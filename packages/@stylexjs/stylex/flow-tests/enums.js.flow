@@ -29,7 +29,6 @@ stylex.match(expanded, { true: 'block', false: 'none' });
 // $FlowExpectedError[incompatible-type] Unknown state.
 density('other');
 
-// $FlowExpectedError[incompatible-type] Scalar-only overrides in the initial API.
 density({ default: 'compact' });
 
 // $FlowExpectedError[prop-missing] Missing case.
@@ -43,3 +42,29 @@ stylex.defineEnum(['compact', 'comfortable'], 'other');
 
 // $FlowExpectedError[incompatible-type] Conditional initial values require a top-level default.
 stylex.defineEnum(['compact', 'comfortable'], { '@media print': 'compact' });
+
+stylex.props(
+  density({
+    default: 'comfortable',
+    ':hover': 'compact',
+    '@media print': { ':active': 'comfortable' },
+  }),
+);
+
+const responsive = stylex.create({
+  root: {
+    ...density({ default: 'comfortable', '@media print': 'compact' }),
+    padding: 8,
+  },
+});
+
+stylex.props(responsive.root);
+
+// $FlowExpectedError[incompatible-type] The top-level default is required.
+density({ '@media print': 'compact' });
+
+// $FlowExpectedError[incompatible-type] Unknown state in a nested branch.
+density({ default: 'compact', ':hover': { '@media print': 'unknown' } });
+
+// $FlowExpectedError[incompatible-type] An object cannot be the top-level default.
+density({ default: { default: 'compact' } });
