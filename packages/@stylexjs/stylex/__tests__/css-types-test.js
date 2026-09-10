@@ -389,7 +389,6 @@ const NO_GRAMMAR = new Set([
   'motionOffset',
   'motionPath',
   'motionRotation',
-  'overflowBlockX',
   'src',
   'start',
   'textFillColor',
