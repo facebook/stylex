@@ -6,7 +6,16 @@
  *
  */
 
-import type { CustomAtRules, TransformOptions, TransformResult, Visitor } from 'lightningcss';
+import type {
+  CustomAtRules,
+  TransformOptions,
+  TransformResult,
+  Visitor,
+} from 'lightningcss';
 
-export declare function createConditionVisitor<C extends CustomAtRules = CustomAtRules>(): Visitor<C>;
-export declare function simplifyConditions<C extends CustomAtRules = CustomAtRules>(options: TransformOptions<C>): TransformResult;
+export declare function createConditionVisitor<
+  C extends CustomAtRules = CustomAtRules,
+>(): Visitor<C>;
+export declare function simplifyConditions<
+  C extends CustomAtRules = CustomAtRules,
+>(options: TransformOptions<C>): TransformResult;
