@@ -979,14 +979,14 @@ export type CSSProperties = Readonly<{
   WebkitTextStrokeWidth?: all | number | string,
   WebkitTextStrokeColor?: all | color,
   WebkitBackgroundClip?:
-    | null
+    | all
     | 'border-box'
     | 'padding-box'
     | 'content-box'
     | 'text',
 
   WebkitBoxOrient?:
-    | null
+    | all
     | 'vertical'
     | 'horizontal'
     | 'inline-axis'
@@ -1151,7 +1151,7 @@ export type CSSProperties = Readonly<{
   color?: all | color,
 
   colorScheme?:
-    | null
+    | all
     | 'normal'
     | 'light'
     | 'dark'
@@ -1319,7 +1319,7 @@ export type CSSProperties = Readonly<{
   marginTop?: all | marginTop,
 
   marginTrim?:
-    | null
+    | all
     | 'none'
     | 'block'
     | 'block-start'
@@ -1420,7 +1420,7 @@ export type CSSProperties = Readonly<{
   pageBreakBefore?: all | pageBreakBefore,
   pageBreakInside?: all | pageBreakInside,
   paintOrder?:
-    | null
+    | all
     | 'normal'
     | 'stroke'
     | 'fill'
@@ -1536,7 +1536,7 @@ export type CSSProperties = Readonly<{
   textEmphasisStyle?: all | textEmphasisStyle,
   textIndent?: all | textIndent,
   textJustify?:
-    | null
+    | all
     | 'none'
     | 'auto'
     | 'inter-word'
