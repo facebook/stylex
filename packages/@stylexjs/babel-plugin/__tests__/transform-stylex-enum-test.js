@@ -7,6 +7,7 @@
 
 import { transformSync } from '@babel/core';
 import stylexPlugin from '../src/index';
+
 function transform(source, options = {}) {
   const { code, metadata } = transformSync(source, {
     filename: '/stylex/tokens.stylex.js',
@@ -57,16 +58,16 @@ describe('CSS enums', () => {
 
   test('initial at-rules and optional nested defaults', () => {
     const { code, css } = transform(`
-        import { defineEnum } from '@stylexjs/stylex';
+      import { defineEnum } from '@stylexjs/stylex';
 
-        export const dark = defineEnum([true, false], {
-          default: false,
-          '@media (prefers-color-scheme: dark)': true,
-          '@supports (display: grid)': {
-            '@media print': false,
-          },
-        });
-      `);
+      export const dark = defineEnum([true, false], {
+        default: false,
+        '@media (prefers-color-scheme: dark)': true,
+        '@supports (display: grid)': {
+          '@media print': false,
+        },
+      });
+    `);
 
     expect(code).toMatchInlineSnapshot(`
       "import { defineEnum } from '@stylexjs/stylex';
@@ -83,12 +84,12 @@ describe('CSS enums', () => {
 
   test('scalar assignments compose under one key', () => {
     const { code, css } = transform(`
-        ${definition}
-        export const props = stylex.props(
-          density('compact'),
-          density('comfortable'),
-        );
-      `);
+      ${definition}
+      export const props = stylex.props(
+        density('compact'),
+        density('comfortable'),
+      );
+    `);
 
     expect(code).toMatchInlineSnapshot(`
       "import * as stylex from '@stylexjs/stylex';
@@ -110,23 +111,23 @@ describe('CSS enums', () => {
 
   test('imports compile without accessing the defining module', () => {
     const { code, css } = transform(`
-        import * as stylex from '@stylexjs/stylex';
-        import { density as mode } from './missing.stylex';
+      import * as stylex from '@stylexjs/stylex';
+      import { density as mode } from './missing.stylex';
 
-        export const props = stylex.props(mode('compact'));
-        export const styles = stylex.create({
-          root: {
-            padding: stylex.match(mode, {
-              compact: 8,
-              comfortable: 16,
-            }),
-            opacity: stylex.match(mode, {
-              compact: 0.5,
-              comfortable: 1,
-            }),
-          },
-        });
-      `);
+      export const props = stylex.props(mode('compact'));
+      export const styles = stylex.create({
+        root: {
+          padding: stylex.match(mode, {
+            compact: 8,
+            comfortable: 16,
+          }),
+          opacity: stylex.match(mode, {
+            compact: 0.5,
+            comfortable: 1,
+          }),
+        },
+      });
+    `);
 
     expect(code).toMatchInlineSnapshot(`
       "import * as stylex from '@stylexjs/stylex';
@@ -259,11 +260,20 @@ describe('CSS enums', () => {
     ['stylex.defineEnum(["one", "one"], "one")', 'distinct'],
     ['stylex.defineEnum(["one", "two"], "three")', 'Unknown enum state'],
     [
-      'stylex.defineEnum(["one", "two"], {"@media print": "one"})',
+      `
+        stylex.defineEnum(['one', 'two'], {
+          '@media print': 'one',
+        })
+      `,
       'top-level default',
     ],
     [
-      'stylex.defineEnum(["one", "two"], {default: "one", ":hover": "two"})',
+      `
+        stylex.defineEnum(['one', 'two'], {
+          default: 'one',
+          ':hover': 'two',
+        })
+      `,
       'only support',
     ],
   ])('rejects invalid definition %s', (expression, error) => {
@@ -279,7 +289,9 @@ describe('CSS enums', () => {
   test('rejects conditional overrides until supported', () => {
     expect(() =>
       transform(`
-        ${definition} export const p = stylex.props(
+        ${definition}
+
+        export const p = stylex.props(
           density({
             default: 'compact',
             ':hover': 'comfortable',
@@ -292,7 +304,9 @@ describe('CSS enums', () => {
   test('rejects overrides in create', () => {
     expect(() =>
       transform(`
-        ${definition} export const s = stylex.create({
+        ${definition}
+
+        export const s = stylex.create({
           root: {
             ...density('compact'),
           },
@@ -304,7 +318,9 @@ describe('CSS enums', () => {
   test('rejects incomplete local matches', () => {
     expect(() =>
       transform(`
-        ${definition} export const s = stylex.create({
+        ${definition}
+
+        export const s = stylex.create({
           root: {
             color: stylex.match(density, {
               compact: 'red',
