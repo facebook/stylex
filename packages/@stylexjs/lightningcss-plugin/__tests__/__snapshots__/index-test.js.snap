@@ -1,0 +1,136 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`Lightning CSS condition simplifier deferred supports constants preserve quoted braces and mixed at-rule priorities 1`] = `
+".x1mqxbix {
+  color: #000;
+}
+
+@supports (--value: "{, and }") {
+  .x5bx3uh.x5bx3uh {
+    color: red;
+  }
+}
+
+@media (width >= 400px) {
+  .x1c92le3.x1c92le3 {
+    color: #00f;
+  }
+}
+"
+`;
+
+exports[`Lightning CSS condition simplifier resolves whole defineConsts at-rule keys before simplification 1`] = `
+{
+  "generated": ".x1mqxbix{color:black}
+@media (min-width: 900px){.x1hqc8nq.x1hqc8nq{color:blue}}
+@media (min-width: 400px) and (not (min-width: 900px)){.xx3p3fo.xx3p3fo{color:red}}",
+  "result": ".x1mqxbix {
+  color: #000;
+}
+
+@media (width >= 900px) {
+  .x1hqc8nq.x1hqc8nq {
+    color: #00f;
+  }
+}
+
+@media (width >= 400px) and (width <= 899.99px) {
+  .xx3p3fo.xx3p3fo {
+    color: red;
+  }
+}
+",
+}
+`;
+
+exports[`Lightning CSS condition simplifier simplifies @container card (min-width: 300px){@container card (max-height: 500px){.a{color:red}}} 1`] = `
+"@container card (width >= 300px) {
+  @container card (height <= 500px) {
+    .a {
+      color: red;
+    }
+  }
+}
+"
+`;
+
+exports[`Lightning CSS condition simplifier simplifies @layer base{@media (min-width: 400px) and (not (min-width: 900px)){.a:hover{--state: ;padding:8px}}} 1`] = `
+"@layer base {
+  @media (width >= 400px) and (width <= 899.99px) {
+    .a:hover {
+      --state: ;
+      padding: 8px;
+    }
+  }
+}
+"
+`;
+
+exports[`Lightning CSS condition simplifier simplifies @media (future-feature) or (not (future-feature)){.a{color:red}} 1`] = `
+"@media (future-feature), not (future-feature) {
+  .a {
+    color: red;
+  }
+}
+"
+`;
+
+exports[`Lightning CSS condition simplifier simplifies @media (min-width: 40em) and (not (min-width: 900px)){.a{color:red}} 1`] = `
+"@media (width >= 40em) and (width < 900px) {
+  .a {
+    color: red;
+  }
+}
+"
+`;
+
+exports[`Lightning CSS condition simplifier simplifies @media (min-width: 400px) and (not (min-width: 900px)){.a{color:red}} 1`] = `
+"@media (width >= 400px) and (width <= 899.99px) {
+  .a {
+    color: red;
+  }
+}
+"
+`;
+
+exports[`Lightning CSS condition simplifier simplifies @media (min-width: 400px){@media (max-width: 300px){.a{color:red}}} 1`] = `
+"
+"
+`;
+
+exports[`Lightning CSS condition simplifier simplifies @media (min-width: 400px){@media (min-width: 600px){.a{color:red}}} 1`] = `
+"@media (width >= 600px) {
+  .a {
+    color: red;
+  }
+}
+"
+`;
+
+exports[`Lightning CSS condition simplifier simplifies @media screen{ @media print {.a{color:red}} } 1`] = `
+"
+"
+`;
+
+exports[`Lightning CSS condition simplifier simplifies @supports (--value: "{, and or }"){.a{color:red}} 1`] = `
+"@supports (--value: "{, and or }") {
+  .a {
+    color: red;
+  }
+}
+"
+`;
+
+exports[`Lightning CSS condition simplifier simplifies @supports (display: grid) and (not (display: grid)){.a{color:red}} 1`] = `
+"
+"
+`;
+
+exports[`Lightning CSS condition simplifier simplifies @supports (display: grid) or ((display: grid) and (display: flex)){.a{color:red}} 1`] = `
+"@supports (display: grid) {
+  .a {
+    color: red;
+  }
+}
+"
+`;

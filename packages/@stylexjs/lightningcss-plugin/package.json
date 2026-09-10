@@ -1,0 +1,47 @@
+{
+  "name": "@stylexjs/lightningcss-plugin",
+  "version": "0.19.0",
+  "description": "Simplify generated StyleX conditions with Lightning CSS",
+  "license": "MIT",
+  "main": "./lib/index.js",
+  "module": "./lib/index.mjs",
+  "types": "./lib/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "import": "./lib/index.mjs",
+      "require": "./lib/index.js"
+    }
+  },
+  "files": [
+    "lib/*"
+  ],
+  "sideEffects": false,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/facebook/stylex.git"
+  },
+  "scripts": {
+    "build": "rollup -c && shx cp src/index.d.ts lib/index.d.ts",
+    "test": "jest"
+  },
+  "dependencies": {
+    "lightningcss": "^1.29.1"
+  },
+  "devDependencies": {
+    "@rollup/plugin-babel": "^6.0.4",
+    "@rollup/plugin-commonjs": "^28.0.1",
+    "@rollup/plugin-node-resolve": "^15.3.0",
+    "rollup": "^4.59.0",
+    "style-value-parser": "0.19.0",
+    "@stylexjs/babel-plugin": "0.19.0",
+    "@csstools/css-tokenizer": "^3.0.3"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "/lib/"
+    ]
+  }
+}
