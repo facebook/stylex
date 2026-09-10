@@ -6,6 +6,7 @@
         "./reset-themes.mdx",
         "./merge-themes.mdx",
         "./light-dark-themes.mdx",
+        "./dark-mode-enum.mdx",
         "./shareable-tokens.mdx"
     ]
 }

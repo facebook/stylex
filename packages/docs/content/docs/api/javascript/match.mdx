@@ -1,0 +1,63 @@
+---
+title: 'stylex.match'
+---
+
+Selects a CSS property value from a [`stylex.defineEnum`](/docs/api/javascript/defineEnum) state.
+
+```tsx
+import * as stylex from '@stylexjs/stylex';
+import { density } from './density.stylex';
+
+const styles = stylex.create({
+  panel: {
+    padding: stylex.match(density, {
+      compact: 8,
+      comfortable: 16,
+    }),
+  },
+});
+```
+
+## Parameters and result
+
+- **`enum`**: the enum handle, not an assignment such as `density('compact')`.
+- **`cases`**: a static object with exactly one key for every state. Values can be
+  CSS strings, numbers, or StyleX variable references. Boolean enums use the
+  object keys `true` and `false`.
+
+The result is a compiler expression for a CSS property value, not a JavaScript
+switch. The browser selects the value through CSS custom-property substitution.
+
+Numbers use the consuming property's normal units: `8` becomes `8px` for
+`padding`, while `0.5` remains unitless for `opacity`.
+
+## Combining matches with conditions
+
+Place a match anywhere a scalar property value is supported:
+
+```tsx
+const styles = stylex.create({
+  panel: {
+    padding: {
+      default: stylex.match(density, { compact: 8, comfortable: 16 }),
+      ':hover': stylex.match(density, { compact: 12, comfortable: 24 }),
+      '@media print': 0,
+    },
+  },
+});
+```
+
+These conditions change the consumer's property; they do not change the enum
+state inherited by other consumers.
+
+```tsx
+const styles = stylex.create({
+  disclosure: {
+    display: stylex.match(expanded, { true: 'block', false: 'none' }),
+  },
+});
+```
+
+Match cases must be scalar values. Conditional objects belong around the match,
+not inside individual cases. `null`, whole style objects, and runtime values are
+not supported as cases.
