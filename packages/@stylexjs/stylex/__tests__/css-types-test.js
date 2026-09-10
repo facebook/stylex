@@ -424,8 +424,6 @@ const KEPT_KEYWORDS = {
   // The one case where the grammar is stricter and correct: the spec excludes
   // `hidden` from `outline-style`. Kept because removing it would break code.
   outlineStyle: ['hidden'],
-  // CSS 2.1 allowed `invert`; the current spec is `auto | <color>`.
-  outlineColor: ['invert'],
   // `-webkit-appearance` never standardised `auto`, but it is widely written.
   WebkitAppearance: ['auto'],
   // `mask-origin` narrowed from `<geometry-box>` to `<coord-box>`, dropping
