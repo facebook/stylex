@@ -1395,6 +1395,7 @@ export type CSSProperties = Readonly<{
 
   overflow?: all | overflow,
   overflowBlock?: all | overflowY,
+  overflowInline?: all | overflowX,
   overflowBlockX?: all | overflowX,
   overflowX?: all | overflowX,
   overflowY?: all | overflowY,
