@@ -381,6 +381,7 @@ const stylexValidStyles = {
     const styleXKeyframesImports = new Set<string>();
     const styleXPositionTryImports = new Set<string>();
     const styleXWhenImports = new Set<string>();
+    const styleXMatchImports = new Set<string>();
 
     const overrides: PropLimits = {
       ...(isLegacyExpandShorthands ? legacyProps : {}),
@@ -498,6 +499,33 @@ const stylexValidStyles = {
       propertyKey: string,
       ruleChecker: RuleCheck,
     ): ValidationResult | null {
+      if (valueNode.type === 'CallExpression') {
+        const callee = valueNode.callee;
+        const isMatch =
+          (callee.type === 'Identifier' &&
+            styleXMatchImports.has(callee.name)) ||
+          (callee.type === 'MemberExpression' &&
+            callee.object.type === 'Identifier' &&
+            styleXDefaultImports.has(callee.object.name) &&
+            callee.property.type === 'Identifier' &&
+            callee.property.name === 'match');
+        const cases = valueNode.arguments[1];
+        if (isMatch && cases?.type === 'ObjectExpression') {
+          for (const branch of cases.properties) {
+            if (branch.type !== 'Property') continue;
+            const check = validateStyleValue(
+              branch.value,
+              varsWithFnArgs,
+              style,
+              styleKey,
+              propertyKey,
+              ruleChecker,
+            );
+            if (check != null) return check;
+          }
+          return null;
+        }
+      }
       // For: condition ? <style-value> : <style-value>
       if (valueNode.type === 'ConditionalExpression') {
         const trueCheck = validateStyleValue(
@@ -1119,6 +1147,11 @@ const stylexValidStyles = {
               ) {
                 styleXPositionTryImports.add(specifier.local.name);
               }
+              if (
+                specifier.type === 'ImportSpecifier' &&
+                specifier.imported.name === 'match'
+              )
+                styleXMatchImports.add(specifier.local.name);
               if (
                 specifier.type === 'ImportSpecifier' &&
                 specifier.imported.name === 'when'

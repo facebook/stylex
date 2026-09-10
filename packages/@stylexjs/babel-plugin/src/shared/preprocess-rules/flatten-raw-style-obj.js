@@ -9,6 +9,7 @@
 
 import type { RawStyles, StyleXOptions, TStyleValue } from '../common-types';
 
+import { EnumMatch } from '../enum-match';
 import flatMapExpandedShorthands from './index';
 import { lastMediaQueryWinsTransform } from 'style-value-parser';
 import * as messages from '../messages';
@@ -50,12 +51,15 @@ export function _flattenRawStyleObject(
 
     // Default styles
     if (
+      value instanceof EnumMatch ||
       value === null ||
       typeof value === 'string' ||
       typeof value === 'number'
     ) {
       const pairs: $ReadOnlyArray<[string, TStyleValue]> =
-        flatMapExpandedShorthands([key, value], options);
+        value instanceof EnumMatch
+          ? value.expand(key, options)
+          : flatMapExpandedShorthands([key, value], options);
       for (const [property, value] of pairs) {
         if (value === null) {
           flattened.push([property, new NullPreRule()]);

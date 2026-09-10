@@ -1,0 +1,33 @@
+/**
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
+ * @flow strict
+ */
+
+import * as stylex from '@stylexjs/stylex';
+
+const density = stylex.defineEnum(['compact', 'comfortable'], {
+  default: 'comfortable',
+  '@media print': { '@supports (display: grid)': 'compact' },
+});
+stylex.props(density('compact'));
+const padding = stylex.match(density, { compact: 8, comfortable: 16 });
+stylex.create({ root: { padding } });
+const expanded = stylex.defineEnum([true, false], false);
+stylex.props(expanded(true));
+stylex.match(expanded, { true: 'block', false: 'none' });
+// $FlowExpectedError[incompatible-type] Unknown state.
+density('other');
+// $FlowExpectedError[incompatible-type] Scalar-only overrides in the initial API.
+density({ default: 'compact' });
+// $FlowExpectedError[prop-missing] Missing case.
+stylex.match(density, { compact: 8 });
+// $FlowExpectedError[incompatible-type] Extra case must not widen the enum.
+stylex.match(density, { compact: 8, comfortable: 16, other: 24 });
+// $FlowExpectedError[incompatible-type] Initial state must not widen the state union.
+stylex.defineEnum(['compact', 'comfortable'], 'other');
+// $FlowExpectedError[incompatible-type] Conditional initial values require a top-level default.
+stylex.defineEnum(['compact', 'comfortable'], { '@media print': 'compact' });

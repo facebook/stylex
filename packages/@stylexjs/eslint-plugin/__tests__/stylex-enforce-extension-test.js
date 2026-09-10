@@ -32,6 +32,11 @@ const invalidDefaultExport = (type) =>
 ruleTester.run('stylex-enforce-extension', rule.default, {
   valid: [
     {
+      code: "import {defineEnum} from '@stylexjs/stylex'; export const e = defineEnum(['a', 'b'], 'a');",
+      filename: 'enums.stylex.js',
+    },
+
+    {
       code: `
         import * as stylex from '@stylexjs/stylex';
         export const vars = stylex.defineVars({});

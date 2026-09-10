@@ -55,7 +55,10 @@ function dfsProcessQueries(
 ): {
   [key: string]: any,
 } {
-  if (Array.isArray(obj)) {
+  if (
+    Array.isArray(obj) ||
+    Object.getPrototypeOf(obj) !== Object.getPrototypeOf({})
+  ) {
     // Ignore `firstThatWorks` arrays
     return obj;
   }

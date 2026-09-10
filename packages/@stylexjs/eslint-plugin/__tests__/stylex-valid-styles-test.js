@@ -22,6 +22,9 @@ const eslintTester = new ESLintTester({
 
 eslintTester.run('stylex-valid-styles', rule.default, {
   valid: [
+    "import * as stylex from '@stylexjs/stylex'; import {e} from './e.stylex'; stylex.create({root: {padding: stylex.match(e, {a: 8, b: 16})}});",
+    "import {create, match} from '@stylexjs/stylex'; import {e} from './e.stylex'; create({root: {display: match(e, {a: 'block', b: 'none'})}});",
+
     // issue #1701 — numeric values are valid for grid line properties
     `
       import * as stylex from '@stylexjs/stylex';
