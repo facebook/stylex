@@ -21,6 +21,7 @@ export type EnumBranch = {
   +value: string | boolean,
   +conditions: $ReadOnlyArray<string>,
 };
+
 export type EnumBranchPlan = {
   +value: string | boolean,
   +clear: $ReadOnlyArray<string | boolean>,

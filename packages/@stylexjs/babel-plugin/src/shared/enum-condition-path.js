@@ -19,6 +19,7 @@ import {
 } from 'style-value-parser';
 
 export type EnumConditionTerm = { +source: string, +negative: boolean };
+
 export type EnumConditionPath = {
   +selector: Condition,
   +atRules: $ReadOnlyArray<string>,
