@@ -309,7 +309,18 @@ type display =
   | 'ruby-text'
   | 'ruby-base-container'
   | 'ruby-text-container'
-  | 'contents';
+  | 'contents'
+  | 'flow'
+  | 'table-caption'
+  | '-moz-box'
+  | '-moz-inline-box'
+  | '-moz-inline-stack'
+  | '-ms-grid'
+  | '-ms-inline-flexbox'
+  | '-ms-inline-grid'
+  | '-webkit-flex'
+  | '-webkit-inline-box'
+  | '-webkit-inline-flex';
 type displayInside = 'auto' | 'block' | 'table' | 'flex' | 'grid' | 'ruby';
 type displayList = 'none' | 'list-item';
 type displayOutside =
