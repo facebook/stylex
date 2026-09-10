@@ -34,7 +34,13 @@ const FLOW_FILE = path.join(TYPES_DIR, 'StyleXCSSTypes.js');
 const TS_FILE = path.join(TYPES_DIR, 'StyleXCSSTypes.d.ts');
 
 /** CSS-wide keywords, accepted by every property and never in a grammar. */
-const GLOBAL_KEYWORDS = new Set(['inherit', 'initial', 'unset']);
+const GLOBAL_KEYWORDS = new Set([
+  'inherit',
+  'initial',
+  'unset',
+  'revert',
+  'revert-layer',
+]);
 
 /**
  * Properties that do not accept the CSS-wide keywords at all.
