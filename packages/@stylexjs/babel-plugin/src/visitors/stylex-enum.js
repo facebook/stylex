@@ -8,7 +8,6 @@
  */
 
 import type { NodePath } from '@babel/traverse';
-import type { EnumRef } from '../shared/stylex-enum';
 import * as t from '@babel/types';
 import StateManager from '../utils/state-manager';
 import { evaluate } from '../utils/evaluate-path';
@@ -18,6 +17,7 @@ import { utils } from '../shared';
 import {
   defineEnum,
   enumRef,
+  getEnumRef,
   compileEnumAssignment,
 } from '../shared/stylex-enum';
 
@@ -96,7 +96,8 @@ export default function transformStyleXEnum(
   )
     return;
   const reference = evaluate(callee, state);
-  if (!reference.confident || reference.value?.__enumRef == null) return;
+  const ref = reference.confident ? getEnumRef(reference.value) : null;
+  if (ref == null) return;
   if (path.node.arguments.length !== 1)
     throw path.buildCodeFrameError<Error>('An enum call requires one state.');
   const value = evaluate(path.get('arguments')[0], state);
@@ -105,7 +106,7 @@ export default function transformStyleXEnum(
       'Enum assignments must be statically evaluable.',
     );
   const [assignment, css] = compileEnumAssignment(
-    reference.value.__enumRef as EnumRef,
+    ref,
     value.value,
     state.options,
   );

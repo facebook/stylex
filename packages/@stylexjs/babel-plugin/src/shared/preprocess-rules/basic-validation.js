@@ -7,7 +7,7 @@
  * @flow strict
  */
 
-import { EnumMatch } from '../enum-match';
+import { getEnumMatch } from '../enum-match';
 import * as messages from '../messages';
 import { isPlainObject } from '../utils/object-utils';
 
@@ -21,7 +21,7 @@ export function validateNamespace(
   const ns: { +[string]: mixed } = namespace;
   for (const key in ns) {
     const val = ns[key];
-    if (val instanceof EnumMatch) continue;
+    if (getEnumMatch(val) != null) continue;
     if (val === null || typeof val === 'string' || typeof val === 'number') {
       continue;
     }
@@ -60,7 +60,7 @@ function validateConditionalStyles(
 ): void {
   for (const key in val) {
     const v = val[key];
-    if (v instanceof EnumMatch) continue;
+    if (getEnumMatch(v) != null) continue;
     if (
       !(
         key.startsWith('@') ||

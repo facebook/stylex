@@ -416,25 +416,31 @@ export type StyleX$Conditional = <
 
 /** A finite CSS state. Calls and matches are compiled by the StyleX compiler. */
 export type EnumState = string | boolean;
+
 type EnumCaseKey<S extends EnumState> = S extends string
   ? S
   : S extends true
     ? 'true'
     : 'false';
+
 export type EnumInitial<S extends EnumState> =
   | S
   | {
       readonly default: S;
       readonly [condition: `@${string}`]: S | EnumInitialBranch<S>;
     };
+
 type EnumInitialBranch<S extends EnumState> = {
   readonly default?: S;
   readonly [condition: `@${string}`]: S | EnumInitialBranch<S>;
 };
+
 declare const StyleXEnumTag: unique symbol;
+
 export type StyleXEnum<S extends EnumState> = ((state: S) => CompiledStyles) & {
   readonly [StyleXEnumTag]: (state: S) => S;
 };
+
 export type StyleX$DefineEnum = <
   const States extends
     | readonly [string, string, ...string[]]
@@ -443,6 +449,7 @@ export type StyleX$DefineEnum = <
   states: States,
   initialValue: EnumInitial<NoInfer<States[number]>>,
 ) => StyleXEnum<States[number]>;
+
 export type StyleX$Match = <
   S extends EnumState,
   const Cases extends Record<EnumCaseKey<NoInfer<S>>, string | number>,

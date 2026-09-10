@@ -9,12 +9,13 @@
 
 import type { InjectableStyle, StyleXOptions } from './common-types';
 import hash from './hash';
+import { isPlainObject } from './utils/object-utils';
 import { defaultOptions } from './utils/default-options';
 
 export type EnumState = string | boolean;
+
 export type EnumRef = {
   +id: string,
-  +variable: (state: string) => string,
   +states?: $ReadOnlyArray<EnumState>,
 };
 
@@ -22,12 +23,29 @@ export function enumRef(
   id: string,
   states?: $ReadOnlyArray<EnumState>,
 ): EnumRef {
-  return {
-    id,
-    // State names are hashed, never interpolated into CSS identifiers.
-    variable: (state) => `--${id}-${hash(state)}`,
-    states,
-  };
+  return { id, states };
+}
+
+export function getEnumRef(value: mixed): EnumRef | null {
+  if (value == null || typeof value !== 'object' || Array.isArray(value))
+    return null;
+  const ref = value.__enumRef;
+  if (!isPlainObject(ref) || typeof ref.id !== 'string') return null;
+  const id = ref.id;
+  const states = ref.states;
+  if (states === undefined) return enumRef(id);
+  if (!Array.isArray(states)) return null;
+  const validated: Array<EnumState> = [];
+  for (const state of states) {
+    if (typeof state !== 'string' && typeof state !== 'boolean') return null;
+    validated.push(state);
+  }
+  return enumRef(id, validated);
+}
+
+export function getEnumVariableName(ref: EnumRef, state: string): string {
+  // State names are hashed, never interpolated into CSS identifiers.
+  return `--${ref.id}-${hash(state)}`;
 }
 
 export function validateEnumState(value: mixed, ref?: EnumRef): EnumState {
@@ -64,7 +82,7 @@ export function defineEnum(
   const values = states.map((state) => validateEnumState(state));
   const ref = enumRef(id, values);
   const reset = values
-    .map((value) => `${ref.variable(String(value))}: ;`)
+    .map((value) => `${getEnumVariableName(ref, String(value))}: ;`)
     .join('');
   const selector = `:root:not(.${id})`;
   const rules = [];
@@ -95,7 +113,8 @@ export function defineEnum(
     const state = validateEnumState(value, ref);
     const declarations = values
       .map(
-        (v) => `${ref.variable(String(v))}:${v === state ? 'initial' : ' '};`,
+        (v) =>
+          `${getEnumVariableName(ref, String(v))}:${v === state ? 'initial' : ' '};`,
       )
       .join('');
     const css = `${selector}{${declarations}}`;
@@ -109,7 +128,7 @@ export function defineEnum(
     Object.fromEntries(
       values.map((value) => [
         String(value),
-        `var(${ref.variable(String(value))})`,
+        `var(${getEnumVariableName(ref, String(value))})`,
       ]),
     ),
     {
@@ -128,7 +147,7 @@ export function compileEnumAssignment(
   options: StyleXOptions = defaultOptions,
 ): [{ $$css: true, [string]: string | true }, { [string]: InjectableStyle }] {
   const state = validateEnumState(value, ref);
-  const declaration = `${ref.variable(String(state))}:initial`;
+  const declaration = `${getEnumVariableName(ref, String(state))}:initial`;
   const className =
     options.classNamePrefix + hash(`enum:${ref.id}:${String(state)}`);
   return [

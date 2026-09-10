@@ -325,7 +325,7 @@ export function createVarGroupProxy({
   exportName,
   traversalState,
   onAccess,
-}: VarGroupProxyOptions): { [string]: any } {
+}: VarGroupProxyOptions): { +[string]: mixed } {
   const varGroupHash = getVarGroupHash(fileName, exportName, traversalState);
 
   return new Proxy(
@@ -435,7 +435,7 @@ function evaluateThemeRef(
   fileName: string,
   exportName: string,
   state: State,
-): { [key: string]: string } {
+): { +[string]: mixed } {
   return createVarGroupProxy({
     fileName,
     exportName,

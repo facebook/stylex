@@ -11,8 +11,11 @@ import type { MediaQueryRule } from './media-query';
 
 import { MediaQuery } from './media-query.js';
 
-export function lastMediaQueryWinsTransform(styles: Object): Object {
-  return dfsProcessQueries(styles, 0);
+export function lastMediaQueryWinsTransform(
+  styles: Object,
+  isLeaf: (mixed) => boolean = () => false,
+): Object {
+  return dfsProcessQueries(styles, 0, isLeaf);
 }
 
 function combineMediaQueryWithNegations(
@@ -52,10 +55,12 @@ function combineMediaQueryWithNegations(
 function dfsProcessQueries(
   obj: { [key: string]: any },
   depth: number,
+  isLeaf: (mixed) => boolean,
 ): {
   [key: string]: any,
 } {
   if (
+    isLeaf(obj) ||
     Array.isArray(obj) ||
     Object.getPrototypeOf(obj) !== Object.getPrototypeOf({})
   ) {
@@ -66,7 +71,7 @@ function dfsProcessQueries(
 
   Object.entries(obj).forEach(([key, value]) => {
     if (typeof value === 'object' && value !== null) {
-      result[key] = dfsProcessQueries(value, depth + 1);
+      result[key] = dfsProcessQueries(value, depth + 1, isLeaf);
     } else {
       result[key] = value;
     }
