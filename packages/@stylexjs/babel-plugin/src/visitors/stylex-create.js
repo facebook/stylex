@@ -74,30 +74,6 @@ function isSafeToSkipNullCheck(expr: t.Expression): boolean {
   return false;
 }
 
-function hasExplicitNullishFallback(expr: t.Expression): boolean {
-  if (t.isNullLiteral(expr)) return true;
-
-  if (t.isIdentifier(expr) && expr.name === 'undefined') return true;
-
-  if (t.isUnaryExpression(expr) && expr.operator === 'void') return true;
-
-  if (t.isConditionalExpression(expr)) {
-    return (
-      hasExplicitNullishFallback(expr.consequent) ||
-      hasExplicitNullishFallback(expr.alternate)
-    );
-  }
-
-  if (t.isLogicalExpression(expr)) {
-    return (
-      hasExplicitNullishFallback(expr.left) ||
-      hasExplicitNullishFallback(expr.right)
-    );
-  }
-
-  return false;
-}
-
 /// This function looks for `stylex.create` calls and transforms them.
 /// 1. It finds the first argument to `stylex.create` and validates it.
 /// 2. It pre-processes valid-dynamic parts of style object such as custom presets (spreads)
@@ -339,11 +315,11 @@ export default function transformStyleXCreate(
               dynamicStyles = legacyExpandShorthands(dynamicStyles);
             }
 
-            const nullishVarExpressions = new Map<string, t.Expression>();
+            // Condition normalization can change a class's key path. The
+            // generated variable still identifies the original dynamic value.
+            const dynamicVarExpressions = new Map<string, t.Expression>();
             dynamicStyles.forEach((style) => {
-              if (hasExplicitNullishFallback(style.expression)) {
-                nullishVarExpressions.set(style.varName, style.expression);
-              }
+              dynamicVarExpressions.set(style.varName, style.expression);
             });
 
             if (t.isObjectExpression(prop.value)) {
@@ -391,7 +367,7 @@ export default function transformStyleXCreate(
                     ({ path }) => origClassPaths[cls] === path,
                   )?.expression;
 
-                  if (expr == null && nullishVarExpressions.size > 0) {
+                  if (expr == null && dynamicVarExpressions.size > 0) {
                     const injectedStyle = injectedStyles[cls];
                     const rule =
                       injectedStyle != null
@@ -408,7 +384,7 @@ export default function transformStyleXCreate(
                       );
 
                       for (const match of matches) {
-                        const varExpr = nullishVarExpressions.get(match[1]);
+                        const varExpr = dynamicVarExpressions.get(match[1]);
                         if (varExpr != null) {
                           expr = varExpr;
                           break;

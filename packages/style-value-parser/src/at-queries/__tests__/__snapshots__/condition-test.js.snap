@@ -1,0 +1,172 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`condition simplification @container card (min-width: 400px) and (not (min-height: 500px)) 1`] = `
+{
+  "result": "@container card (min-width: 400px) and (not (min-height: 500px))",
+  "source": "@container card (min-width: 400px) and (not (min-height: 500px))",
+}
+`;
+
+exports[`condition simplification @media (400px <= width <= 800px) and (not (min-width: 600px)) 1`] = `
+{
+  "result": "@media (min-width: 400px) and (max-width: 599.99px)",
+  "source": "@media (400px <= width <= 800px) and (not (min-width: 600px))",
+}
+`;
+
+exports[`condition simplification @media (color), (color) and (monochrome) 1`] = `
+{
+  "result": "@media (color)",
+  "source": "@media (color), (color) and (monochrome)",
+}
+`;
+
+exports[`condition simplification @media (future-feature) or (not (future-feature)) 1`] = `
+{
+  "result": "@media (future-feature), (not (future-feature))",
+  "source": "@media (future-feature) or (not (future-feature))",
+}
+`;
+
+exports[`condition simplification @media (future-feature: custom(1, 2)) and (not (color)) 1`] = `
+{
+  "result": "@media (future-feature: custom(1, 2)) and (not (color))",
+  "source": "@media (future-feature: custom(1, 2)) and (not (color))",
+}
+`;
+
+exports[`condition simplification @media (min-width: 40em) and (not (min-width: 900px)) 1`] = `
+{
+  "result": "@media (min-width: 40em) and (not (min-width: 900px))",
+  "source": "@media (min-width: 40em) and (not (min-width: 900px))",
+}
+`;
+
+exports[`condition simplification @media (min-width: 400px) and (not (min-width: 900px)) 1`] = `
+{
+  "result": "@media (min-width: 400px) and (max-width: 899.99px)",
+  "source": "@media (min-width: 400px) and (not (min-width: 900px))",
+}
+`;
+
+exports[`condition simplification @media (min-width: 800px) and (max-width: 500px) 1`] = `
+{
+  "result": "@media not all",
+  "source": "@media (min-width: 800px) and (max-width: 500px)",
+}
+`;
+
+exports[`condition simplification @media (min-width: 800px) and (min-width: 400px) and (orientation: landscape) 1`] = `
+{
+  "result": "@media (min-width: 800px) and (orientation: landscape)",
+  "source": "@media (min-width: 800px) and (min-width: 400px) and (orientation: landscape)",
+}
+`;
+
+exports[`condition simplification @media (min-width: 800px) and (not ((min-width: 600px) and (max-width: 1000px) and (min-height: 500px))) 1`] = `
+{
+  "result": "@media (min-width: 1000.01px), (min-width: 800px) and (max-height: 499.99px)",
+  "source": "@media (min-width: 800px) and (not ((min-width: 600px) and (max-width: 1000px) and (min-height: 500px)))",
+}
+`;
+
+exports[`condition simplification @media (not (not (color))) 1`] = `
+{
+  "result": "@media (color)",
+  "source": "@media (not (not (color)))",
+}
+`;
+
+exports[`condition simplification @media (width > 799.99px) and (not (max-width: 900px)) 1`] = `
+{
+  "result": "@media (min-width: 900.01px)",
+  "source": "@media (width > 799.99px) and (not (max-width: 900px))",
+}
+`;
+
+exports[`condition simplification @media not screen and (min-width: 800px) 1`] = `
+{
+  "result": "@media not screen, (max-width: 799.99px)",
+  "source": "@media not screen and (min-width: 800px)",
+}
+`;
+
+exports[`condition simplification @media screen and (min-width: 800px) 1`] = `
+{
+  "result": "@media screen and (min-width: 800px)",
+  "source": "@media screen and (min-width: 800px)",
+}
+`;
+
+exports[`condition simplification @supports (--custom: "and, not (or)") and (not (display: grid)) 1`] = `
+{
+  "result": "@supports (--custom: "and, not (or)") and (not (display: grid))",
+  "source": "@supports (--custom: "and, not (or)") and (not (display: grid))",
+}
+`;
+
+exports[`condition simplification @supports (display: grid) /* or */ and (not (display: flex)) 1`] = `
+{
+  "result": "@supports (display: grid) /* or */ and (not (display: flex))",
+  "source": "@supports (display: grid) /* or */ and (not (display: flex))",
+}
+`;
+
+exports[`condition simplification @supports (display: grid) and (not ((display: flex) or (display: grid))) 1`] = `
+{
+  "result": "@supports (display: grid) and (not ((display: flex) or (display: grid)))",
+  "source": "@supports (display: grid) and (not ((display: flex) or (display: grid)))",
+}
+`;
+
+exports[`condition simplification @supports selector(:is(.a, .b)) and (not (font-format(woff2))) 1`] = `
+{
+  "result": "@supports selector(:is(.a, .b)) and (not font-format(woff2))",
+  "source": "@supports selector(:is(.a, .b)) and (not (font-format(woff2)))",
+}
+`;
+
+exports[`condition simplification a negated media-type conjunction keeps valid nested at-rule scopes 1`] = `
+[
+  [
+    "@media (min-width: 400px)",
+    "@media not screen",
+  ],
+]
+`;
+
+exports[`condition simplification nested leaves without defaults do not erase earlier fallbacks 1`] = `
+{
+  "color": {
+    "@media (min-width: 400px) and (max-width: 599.99px), (min-width: 400px) and (max-height: 499.99px)": "red",
+    "@media (min-width: 600px)": {
+      "@media (min-height: 500px)": "blue",
+    },
+    "default": "black",
+  },
+}
+`;
+
+exports[`condition simplification nested pseudos retain the earlier at-rule as a fallback 1`] = `
+{
+  "color": {
+    "@media (min-width: 400px)": "red",
+    "@media (min-width: 600px)": {
+      ":hover": "blue",
+    },
+  },
+}
+`;
+
+exports[`condition simplification ordinary pseudo-classes use specificity without enum exclusions 1`] = `
+{
+  "color": {
+    ":active": "blue",
+    ":hover": "red",
+    "@container card (width > 400px)": "orange",
+    "@supports (display: flex)": "purple",
+    "@supports (display: grid) and (not (display: flex))": "green",
+    "default": "black",
+  },
+}
+`;

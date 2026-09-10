@@ -268,7 +268,7 @@ describe('Media Query Transformer', () => {
     const result = lastMediaQueryWinsTransform(originalStyles);
     const resultStr = JSON.stringify(result);
     expect(resultStr).not.toContain('only (screen)');
-    expect(resultStr).toContain('only screen');
+    expect(resultStr).toContain('screen and');
   });
 
   test('handles comma-separated (or) media queries', () => {
@@ -283,7 +283,7 @@ describe('Media Query Transformer', () => {
     const expectedStyles = {
       width: {
         default: '100%',
-        '@media (screen) and (not (max-width: 500px)), (min-width: 500.01px) and (max-width: 800px)':
+        '@media screen and (min-width: 500.01px), (min-width: 500.01px) and (max-width: 800px)':
           '80%',
         '@media (max-width: 500px)': '60%',
       },
@@ -293,7 +293,7 @@ describe('Media Query Transformer', () => {
     expect(JSON.stringify(result)).toBe(JSON.stringify(expectedStyles));
   });
 
-  test.skip('handles and media queries', () => {
+  test('handles and media queries', () => {
     const originalStyles = {
       width: {
         default: '100%',
@@ -306,8 +306,7 @@ describe('Media Query Transformer', () => {
     const expectedStyles = {
       width: {
         default: '100%',
-        '@media (min-width: 900px) and (not ((min-width: 500px) and (max-width: 899px) and (max-height: 300px)))':
-          '80%',
+        '@media (min-width: 900px)': '80%',
         '@media (min-width: 500px) and (max-width: 899px) and (max-height: 300px)':
           '50%',
       },
@@ -317,7 +316,7 @@ describe('Media Query Transformer', () => {
     expect(JSON.stringify(result)).toBe(JSON.stringify(expectedStyles));
   });
 
-  test.skip('combination of keywords and rules', () => {
+  test('combination of keywords and rules', () => {
     const originalStyles = {
       width: {
         default: '100%',
@@ -329,8 +328,7 @@ describe('Media Query Transformer', () => {
     const expectedStyles = {
       width: {
         default: '100%',
-        '@media screen and (min-width: 900px) and (not (print and (max-width: 500px)))':
-          '80%',
+        '@media screen and (min-width: 900px)': '80%',
         '@media print and (max-width: 500px)': '50%',
       },
     };
@@ -526,7 +524,7 @@ describe('Media Query Transformer', () => {
       foo: {
         gridColumn: {
           default: '1 / 2',
-          '@media ((min-width: 900px) and (max-width: 999.99px)) or ((min-width: 1100.01px) and (max-width: 1440px))':
+          '@media (min-width: 1100.01px) and (max-width: 1440px), (min-width: 900px) and (max-width: 999.99px)':
             '1 / 4',
           '@media (min-width: 1000px) and (max-width: 1100px)': '1 / 3',
           '@media (min-width: 400px) and (max-width: 500px)': '1 / 1',
@@ -553,7 +551,7 @@ describe('Media Query Transformer', () => {
       foo: {
         gridColumn: {
           default: '1 / 2',
-          '@media ((min-width: 900px) and (max-width: 999.99px)) or ((min-width: 1100.01px) and (max-width: 1440px))':
+          '@media (min-width: 1100.01px) and (max-width: 1440px), (min-width: 900px) and (max-width: 999.99px)':
             '1 / 4',
           '@media (min-width: 1000px) and (max-width: 1100px)': '1 / 3',
         },
@@ -580,9 +578,9 @@ describe('Media Query Transformer', () => {
       foo: {
         gridColumn: {
           default: '1 / 2',
-          '@media ((min-width: 900px) and (max-width: 999.99px)) or ((min-width: 1100.01px) and (max-width: 1440px))':
+          '@media (min-width: 1100.01px) and (max-width: 1440px), (min-width: 900px) and (max-width: 999.99px)':
             '1 / 4',
-          '@media ((min-width: 1000px) and (max-width: 1009.99px)) or ((min-width: 1050.01px) and (max-width: 1100px))':
+          '@media (min-width: 1050.01px) and (max-width: 1100px), (min-width: 1000px) and (max-width: 1009.99px)':
             '1 / 3',
           '@media (min-width: 1010px) and (max-width: 1050px)': '1 / -1',
         },
@@ -608,7 +606,7 @@ describe('Media Query Transformer', () => {
       foo: {
         gridColumn: {
           default: '1 / 2',
-          '@media ((min-width: 60em) and (max-width: 64.99em)) or ((min-width: 70.01em) and (max-width: 90em))':
+          '@media (min-width: 70.01em) and (max-width: 90em), (min-width: 60em) and (max-width: 64.99em)':
             '1 / 4',
           '@media (min-width: 65em) and (max-width: 70em)': '1 / 3',
         },
