@@ -12,7 +12,9 @@ import {
 } from '@stylexjs/lightningcss-plugin';
 
 const visitor: Visitor<{}> = createConditionVisitor();
+
 transform({ filename: 'stylex.css', code: new Uint8Array(), visitor });
+
 simplifyConditions({
   filename: 'stylex.css',
   code: new Uint8Array(),

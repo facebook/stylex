@@ -16,6 +16,7 @@ import type {
 export declare function createConditionVisitor<
   C extends CustomAtRules = CustomAtRules,
 >(): Visitor<C>;
+
 export declare function simplifyConditions<
   C extends CustomAtRules = CustomAtRules,
 >(options: TransformOptions<C>): TransformResult;

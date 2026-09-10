@@ -8,6 +8,16 @@
  */
 
 import { transform, composeVisitors } from 'lightningcss';
+import type {
+  CustomAtRules,
+  Location2,
+  MediaRule,
+  Rule,
+  SupportsRule,
+  TransformOptions,
+  TransformResult,
+  Visitor,
+} from 'lightningcss';
 import { tokenize } from '@csstools/css-tokenizer';
 import {
   parseAtRule,
@@ -16,15 +26,23 @@ import {
   andConditions,
 } from 'style-value-parser';
 
-type ConditionalRule = {
-  type: 'media' | 'supports',
-  value: {
-    loc: Object,
-    rules: Array<Object>,
-    query?: Object,
-    condition?: Object,
-  },
-};
+type ConditionalRule =
+  | { type: 'media', value: MediaRule<> }
+  | { type: 'supports', value: SupportsRule<> };
+
+function replaceRules(
+  rule: ConditionalRule,
+  rules: Array<Rule<>>,
+  loc: Location2 = rule.value.loc,
+): ConditionalRule {
+  if (rule.type === 'media') {
+    return { type: 'media', value: { query: rule.value.query, loc, rules } };
+  }
+  return {
+    type: 'supports',
+    value: { condition: rule.value.condition, loc, rules },
+  };
+}
 
 // Let Lightning CSS print and parse its own AST, so this adapter also handles
 // value types and future syntax that the shared simplifier treats as opaque.
@@ -36,10 +54,10 @@ function printPrelude(rule: ConditionalRule): string {
     code: Buffer.from('.probe{opacity:1}'),
     visitor: {
       Rule: {
-        style(probe) {
+        style(probe: Rule<>) {
           if (replaced) return;
           replaced = true;
-          return { ...rule, value: { ...rule.value, rules: [probe] } };
+          return replaceRules(rule, [probe]);
         },
       },
     },
@@ -51,27 +69,29 @@ function printPrelude(rule: ConditionalRule): string {
   return result.slice(0, brace[2]).trim();
 }
 
-function parsePrelude(source: string): Object {
-  let value;
-  const capture = (rule: ConditionalRule) => {
-    value = rule.value;
+function parsePrelude(source: string): ConditionalRule {
+  let result: ConditionalRule | void;
+  const capture = (rule: ConditionalRule): void => {
+    result = rule;
   };
   transform({
     filename: 'condition.css',
     code: Buffer.from(source + '{}'),
     visitor: { Rule: { media: capture, supports: capture } },
   });
-  if (value == null) throw new Error('Unable to parse CSS condition');
-  return value;
+  if (result == null) throw new Error('Unable to parse CSS condition');
+  return result;
 }
 
-export function createConditionVisitor(): Object {
+export function createConditionVisitor<
+  C: CustomAtRules = CustomAtRules,
+>(): Visitor<C> {
   const printed = new Map<string, string>();
-  const parsed = new Map<string, Object>();
+  const parsed = new Map<string, ConditionalRule>();
   const prelude = (rule: ConditionalRule): string => {
     const key = JSON.stringify([
       rule.type,
-      rule.value.query ?? rule.value.condition,
+      rule.type === 'media' ? rule.value.query : rule.value.condition,
     ]);
     const cached = printed.get(key);
     if (cached != null) return cached;
@@ -79,19 +99,18 @@ export function createConditionVisitor(): Object {
     printed.set(key, result);
     return result;
   };
-  const visit = (rule: ConditionalRule): Object | Array<Object> | void => {
+  const visit = (
+    rule: ConditionalRule,
+  ): ConditionalRule | Array<Rule<>> | void => {
     const source = prelude(rule);
     const original = parseAtRule(source);
     let condition = original.condition;
     let children = rule.value.rules;
     // Nested media queries evaluate against the same environment. Do not do
     // this for container queries, whose independently selected ancestors differ.
-    while (
-      rule.type === 'media' &&
-      children.length === 1 &&
-      children[0].type === 'media'
-    ) {
+    while (rule.type === 'media' && children.length === 1) {
       const child = children[0];
+      if (child.type !== 'media') break;
       condition = andConditions([
         condition,
         parseAtRule(prelude(child)).condition,
@@ -108,25 +127,24 @@ export function createConditionVisitor(): Object {
       return;
     } // e.g. a conjunction with a negated media type
     if (next === source && children === rule.value.rules) return;
-    let value = parsed.get(next);
-    if (value == null) {
-      value = parsePrelude(next);
-      parsed.set(next, value);
+    let nextRule = parsed.get(next);
+    if (nextRule == null) {
+      nextRule = parsePrelude(next);
+      parsed.set(next, nextRule);
     }
-    return {
-      ...rule,
-      value: { ...value, loc: rule.value.loc, rules: children },
-    };
+    return replaceRules(nextRule, children, rule.value.loc);
   };
   return {
-    RuleExit(rule: Object) {
+    RuleExit(rule: Rule<>) {
       if (rule.type === 'media' || rule.type === 'supports') return visit(rule);
     },
   };
 }
 
-export function simplifyConditions(options: Object): Object {
-  const visitor = createConditionVisitor();
+export function simplifyConditions<C: CustomAtRules = CustomAtRules>(
+  options: TransformOptions<C>,
+): TransformResult {
+  const visitor = createConditionVisitor<C>();
   return transform({
     ...options,
     visitor: options.visitor
