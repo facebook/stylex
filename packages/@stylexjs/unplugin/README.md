@@ -140,6 +140,13 @@ esbuild.build({
   `['stylex', '@stylexjs/stylex']`.
 - `useCSSLayers`: boolean, emit CSS layers.
 - `babelConfig`: `{ plugins, presets }` to merge into the internal Babel call.
+- `babel`: pass-through options for the internal `@babel/core` call. Useful
+  for opting out of root-config discovery (`babel: { configFile: false }`),
+  which otherwise applies your project's `babel.config.*` — including
+  plugins like `react-compiler`, `relay`, or `module-resolver` — to every
+  StyleX file the plugin transforms. The plugin's own mandatory options
+  (`babelrc: false`, `filename`, `presets`, `plugins`, `caller`) always
+  win and cannot be overridden.
 - `unstable_moduleResolution`: forwarded to the StyleX Babel plugin.
 - `lightningcssOptions`: pass-through options for `lightningcss`. Can override
   `targets`, `exclude`, etc. See [Browserslist & CSS lowering](#browserslist--css-lowering).

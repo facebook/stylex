@@ -231,6 +231,7 @@ export const unpluginFactory = (userOptions = {}, metaOptions) => {
       process.env.BABEL_ENV === 'development',
     unstable_moduleResolution = { type: 'commonJS', rootDir: process.cwd() },
     babelConfig: { plugins = [], presets = [] } = {},
+    babel: babelExtraOptions = {},
     importSources = ['stylex', '@stylexjs/stylex'],
     useCSSLayers = false,
     lightningcssOptions,
@@ -294,6 +295,8 @@ export const unpluginFactory = (userOptions = {}, metaOptions) => {
 
   async function runBabelTransform(inputCode, filename, callerName) {
     const result = await transformAsync(inputCode, {
+      // Consumer pass-through; the plugin's own options below always win.
+      ...babelExtraOptions,
       babelrc: false,
       filename,
       presets,
