@@ -14,14 +14,8 @@ by passing them to the functions of the corresponding names within `@stylex/shar
 
 The StyleX Babel plugin does more than transform JavaScript (or TypeScript) files. It also returns a list of injected styles. The way that such a value can be returned while transforming a JS file is by using Babel's `metadata` API.
 
-An example of this can be seen in some of the tests, but the result of using Babel's `transform(...)` function returns an object contains at least two keys:
-
-1. `code` which is the transformed JS code
-2. `metadata` is an object of metadata that the plugin may want to return as a side-effect.
-
 e.g.
-
-```js
+```tsx
 const result = transformSync(sourceCode, {
   filename: opts.filename,
   parserOpts: { flow: { all: true } },
