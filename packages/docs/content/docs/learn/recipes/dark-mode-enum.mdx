@@ -1,0 +1,95 @@
+---
+title: 'Dark mode with a CSS enum'
+---
+
+A CSS enum can follow the operating system's color preference and let a user
+choose a local override. Like `light-dark()`, values are selected in CSS. An enum
+also works for non-color properties such as `boxShadow`, `opacity`, and
+`fontWeight`, so one state can coordinate the entire appearance.
+
+## Define the system default
+
+```tsx title="appearance.stylex.ts"
+import * as stylex from '@stylexjs/stylex';
+
+export const appearance = stylex.defineEnum(['light', 'dark'], {
+  default: 'light',
+  '@media (prefers-color-scheme: dark)': 'dark',
+});
+```
+
+This default responds to the media query without a JavaScript media listener.
+
+## Consume the state
+
+```tsx title="Preview.tsx"
+import { useState } from 'react';
+import * as stylex from '@stylexjs/stylex';
+import { appearance } from './appearance.stylex';
+
+const styles = stylex.create({
+  preview: {
+    padding: 24,
+    colorScheme: stylex.match(appearance, { light: 'light', dark: 'dark' }),
+    color: stylex.match(appearance, { light: '#18212f', dark: '#e7edf5' }),
+    backgroundColor: stylex.match(appearance, {
+      light: '#ffffff',
+      dark: '#18212f',
+    }),
+    boxShadow: stylex.match(appearance, {
+      light: '0 4px 16px rgb(0 0 0 / 15%)',
+      dark: 'inset 0 0 0 1px rgb(255 255 255 / 20%)',
+    }),
+    fontWeight: stylex.match(appearance, { light: 400, dark: 500 }),
+  },
+});
+
+export function Preview() {
+  const [preference, setPreference] = useState('system');
+
+  return (
+    <section
+      {...stylex.props(
+        styles.preview,
+        preference === 'light' && appearance('light'),
+        preference === 'dark' && appearance('dark'),
+      )}>
+      <label>
+        Appearance
+        <select
+          value={preference}
+          onChange={(event) => setPreference(event.target.value)}>
+          <option value="system">System</option>
+          <option value="light">Light</option>
+          <option value="dark">Dark</option>
+        </select>
+      </label>
+      <p>This preview changes its colors, shadow, and font weight together.</p>
+    </section>
+  );
+}
+```
+
+The `colorScheme` match keeps native controls consistent with the selected enum
+state. The enum itself does not automatically change `color-scheme`.
+
+Selecting **System** removes the local override. The preview then inherits the
+root's media-driven default. If it is inside another explicit appearance scope,
+removing the override inherits that scope instead. Apply this pattern at the
+application's outer appearance boundary when System should always mean the
+operating system's preference.
+
+Descendants can import the same enum and use their own `stylex.match` expressions
+without receiving a JavaScript theme prop. Nested previews can override it again.
+
+## Choosing between an enum and `light-dark()`
+
+Use `light-dark()` for its supported value types when selection should follow
+the CSS `color-scheme`. Use an enum when one inherited state should also select
+values such as font weights and shadows, or when independent subtrees need explicit state
+assignments. See the [`light-dark()` definition](https://www.w3.org/TR/css-color-5/#light-dark)
+for its relationship to `color-scheme`.
+
+The enum definition and matches compile to CSS custom properties and classes.
+JavaScript only chooses which already-compiled override to apply after an
+interaction; it does not resolve individual style values.

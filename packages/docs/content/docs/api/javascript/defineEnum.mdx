@@ -1,0 +1,94 @@
+---
+title: 'stylex.defineEnum'
+---
+
+Defines a finite CSS state that inherits through the element tree. Exactly one
+state is selected at a time. Use [`stylex.match`](/docs/api/javascript/match) to choose CSS values
+from that state, and call the enum to override its state on an element.
+
+```tsx title="density.stylex.ts"
+import * as stylex from '@stylexjs/stylex';
+
+export const density = stylex.defineEnum(
+  ['compact', 'comfortable'],
+  'comfortable',
+);
+```
+
+## Parameters
+
+- **`states`**: a static array of at least two distinct strings, or the boolean
+  pair `[true, false]`. The array determines the enum's allowed values.
+- **`initialValue`**: one of those values, or an object with a required top-level
+  `default` and conditional at-rule keys. Nested objects may omit `default`.
+
+Define enums as named exports in `.stylex.js` or `.stylex.ts` files, following
+the same module-resolution rules as `defineVars` and custom markers.
+
+```tsx title="appearance.stylex.ts"
+import * as stylex from '@stylexjs/stylex';
+
+export const appearance = stylex.defineEnum(['light', 'dark'], {
+  default: 'light',
+  '@media (prefers-color-scheme: dark)': 'dark',
+});
+
+export const expanded = stylex.defineEnum([true, false], false);
+```
+
+The initial value applies at `:root` and inherits into descendants. Initial
+conditions support `@media`, `@supports`, and `@container`. An unmatched at-rule
+leaves the otherwise applicable state in place. Pseudo-classes are not allowed
+in initial values.
+
+## Overriding a state
+
+Call the enum with a static state and pass the result to `stylex.props`:
+
+```tsx
+import * as stylex from '@stylexjs/stylex';
+import { appearance } from './appearance.stylex';
+
+<section {...stylex.props(appearance('dark'))}>Dark preview</section>;
+```
+
+The override applies to that element and its descendants. A local override takes
+precedence over an inherited initial value, including changes caused by a media
+query. Calling an enum does not mutate global state.
+
+When multiple assignments for the same enum are composed, the last assignment
+wins as a unit:
+
+```tsx
+stylex.props(appearance('light'), appearance('dark')); // dark
+```
+
+Choose between compiled assignments with JavaScript for runtime interaction:
+
+```tsx
+stylex.props(isDark ? appearance('dark') : appearance('light'));
+```
+
+Enum calls are compiler syntax. The defining module does not export a runtime
+function. Arguments must be statically evaluable; use conditional expressions
+around calls rather than `appearance(runtimeValue)`.
+
+This initial version supports scalar overrides passed to `stylex.props` or
+`stylex.attrs`. Conditional override objects and spreads of assignments inside
+`stylex.create` are not yet supported.
+
+## Types and generated CSS
+
+TypeScript and Flow retain the declared state union. Invalid assignments and
+incomplete match maps are type errors, including across imports. JavaScript
+consumers should supply every declared case; compilation of an imported enum
+does not read its definition to validate the full state list.
+
+An enum uses one unregistered CSS custom property per state. The selected
+property has the guaranteed-invalid value (`initial`); all others have a valid
+empty value. Each assignment combines a shared reset class with its selection
+class. Global defaults use `:root:not(.enumReset)`, so explicit root overrides
+also work.
+
+See [Dark mode with a CSS enum](/docs/learn/recipes/dark-mode-enum) for a complete
+example that switches both color and non-color values.
