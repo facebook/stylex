@@ -138,8 +138,8 @@ describe('rollup-plugin-stylex', () => {
 
       var styles$2 = {
         bar: {
-          k1xSpc: "x1lliihq",
-          kzqmXN: "xh8yej3",
+          d: "x1lliihq",
+          w: "xh8yej3",
           $$css: true
         }
       };
@@ -153,9 +153,9 @@ describe('rollup-plugin-stylex', () => {
 
       const styles$1 = {
         baz: {
-          k1xSpc: "xt0psk2",
-          kZKoxP: "x1egiwwb",
-          kzqmXN: "x3hqpx7",
+          d: "xt0psk2",
+          h: "x1egiwwb",
+          w: "x3hqpx7",
           $$css: true
         }
       };
@@ -169,13 +169,13 @@ describe('rollup-plugin-stylex', () => {
 
       var styles = {
         foo: {
-          kKVMdj: "xeuoslp",
-          kWkggS: "x1gykpug",
-          krdFHd: "xu4yf9m",
-          k1xSpc: "x78zum5",
-          kZKoxP: "x1egiwwb",
-          keTefX: "x1hm9lzh",
-          keoZOQ: "xlrshdv",
+          am: "xeuoslp",
+          bg: "x1gykpug",
+          ssr: "xu4yf9m",
+          d: "x78zum5",
+          h: "x1egiwwb",
+          ms: "x1hm9lzh",
+          mt: "xlrshdv",
           $$css: true
         }
       };
@@ -219,8 +219,8 @@ describe('rollup-plugin-stylex', () => {
         });
         var styles$2 = {
           bar: {
-            "display-k1xSpc": "x1lliihq",
-            "width-kzqmXN": "xh8yej3",
+            "display-d": "x1lliihq",
+            "width-w": "xh8yej3",
             $$css: "@stylexjs/rollup-plugin:__tests__/__fixtures__/otherStyles.js:14"
           }
         };
@@ -247,9 +247,9 @@ describe('rollup-plugin-stylex', () => {
         });
         const styles$1 = {
           baz: {
-            "display-k1xSpc": "xt0psk2",
-            "height-kZKoxP": "x1egiwwb",
-            "width-kzqmXN": "x3hqpx7",
+            "display-d": "xt0psk2",
+            "height-h": "x1egiwwb",
+            "width-w": "x3hqpx7",
             $$css: "@stylexjs/rollup-plugin:__tests__/__fixtures__/npmStyles.js:15"
           }
         };
@@ -296,13 +296,13 @@ describe('rollup-plugin-stylex', () => {
         });
         var styles = {
           foo: {
-            "animationName-kKVMdj": "xeuoslp",
-            "backgroundColor-kWkggS": "x1gykpug",
-            "borderStartStartRadius-krdFHd": "xu4yf9m",
-            "display-k1xSpc": "x78zum5",
-            "height-kZKoxP": "x1egiwwb",
-            "marginInlineStart-keTefX": "x1hm9lzh",
-            "marginTop-keoZOQ": "xlrshdv",
+            "animationName-am": "xeuoslp",
+            "backgroundColor-bg": "x1gykpug",
+            "borderStartStartRadius-ssr": "xu4yf9m",
+            "display-d": "x78zum5",
+            "height-h": "x1egiwwb",
+            "marginInlineStart-ms": "x1hm9lzh",
+            "marginTop-mt": "xlrshdv",
             $$css: "@stylexjs/rollup-plugin:__tests__/__fixtures__/index.js:24"
           }
         };

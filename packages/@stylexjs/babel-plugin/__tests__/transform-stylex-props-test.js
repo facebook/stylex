@@ -539,11 +539,11 @@ describe('@stylexjs/babel-plugin', () => {
           });
           const styles = {
             red: {
-              "color-kMwMTN": "x1e2nbdu",
+              "color-c": "x1e2nbdu",
               $$css: "npm-package:js/node_modules/npm-package/dist/components/Foo.react.js:4"
             },
             opacity: opacity => [{
-              "opacity-kSiTet": opacity != null ? "xb4nw82" : opacity,
+              "opacity-op": opacity != null ? "xb4nw82" : opacity,
               $$css: "npm-package:js/node_modules/npm-package/dist/components/Foo.react.js:7"
             }, {
               "--x-opacity": opacity != null ? opacity : undefined
@@ -587,7 +587,7 @@ describe('@stylexjs/babel-plugin', () => {
           });
           const styles = {
             red: {
-              "color-kMwMTN": "x1e2nbdu",
+              "color-c": "x1e2nbdu",
               $$css: "npm-package:js/node_modules/npm-package/dist/components/Foo.react.js:4"
             }
           };
@@ -805,7 +805,7 @@ describe('@stylexjs/babel-plugin', () => {
           });
           const styles = {
             color: c => [{
-              kMwMTN: c != null ? "x14rh7hd" : c,
+              c: c != null ? "x14rh7hd" : c,
               $$css: true
             }, {
               "--x-color": c != null ? c : undefined
@@ -828,7 +828,7 @@ describe('@stylexjs/babel-plugin', () => {
           });
           const _temp = {
             color: _v => [{
-              "kMwMTN": _v != null ? "x14rh7hd" : _v,
+              "c": _v != null ? "x14rh7hd" : _v,
               "$$css": true
             }, {
               "--x-color": _v != null ? _v : undefined
@@ -863,14 +863,14 @@ describe('@stylexjs/babel-plugin', () => {
           });
           const _temp = {
             color: _v => [{
-              "kMwMTN": _v != null ? "x14rh7hd" : _v,
+              "c": _v != null ? "x14rh7hd" : _v,
               "$$css": true
             }, {
               "--x-color": _v != null ? _v : undefined
             }]
           };
           const _temp2 = {
-            k1xSpc: "x78zum5",
+            d: "x78zum5",
             $$css: true
           };
           stylex.props(_temp2, _temp.color(color));"
@@ -901,7 +901,7 @@ describe('@stylexjs/babel-plugin', () => {
           });
           const styles = {
             opacity: o => [{
-              kSiTet: o != null ? "xb4nw82" : o,
+              op: o != null ? "xb4nw82" : o,
               $$css: true
             }, {
               "--x-opacity": o != null ? o : undefined
@@ -912,7 +912,7 @@ describe('@stylexjs/babel-plugin', () => {
             priority: 3000
           });
           const _temp = {
-            k1xSpc: "x78zum5",
+            d: "x78zum5",
             $$css: true
           };
           stylex.props(_temp, styles.opacity(0.5));"
@@ -943,7 +943,7 @@ describe('@stylexjs/babel-plugin', () => {
           });
           const styles = {
             opacity: o => [{
-              kSiTet: o != null ? "xb4nw82" : o,
+              op: o != null ? "xb4nw82" : o,
               $$css: true
             }, {
               "--x-opacity": o != null ? o : undefined
@@ -959,7 +959,7 @@ describe('@stylexjs/babel-plugin', () => {
           });
           const _temp = {
             color: _v => [{
-              "kMwMTN": _v != null ? "x14rh7hd" : _v,
+              "c": _v != null ? "x14rh7hd" : _v,
               "$$css": true
             }, {
               "--x-color": _v != null ? _v : undefined
@@ -1084,7 +1084,7 @@ describe('@stylexjs/babel-plugin', () => {
             });
             const _temp = {
               color: _v => [{
-                "kMwMTN": _v != null ? "x14rh7hd" : _v,
+                "c": _v != null ? "x14rh7hd" : _v,
                 "$$css": true
               }, {
                 "--x-color": _v != null ? _v : undefined
@@ -1100,7 +1100,7 @@ describe('@stylexjs/babel-plugin', () => {
             });
             const _temp2 = {
               backgroundColor: _v => [{
-                "kWkggS": _v != null ? "xl8spv7" : _v,
+                "bg": _v != null ? "xl8spv7" : _v,
                 "$$css": true
               }, {
                 "--x-backgroundColor": _v != null ? _v : undefined
@@ -1130,7 +1130,7 @@ describe('@stylexjs/babel-plugin', () => {
               priority: 3000
             });
             const _temp = {
-              kMwMTN: "xju2f9n",
+              c: "xju2f9n",
               $$css: true
             };
             stylex.props(_temp, externalStyles.root);"
@@ -1172,18 +1172,18 @@ describe('@stylexjs/babel-plugin', () => {
             });
             const _temp = {
               color: _v => [{
-                "kMwMTN": _v != null ? "x14rh7hd" : _v,
+                "c": _v != null ? "x14rh7hd" : _v,
                 "$$css": true
               }, {
                 "--x-color": _v != null ? _v : undefined
               }]
             };
             const _temp2 = {
-              kmVPX3: "xe8ttls",
+              p: "xe8ttls",
               $$css: true
             };
             const _temp3 = {
-              kaIpWk: "x12oqio5",
+              br: "x12oqio5",
               $$css: true
             };
             function Button({
@@ -1213,7 +1213,7 @@ describe('@stylexjs/babel-plugin', () => {
               priority: 3000
             });
             const _temp = {
-              k1xSpc: "x78zum5",
+              d: "x78zum5",
               $$css: true
             };
             function Component({
@@ -1282,14 +1282,14 @@ describe('@stylexjs/babel-plugin', () => {
             });
             const _temp = {
               color: _v => [{
-                "kMwMTN": _v != null ? "x14rh7hd" : _v,
+                "c": _v != null ? "x14rh7hd" : _v,
                 "$$css": true
               }, {
                 "--x-color": _v != null ? _v : undefined
               }]
             };
             const _temp2 = {
-              k1xSpc: "x78zum5",
+              d: "x78zum5",
               $$css: true
             };
             function Component(color) {
@@ -1578,11 +1578,11 @@ describe('@stylexjs/babel-plugin', () => {
         });
         const styles = {
           foo: {
-            kMwMTN: "x1e2nbdu",
+            c: "x1e2nbdu",
             $$css: true
           },
           bar: {
-            kWkggS: "x1t391ir",
+            bg: "x1t391ir",
             $$css: true
           }
         };
@@ -1674,7 +1674,7 @@ describe('@stylexjs/babel-plugin', () => {
         });
         export const styles = {
           foo: {
-            kmVPX3: "x14odnwx",
+            p: "x14odnwx",
             $$css: true
           }
         };
@@ -1734,15 +1734,15 @@ describe('@stylexjs/babel-plugin', () => {
         });
         export const styles = {
           default: {
-            k1K539: "x1fqp7bg",
-            k71WvV: "x1sa5p1d",
-            keTefX: "xqsn43r",
-            keoZOQ: "x1ok221b",
+            mb: "x1fqp7bg",
+            me: "x1sa5p1d",
+            ms: "xqsn43r",
+            mt: "x1ok221b",
             $$css: true
           },
           override: {
-            kogj98: "x1ghz6dp",
-            k1K539: "xiv7p99",
+            m: "x1ghz6dp",
+            mb: "xiv7p99",
             $$css: true
           }
         };
@@ -2039,11 +2039,11 @@ describe('@stylexjs/babel-plugin', () => {
           });
           const styles = {
             default: {
-              kWkggS: "xrkmrrc",
+              bg: "xrkmrrc",
               $$css: true
             },
             active: {
-              kMwMTN: "xju2f9n",
+              c: "xju2f9n",
               $$css: true
             }
           };
@@ -2269,11 +2269,11 @@ describe('@stylexjs/babel-plugin', () => {
           });
           const styles = {
             red: {
-              kMwMTN: "x1e2nbdu",
+              c: "x1e2nbdu",
               $$css: true
             },
             blue: {
-              kMwMTN: "xju2f9n",
+              c: "xju2f9n",
               $$css: true
             }
           };
@@ -2341,11 +2341,11 @@ describe('@stylexjs/babel-plugin', () => {
           });
           const styles = {
             red: {
-              kMwMTN: "x1e2nbdu",
+              c: "x1e2nbdu",
               $$css: true
             },
             blue: {
-              kMwMTN: null,
+              c: null,
               $$css: true
             }
           };
@@ -2418,7 +2418,7 @@ describe('@stylexjs/babel-plugin', () => {
           });
           const styles = {
             default: {
-              "color-kMwMTN": "x1e2nbdu",
+              "color-c": "x1e2nbdu",
               $$css: "html/js/FooBar.react.js:4"
             }
           };
@@ -2428,7 +2428,7 @@ describe('@stylexjs/babel-plugin', () => {
           });
           const otherStyles = {
             default: {
-              "backgroundColor-kWkggS": "x1t391ir",
+              "backgroundColor-bg": "x1t391ir",
               $$css: "html/js/FooBar.react.js:9"
             }
           };
@@ -2556,11 +2556,11 @@ describe('@stylexjs/babel-plugin', () => {
         });
         const styles = {
           "0": {
-            kMwMTN: "x1e2nbdu",
+            c: "x1e2nbdu",
             $$css: true
           },
           "1": {
-            kWkggS: "x1t391ir",
+            bg: "x1t391ir",
             $$css: true
           }
         };
@@ -2589,7 +2589,7 @@ describe('@stylexjs/babel-plugin', () => {
         });
         const styles = {
           default: {
-            kMwMTN: "x1e2nbdu",
+            c: "x1e2nbdu",
             $$css: true
           }
         };
@@ -2668,11 +2668,11 @@ describe('@stylexjs/babel-plugin', () => {
           });
           const styles = {
             "0": {
-              kMwMTN: "x1e2nbdu",
+              c: "x1e2nbdu",
               $$css: true
             },
             "1": {
-              kWkggS: "x1t391ir",
+              bg: "x1t391ir",
               $$css: true
             }
           };"
@@ -2726,7 +2726,7 @@ describe('@stylexjs/babel-plugin', () => {
           });
           const styles = {
             foo: {
-              kMwMTN: "x1e2nbdu",
+              c: "x1e2nbdu",
               $$css: true
             }
           };"
@@ -2755,7 +2755,7 @@ describe('@stylexjs/babel-plugin', () => {
           });
           const styles = {
             default: {
-              kMwMTN: "x1e2nbdu",
+              c: "x1e2nbdu",
               $$css: true
             }
           };"
@@ -2932,31 +2932,31 @@ describe('@stylexjs/babel-plugin', () => {
         });
         export const styles = {
           sidebar: {
-            "boxSizing-kB7OPa": "x9f619",
-            "gridArea-kJuA4N": "x1yc5d2u",
+            "boxSizing-bx": "x9f619",
+            "gridArea-ga": "x1yc5d2u",
             $$css: "@stylexjs/babel-plugin::4"
           },
           content: {
-            "gridArea-kJuA4N": "x1fdo2jl",
+            "gridArea-ga": "x1fdo2jl",
             $$css: "@stylexjs/babel-plugin::8"
           },
           root: {
-            "display-k1xSpc": "xrvj5dj",
-            "gridTemplateRows-k9llMU": "x7k18q3",
-            "gridTemplateAreas-kC13JO": "x5gp9wm",
+            "display-d": "xrvj5dj",
+            "gridTemplateRows-gtr": "x7k18q3",
+            "gridTemplateAreas-gta": "x5gp9wm",
             $$css: "@stylexjs/babel-plugin::11"
           },
           withSidebar: {
-            "gridTemplateColumns-kumcoG": "x1rkzygb",
-            "gridTemplateRows-k9llMU": "x7k18q3",
-            "gridTemplateAreas-kC13JO": "x17lh93j",
+            "gridTemplateColumns-gtc": "x1rkzygb",
+            "gridTemplateRows-gtr": "x7k18q3",
+            "gridTemplateAreas-gta": "x17lh93j",
             "@media (max-width: 640px)_gridTemplateRows-k9pwkU": "xmr4b4k",
             "@media (max-width: 640px)_gridTemplateAreas-kOnEH4": "xesbpuc",
             "@media (max-width: 640px)_gridTemplateColumns-k1JLwA": "x15nfgh4",
             $$css: "@stylexjs/babel-plugin::16"
           },
           noSidebar: {
-            "gridTemplateColumns-kumcoG": "x1mkdm3x",
+            "gridTemplateColumns-gtc": "x1mkdm3x",
             $$css: "@stylexjs/babel-plugin::26"
           }
         };
@@ -3419,7 +3419,7 @@ describe('@stylexjs/babel-plugin', () => {
         });
         const _styles = {
           div: {
-            kMwMTN: "x1e2nbdu",
+            c: "x1e2nbdu",
             $$css: true
           }
         };
@@ -3433,7 +3433,7 @@ describe('@stylexjs/babel-plugin', () => {
         });
         const _styles2 = {
           div: {
-            kMwMTN: "xju2f9n",
+            c: "xju2f9n",
             $$css: true
           }
         };
@@ -3572,7 +3572,7 @@ describe('@stylexjs/babel-plugin', () => {
         });
         const styles = {
           default: {
-            kMwMTN: "x1mqxbix",
+            c: "x1mqxbix",
             $$css: true
           }
         };
@@ -3612,8 +3612,8 @@ describe('@stylexjs/babel-plugin', () => {
         });
         const styles = {
           default: {
-            kMwMTN: "x1mqxbix",
-            kWkggS: "x1ptj8da",
+            c: "x1mqxbix",
+            bg: "x1ptj8da",
             $$css: true
           }
         };
@@ -3653,8 +3653,8 @@ describe('@stylexjs/babel-plugin', () => {
         });
         const styles = {
           default: {
-            kMwMTN: "x1mqxbix",
-            kWkggS: "xxtkuhj",
+            c: "x1mqxbix",
+            bg: "xxtkuhj",
             $$css: true
           }
         };

@@ -15,9 +15,9 @@ import type {
 } from './common-types';
 import type { ComputedStyle, IPreRule } from './preprocess-rules/PreRule';
 
-import { createShortHash } from './hash';
 import { defaultOptions } from './utils/default-options';
 import { flattenRawStyleObject } from './preprocess-rules/flatten-raw-style-obj';
+import getCompressedKey from './property-shorthands';
 import { validateNamespace } from './preprocess-rules/basic-validation';
 
 type TPropTuple = [+key: string, +styles: $ReadOnlyArray<ComputedStyle>];
@@ -77,9 +77,9 @@ export default function styleXCreateSet(
       flattenedNamespace.map(([key, value]) => {
         // Skip variables-as-keys to avoid regression to dynamic styles output
         if (options.enableMinifiedKeys === true && !key.startsWith('--')) {
-          const hashedKey = createShortHash('<>' + key);
+          const compressedKey = getCompressedKey(key);
           const displayKey =
-            options.debug === true ? `${key}-k${hashedKey}` : `k${hashedKey}`;
+            options.debug === true ? `${key}-${compressedKey}` : compressedKey;
           return [displayKey, value.compiled(options)];
         } else {
           return [key, value.compiled(options)];

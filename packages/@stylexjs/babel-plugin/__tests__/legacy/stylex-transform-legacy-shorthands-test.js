@@ -266,10 +266,10 @@ describe('legacy-shorthand-expansion style resolution (enableLogicalStylesPolyfi
         });
         export const styles = {
           foo: {
-            kLKAdn: "x123j3cw",
-            kwRFfy: "x1gabggj",
-            kGO01o: "xs9asl8",
-            kZCmMZ: "xaso8d8",
+            pt: "x123j3cw",
+            pe: "x1gabggj",
+            pb: "xs9asl8",
+            ps: "xaso8d8",
             $$css: true
           }
         };
@@ -341,10 +341,10 @@ describe('legacy-shorthand-expansion style resolution (enableLogicalStylesPolyfi
         });
         export const styles = {
           foo: {
-            kZCmMZ: "xaso8d8",
-            kwRFfy: "x1gabggj",
-            kE3dHu: null,
-            kpe85a: null,
+            ps: "xaso8d8",
+            pe: "x1gabggj",
+            pl: null,
+            pr: null,
             $$css: true
           }
         };
@@ -379,10 +379,10 @@ describe('legacy-shorthand-expansion style resolution (enableLogicalStylesPolyfi
         });
         export const styles = {
           foo: {
-            kZCmMZ: "xaso8d8",
-            kwRFfy: "x2vl965",
-            kE3dHu: null,
-            kpe85a: null,
+            ps: "xaso8d8",
+            pe: "x2vl965",
+            pl: null,
+            pr: null,
             $$css: true
           }
         };
@@ -509,18 +509,18 @@ describe('legacy-shorthand-expansion style resolution (enableLogicalStylesPolyfi
         });
         const styles = {
           foo: {
-            "paddingTop-kLKAdn": "x123j3cw",
-            "paddingBottom-kGO01o": "xs9asl8",
-            "paddingInlineStart-kZCmMZ": "xaso8d8",
-            "paddingInlineEnd-kwRFfy": "x2vl965",
+            "paddingTop-pt": "x123j3cw",
+            "paddingBottom-pb": "xs9asl8",
+            "paddingInlineStart-ps": "xaso8d8",
+            "paddingInlineEnd-pe": "x2vl965",
             $$css: "@stylexjs/babel-plugin::4"
           },
           bar: {
-            "paddingTop-kLKAdn": "x1nn3v0j",
-            "paddingBottom-kGO01o": "x1120s5i",
-            "paddingLeft-kE3dHu": "xnljgj5",
-            "paddingInlineStart-kZCmMZ": null,
-            "paddingInlineEnd-kwRFfy": null,
+            "paddingTop-pt": "x1nn3v0j",
+            "paddingBottom-pb": "x1120s5i",
+            "paddingLeft-pl": "xnljgj5",
+            "paddingInlineStart-ps": null,
+            "paddingInlineEnd-pe": null,
             $$css: "@stylexjs/babel-plugin::9"
           }
         };
@@ -612,10 +612,10 @@ describe('legacy-shorthand-expansion style resolution (enableLogicalStylesPolyfi
         });
         export const styles = {
           foo: {
-            keTefX: "xpcyujq",
-            k71WvV: "xf6vk7d",
-            koQZXg: null,
-            km5ZXQ: null,
+            ms: "xpcyujq",
+            me: "xf6vk7d",
+            ml: null,
+            mr: null,
             $$css: true
           }
         };
@@ -650,10 +650,10 @@ describe('legacy-shorthand-expansion style resolution (enableLogicalStylesPolyfi
         });
         export const styles = {
           foo: {
-            keTefX: "xpcyujq",
-            k71WvV: "x1sa5p1d",
-            koQZXg: null,
-            km5ZXQ: null,
+            ms: "xpcyujq",
+            me: "x1sa5p1d",
+            ml: null,
+            mr: null,
             $$css: true
           }
         };
@@ -686,8 +686,8 @@ describe('legacy-shorthand-expansion style resolution (enableLogicalStylesPolyfi
         });
         export const styles = {
           foo: {
-            keoZOQ: "x1ok221b",
-            k1K539: "xyorhqc",
+            mt: "x1ok221b",
+            mb: "xyorhqc",
             $$css: true
           }
         };
@@ -1147,31 +1147,31 @@ describe('legacy-shorthand-expansion style resolution (enableLogicalStylesPolyfi
         });
         export const styles = {
           none: {
-            "listStyleType-kH6xsr": "x3ct3a4",
+            "listStyleType-lst": "x3ct3a4",
             "listStylePosition-kpqbRz": null,
             "listStyleImage-khnUzm": null,
             $$css: "@stylexjs/babel-plugin::4"
           },
           square: {
-            "listStyleType-kH6xsr": "x152237o",
+            "listStyleType-lst": "x152237o",
             "listStylePosition-kpqbRz": null,
             "listStyleImage-khnUzm": null,
             $$css: "@stylexjs/babel-plugin::7"
           },
           inside: {
-            "listStyleType-kH6xsr": null,
+            "listStyleType-lst": null,
             "listStylePosition-kpqbRz": "x1cy9i3i",
             "listStyleImage-khnUzm": null,
             $$css: "@stylexjs/babel-plugin::10"
           },
           custom1: {
-            "listStyleType-kH6xsr": "x1jzm7bx",
+            "listStyleType-lst": "x1jzm7bx",
             "listStylePosition-kpqbRz": null,
             "listStyleImage-khnUzm": null,
             $$css: "@stylexjs/babel-plugin::13"
           },
           custom2: {
-            "listStyleType-kH6xsr": "x1tpmu87",
+            "listStyleType-lst": "x1tpmu87",
             "listStylePosition-kpqbRz": null,
             "listStyleImage-khnUzm": null,
             $$css: "@stylexjs/babel-plugin::16"
@@ -1243,25 +1243,25 @@ describe('legacy-shorthand-expansion style resolution (enableLogicalStylesPolyfi
         });
         export const styles = {
           one: {
-            "listStyleType-kH6xsr": "x3ct3a4",
+            "listStyleType-lst": "x3ct3a4",
             "listStylePosition-kpqbRz": "x1cy9i3i",
             "listStyleImage-khnUzm": null,
             $$css: "@stylexjs/babel-plugin::4"
           },
           two: {
-            "listStyleType-kH6xsr": "x152237o",
+            "listStyleType-lst": "x152237o",
             "listStylePosition-kpqbRz": null,
             "listStyleImage-khnUzm": "xnbnhf8",
             $$css: "@stylexjs/babel-plugin::7"
           },
           three: {
-            "listStyleType-kH6xsr": "xl2um64",
+            "listStyleType-lst": "xl2um64",
             "listStylePosition-kpqbRz": null,
             "listStyleImage-khnUzm": "x1qcowux",
             $$css: "@stylexjs/babel-plugin::10"
           },
           four: {
-            "listStyleType-kH6xsr": "xqkogtj",
+            "listStyleType-lst": "xqkogtj",
             "listStylePosition-kpqbRz": "x43c9pm",
             "listStyleImage-khnUzm": "x1qcowux",
             $$css: "@stylexjs/babel-plugin::13"
@@ -1333,11 +1333,11 @@ describe('legacy-shorthand-expansion style resolution (enableLogicalStylesPolyfi
           one: {
             "listStylePosition-kpqbRz": "x1cy9i3i",
             "listStyleImage-khnUzm": null,
-            "listStyleType-kH6xsr": "x152237o",
+            "listStyleType-lst": "x152237o",
             $$css: "@stylexjs/babel-plugin::4"
           },
           two: {
-            "listStyleType-kH6xsr": "x12kno0j",
+            "listStyleType-lst": "x12kno0j",
             "listStyleImage-khnUzm": "xnbnhf8",
             "listStylePosition-kpqbRz": "x43c9pm",
             $$css: "@stylexjs/babel-plugin::8"
@@ -1345,13 +1345,13 @@ describe('legacy-shorthand-expansion style resolution (enableLogicalStylesPolyfi
           three: {
             "listStyleImage-khnUzm": "x1qcowux",
             "listStylePosition-kpqbRz": "x43c9pm",
-            "listStyleType-kH6xsr": "x152237o",
+            "listStyleType-lst": "x152237o",
             $$css: "@stylexjs/babel-plugin::12"
           },
           four: {
             "listStyleImage-khnUzm": "x1qcowux",
             "listStylePosition-kpqbRz": "x43c9pm",
-            "listStyleType-kH6xsr": "x152237o",
+            "listStyleType-lst": "x152237o",
             $$css: "@stylexjs/babel-plugin::17"
           }
         };"
@@ -1621,10 +1621,10 @@ describe('legacy-shorthand-expansion resolution (enableLogicalStylesPolyfill: fa
         });
         export const styles = {
           foo: {
-            kLKAdn: "x123j3cw",
-            kwRFfy: "x1gabggj",
-            kGO01o: "xs9asl8",
-            kZCmMZ: "xaso8d8",
+            pt: "x123j3cw",
+            pe: "x1gabggj",
+            pb: "xs9asl8",
+            ps: "xaso8d8",
             $$css: true
           }
         };
@@ -1698,10 +1698,10 @@ describe('legacy-shorthand-expansion resolution (enableLogicalStylesPolyfill: fa
         });
         export const styles = {
           foo: {
-            kZCmMZ: "xaso8d8",
-            kwRFfy: "x1gabggj",
-            kE3dHu: null,
-            kpe85a: null,
+            ps: "xaso8d8",
+            pe: "x1gabggj",
+            pl: null,
+            pr: null,
             $$css: true
           }
         };
@@ -1794,8 +1794,8 @@ describe('legacy-shorthand-expansion resolution (enableLogicalStylesPolyfill: fa
         });
         export const styles = {
           foo: {
-            kLKAdn: "x123j3cw",
-            kGO01o: "x1a8lsjc",
+            pt: "x123j3cw",
+            pb: "x1a8lsjc",
             $$css: true
           }
         };
@@ -1887,10 +1887,10 @@ describe('legacy-shorthand-expansion resolution (enableLogicalStylesPolyfill: fa
         });
         export const styles = {
           foo: {
-            keTefX: "xpcyujq",
-            k71WvV: "xf6vk7d",
-            koQZXg: null,
-            km5ZXQ: null,
+            ms: "xpcyujq",
+            me: "xf6vk7d",
+            ml: null,
+            mr: null,
             $$css: true
           }
         };
