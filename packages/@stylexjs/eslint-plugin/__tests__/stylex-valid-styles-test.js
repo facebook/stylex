@@ -36,6 +36,21 @@ eslintTester.run('stylex-valid-styles', rule.default, {
         }
       });
     `,
+    // issue #1861 — the `page` property binds an element to a named `@page`
+    `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({
+        staticPage: {
+          page: 'bincard',
+        },
+        autoPage: {
+          page: 'auto',
+        },
+        conditionalPage: {
+          page: { default: null, '@media print': 'bincard' },
+        },
+      });
+    `,
     // test for local static variables
     `
       import * as stylex from '@stylexjs/stylex';
