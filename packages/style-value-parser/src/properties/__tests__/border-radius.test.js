@@ -351,4 +351,29 @@ describe('Test CSS property shorthand: `border-radius`', () => {
       ),
     );
   });
+
+  describe('serialization: `BorderRadiusShorthand.toString`', () => {
+    const roundTrip = (input: string): string =>
+      BorderRadiusShorthand.parse.parseToEnd(input).toString();
+
+    test('symmetric radii serialize without a `/`', () => {
+      expect(roundTrip('10px')).toBe('10px');
+      expect(roundTrip('10px 20px')).toBe('10px 20px');
+      expect(roundTrip('10px 20px 30px')).toBe('10px 20px 30px');
+      expect(roundTrip('10px 20px 30px 40px')).toBe('10px 20px 30px 40px');
+    });
+
+    test('asymmetric radii keep the vertical values after the `/`', () => {
+      // Regression: the vertical (post-slash) radii were previously rendered
+      // using the horizontal values, which collapsed the whole value back to
+      // the horizontal radii and dropped the vertical radii entirely.
+      expect(roundTrip('10px 20px 30px 40px / 40px 30px 20px 10px')).toBe(
+        '10px 20px 30px 40px / 40px 30px 20px 10px',
+      );
+      expect(roundTrip('10px / 20px')).toBe('10px / 20px');
+      expect(roundTrip('10px 20px / 30px 40px')).toBe(
+        '10px 20px / 30px 40px',
+      );
+    });
+  });
 });
