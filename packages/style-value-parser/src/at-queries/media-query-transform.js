@@ -46,7 +46,47 @@ function combineMediaQueryWithNegations(
     } as const;
   }
 
-  return new MediaQuery(combinedAst as $FlowFixMe as MediaQueryRule);
+  return new MediaQuery(
+    combinedAst as $FlowFixMe as MediaQueryRule,
+    current.atRuleName,
+  );
+}
+
+function applyQueryOrder(resultObj: { [key: string]: any }, prefix: string) {
+  if (!Object.keys(resultObj).some((key) => key.startsWith(prefix))) {
+    return;
+  }
+
+  const queryKeys = Object.keys(resultObj).filter((key) => key.startsWith(prefix));
+
+  const negations = [];
+  const accumulatedNegations = [];
+
+  for (let i = queryKeys.length - 1; i > 0; i--) {
+    const query = MediaQuery.parser.parseToEnd(queryKeys[i]);
+    negations.push(query);
+    accumulatedNegations.push([...negations]);
+  }
+  accumulatedNegations.reverse();
+  accumulatedNegations.push([]);
+
+  for (let i = 0; i < queryKeys.length; i++) {
+    const currentKey = queryKeys[i];
+    const currentValue = resultObj[currentKey];
+
+    const baseQuery = MediaQuery.parser.parseToEnd(currentKey);
+    const reversedNegations = [...accumulatedNegations[i]].reverse();
+
+    const combinedQuery = combineMediaQueryWithNegations(
+      baseQuery,
+      reversedNegations,
+    );
+
+    const newQueryKey = combinedQuery.toString();
+
+    delete resultObj[currentKey];
+    resultObj[newQueryKey] = currentValue;
+  }
 }
 
 function dfsProcessQueries(
@@ -69,43 +109,9 @@ function dfsProcessQueries(
     }
   });
 
-  if (
-    depth >= 1 &&
-    Object.keys(result).some((key) => key.startsWith('@media '))
-  ) {
-    const mediaKeys = Object.keys(result).filter((key) =>
-      key.startsWith('@media '),
-    );
-
-    const negations = [];
-    const accumulatedNegations = [];
-
-    for (let i = mediaKeys.length - 1; i > 0; i--) {
-      // Skip last iteration
-      const mediaQuery = MediaQuery.parser.parseToEnd(mediaKeys[i]);
-      negations.push(mediaQuery);
-      accumulatedNegations.push([...negations]); // Clone array before pushing
-    }
-    accumulatedNegations.reverse();
-    accumulatedNegations.push([]);
-
-    for (let i = 0; i < mediaKeys.length; i++) {
-      const currentKey = mediaKeys[i];
-      const currentValue = result[currentKey];
-
-      const baseMediaQuery = MediaQuery.parser.parseToEnd(currentKey);
-      const reversedNegations = [...accumulatedNegations[i]].reverse();
-
-      const combinedQuery = combineMediaQueryWithNegations(
-        baseMediaQuery,
-        reversedNegations,
-      );
-
-      const newMediaKey = combinedQuery.toString();
-
-      delete result[currentKey];
-      result[newMediaKey] = currentValue;
-    }
+  if (depth >= 1) {
+    applyQueryOrder(result, '@media ');
+    applyQueryOrder(result, '@container ');
   }
 
   return result;
