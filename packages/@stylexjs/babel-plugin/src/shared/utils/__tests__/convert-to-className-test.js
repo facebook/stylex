@@ -41,6 +41,31 @@ describe('convert-to-className test', () => {
     expect(debugClassName.startsWith('x')).toBe(true);
     expect(debugClassName.startsWith('margin-x')).toBe(false);
   });
+  test('uses a compressed classname when enabled and available', () => {
+    const options = {
+      classNamePrefix: 'x',
+      dev: false,
+      debug: false,
+      enableCompressedClassnames: true,
+      styleResolution: 'property-specificity',
+      test: false,
+    } as const;
+    const result = convertStyleToClassName(['margin', 4], [], [], [], options);
+    expect(result[1]).toBe('m4');
+    expect(result[2].ltr).toBe('.m4{margin:4px}');
+  });
+  test('uses compressed classnames in debug mode', () => {
+    const options = {
+      classNamePrefix: 'x',
+      dev: false,
+      debug: true,
+      enableCompressedClassnames: true,
+      styleResolution: 'property-specificity',
+      test: false,
+    } as const;
+    const result = convertStyleToClassName(['margin', 4], [], [], [], options);
+    expect(result[1]).toBe('m4');
+  });
   test('converts margin number to px', () => {
     expect(convert(['margin', 10])).toEqual('margin:10px');
   });

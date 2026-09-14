@@ -14,6 +14,7 @@ export const defaultOptions: StyleXOptions = {
   dev: false,
   debug: false,
   propertyValidationMode: 'silent',
+  enableCompressedClassnames: false,
   enableDevClassNames: false,
   enableDebugDataProp: true,
   enableFontSizePxToRem: false,

@@ -10,6 +10,7 @@
 import type { TRawValue, StyleRule, StyleXOptions } from '../common-types';
 
 import createHash from '../hash';
+import getCompressedClassName from './compressed-class-name';
 import dashify from './dashify';
 import transformValue from './transform-value';
 import { generateCSSRule } from './generate-css-rule';
@@ -31,7 +32,7 @@ export function convertStyleToClassName(
   constRules: $ReadOnlyArray<string>,
   options: StyleXOptions = defaultOptions,
 ): StyleRule {
-  const { classNamePrefix = 'x' } = options;
+  const { classNamePrefix = 'x', enableCompressedClassnames = false } = options;
   const [key, rawValue] = objEntry;
   const dashedKey = key.startsWith('--') ? key : dashify(key);
 
@@ -60,7 +61,16 @@ export function convertStyleToClassName(
 
   // NOTE: '<>' is used to keep existing hashes stable.
   // This should be removed in a future version.
-  const className = classNamePrefix + createHash('<>' + stringToHash);
+  const hashedClassName = classNamePrefix + createHash('<>' + stringToHash);
+  const compressedClassName = enableCompressedClassnames
+    ? getCompressedClassName(
+        key,
+        value,
+        modifierHashString !== 'null',
+        classNamePrefix,
+      )
+    : null;
+  const className = compressedClassName ?? hashedClassName;
 
   const cssRules = generateCSSRule(
     className,
