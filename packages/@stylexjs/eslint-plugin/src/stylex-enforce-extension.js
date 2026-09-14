@@ -156,9 +156,11 @@ const stylexEnforceExtension = {
           callee.object?.type === 'Identifier' &&
           importTracker.isStylexDefaultImport(callee.object.name) &&
           callee.property?.type === 'Identifier' &&
-          callee.property.name === 'defineMarker') ||
+          (callee.property.name === 'defineMarker' ||
+            callee.property.name === 'defineEnum')) ||
         (callee?.type === 'Identifier' &&
-          importTracker.isStylexNamedImport('defineMarker', callee.name))
+          (importTracker.isStylexNamedImport('defineMarker', callee.name) ||
+            importTracker.isStylexNamedImport('defineEnum', callee.name)))
       );
     }
 

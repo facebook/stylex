@@ -9,6 +9,7 @@
 
 import type { RawStyles, StyleXOptions, TStyleValue } from '../common-types';
 
+import { getEnumMatch, expandEnumMatch } from '../enum-match';
 import flatMapExpandedShorthands from './index';
 import { lastMediaQueryWinsTransform } from 'style-value-parser';
 import * as messages from '../messages';
@@ -28,7 +29,10 @@ export function flattenRawStyleObject(
   let processedStyle = style;
   try {
     processedStyle = options.enableMediaQueryOrder
-      ? lastMediaQueryWinsTransform(style)
+      ? lastMediaQueryWinsTransform(
+          style,
+          (value) => getEnumMatch(value) != null,
+        )
       : style;
   } catch (error) {
     throw new Error(messages.INVALID_MEDIA_QUERY_SYNTAX);
@@ -49,13 +53,16 @@ export function _flattenRawStyleObject(
       : _key;
 
     // Default styles
-    if (
-      value === null ||
-      typeof value === 'string' ||
-      typeof value === 'number'
-    ) {
-      const pairs: $ReadOnlyArray<[string, TStyleValue]> =
-        flatMapExpandedShorthands([key, value], options);
+    const enumMatch = getEnumMatch(value);
+    const pairs: ?$ReadOnlyArray<[string, TStyleValue]> =
+      enumMatch != null
+        ? expandEnumMatch(enumMatch, key, options)
+        : value === null ||
+            typeof value === 'string' ||
+            typeof value === 'number'
+          ? flatMapExpandedShorthands([key, value], options)
+          : null;
+    if (pairs != null) {
       for (const [property, value] of pairs) {
         if (value === null) {
           flattened.push([property, new NullPreRule()]);
@@ -133,6 +140,7 @@ export function _flattenRawStyleObject(
 
     // Object Values for properties. e.g. { color: { hover: 'red', default: 'blue' } }
     if (
+      value !== null &&
       typeof value === 'object' &&
       !key.startsWith(':') &&
       !key.startsWith('@') &&
@@ -169,6 +177,7 @@ export function _flattenRawStyleObject(
 
     // Object Values for pseudos and at-rules. e.g. { ':hover': { color: 'red' } }
     if (
+      value !== null &&
       typeof value === 'object' &&
       (key.startsWith(':') || key.startsWith('@') || key.startsWith('['))
     ) {

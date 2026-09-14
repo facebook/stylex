@@ -39,6 +39,7 @@ import {
   LOGICAL_FLOAT_START_VAR,
   LOGICAL_FLOAT_END_VAR,
 } from './shared/preprocess-rules/legacy-expand-shorthands';
+import transformStyleXEnum from './visitors/stylex-enum';
 import transformStyleXDefineMarker from './visitors/stylex-define-marker';
 import transformStyleXDefineVarsNested from './visitors/stylex-define-vars-nested';
 import transformStyleXDefineConstsNested from './visitors/stylex-define-consts-nested';
@@ -376,6 +377,7 @@ function styleXTransform(): PluginObj<> {
           );
         }
 
+        transformStyleXEnum(path, state);
         transformStyleXDefaultMarker(path, state);
         transformStyleXDefineMarker(path, state);
         transformStyleXDefineVars(path, state);
