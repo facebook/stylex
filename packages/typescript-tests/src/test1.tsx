@@ -7,11 +7,11 @@
  *
  */
 
-/* eslint-disable no-unused-vars */
+/* eslint-disable no-unused-vars, react/no-unknown-property */
 
 import * as React from 'react';
 import * as stylex from '@stylexjs/stylex';
-import type { StaticStyles } from '@stylexjs/stylex';
+import type { StaticStyles, StyleXSxProp } from '@stylexjs/stylex';
 
 type Props = {
   xstyle?: StaticStyles;
@@ -19,6 +19,10 @@ type Props = {
 
 function Component({ xstyle }: Props) {
   return <div {...stylex.props(xstyle)} />;
+}
+
+function PlainComponent() {
+  return null;
 }
 
 const styles = stylex.create({
@@ -33,4 +37,22 @@ function OtherComponent() {
 
 function OtherComponent2() {
   return <Component xstyle={[styles.base, undefined]} />;
+}
+
+function SxComponent() {
+  return <div sx={styles.base} />;
+}
+
+function SxComponentMultiStyle() {
+  return <div sx={[styles.base, undefined]} />;
+}
+
+function InvalidSxValue() {
+  // @ts-expect-error - `sx` only accepts StyleX styles.
+  return <div sx="not-stylex" />;
+}
+
+function CustomComponentSx() {
+  // @ts-expect-error - `sx` is only transformed on lowercase JSX host elements.
+  return <PlainComponent sx={styles.base} />;
 }
