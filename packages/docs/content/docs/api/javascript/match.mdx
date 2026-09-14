@@ -48,7 +48,9 @@ const styles = stylex.create({
 ```
 
 These conditions change the consumer's property; they do not change the enum
-state inherited by other consumers.
+state inherited by other consumers. To change the enum itself, use a conditional
+assignment such as `density({ default: 'comfortable', ':hover': 'compact' })`.
+That assignment also affects matching values inherited by descendants.
 
 ```tsx
 const styles = stylex.create({

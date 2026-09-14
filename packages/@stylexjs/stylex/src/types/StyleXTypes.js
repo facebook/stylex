@@ -340,9 +340,21 @@ type EnumInitialBranch<S: EnumState> = {
   readonly [string]: S | EnumInitialBranch<S>,
 };
 
-export opaque type StyleXEnum<S: EnumState>: (state: S) => CompiledStyles = (
-  state: S,
-) => CompiledStyles;
+export type EnumValue<S: EnumState> =
+  | S
+  | {
+      readonly default: S,
+      readonly [string]: S | EnumValueBranch<S>,
+    };
+
+type EnumValueBranch<S: EnumState> = {
+  readonly default?: S,
+  readonly [string]: S | EnumValueBranch<S>,
+};
+
+export opaque type StyleXEnum<S: EnumState>: (
+  state: EnumValue<S>,
+) => CompiledStyles = (state: EnumValue<S>) => CompiledStyles;
 
 export type StyleX$DefineEnum = <const States: $ReadOnlyArray<EnumState>>(
   states: States,

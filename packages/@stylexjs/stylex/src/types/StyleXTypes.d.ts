@@ -437,7 +437,21 @@ type EnumInitialBranch<S extends EnumState> = {
 
 declare const StyleXEnumTag: unique symbol;
 
-export type StyleXEnum<S extends EnumState> = ((state: S) => CompiledStyles) & {
+export type EnumValue<S extends EnumState> =
+  | S
+  | {
+      readonly default: S;
+      readonly [condition: `@${string}` | `:${string}`]: S | EnumValueBranch<S>;
+    };
+
+type EnumValueBranch<S extends EnumState> = {
+  readonly default?: S;
+  readonly [condition: `@${string}` | `:${string}`]: S | EnumValueBranch<S>;
+};
+
+export type StyleXEnum<S extends EnumState> = ((
+  state: EnumValue<S>,
+) => Readonly<{ [key: string]: StyleXClassName }>) & {
   readonly [StyleXEnumTag]: (state: S) => S;
 };
 

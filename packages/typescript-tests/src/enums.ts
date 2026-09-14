@@ -27,7 +27,6 @@ stylex.match(expanded, { true: 'block', false: 'none' });
 // @ts-expect-error Unknown state.
 density('other');
 
-// @ts-expect-error Scalar-only overrides in the initial API.
 density({ default: 'compact' });
 
 // @ts-expect-error Missing case.
@@ -41,3 +40,29 @@ stylex.defineEnum(['compact', 'comfortable'], 'other');
 
 // @ts-expect-error Conditional initial values require a top-level default.
 stylex.defineEnum(['compact', 'comfortable'], { '@media print': 'compact' });
+
+stylex.props(
+  density({
+    default: 'comfortable',
+    ':hover': 'compact',
+    '@media print': { ':active': 'comfortable' },
+  }),
+);
+
+const responsive = stylex.create({
+  root: {
+    ...density({ default: 'comfortable', '@media print': 'compact' }),
+    padding: 8,
+  },
+});
+
+stylex.props(responsive.root);
+
+// @ts-expect-error The top-level default is required.
+density({ '@media print': 'compact' });
+
+// @ts-expect-error Unknown state in a nested branch.
+density({ default: 'compact', ':hover': { '@media print': 'unknown' } });
+
+// @ts-expect-error An object cannot be the top-level default.
+density({ default: { default: 'compact' } });

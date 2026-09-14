@@ -43,7 +43,8 @@ in initial values.
 
 ## Overriding a state
 
-Call the enum with a static state and pass the result to `stylex.props`:
+Call the enum with a static state or a conditional object and pass the result to
+`stylex.props`:
 
 ```tsx
 import * as stylex from '@stylexjs/stylex';
@@ -73,9 +74,60 @@ Enum calls are compiler syntax. The defining module does not export a runtime
 function. Arguments must be statically evaluable; use conditional expressions
 around calls rather than `appearance(runtimeValue)`.
 
-This initial version supports scalar overrides passed to `stylex.props` or
-`stylex.attrs`. Conditional override objects and spreads of assignments inside
-`stylex.create` are not yet supported.
+The result also works with `stylex.attrs`. Spread an enum call directly into a
+`stylex.create` namespace to combine an assignment with ordinary styles:
+
+```tsx
+const styles = stylex.create({
+  preview: {
+    ...appearance('dark'),
+    padding: 24,
+  },
+});
+```
+
+### Conditional overrides
+
+A conditional object requires a scalar `default` at the top level. Nested
+objects may omit it. Put conditions inside the enum call, including when
+spreading it into `stylex.create`:
+
+```tsx
+const styles = stylex.create({
+  preview: {
+    ...appearance({
+      default: 'light',
+      ':hover': 'dark',
+      '@container preview (min-width: 600px)': {
+        ':active': 'light',
+      },
+    }),
+    padding: 24,
+  },
+});
+```
+
+If the container query or its nested `:active` condition does not match, that
+branch makes no assignment. The otherwise applicable state remains selected.
+This includes elements that have no eligible query container.
+
+Nested conditions take precedence over shallower conditions. At the same depth,
+StyleX's condition priorities apply (`:active` wins over `:hover`); source order
+breaks ties such as two media queries. Only one state remains selected even when
+several conditions match. All assignments for the same enum still compose as a
+unit: a later scalar assignment replaces an earlier conditional assignment.
+
+Enum exclusions are always enabled, independently of `enableMediaQueryOrder`.
+The compiler keeps the default assignment unconditional and explicitly clears
+it in matching branches. Container conditions use positive resets rather than
+assuming that a negated query matches when no container exists.
+
+Override conditions currently accept literal `@media`, `@supports`, and
+`@container` queries and pseudo-classes on the assigned element. Constants from
+`defineConsts` are not yet supported as enum condition keys. Pseudo-elements,
+`:visited`, and selectors that target descendant elements are not supported.
+Spread calls belong directly in the namespace; put their conditional logic
+inside the call rather than wrapping a spread in another style condition.
 
 ## Types and generated CSS
 
