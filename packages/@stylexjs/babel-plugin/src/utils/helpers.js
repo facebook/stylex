@@ -8,5 +8,5 @@
  */
 
 export function removeNulls<T>(arr: Array<?T>): Array<T> {
-  return arr.filter(Boolean);
+  return arr.filter((v): boolean %checks => v != null);
 }
