@@ -749,7 +749,7 @@ function processStylexRules(
       if (refValue == null) continue;
       visited.add(ref);
       const replacement = resolveConstant(refValue, visited);
-      result = result.replace(match[0], replacement.toString());
+      result = result.replace(match[0], () => replacement.toString());
       visited.delete(ref);
       regex.lastIndex = 0;
     }
@@ -788,7 +788,7 @@ function processStylexRules(
         for (const [varRef, constValue] of constsMap.entries()) {
           if (typeof original !== 'string') continue;
           const replacement = String(constValue);
-          original = original.replaceAll(varRef, replacement);
+          original = original.replaceAll(varRef, () => replacement);
           if (replacement.startsWith('var(') && replacement.endsWith(')')) {
             const inside = replacement.slice(4, -1).trim();
             const commaIdx = inside.indexOf(',');
