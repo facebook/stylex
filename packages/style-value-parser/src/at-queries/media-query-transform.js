@@ -7,114 +7,112 @@
  * @flow strict
  */
 
-import type { MediaQueryRule } from './media-query';
+import {
+  parseAtRule,
+  serializeAtRule,
+  subtractAtRule,
+} from './condition-at-rule';
+import { andConditions, orConditions, simplifyCondition } from './condition';
 
-import { MediaQuery } from './media-query.js';
+// Retain the existing ordering entry point. Pseudo-classes and different kinds
+// of at-rule use StyleX's existing specificity order, so they need no exclusion.
+type StyleValue =
+  | null
+  | string
+  | number
+  | $ReadOnlyArray<string | number>
+  | StyleObject;
+
+type StyleObject = { +[string]: StyleValue };
+
+type LeafPredicate = (mixed) => boolean;
 
 export function lastMediaQueryWinsTransform(
-  styles: Object,
-  isLeaf: (mixed) => boolean = () => false,
-): Object {
+  styles: StyleObject,
+  isLeaf: LeafPredicate = () => false,
+): StyleObject {
   return dfsProcessQueries(styles, 0, isLeaf);
 }
 
-function combineMediaQueryWithNegations(
-  current: MediaQuery,
-  negations: MediaQuery[],
-): MediaQuery {
-  if (negations.length === 0) {
-    return current;
+function isObject(value: StyleValue | void): implies value is StyleObject {
+  return (
+    value != null &&
+    typeof value === 'object' &&
+    !Array.isArray(value) &&
+    Object.getPrototypeOf(value) === Object.getPrototypeOf({})
+  );
+}
+
+// A branch without a default applies only when one of its leaves applies.
+// Don't exclude its whole parent condition. Mixed condition contexts cannot be
+// folded into a single query; their extra specificity handles the overlap.
+function coverage(
+  query: string,
+  value: StyleValue,
+  isLeaf: LeafPredicate,
+): string | null {
+  if (isLeaf(value) || !isObject(value) || Object.hasOwn(value, 'default'))
+    return query;
+  const rule = parseAtRule(query);
+  const children = [];
+  for (const key of Object.keys(value)) {
+    if (!key.startsWith('@' + rule.kind + ' ')) return null;
+    const child = coverage(key, value[key], isLeaf);
+    if (child == null) return null;
+    children.push(parseAtRule(child).condition);
   }
-
-  let combinedAst;
-
-  if (current.queries.type === 'or') {
-    combinedAst = {
-      type: 'or',
-      rules: current.queries.rules.map((rule) => ({
-        type: 'and',
-        rules: [
-          rule,
-          ...negations.map((mq) => ({ type: 'not', rule: mq.queries })),
-        ],
-      })),
-    };
-  } else {
-    combinedAst = {
-      type: 'and',
-      rules: [
-        current.queries,
-        ...negations.map((mq) => ({ type: 'not', rule: mq.queries })),
-      ],
-    } as const;
+  if (children.length === 0) return null;
+  try {
+    return serializeAtRule({
+      ...rule,
+      condition: simplifyCondition(
+        andConditions([rule.condition, orConditions(children)]),
+        rule.kind === 'media',
+      ),
+    });
+  } catch {
+    return null;
   }
-
-  return new MediaQuery(combinedAst as $FlowFixMe as MediaQueryRule);
 }
 
 function dfsProcessQueries(
-  obj: { [key: string]: any },
+  obj: StyleObject,
   depth: number,
-  isLeaf: (mixed) => boolean,
-): {
-  [key: string]: any,
-} {
-  if (
-    isLeaf(obj) ||
-    Array.isArray(obj) ||
-    Object.getPrototypeOf(obj) !== Object.getPrototypeOf({})
-  ) {
-    // Ignore `firstThatWorks` arrays
-    return obj;
-  }
-  const result: { [key: string]: any } = {};
-
-  Object.entries(obj).forEach(([key, value]) => {
-    if (typeof value === 'object' && value !== null) {
-      result[key] = dfsProcessQueries(value, depth + 1, isLeaf);
-    } else {
+  isLeaf: LeafPredicate,
+): StyleObject {
+  if (isLeaf(obj) || !isObject(obj)) return obj;
+  const result: { [string]: StyleValue } = {};
+  const keys = Object.keys(obj);
+  // Validate even a single media query, as before. Unknown features/functions
+  // are opaque atoms; only malformed boolean structure is rejected.
+  if (depth >= 1)
+    keys
+      .filter((k) => k.startsWith('@media ') || k.startsWith('@supports '))
+      .forEach(parseAtRule);
+  for (const key of keys) {
+    const value = isObject(obj[key])
+      ? dfsProcessQueries(obj[key], depth + 1, isLeaf)
+      : obj[key];
+    if (
+      depth < 1 ||
+      !(key.startsWith('@media ') || key.startsWith('@supports '))
+    ) {
       result[key] = value;
+      continue;
     }
-  });
-
-  if (
-    depth >= 1 &&
-    Object.keys(result).some((key) => key.startsWith('@media '))
-  ) {
-    const mediaKeys = Object.keys(result).filter((key) =>
-      key.startsWith('@media '),
-    );
-
-    const negations = [];
-    const accumulatedNegations = [];
-
-    for (let i = mediaKeys.length - 1; i > 0; i--) {
-      // Skip last iteration
-      const mediaQuery = MediaQuery.parser.parseToEnd(mediaKeys[i]);
-      negations.push(mediaQuery);
-      accumulatedNegations.push([...negations]); // Clone array before pushing
-    }
-    accumulatedNegations.reverse();
-    accumulatedNegations.push([]);
-
-    for (let i = 0; i < mediaKeys.length; i++) {
-      const currentKey = mediaKeys[i];
-      const currentValue = result[currentKey];
-
-      const baseMediaQuery = MediaQuery.parser.parseToEnd(currentKey);
-      const reversedNegations = [...accumulatedNegations[i]].reverse();
-
-      const combinedQuery = combineMediaQueryWithNegations(
-        baseMediaQuery,
-        reversedNegations,
-      );
-
-      const newMediaKey = combinedQuery.toString();
-
-      delete result[currentKey];
-      result[newMediaKey] = currentValue;
+    const kind = parseAtRule(key).kind;
+    const later = keys
+      .slice(keys.indexOf(key) + 1)
+      .filter((k) => k.startsWith('@' + kind + ' '))
+      .map((k) => coverage(k, obj[k], isLeaf))
+      .filter(Boolean);
+    for (const chain of subtractAtRule(key, later)) {
+      const [first, ...rest] = chain;
+      const next = rest.reduceRight<StyleValue>((v, k) => ({ [k]: v }), value);
+      const previous = result[first];
+      result[first] =
+        isObject(previous) && isObject(next) ? { ...previous, ...next } : next;
     }
   }
-
   return result;
 }

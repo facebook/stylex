@@ -12,3 +12,22 @@ export * as properties from './properties';
 export { lastMediaQueryWinsTransform } from './at-queries/media-query-transform.js';
 export { MediaQuery } from './at-queries/media-query.js';
 export type { MediaQueryRule } from './at-queries/media-query.js';
+
+export {
+  parseAtRule,
+  serializeAtRule,
+  simplifyAtRule,
+  subtractAtRule,
+} from './at-queries/condition-at-rule';
+export type { AtRule } from './at-queries/condition-at-rule';
+export {
+  parseCondition,
+  andConditions,
+  orConditions,
+  notCondition,
+  simplifyCondition,
+  serializeCondition,
+  conditionBranches,
+  isTotalMediaCondition,
+} from './at-queries/condition';
+export type { Condition } from './at-queries/condition';
