@@ -31,3 +31,8 @@ export {
   isTotalMediaCondition,
 } from './at-queries/condition';
 export type { Condition } from './at-queries/condition';
+
+export {
+  deferCondition,
+  resolveDeferredConditions,
+} from './at-queries/deferred-condition';

@@ -7,6 +7,7 @@
  * @flow strict
  */
 
+import { deferCondition } from './deferred-condition';
 import {
   parseAtRule,
   serializeAtRule,
@@ -53,6 +54,7 @@ function coverage(
 ): string | null {
   if (isLeaf(value) || !isObject(value) || Object.hasOwn(value, 'default'))
     return query;
+  if (query.startsWith('var(--')) return null;
   const rule = parseAtRule(query);
   const children = [];
   for (const key of Object.keys(value)) {
@@ -83,6 +85,9 @@ function dfsProcessQueries(
   if (isLeaf(obj) || !isObject(obj)) return obj;
   const result: { [string]: StyleValue } = {};
   const keys = Object.keys(obj);
+  const deferred = depth >= 1 && keys.some((k) => k.includes('var(--'));
+  const isAtRule = (key: string): boolean =>
+    /^(@(media|supports|container) |var\(--)/.test(key);
   // Validate even a single media query, as before. Unknown features/functions
   // are opaque atoms; only malformed boolean structure is rejected.
   if (depth >= 1)
@@ -93,6 +98,15 @@ function dfsProcessQueries(
     const value = isObject(obj[key])
       ? dfsProcessQueries(obj[key], depth + 1, isLeaf)
       : obj[key];
+    if (deferred && isAtRule(key)) {
+      const later = keys
+        .slice(keys.indexOf(key) + 1)
+        .filter(isAtRule)
+        .map((k) => coverage(k, obj[k], isLeaf))
+        .filter(Boolean);
+      result[deferCondition(key, later)] = value;
+      continue;
+    }
     if (
       depth < 1 ||
       !(key.startsWith('@media ') || key.startsWith('@supports '))

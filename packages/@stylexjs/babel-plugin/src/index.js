@@ -12,7 +12,8 @@ import type { PluginObj } from '@babel/core';
 import type { StyleXOptions } from './utils/state-manager';
 
 import * as t from '@babel/types';
-import { MediaQuery } from 'style-value-parser';
+import { MediaQuery, resolveDeferredConditions } from 'style-value-parser';
+import { getPriority } from '@stylexjs/shared';
 import type { MediaQueryRule } from 'style-value-parser';
 import StateManager from './utils/state-manager';
 import {
@@ -785,8 +786,21 @@ function processStylexRules(
 
   const sortedRules: Array<Rule> = nonConstantRules
     .map(([key, { ...styleObj }, priority]): Rule => {
+      let resolvedPriority = priority;
       Object.keys(styleObj).forEach((dir) => {
         let original = styleObj[dir];
+        if (typeof original === 'string') {
+          original = resolveDeferredConditions(
+            original,
+            (condition) => String(resolveConstant(condition)),
+            (condition) => {
+              if (dir === 'ltr')
+                resolvedPriority +=
+                  getPriority(condition) - getPriority('@stylex-order');
+            },
+          );
+          styleObj[dir] = original;
+        }
         for (const [varRef, constValue] of constsMap.entries()) {
           if (typeof original !== 'string') continue;
           const replacement = String(constValue);
@@ -803,7 +817,7 @@ function processStylexRules(
           styleObj[dir] = original;
         }
       });
-      return [key, styleObj, priority];
+      return [key, styleObj, resolvedPriority];
     })
     .sort(
       (

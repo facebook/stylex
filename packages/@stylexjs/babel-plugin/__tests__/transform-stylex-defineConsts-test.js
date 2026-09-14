@@ -399,7 +399,7 @@ describe('@stylexjs/babel-plugin', () => {
         import { breakpoints } from './constants.stylex';
         export const styles = {
           root: {
-            kMwMTN: "x1e2nbdu xbs0o1n",
+            kMwMTN: "x1e2nbdu x1nq0v3k",
             $$css: true
           }
         };"
@@ -417,9 +417,9 @@ describe('@stylexjs/babel-plugin', () => {
               3000,
             ],
             [
-              "xbs0o1n",
+              "x1nq0v3k",
               {
-                "ltr": "var(--x1r2wpmh){.xbs0o1n.xbs0o1n{color:blue}}",
+                "ltr": "@stylex-order "%5B%22var(--x1r2wpmh)%22%2C%5B%5D%5D"{.x1nq0v3k.x1nq0v3k{color:blue}}",
                 "rtl": null,
               },
               6000,
@@ -462,11 +462,11 @@ describe('@stylexjs/babel-plugin', () => {
         },
       );
 
-      expect(code).toContain('xbs0o1n');
+      expect(code).toContain('x1nq0v3k');
       expect(metadata.stylex).toEqual(
         expect.arrayContaining([
           expect.arrayContaining([
-            'xbs0o1n',
+            'x1nq0v3k',
             expect.objectContaining({
               ltr: expect.stringContaining('color:blue'),
             }),
@@ -490,11 +490,11 @@ describe('@stylexjs/babel-plugin', () => {
         });
       `);
 
-      expect(code).toContain('xbs0o1n');
+      expect(code).toContain('x1nq0v3k');
       expect(metadata.stylex).toEqual(
         expect.arrayContaining([
           expect.arrayContaining([
-            'xbs0o1n',
+            'x1nq0v3k',
             expect.objectContaining({
               ltr: expect.stringContaining('color:blue'),
             }),
@@ -603,7 +603,7 @@ describe('@stylexjs/babel-plugin', () => {
         import { breakpoints } from './constants.stylex';
         export const styles = {
           node: color => [{
-            kMwMTN: "xbs0o1n " + (color != null ? "x3d248p" : color),
+            kMwMTN: "x1nq0v3k " + (color != null ? "x3d248p" : color),
             $$css: true
           }, {
             "--x-4xs81a": color != null ? color : undefined
@@ -615,9 +615,9 @@ describe('@stylexjs/babel-plugin', () => {
         {
           "stylex": [
             [
-              "xbs0o1n",
+              "x1nq0v3k",
               {
-                "ltr": "var(--x1r2wpmh){.xbs0o1n.xbs0o1n{color:blue}}",
+                "ltr": "@stylex-order "%5B%22var(--x1r2wpmh)%22%2C%5B%5D%5D"{.x1nq0v3k.x1nq0v3k{color:blue}}",
                 "rtl": null,
               },
               6000,
@@ -664,7 +664,7 @@ describe('@stylexjs/babel-plugin', () => {
         import { breakpoints } from './constants.stylex';
         export const styles = {
           root: {
-            kMwMTN: "x1e2nbdu xbs0o1n x1ru35j7",
+            kMwMTN: "x1e2nbdu x46iofp x1psv1wj",
             $$css: true
           }
         };"
@@ -682,17 +682,17 @@ describe('@stylexjs/babel-plugin', () => {
               3000,
             ],
             [
-              "xbs0o1n",
+              "x46iofp",
               {
-                "ltr": "var(--x1r2wpmh){.xbs0o1n.xbs0o1n{color:blue}}",
+                "ltr": "@stylex-order "%5B%22var(--x1r2wpmh)%22%2C%5B%22var(--xr4bctk)%22%5D%5D"{.x46iofp.x46iofp{color:blue}}",
                 "rtl": null,
               },
               6000,
             ],
             [
-              "x1ru35j7",
+              "x1psv1wj",
               {
-                "ltr": "var(--xr4bctk){.x1ru35j7.x1ru35j7{color:yellow}}",
+                "ltr": "@stylex-order "%5B%22var(--xr4bctk)%22%2C%5B%5D%5D"{.x1psv1wj.x1psv1wj{color:yellow}}",
                 "rtl": null,
               },
               6000,
@@ -725,7 +725,7 @@ describe('@stylexjs/babel-plugin', () => {
         import { breakpoints, colors } from './constants.stylex';
         export const styles = {
           root: {
-            kMwMTN: "x1mqxbix x1iobwbz xrf68et",
+            kMwMTN: "x1mqxbix xw1mued x1ugh96z",
             $$css: true
           }
         };"
@@ -743,17 +743,17 @@ describe('@stylexjs/babel-plugin', () => {
               3000,
             ],
             [
-              "x1iobwbz",
+              "xw1mued",
               {
-                "ltr": "var(--xr4bctk){.x1iobwbz.x1iobwbz{color:var(--x1itgfi6)}}",
+                "ltr": "@stylex-order "%5B%22var(--xr4bctk)%22%2C%5B%5D%5D"{.xw1mued.xw1mued{color:var(--x1itgfi6)}}",
                 "rtl": null,
               },
               6000,
             ],
             [
-              "xrf68et",
+              "x1ugh96z",
               {
-                "ltr": "var(--x1r2wpmh){var(--xr4bctk){.xrf68et.xrf68et.xrf68et{color:var(--x9g651j)}}}",
+                "ltr": "@stylex-order "%5B%22var(--xr4bctk)%22%2C%5B%5D%5D"{@stylex-order "%5B%22var(--x1r2wpmh)%22%2C%5B%5D%5D"{.x1ugh96z.x1ugh96z.x1ugh96z{color:var(--x9g651j)}}}",
                 "rtl": null,
               },
               9000,

@@ -114,6 +114,7 @@ export function simplifyAtRule(source: string): string {
 export function subtractAtRule(
   source: string,
   excluded: $ReadOnlyArray<string>,
+  simplify: boolean = true,
 ): $ReadOnlyArray<$ReadOnlyArray<string>> {
   const current = parseAtRule(source);
   const compatible = [];
@@ -129,11 +130,15 @@ export function subtractAtRule(
       continue;
     compatible.push(parsed.condition);
   }
-  if (compatible.length === 0) return [[simplifyAtRule(source)]];
-  const condition = simplifyCondition(
-    andConditions([current.condition, ...compatible.map(notCondition)]),
-    current.kind === 'media',
-  );
+  if (compatible.length === 0)
+    return [[simplify ? simplifyAtRule(source) : source]];
+  const combined = andConditions([
+    current.condition,
+    ...compatible.map(notCondition),
+  ]);
+  const condition = simplify
+    ? simplifyCondition(combined, current.kind === 'media')
+    : combined;
   if (condition === false) return [['@media not all']];
   try {
     return [[serializeAtRule({ ...current, condition })]];

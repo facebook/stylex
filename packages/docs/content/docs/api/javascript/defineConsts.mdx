@@ -6,8 +6,10 @@ Defines static style constants that can be used directly in `create` calls
 anywhere in the codebase. Unlike `defineVars`, these values are inlined at build
 time and do not generate actual CSS variables.
 
-_Note: `defineConsts` does not currently have `enableMediaQueryOrder` config
-support._
+With `enableMediaQueryOrder` enabled, whole at-rule constants participate in
+condition ordering when `processStylexRules` resolves their values. Use
+`@stylexjs/lightningcss-plugin` after that step to simplify the resulting
+negations.
 
 Common use cases include:
 
