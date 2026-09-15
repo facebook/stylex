@@ -303,7 +303,7 @@ describe('Media Query Transformer', () => {
     const expectedStyles = {
       width: {
         default: '100%',
-        '@media (screen) and (not (max-width: 500px)), (min-width: 500.01px) and (max-width: 800px)':
+        '@media screen and (not (max-width: 500px)), (min-width: 500.01px) and (max-width: 800px)':
           '80%',
         '@media (max-width: 500px)': '60%',
       },
@@ -352,6 +352,37 @@ describe('Media Query Transformer', () => {
         '@media screen and (min-width: 900px) and (not (print and (max-width: 500px)))':
           '80%',
         '@media print and (max-width: 500px)': '50%',
+      },
+    };
+
+    const result = lastMediaQueryWinsTransform(originalStyles);
+    expect(JSON.stringify(result)).toBe(JSON.stringify(expectedStyles));
+  });
+
+  test('mixed responsive and print values anchor to a screen media type', () => {
+    // Regression test for https://github.com/facebook/stylex/issues/1860.
+    // A `print` media type must not be emitted as a `(not (print))` boolean
+    // feature (which never matches in browsers); the responsive branch is
+    // instead anchored to the complementary `screen` media type.
+    const originalStyles = {
+      marginLeft: {
+        default: 224,
+        '@media (max-width: 900px)': {
+          default: 168,
+          '@media (max-width: 620px)': 132,
+        },
+        '@media print': 0,
+      },
+    };
+
+    const expectedStyles = {
+      marginLeft: {
+        default: 224,
+        '@media screen and (max-width: 900px)': {
+          default: 168,
+          '@media (max-width: 620px)': 132,
+        },
+        '@media print': 0,
       },
     };
 
