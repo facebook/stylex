@@ -2508,7 +2508,7 @@ describe('@stylexjs/babel-plugin', () => {
             "import * as stylex from '@stylexjs/stylex';
             export const styles = {
               root: {
-                kWkggS: "xrkmrrc x1qc147k x9qmkci x17z8iku",
+                kWkggS: "xrkmrrc xa5oah1 x1seukri xduqtph",
                 $$css: true
               }
             };"
@@ -2525,25 +2525,25 @@ describe('@stylexjs/babel-plugin', () => {
                   3000,
                 ],
                 [
-                  "x1qc147k",
+                  "xa5oah1",
                   {
-                    "ltr": "@media (((screen) and (max-width: 900px) and (not (screen)) and (not (screen))) or ((screen) and (max-width: 900px) and (not (screen)) and (not (max-width: 400px)))) or (((screen) and (max-width: 900px) and (not (max-width: 500px)) and (not (screen))) or ((screen) and (max-width: 900px) and (not (max-width: 500px)) and (not (max-width: 400px)))){.x1qc147k.x1qc147k{background-color:blue}}",
+                    "ltr": "@media screen and (max-width: 900px) and (not (max-width: 500px)) and (not (max-width: 400px)){.xa5oah1.xa5oah1{background-color:blue}}",
                     "rtl": null,
                   },
                   3200,
                 ],
                 [
-                  "x9qmkci",
+                  "x1seukri",
                   {
-                    "ltr": "@media ((screen) and (max-width: 500px) and (not (screen))) or ((screen) and (max-width: 500px) and (not (max-width: 400px))){.x9qmkci.x9qmkci{background-color:purple}}",
+                    "ltr": "@media screen and (max-width: 500px) and (not (max-width: 400px)){.x1seukri.x1seukri{background-color:purple}}",
                     "rtl": null,
                   },
                   3200,
                 ],
                 [
-                  "x17z8iku",
+                  "xduqtph",
                   {
-                    "ltr": "@media (screen) and (max-width: 400px){.x17z8iku.x17z8iku{background-color:green}}",
+                    "ltr": "@media screen and (max-width: 400px){.xduqtph.xduqtph{background-color:green}}",
                     "rtl": null,
                   },
                   3200,
