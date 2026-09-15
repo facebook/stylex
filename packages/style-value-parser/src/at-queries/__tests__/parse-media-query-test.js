@@ -2862,7 +2862,7 @@ describe('style-value-parser/at-queries', () => {
         '@media (min-width: 100px) and (max-width: 500px) and (not (max-width: 200px)) and (not (min-width: 400px))',
       );
       expect(parsed.toString()).toBe(
-        '@media (min-width: 200.01px) and (max-width: 399.99px)',
+        '@media (min-width: 200.01px) and (max-width: 399.98px)',
       );
     });
 

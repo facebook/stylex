@@ -357,6 +357,10 @@ function mergeIntervalsForAnd(
   rules: Array<MediaQueryRule>,
 ): Array<MediaQueryRule> {
   const epsilon: number = 0.01;
+  // Chromium rounds a max-width ending in .99px up to the next whole pixel.
+  // Keep the generated range exclusive at integer breakpoints without
+  // widening the gap more than necessary.
+  const maxWidthEpsilon: number = 0.02;
   const dimensions = ['width', 'height'];
   const intervals: { [dim: string]: Array<[number, number]> } = {
     width: [],
@@ -432,7 +436,13 @@ function mergeIntervalsForAnd(
           hasAnyUnitConflicts = true;
         }
         if (rule.rule.key === `min-${dim}`) {
-          intervals[dim].push([-Infinity, val.value - epsilon]);
+          intervals[dim].push([
+            -Infinity,
+            val.value -
+              (dim === 'width' && val.unit.toLowerCase() === 'px'
+                ? maxWidthEpsilon
+                : epsilon),
+          ]);
         } else {
           intervals[dim].push([val.value + epsilon, Infinity]);
         }
