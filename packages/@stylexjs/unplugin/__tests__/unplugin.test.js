@@ -29,6 +29,20 @@ describe('@stylexjs/unplugin', () => {
     expect(result).toBeNull();
   });
 
+  test('still transforms built-in imports when a custom importSource is set', async () => {
+    const plugin = unplugin.raw({ importSources: ['custom-stylex'] });
+    if (typeof plugin.buildStart === 'function') {
+      plugin.buildStart();
+    }
+    const source = `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({ foo: { color: 'red' } });
+      export default styles;
+    `;
+    const result = await plugin.transform(source, '/virtual/example.js');
+    expect(result).not.toBeNull();
+  });
+
   test('writes fallback CSS asset when no CSS bundle entry exists', async () => {
     const plugin = unplugin.rollup({
       runtimeInjection: false,
