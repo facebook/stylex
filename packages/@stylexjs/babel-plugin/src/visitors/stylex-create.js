@@ -12,6 +12,7 @@ import type { FunctionConfig } from '../utils/evaluate-path';
 import type { InjectableStyle } from '../shared';
 
 import * as t from '@babel/types';
+import { matchEnum } from '../shared/enum-match';
 import StateManager from '../utils/state-manager';
 import {
   create as stylexCreate,
@@ -178,6 +179,9 @@ export default function transformStyleXCreate(
           (value as $FlowFixMe)(pseudo, marker ?? state.options),
       ]),
     );
+    state.stylexMatchImport.forEach((name) => {
+      identifiers[name] = { fn: matchEnum };
+    });
     state.stylexFirstThatWorksImport.forEach((name) => {
       identifiers[name] = { fn: stylexFirstThatWorks };
     });
@@ -197,6 +201,7 @@ export default function transformStyleXCreate(
       if (memberExpressions[name] == null) {
         memberExpressions[name] = {};
       }
+      memberExpressions[name].match = { fn: matchEnum };
       memberExpressions[name].firstThatWorks = { fn: stylexFirstThatWorks };
       memberExpressions[name].keyframes = { fn: keyframes };
       memberExpressions[name].positionTry = { fn: positionTry };

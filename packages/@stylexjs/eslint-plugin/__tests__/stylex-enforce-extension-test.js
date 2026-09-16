@@ -33,6 +33,18 @@ ruleTester.run('stylex-enforce-extension', rule.default, {
   valid: [
     {
       code: `
+        import { defineEnum } from '@stylexjs/stylex';
+
+        export const density = defineEnum(
+          ['compact', 'comfortable'],
+          'comfortable',
+        );
+      `,
+      filename: 'enums.stylex.js',
+    },
+
+    {
+      code: `
         import * as stylex from '@stylexjs/stylex';
         export const vars = stylex.defineVars({});
         export const consts = stylex.defineConsts({});
