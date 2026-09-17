@@ -57,11 +57,21 @@ This rule helps to sort the StyleX property keys according to
 
 #### Config options
 
-```json
+```js
 {
-  "validImports": ["stylex", "@stylexjs/stylex"]
+  order: 'default',                            // Sort order: 'default', 'clean', or 'recess'
+  minKeys: 2,                                  // Minimum number of keys before sorting is enforced
+  allowLineSeparatedGroups: false,             // Treat blank-line-separated blocks as independent groups
+  enableMediaQueryOrder: false,                // Preserve authored `@media` order to match StyleX's `enableMediaQueryOrder`
+  validImports: ['stylex', '@stylexjs/stylex']
 }
 ```
+
+When you compile with StyleX's `enableMediaQueryOrder`, overlapping media
+queries are resolved by source order (the last matching query wins). Sorting
+`@media` keys alphabetically inverts that cascade, so set
+`enableMediaQueryOrder: true` here to keep the rule from reordering media
+queries and let you control the cascade through their authored order.
 
 ### @stylexjs/valid-shorthands
 
