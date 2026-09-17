@@ -542,8 +542,8 @@ describe('@stylexjs/babel-plugin', () => {
               "color-kMwMTN": "x1e2nbdu",
               $$css: "npm-package:js/node_modules/npm-package/dist/components/Foo.react.js:4"
             },
-            opacity: opacity => [{
-              "opacity-kSiTet": opacity != null ? "xb4nw82" : opacity,
+            opacity: opacity => [opacity !== undefined && {
+              "opacity-kSiTet": opacity != null ? "xb4nw82" : "",
               $$css: "npm-package:js/node_modules/npm-package/dist/components/Foo.react.js:7"
             }, {
               "--x-opacity": opacity != null ? opacity : undefined
@@ -804,8 +804,8 @@ describe('@stylexjs/babel-plugin', () => {
             priority: 0
           });
           const styles = {
-            color: c => [{
-              kMwMTN: c != null ? "x14rh7hd" : c,
+            color: c => [c !== undefined && {
+              kMwMTN: c != null ? "x14rh7hd" : "",
               $$css: true
             }, {
               "--x-color": c != null ? c : undefined
@@ -900,8 +900,8 @@ describe('@stylexjs/babel-plugin', () => {
             priority: 0
           });
           const styles = {
-            opacity: o => [{
-              kSiTet: o != null ? "xb4nw82" : o,
+            opacity: o => [o !== undefined && {
+              kSiTet: o != null ? "xb4nw82" : "",
               $$css: true
             }, {
               "--x-opacity": o != null ? o : undefined
@@ -942,8 +942,8 @@ describe('@stylexjs/babel-plugin', () => {
             priority: 0
           });
           const styles = {
-            opacity: o => [{
-              kSiTet: o != null ? "xb4nw82" : o,
+            opacity: o => [o !== undefined && {
+              kSiTet: o != null ? "xb4nw82" : "",
               $$css: true
             }, {
               "--x-opacity": o != null ? o : undefined
