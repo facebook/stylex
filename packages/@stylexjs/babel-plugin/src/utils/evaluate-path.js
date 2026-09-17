@@ -33,6 +33,10 @@ import fs from 'node:fs';
 
 // This file contains Babels metainterpreter that can evaluate static code.
 
+// This evaluator also ships in a browser bundle, where Node's `global` alias
+// does not exist.
+const globalObject: any = globalThis;
+
 const VALID_CALLEES = ['String', 'Number', 'Math', 'Object', 'Array'];
 
 // The static methods that may be called on the globals in `VALID_CALLEES`.
@@ -159,7 +163,7 @@ function isBlockedFunction(fn: mixed): boolean {
     Object.getPrototypeOf(callable) === Function ||
     // Referenced, never called: this is a value the evaluator refuses to run.
     // eslint-disable-next-line no-eval
-    callable === global.eval
+    callable === globalObject.eval
   );
 }
 
@@ -1078,7 +1082,7 @@ function _evaluate(path: NodePath<>, state: State): any {
       !path.scope.getBinding(callee.node.name) &&
       isValidCallee(callee.node.name)
     ) {
-      func = global[callee.node.name];
+      func = globalObject[callee.node.name];
     } else if (
       callee.isIdentifier() &&
       getOwnProperty(state.functions.identifiers, callee.node.name)
@@ -1103,7 +1107,7 @@ function _evaluate(path: NodePath<>, state: State): any {
           isValidCallee(object.node.name) &&
           isValidCalleeMethod(object.node.name, property.node.name)
         ) {
-          context = global[object.node.name];
+          context = globalObject[object.node.name];
           // @ts-expect-error property may not exist in context object
           func = context[property.node.name];
         } else {
