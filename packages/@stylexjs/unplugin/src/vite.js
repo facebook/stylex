@@ -17,6 +17,8 @@ import {
   VIRTUAL_STYLEX_CSS_ONLY_SCRIPT,
 } from './consts';
 import {
+  INDEX_CSS_RE,
+  STYLE_CSS_RE,
   pickCssAssetFromRollupBundle,
   replaceCssAssetWithHashedCopy,
   unpluginFactory,
@@ -179,8 +181,8 @@ function attachViteHooks(plugin) {
               .readdirSync(assetsDir)
               .filter((f) => f.endsWith('.css'));
             const pick =
-              files.find((f) => /(^|\/)index\.css$/.test(f)) ||
-              files.find((f) => /(^|\/)style\.css$/.test(f)) ||
+              files.find((f) => INDEX_CSS_RE.test(f)) ||
+              files.find((f) => STYLE_CSS_RE.test(f)) ||
               files[0];
             if (pick) outfile = path.join(assetsDir, pick);
           }

@@ -325,6 +325,76 @@ describe('@stylexjs/babel-plugin', () => {
       `);
     });
 
+    test('"content" property values containing quotes are wrapped in quotes', () => {
+      expect(
+        transform(`
+          import stylex from 'stylex';
+          const styles = stylex.create({
+            apostrophes: {
+              content: "Bob's and Jim's",
+            },
+            embeddedQuote: {
+              content: 'He said "hello"',
+            },
+            quoteKeywords: {
+              content: 'open-quote "hello" close-quote',
+            }
+          });
+        `),
+      ).toMatchInlineSnapshot(`
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
+        import stylex from 'stylex';
+        _inject2({
+          ltr: ".x5jgoue{content:\\"Bob's and Jim's\\"}",
+          priority: 3000
+        });
+        _inject2({
+          ltr: ".x1ooro1k{content:\\"He said \\\\\\"hello\\\\\\"\\"}",
+          priority: 3000
+        });
+        _inject2({
+          ltr: ".x1iyhvvg{content:open-quote \\"hello\\" close-quote}",
+          priority: 3000
+        });"
+      `);
+    });
+
+    test('"content" property values keep their CSS escape sequences', () => {
+      expect(
+        transform(`
+          import stylex from 'stylex';
+          const styles = stylex.create({
+            emDash: {
+              content: '\\\\2014',
+            },
+            curlyQuotes: {
+              content: '\\\\201C hello \\\\201D',
+            },
+            trailingBackslash: {
+              content: '50% off \\\\',
+            },
+          });
+        `),
+      ).toMatchInlineSnapshot(`
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
+        import stylex from 'stylex';
+        _inject2({
+          ltr: ".x1v4x2nj{content:\\"\\\\2014\\"}",
+          priority: 3000
+        });
+        _inject2({
+          ltr: ".x1uxbif5{content:\\"\\\\201C hello \\\\201D\\"}",
+          priority: 3000
+        });
+        _inject2({
+          ltr: ".x1y6ogk6{content:\\"50% off \\\\\\\\\\"}",
+          priority: 3000
+        });"
+      `);
+    });
+
     test('[legacy] no space before "!important"', () => {
       expect(
         transform(`
