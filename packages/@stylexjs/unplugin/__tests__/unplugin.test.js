@@ -447,4 +447,73 @@ describe('@stylexjs/unplugin', () => {
       expect(css).toContain('.x1aif7nf');
     });
   });
+
+  // Regression: https://github.com/facebook/stylex/issues/1836
+  // The Vite adapter's shared-store polling timer must never keep the process
+  // alive. Vitest's Vite server has no `httpServer`, so the `close` cleanup is
+  // skipped and a still-referenced interval would hang `vitest run` on exit.
+  describe('Vite dev shared-store polling timer', () => {
+    function makeServer(httpServer) {
+      return {
+        middlewares: { use: () => {} },
+        ws: { send: () => {} },
+        httpServer,
+      };
+    }
+
+    test('is unref’d when the server has no httpServer (Vitest)', () => {
+      const plugin = unplugin.vite({ dev: true });
+      expect(typeof plugin.configureServer).toBe('function');
+
+      const server = makeServer(null);
+      plugin.configureServer(server);
+
+      const interval = server.__stylexSharedPollingInterval;
+      expect(interval).toBeDefined();
+      // The timer must not hold the event loop open.
+      expect(typeof interval.hasRef).toBe('function');
+      expect(interval.hasRef()).toBe(false);
+      clearInterval(interval);
+    });
+
+    test('is cleared when the httpServer closes', () => {
+      jest.useFakeTimers();
+      try {
+        const plugin = unplugin.vite({ dev: true });
+        const closeListeners = [];
+        const httpServer = {
+          once(event, fn) {
+            if (event === 'close') closeListeners.push(fn);
+          },
+        };
+        const sent = [];
+        const server = {
+          middlewares: { use: () => {} },
+          ws: { send: (msg) => sent.push(msg) },
+          httpServer,
+        };
+        plugin.configureServer(server);
+        expect(server.__stylexSharedPollingInterval).toBeDefined();
+        expect(closeListeners).toHaveLength(1);
+
+        const shared = plugin.__stylexGetSharedStore();
+        const updates = () =>
+          sent.filter((m) => m && m.event === 'stylex:css-update');
+
+        // A version bump is picked up on the next poll.
+        shared.version += 1;
+        jest.advanceTimersByTime(150);
+        expect(updates()).toHaveLength(1);
+
+        // Simulate the server closing: the timer is cleared, so later bumps
+        // are never broadcast.
+        closeListeners[0]();
+        shared.version += 1;
+        jest.advanceTimersByTime(1500);
+        expect(updates()).toHaveLength(1);
+      } finally {
+        jest.useRealTimers();
+      }
+    });
+  });
 });
