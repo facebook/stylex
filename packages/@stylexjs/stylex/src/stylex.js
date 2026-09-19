@@ -193,7 +193,13 @@ export function attrs(
   }
   if (style != null) {
     result.style = Object.entries(style)
-      .map(([key, value]) => `${toKebabCase(key)}:${value}`)
+      .map(([key, value]) => {
+        if (key.startsWith('--')) {
+          return `${key}:${value}`;
+        }
+
+        return `${toKebabCase(key)}:${value}`;
+      })
       .join(';');
   }
   if (dataStyleSrc != null) {
