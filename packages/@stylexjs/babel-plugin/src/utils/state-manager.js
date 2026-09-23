@@ -7,6 +7,8 @@
  * @flow strict
  */
 
+import type { EnumRef } from '../shared/stylex-enum';
+
 import type { PluginPass } from '@babel/core';
 import type { NodePath } from '@babel/traverse';
 import type {
@@ -175,6 +177,9 @@ export default class StateManager {
   +stylexPositionTryImport: Set<string> = new Set();
   +stylexDefineVarsImport: Set<string> = new Set();
   +stylexDefineMarkerImport: Set<string> = new Set();
+  +stylexDefineEnumImport: Set<string> = new Set();
+  +stylexMatchImport: Set<string> = new Set();
+  +enumDefinitions: Map<t.Identifier, EnumRef> = new Map();
   +stylexDefineConstsImport: Set<string> = new Set();
   +stylexCreateThemeImport: Set<string> = new Set();
   +stylexTypesImport: Set<string> = new Set();

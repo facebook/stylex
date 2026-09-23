@@ -322,3 +322,34 @@ export type StyleX$When = {
 };
 
 export type StyleX$Env = Readonly<{ [string]: unknown }>;
+
+export type EnumState = string | boolean;
+
+type EnumCaseKey<S: EnumState> = S extends string
+  ? S
+  : S extends true
+    ? 'true'
+    : 'false';
+
+export type EnumInitial<S: EnumState> =
+  | S
+  | { readonly default: S, readonly [string]: S | EnumInitialBranch<S> };
+
+type EnumInitialBranch<S: EnumState> = {
+  readonly default?: S,
+  readonly [string]: S | EnumInitialBranch<S>,
+};
+
+export opaque type StyleXEnum<S: EnumState>: (state: S) => CompiledStyles = (
+  state: S,
+) => CompiledStyles;
+
+export type StyleX$DefineEnum = <const States: $ReadOnlyArray<EnumState>>(
+  states: States,
+  initialValue: EnumInitial<NoInfer<States[number]>>,
+) => StyleXEnum<States[number]>;
+
+export type StyleX$Match = <S: EnumState, const V: string | number>(
+  value: StyleXEnum<S>,
+  cases: { readonly [EnumCaseKey<NoInfer<S>>]: V },
+) => V;

@@ -30,6 +30,7 @@ import StateManager from './state-manager';
 import { utils } from '../shared';
 import * as errMsgs from './evaluation-errors';
 import fs from 'node:fs';
+import { enumRef } from '../shared/stylex-enum';
 
 // This file contains Babels metainterpreter that can evaluate static code.
 
@@ -324,7 +325,7 @@ export function createVarGroupProxy({
   exportName,
   traversalState,
   onAccess,
-}: VarGroupProxyOptions): { [string]: string } {
+}: VarGroupProxyOptions): { +[string]: mixed } {
   const varGroupHash = getVarGroupHash(fileName, exportName, traversalState);
 
   return new Proxy(
@@ -333,6 +334,9 @@ export function createVarGroupProxy({
       get(_, key: string | symbol) {
         if (typeof key !== 'string') {
           return undefined;
+        }
+        if (key === '__enumRef') {
+          return enumRef(varGroupHash);
         }
         if (key === '__IS_PROXY') {
           return true;
@@ -431,7 +435,7 @@ function evaluateThemeRef(
   fileName: string,
   exportName: string,
   state: State,
-): { [key: string]: string } {
+): { +[string]: mixed } {
   return createVarGroupProxy({
     fileName,
     exportName,
@@ -521,6 +525,10 @@ function _evaluate(path: NodePath<>, state: State): any {
 
   if (path.isIdentifier()) {
     const name: string = path.node.name;
+    const binding = path.scope.getBinding(name);
+    const enumReference =
+      binding && state.traversalState.enumDefinitions.get(binding.identifier);
+    if (enumReference != null) return { __enumRef: enumReference };
     if (Object.keys(state.functions?.identifiers ?? {}).includes(name)) {
       return state.functions.identifiers[name];
     }
@@ -1090,6 +1098,15 @@ function _evaluate(path: NodePath<>, state: State): any {
       func = getOwnProperty(state.functions.identifiers, callee.node.name);
     } else if (callee.isIdentifier()) {
       const maybeFunction = evaluateCached(callee, state);
+      if (
+        state.confident &&
+        maybeFunction?.__enumRef != null &&
+        state.traversalState.inStyleXCreate
+      ) {
+        throw new Error(
+          'Enum overrides within stylex.create are not supported yet.',
+        );
+      }
       if (state.confident) {
         func = maybeFunction;
       } else {

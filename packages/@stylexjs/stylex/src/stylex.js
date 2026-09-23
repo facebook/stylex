@@ -29,6 +29,8 @@ import type {
   StyleXStyles,
   StyleXStylesWithout,
   StyleXVar,
+  StyleXEnum,
+  EnumInitial,
   Theme,
   VarGroup,
   PositionTry,
@@ -36,6 +38,8 @@ import type {
   StyleX$When,
   MapNamespace,
   StyleX$DefineMarker,
+  StyleX$DefineEnum,
+  StyleX$Match,
   StyleX$Env,
 } from './types/StyleXTypes';
 import type { ValueWithDefault } from './types/StyleXUtils';
@@ -54,6 +58,8 @@ export type {
   StyleXStyles,
   StyleXStylesWithout,
   StyleXVar,
+  StyleXEnum,
+  EnumInitial,
   Theme,
   Types,
   VarGroup,
@@ -113,6 +119,14 @@ export const unstable_createThemeNested = (
   _overrides: { readonly [string]: NestedVarsValue },
 ): CompiledStyles => {
   throw errorForFn('unstable_createThemeNested');
+};
+
+export const defineEnum: StyleX$DefineEnum = (_states, _initialValue) => {
+  throw errorForFn('defineEnum');
+};
+
+export const match: StyleX$Match = (_enum, _cases) => {
+  throw errorForFn('match');
 };
 
 export const defineMarker: StyleX$DefineMarker = () => {
@@ -319,6 +333,8 @@ type IStyleX = {
     }>,
   >,
   defineMarker: StyleX$DefineMarker,
+  defineEnum: StyleX$DefineEnum,
+  match: StyleX$Match,
   firstThatWorks: <T extends string | number>(
     ...v: ReadonlyArray<T>
   ) => ReadonlyArray<T>,
@@ -386,6 +402,8 @@ export const legacyMerge: IStyleX = /*@__PURE__*/ (function () {
   _legacyMerge.createTheme = createTheme;
   _legacyMerge.defineConsts = defineConsts;
   _legacyMerge.defineMarker = defineMarker;
+  _legacyMerge.defineEnum = defineEnum;
+  _legacyMerge.match = match;
   _legacyMerge.defineVars = defineVars;
   _legacyMerge.defaultMarker = defaultMarker;
   _legacyMerge.firstThatWorks = firstThatWorks;
