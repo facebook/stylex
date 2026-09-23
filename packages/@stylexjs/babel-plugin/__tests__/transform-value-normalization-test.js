@@ -231,6 +231,7 @@ describe('@stylexjs/babel-plugin', () => {
               width: 500
             },
             unitless: {
+              fontSizeAdjust: 0.545,
               fontWeight: 500,
               lineHeight: 1.5,
               opacity: 0.5,
@@ -253,6 +254,10 @@ describe('@stylexjs/babel-plugin', () => {
         _inject2({
           ltr: ".xvue9z{width:500px}",
           priority: 4000
+        });
+        _inject2({
+          ltr: ".x1v6sj9q{font-size-adjust:.545}",
+          priority: 3000
         });
         _inject2({
           ltr: ".xk50ysn{font-weight:500}",
