@@ -6,6 +6,8 @@
     "./attrs.mdx",
     "./defineConsts.mdx",
     "./defineVars.mdx",
+    "./defineEnum.mdx",
+    "./match.mdx",
     "./createTheme.mdx",
     "./when.mdx",
     "./env.mdx",
