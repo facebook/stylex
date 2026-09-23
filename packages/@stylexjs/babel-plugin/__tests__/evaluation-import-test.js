@@ -16,6 +16,8 @@ const stylexPlugin = require('../src/index');
 const jsx = require('@babel/plugin-syntax-jsx');
 const { utils } = require('../src/shared');
 const { moduleResolve } = require('@dual-bundle/import-meta-resolve');
+const url = require('node:url');
+const fs = require('node:fs');
 
 const hash = utils.hash;
 
@@ -482,34 +484,45 @@ describe('Evaluation of imported values works based on configuration', () => {
       moduleResolve.mockReset();
     });
 
-    test('Inlines imported defineConsts values', () => {
-      const fs = require('node:fs');
+    function mockModuleResolution(fileContent) {
+      const originalReadFileSync = fs.readFileSync;
       const spy = jest
         .spyOn(fs, 'readFileSync')
-        .mockImplementation((filePath) => {
+        .mockImplementation((filePath, ...args) => {
           if (
             typeof filePath === 'string' &&
             filePath.endsWith('tokens.stylex.js')
           ) {
-            return `
-            import stylex from 'stylex';
-            export const color = stylex.defineConsts({
-              bg: 'var(--brand-bg)',
-            });
-          `;
+            return fileContent;
           }
-          return fs.readFileSync(filePath);
+          return originalReadFileSync.call(fs, filePath, ...args);
         });
 
       moduleResolve.mockImplementation((value) => {
         if (
           value === './tokens.stylex.js' ||
-          value.endsWith('/tokens.stylex.js')
+          value.endsWith('/tokens.stylex.js') ||
+          value.endsWith('\\tokens.stylex.js')
         ) {
-          return new URL('file:///project/tokens.stylex.js');
+          return url.pathToFileURL(
+            process.platform === 'win32'
+              ? 'C:\\project\\tokens.stylex.js'
+              : '/project/tokens.stylex.js',
+          );
         }
         throw new Error('File not found: ' + value);
       });
+
+      return spy;
+    }
+
+    test('Inlines imported defineConsts values (stylex.defineConsts)', () => {
+      const spy = mockModuleResolution(`
+        import stylex from 'stylex';
+        export const color = stylex.defineConsts({
+          bg: 'var(--brand-bg)',
+        });
+      `);
 
       try {
         const transformation = transform(
@@ -526,11 +539,139 @@ describe('Evaluation of imported values works based on configuration', () => {
           {
             unstable_moduleResolution: {
               type: 'experimental_crossFileParsing',
+              rootDir: '/project',
             },
           },
         );
 
-        expect(transformation.code).toContain('background-color:var(--brand-bg)');
+        expect(transformation.code).toContain(
+          'background-color:var(--brand-bg)',
+        );
+      } finally {
+        spy.mockRestore();
+      }
+    });
+
+    test('Inlines imported defineConsts values (named import)', () => {
+      const spy = mockModuleResolution(`
+        import { defineConsts } from 'stylex';
+        export const color = defineConsts({
+          bg: 'var(--brand-bg)',
+        });
+      `);
+
+      try {
+        const transformation = transform(
+          `
+          import stylex from 'stylex';
+          import { color } from './tokens.stylex.js';
+          const styles = stylex.create({
+            root: {
+              backgroundColor: color.bg,
+            }
+          });
+          stylex(styles.root);
+          `,
+          {
+            unstable_moduleResolution: {
+              type: 'experimental_crossFileParsing',
+              rootDir: '/project',
+            },
+          },
+        );
+
+        expect(transformation.code).toContain(
+          'background-color:var(--brand-bg)',
+        );
+      } finally {
+        spy.mockRestore();
+      }
+    });
+
+    test('Does not unwrap defineConsts called on unrelated objects', () => {
+      const spy = mockModuleResolution(`
+        const config = {
+          defineConsts(val) {
+            return val;
+          },
+        };
+        export const color = config.defineConsts({
+          bg: 'var(--brand-bg)',
+        });
+      `);
+
+      try {
+        expect(() => {
+          transform(
+            `
+            import stylex from 'stylex';
+            import { color } from './tokens.stylex.js';
+            const styles = stylex.create({
+              root: {
+                backgroundColor: color.bg,
+              }
+            });
+            stylex(styles.root);
+            `,
+            {
+              unstable_moduleResolution: {
+                type: 'experimental_crossFileParsing',
+                rootDir: '/project',
+              },
+            },
+          );
+        }).toThrow();
+      } finally {
+        spy.mockRestore();
+      }
+    });
+
+    test('Does not unwrap defineConsts imported from unrelated packages', () => {
+      const spy = mockModuleResolution(`
+        import { defineConsts } from 'unrelated-package';
+        export const color = defineConsts({
+          bg: 'var(--brand-bg)',
+        });
+      `);
+
+      try {
+        expect(() => {
+          transform(
+            `
+            import stylex from 'stylex';
+            import { color } from './tokens.stylex.js';
+            const styles = stylex.create({
+              root: {
+                backgroundColor: color.bg,
+              }
+            });
+            stylex(styles.root);
+            `,
+            {
+              unstable_moduleResolution: {
+                type: 'experimental_crossFileParsing',
+                rootDir: '/project',
+              },
+            },
+          );
+        }).toThrow();
+      } finally {
+        spy.mockRestore();
+      }
+    });
+
+    test('fs.readFileSync mock delegates to original without recursion for unmocked files', () => {
+      const spy = mockModuleResolution(`
+        import stylex from 'stylex';
+        export const color = stylex.defineConsts({
+          bg: 'var(--brand-bg)',
+        });
+      `);
+
+      try {
+        const selfContent = fs.readFileSync(__filename, 'utf8');
+        expect(typeof selfContent).toBe('string');
+        expect(selfContent.length).toBeGreaterThan(0);
       } finally {
         spy.mockRestore();
       }

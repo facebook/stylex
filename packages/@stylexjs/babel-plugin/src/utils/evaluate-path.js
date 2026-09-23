@@ -364,6 +364,182 @@ function deopt(path: NodePath<>, state: State, reason: string): void {
   state.deoptReason = reason;
 }
 
+function isStyleXDefineConstsCall(
+  callExpr: NodePath<t.CallExpression>,
+  state: State,
+): boolean {
+  const callee = callExpr.get('callee');
+  const importSources = state.traversalState.importSources;
+
+  if (callee.isIdentifier()) {
+    const calleeName = callee.node.name;
+    const binding = callExpr.scope.getBinding(calleeName);
+    if (!binding) {
+      return false;
+    }
+
+    if (binding.path.isImportSpecifier()) {
+      const importDecl = binding.path.parentPath;
+      if (importDecl != null && importDecl.isImportDeclaration()) {
+        const sourcePath = importDecl.node.source.value;
+        if (importSources.includes(sourcePath)) {
+          const imported = binding.path.node.imported;
+          const importedName =
+            imported.type === 'Identifier' ? imported.name : imported.value;
+          if (
+            importedName === 'defineConsts' ||
+            importedName === 'unstable_defineConstsNested'
+          ) {
+            return true;
+          }
+        }
+      }
+      return false;
+    }
+
+    const varDecl = binding.path.isVariableDeclarator()
+      ? binding.path
+      : binding.path.findParent((p) => p.isVariableDeclarator());
+    if (varDecl != null && varDecl.isVariableDeclarator()) {
+      const init: ?NodePath<t.Node> = (
+        varDecl as NodePath<t.VariableDeclarator>
+      ).get('init');
+      if (
+        init != null &&
+        init.isCallExpression() &&
+        init.get('callee').isIdentifier({ name: 'require' })
+      ) {
+        const args = init.get('arguments');
+        if (
+          args.length === 1 &&
+          args[0].isStringLiteral() &&
+          importSources.includes(args[0].node.value)
+        ) {
+          const id = varDecl.node.id;
+          if (id.type === 'ObjectPattern') {
+            for (const prop of id.properties) {
+              if (
+                prop.type === 'ObjectProperty' &&
+                prop.key.type === 'Identifier' &&
+                prop.value.type === 'Identifier' &&
+                prop.value.name === calleeName &&
+                (prop.key.name === 'defineConsts' ||
+                  prop.key.name === 'unstable_defineConstsNested')
+              ) {
+                return true;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    return false;
+  }
+
+  if (callee.isMemberExpression()) {
+    if (callee.node.computed) {
+      return false;
+    }
+    const prop = callee.get('property');
+    const propName = prop.isIdentifier() ? prop.node.name : null;
+    if (
+      propName !== 'defineConsts' &&
+      propName !== 'unstable_defineConstsNested'
+    ) {
+      return false;
+    }
+
+    const obj = callee.get('object');
+    if (!obj.isIdentifier()) {
+      return false;
+    }
+    const objName = obj.node.name;
+    const objBinding = callExpr.scope.getBinding(objName);
+    if (!objBinding) {
+      return false;
+    }
+
+    if (
+      objBinding.path.isImportDefaultSpecifier() ||
+      objBinding.path.isImportNamespaceSpecifier()
+    ) {
+      const importDecl = objBinding.path.parentPath;
+      if (importDecl != null && importDecl.isImportDeclaration()) {
+        const sourcePath = importDecl.node.source.value;
+        if (
+          importSources.includes(sourcePath) &&
+          state.traversalState.importAs(sourcePath) === null
+        ) {
+          return true;
+        }
+      }
+      return false;
+    }
+
+    if (objBinding.path.isImportSpecifier()) {
+      const importDecl = objBinding.path.parentPath;
+      if (importDecl != null && importDecl.isImportDeclaration()) {
+        const sourcePath = importDecl.node.source.value;
+        if (importSources.includes(sourcePath)) {
+          const imported = objBinding.path.node.imported;
+          const importedName =
+            imported.type === 'Identifier' ? imported.name : imported.value;
+          if (state.traversalState.importAs(sourcePath) === importedName) {
+            return true;
+          }
+        }
+      }
+      return false;
+    }
+
+    const varDecl = objBinding.path.isVariableDeclarator()
+      ? objBinding.path
+      : objBinding.path.findParent((p) => p.isVariableDeclarator());
+    if (varDecl != null && varDecl.isVariableDeclarator()) {
+      const init: ?NodePath<t.Node> = (
+        varDecl as NodePath<t.VariableDeclarator>
+      ).get('init');
+      if (
+        init != null &&
+        init.isCallExpression() &&
+        init.get('callee').isIdentifier({ name: 'require' })
+      ) {
+        const args = init.get('arguments');
+        if (
+          args.length === 1 &&
+          args[0].isStringLiteral() &&
+          importSources.includes(args[0].node.value)
+        ) {
+          const id = varDecl.node.id;
+          if (id.type === 'Identifier') {
+            return true;
+          }
+          if (id.type === 'ObjectPattern') {
+            for (const prop of id.properties) {
+              if (
+                prop.type === 'ObjectProperty' &&
+                prop.key.type === 'Identifier' &&
+                prop.value.type === 'Identifier' &&
+                prop.value.name === objName
+              ) {
+                const alias = state.traversalState.importAs(args[0].node.value);
+                if (alias != null && prop.key.name === alias) {
+                  return true;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    return false;
+  }
+
+  return false;
+}
+
 function evaluateImportedFile(
   filePath: string,
   namedExport: string,
@@ -411,20 +587,13 @@ function evaluateImportedFile(
               init.isExpression()
             ) {
               let exprToEval: NodePath<t.Expression> = init;
-              if (exprToEval.isCallExpression()) {
-                const callee = exprToEval.get('callee');
-                const isDefineConsts =
-                  (callee.isIdentifier() &&
-                    callee.node.name === 'defineConsts') ||
-                  (callee.isMemberExpression() &&
-                    callee
-                      .get('property')
-                      .isIdentifier({ name: 'defineConsts' }));
-                if (isDefineConsts) {
-                  const args = exprToEval.get('arguments');
-                  if (args.length > 0 && args[0].isExpression()) {
-                    exprToEval = (args[0]: $FlowFixMe);
-                  }
+              if (
+                exprToEval.isCallExpression() &&
+                isStyleXDefineConstsCall(exprToEval, state)
+              ) {
+                const args = exprToEval.get('arguments');
+                if (args.length > 0 && args[0].isExpression()) {
+                  exprToEval = (args[0]: $FlowFixMe);
                 }
               }
               result = evaluateCached(exprToEval, state);
