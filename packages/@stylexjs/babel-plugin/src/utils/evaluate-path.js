@@ -378,7 +378,8 @@ function evaluateImportedFile(
   const ast: null | t.File | { +errors: mixed } = parseSync(fileContents, {
     babelrc: true,
   });
-  if (!ast || ast.errors || !t.isNode(ast)) {
+  const errors = (ast: $FlowFixMe)?.errors;
+  if (!ast || (Array.isArray(errors) && errors.length > 0) || !t.isNode(ast)) {
     deopt(bindingPath, state, errMsgs.IMPORT_FILE_PARSING_ERROR);
     return;
   }
@@ -387,7 +388,10 @@ function evaluateImportedFile(
 
   let result: any;
 
-  traverse(astNode, {
+  const _traverse: $FlowFixMe =
+    typeof traverse === 'function' ? traverse : (traverse: $FlowFixMe).default;
+
+  _traverse(astNode, {
     ExportNamedDeclaration(path: NodePath<t.ExportNamedDeclaration>) {
       const declaration = path.get('declaration');
 
@@ -406,7 +410,24 @@ function evaluateImportedFile(
               init != null &&
               init.isExpression()
             ) {
-              result = evaluateCached(init, state);
+              let exprToEval: NodePath<t.Expression> = init;
+              if (exprToEval.isCallExpression()) {
+                const callee = exprToEval.get('callee');
+                const isDefineConsts =
+                  (callee.isIdentifier() &&
+                    callee.node.name === 'defineConsts') ||
+                  (callee.isMemberExpression() &&
+                    callee
+                      .get('property')
+                      .isIdentifier({ name: 'defineConsts' }));
+                if (isDefineConsts) {
+                  const args = exprToEval.get('arguments');
+                  if (args.length > 0 && args[0].isExpression()) {
+                    exprToEval = (args[0]: $FlowFixMe);
+                  }
+                }
+              }
+              result = evaluateCached(exprToEval, state);
             }
           }
         };

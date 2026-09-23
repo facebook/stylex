@@ -476,4 +476,64 @@ describe('Evaluation of imported values works based on configuration', () => {
       `);
     });
   });
+
+  describe('Module resolution experimental_crossFileParsing', () => {
+    afterEach(() => {
+      moduleResolve.mockReset();
+    });
+
+    test('Inlines imported defineConsts values', () => {
+      const fs = require('node:fs');
+      const spy = jest
+        .spyOn(fs, 'readFileSync')
+        .mockImplementation((filePath) => {
+          if (
+            typeof filePath === 'string' &&
+            filePath.endsWith('tokens.stylex.js')
+          ) {
+            return `
+            import stylex from 'stylex';
+            export const color = stylex.defineConsts({
+              bg: 'var(--brand-bg)',
+            });
+          `;
+          }
+          return fs.readFileSync(filePath);
+        });
+
+      moduleResolve.mockImplementation((value) => {
+        if (
+          value === './tokens.stylex.js' ||
+          value.endsWith('/tokens.stylex.js')
+        ) {
+          return new URL('file:///project/tokens.stylex.js');
+        }
+        throw new Error('File not found: ' + value);
+      });
+
+      try {
+        const transformation = transform(
+          `
+          import stylex from 'stylex';
+          import { color } from './tokens.stylex.js';
+          const styles = stylex.create({
+            root: {
+              backgroundColor: color.bg,
+            }
+          });
+          stylex(styles.root);
+          `,
+          {
+            unstable_moduleResolution: {
+              type: 'experimental_crossFileParsing',
+            },
+          },
+        );
+
+        expect(transformation.code).toContain('background-color:var(--brand-bg)');
+      } finally {
+        spy.mockRestore();
+      }
+    });
+  });
 });
