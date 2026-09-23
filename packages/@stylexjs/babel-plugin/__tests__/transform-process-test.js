@@ -944,6 +944,75 @@ describe('@stylexjs/babel-plugin', () => {
       `);
     });
 
+    // A constant's value is data, not a replacement pattern. Substituting it
+    // with a string replacement made `String.prototype.replace`/`replaceAll`
+    // expand its `$` sequences: `$&` re-inserted the matched text, `$$`
+    // collapsed to one `$`, and `` $` ``/`$'` inserted the text around the
+    // match. Both the alias pre-collapse and the per-rule substitution have
+    // to insert values verbatim.
+    test('substitutes a constant value containing `$&` verbatim', () => {
+      // `$&` re-inserted `var(--b)` over itself, so the pre-collapse loop made
+      // no progress and rescanned from the start forever -- a hung build, not
+      // a thrown error.
+      const rules = [
+        ['a', { constKey: 'a', constVal: 'var(--b)', ltr: '', rtl: null }, 0],
+        ['b', { constKey: 'b', constVal: '$&', ltr: '', rtl: null }, 0],
+        ['x1', { ltr: '.x1{content:var(--a)}', rtl: null }, 3000],
+      ];
+
+      expect(
+        stylexPlugin.processStylexRules(rules, { useLayers: false }),
+      ).toMatchInlineSnapshot('".x1{content:$&}"');
+    });
+
+    test('substitutes a constant value containing `$&` with no alias chain', () => {
+      // Without a chain the pre-collapse loop never runs, but the per-rule
+      // substitution still expanded `$&` -- leaving the `var()` unsubstituted.
+      const rules = [
+        ['b', { constKey: 'b', constVal: '$&', ltr: '', rtl: null }, 0],
+        ['x1', { ltr: '.x1{content:var(--b)}', rtl: null }, 3000],
+      ];
+
+      expect(
+        stylexPlugin.processStylexRules(rules, { useLayers: false }),
+      ).toMatchInlineSnapshot('".x1{content:$&}"');
+    });
+
+    test('substitutes constant values containing other `$` sequences verbatim', () => {
+      const rules = [
+        [
+          'a1',
+          { constKey: 'a1', constVal: 'var(--b1)', ltr: '', rtl: null },
+          0,
+        ],
+        ['b1', { constKey: 'b1', constVal: '$$', ltr: '', rtl: null }, 0],
+        [
+          'a2',
+          { constKey: 'a2', constVal: 'var(--b2)', ltr: '', rtl: null },
+          0,
+        ],
+        ['b2', { constKey: 'b2', constVal: '$`', ltr: '', rtl: null }, 0],
+        [
+          'a3',
+          { constKey: 'a3', constVal: 'var(--b3)', ltr: '', rtl: null },
+          0,
+        ],
+        ['b3', { constKey: 'b3', constVal: "$'", ltr: '', rtl: null }, 0],
+        [
+          'x1',
+          {
+            ltr: '.x1{--p1:var(--a1);--p2:var(--a2);--p3:var(--a3)}',
+            rtl: null,
+          },
+          3000,
+        ],
+      ];
+
+      expect(
+        stylexPlugin.processStylexRules(rules, { useLayers: false }),
+      ).toMatchInlineSnapshot('".x1{--p1:$$;--p2:$`;--p3:$\'}"');
+    });
+
     test('legacy-expand-shorthands duplicates theme selectors for higher precedence', () => {
       const { _code, metadata } = transform(
         `
