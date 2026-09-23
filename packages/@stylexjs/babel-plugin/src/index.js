@@ -936,7 +936,11 @@ function addAncestorSelector(
   selector: string,
   ancestorSelector: string,
 ): string {
-  if (selector.startsWith('@keyframes')) {
+  // These at-rules contain declarations, not selectors, so we cannot add one.
+  if (
+    selector.startsWith('@keyframes') ||
+    selector.startsWith('@position-try')
+  ) {
     return selector;
   }
   if (!selector.startsWith('@')) {
@@ -954,7 +958,10 @@ function addAncestorSelector(
  * Adds :not(#\#) to bump up specificity. as a polyfill for @layer
  */
 function addSpecificityLevel(selector: string, index: number): string {
-  if (selector.startsWith('@keyframes')) {
+  if (
+    selector.startsWith('@keyframes') ||
+    selector.startsWith('@position-try')
+  ) {
     return selector;
   }
   const pseudo = Array.from({ length: index })
