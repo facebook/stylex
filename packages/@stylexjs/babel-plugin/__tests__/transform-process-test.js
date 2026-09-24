@@ -392,29 +392,63 @@ describe('@stylexjs/babel-plugin', () => {
     // `@keyframes`. The layer-wrapping decision must not let the at-rule's
     // priority 0 pull the layerable custom property out of its `@layer`.
     test('custom properties stay inside @layer alongside priority-0 at-rules', () => {
-      const { metadata } = transform(`
-        import * as stylex from '@stylexjs/stylex';
-        const fade = stylex.keyframes({ from: { opacity: 0 }, to: { opacity: 1 } });
-        const styles = stylex.create({
-          card: {
-            animationName: fade,
-            '--card-padding': '16px',
-            color: 'red',
-          },
-        });
+      const { metadata } = transformSync(
+        `
+          import * as stylex from '@stylexjs/stylex';
+          const fade = stylex.keyframes({ from: { opacity: 0 }, to: { opacity: 1 } });
+          const styles = stylex.create({
+            card: {
+              animationName: fade,
+              '--card-padding': '16px',
+              color: 'red',
+            },
+          });
+        `,
+        { babelrc: false, plugins: [[stylexPlugin, { dev: false }]] },
+      );
+      expect(
+        stylexPlugin.processStylexRules(metadata.stylex, {
+          useLayers: true,
+          enableLTRRTLComments: false,
+        }),
+      ).toMatchInlineSnapshot(`
+        "
+        @layer priority1, priority2;
+        @keyframes x18re5ia-B{from{opacity:0;}to{opacity:1;}}
+        @layer priority1{
+        .x1vtiyio{--card-padding:16px}
+        }
+        @layer priority2{
+        .xqcmdr3{animation-name:x18re5ia-B}
+        .x1e2nbdu{color:red}
+        }"
       `);
-      const css = stylexPlugin.processStylexRules(metadata, {
-        useLayers: true,
-        enableLTRRTLComments: false,
-      });
-      // The @keyframes at-rule must stay unlayered (some CSS validators do not
-      // understand @keyframes/@property/@position-try inside @layer, #1071)...
-      expect(css).toMatch(/^@keyframes /m);
-      expect(css).not.toMatch(/@layer priority\d+\{[^}]*@keyframes/);
-      // ...but the custom property must be wrapped in its layer so external
-      // CSS layers can override it.
-      expect(css).toMatch(/@layer priority1\{[^]*--card-padding:16px[^]*\n\}/);
-      expect(css).not.toMatch(/\n\.[a-zA-Z0-9_-]+\{--card-padding:16px\}\n@/);
+    });
+
+    test.each([
+      '@keyframes fade{from{opacity:0}to{opacity:1}}',
+      '@property --card-padding{syntax:"<length>";inherits:false;initial-value:0px}',
+      '@position-try --fallback{top:0}',
+    ])('keeps %s unlayered with and without custom properties', (atRule) => {
+      const rules = [['atRule', { ltr: atRule, rtl: null }, 0]];
+      expect(stylexPlugin.processStylexRules(rules, true)).toBe(
+        `\n@layer priority1;\n${atRule}`,
+      );
+
+      // Input order and duplicate declarations must not affect the partition.
+      const customProperty = [
+        'customProperty',
+        { ltr: '.custom{--card-padding:16px}', rtl: null },
+        1,
+      ];
+      expect(
+        stylexPlugin.processStylexRules(
+          [customProperty, ...rules, customProperty],
+          true,
+        ),
+      ).toBe(
+        `\n@layer priority1;\n${atRule}\n@layer priority1{\n.custom{--card-padding:16px}\n}`,
+      );
     });
 
     test('useLayers with before option', () => {
