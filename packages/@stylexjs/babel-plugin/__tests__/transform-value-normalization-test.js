@@ -95,6 +95,16 @@ describe('@stylexjs/babel-plugin', () => {
       `);
     });
 
+    test('preserves zero units inside a non-first function', () => {
+      const code = transform(`
+        import stylex from 'stylex';
+        const styles = stylex.create({ x: { width: 'max(1px, 2px) calc(0px + 1%)' } });
+      `);
+      // calc(0 + 1%) is invalid CSS — a unitless 0 cannot be added to a %.
+      expect(code).toContain('calc(0px + 1%)');
+      expect(code).not.toContain('calc(0 + 1%)');
+    });
+
     test('0 timings are all "0s"', () => {
       expect(
         transform(`
@@ -231,6 +241,7 @@ describe('@stylexjs/babel-plugin', () => {
               width: 500
             },
             unitless: {
+              fontSizeAdjust: 0.545,
               fontWeight: 500,
               lineHeight: 1.5,
               opacity: 0.5,
@@ -253,6 +264,10 @@ describe('@stylexjs/babel-plugin', () => {
         _inject2({
           ltr: ".xvue9z{width:500px}",
           priority: 4000
+        });
+        _inject2({
+          ltr: ".x1v6sj9q{font-size-adjust:.545}",
+          priority: 3000
         });
         _inject2({
           ltr: ".xk50ysn{font-weight:500}",
@@ -320,6 +335,76 @@ describe('@stylexjs/babel-plugin', () => {
         });
         _inject2({
           ltr: ".x12vzfr8{content:\\"prev\\"}",
+          priority: 3000
+        });"
+      `);
+    });
+
+    test('"content" property values containing quotes are wrapped in quotes', () => {
+      expect(
+        transform(`
+          import stylex from 'stylex';
+          const styles = stylex.create({
+            apostrophes: {
+              content: "Bob's and Jim's",
+            },
+            embeddedQuote: {
+              content: 'He said "hello"',
+            },
+            quoteKeywords: {
+              content: 'open-quote "hello" close-quote',
+            }
+          });
+        `),
+      ).toMatchInlineSnapshot(`
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
+        import stylex from 'stylex';
+        _inject2({
+          ltr: ".x5jgoue{content:\\"Bob's and Jim's\\"}",
+          priority: 3000
+        });
+        _inject2({
+          ltr: ".x1ooro1k{content:\\"He said \\\\\\"hello\\\\\\"\\"}",
+          priority: 3000
+        });
+        _inject2({
+          ltr: ".x1iyhvvg{content:open-quote \\"hello\\" close-quote}",
+          priority: 3000
+        });"
+      `);
+    });
+
+    test('"content" property values keep their CSS escape sequences', () => {
+      expect(
+        transform(`
+          import stylex from 'stylex';
+          const styles = stylex.create({
+            emDash: {
+              content: '\\\\2014',
+            },
+            curlyQuotes: {
+              content: '\\\\201C hello \\\\201D',
+            },
+            trailingBackslash: {
+              content: '50% off \\\\',
+            },
+          });
+        `),
+      ).toMatchInlineSnapshot(`
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
+        import stylex from 'stylex';
+        _inject2({
+          ltr: ".x1v4x2nj{content:\\"\\\\2014\\"}",
+          priority: 3000
+        });
+        _inject2({
+          ltr: ".x1uxbif5{content:\\"\\\\201C hello \\\\201D\\"}",
+          priority: 3000
+        });
+        _inject2({
+          ltr: ".x1y6ogk6{content:\\"50% off \\\\\\\\\\"}",
           priority: 3000
         });"
       `);

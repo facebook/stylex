@@ -38,6 +38,7 @@ import isNumber from './rules/isNumber';
 import isAnimationName from './rules/isAnimationName';
 import isPositionTryFallbacks from './rules/isPositionTryFallbacks';
 import isStylexResolvedVarsToken from './rules/isStylexResolvedVarsToken';
+import isStylexEnvMember from './rules/isStylexEnvMember';
 import isCSSVariable from './rules/isCSSVariable';
 import evaluate from './utils/evaluate';
 import resolveKey from './utils/resolveKey';
@@ -381,6 +382,7 @@ const stylexValidStyles = {
     const styleXKeyframesImports = new Set<string>();
     const styleXPositionTryImports = new Set<string>();
     const styleXWhenImports = new Set<string>();
+    const styleXEnvImports = new Set<string>();
 
     const overrides: PropLimits = {
       ...(isLegacyExpandShorthands ? legacyProps : {}),
@@ -647,6 +649,16 @@ const stylexValidStyles = {
           if (isStylexResolvedVarsToken(key, stylexResolvedVarsTokenImports)) {
             return undefined;
           }
+          if (isStylexEnvMember(key, styleXDefaultImports, styleXEnvImports)) {
+            return styleValue.properties.forEach((prop) =>
+              checkStyleProperty(
+                prop,
+                level + 1,
+                propName,
+                outerIsPseudoElement,
+              ),
+            );
+          }
           if (
             typeof keyName !== 'string' ||
             (key.type !== 'Literal' && key.type !== 'Identifier')
@@ -721,6 +733,11 @@ const stylexValidStyles = {
           return undefined;
         }
 
+        const isStylexEnvKey = isStylexEnvMember(
+          styleKey,
+          styleXDefaultImports,
+          styleXEnvImports,
+        );
         let isStylexWhenCall = false;
         if (style.computed && styleKey.type !== 'Literal') {
           if (
@@ -764,7 +781,8 @@ const stylexValidStyles = {
         if (
           styleKey.type !== 'Literal' &&
           styleKey.type !== 'Identifier' &&
-          !isStylexWhenCall
+          !isStylexWhenCall &&
+          !isStylexEnvKey
         ) {
           return context.report({
             node: styleKey,
@@ -1124,6 +1142,12 @@ const stylexValidStyles = {
                 specifier.imported.name === 'when'
               ) {
                 styleXWhenImports.add(specifier.local.name);
+              }
+              if (
+                specifier.type === 'ImportSpecifier' &&
+                specifier.imported.name === 'env'
+              ) {
+                styleXEnvImports.add(specifier.local.name);
               }
             });
           }
