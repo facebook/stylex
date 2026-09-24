@@ -143,6 +143,7 @@ const unitlessNumberProperties = new Set([
   'gridColumnStart',
   'gridColumnEnd',
   'gridArea',
+  'fontSizeAdjust',
   'fontWeight',
   'hyphenateLimitChars',
   'lineClamp',
