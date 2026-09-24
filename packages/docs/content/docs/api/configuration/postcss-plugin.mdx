@@ -81,23 +81,9 @@ When omitted, the plugin auto-discovers source files under `cwd` and direct
 dependencies that use StyleX (checking `dependencies`, `peerDependencies`, and
 `optionalDependencies`).
 
-Discovery reads the dependency names in the project's own `package.json` and
-does not recurse. A package that contains StyleX but is reached only through
-another dependency is never inspected.
-
-Passing `include` disables auto-discovery entirely, along with the default
-`exclude` patterns. Every dependency that ships uncompiled StyleX then has to be
-listed, and the paths may point into `node_modules`:
-
-```js
-include: [
-  'app/**/*.{js,jsx,ts,tsx}',
-  'node_modules/your-stylex-package/**/*.{js,mjs,cjs}',
-],
-```
-
-Styles that are compiled by Babel but never scanned here produce class names
-with no matching rules, without an error.
+Setting `include` turns off auto-discovery. List your own source files and any
+dependencies that ship StyleX source, including paths inside `node_modules`.
+Auto-discovery only checks direct dependencies, not their dependencies.
 
 ---
 
