@@ -240,6 +240,23 @@ describe('Test CSS property shorthand: `border-radius`', () => {
     );
   });
 
+  test('toString: distinct vertical radii are not overwritten by horizontal', () => {
+    // Horizontal group collapses to a single value (all 5px); the vertical
+    // group is fully asymmetric (1/2/3/4), so it must be serialized as-is and
+    // not fall back to the horizontal values.
+    const radius = new BorderRadiusShorthand(
+      new Length(5, 'px'),
+      new Length(5, 'px'),
+      new Length(5, 'px'),
+      new Length(5, 'px'),
+      new Length(1, 'px'),
+      new Length(2, 'px'),
+      new Length(3, 'px'),
+      new Length(4, 'px'),
+    );
+    expect(radius.toString()).toBe('5px / 1px 2px 3px 4px');
+  });
+
   test('Valid: border-radius: <length-percentage> <length-percentage> / <length-percentage> <length-percentage>', () => {
     expect(
       BorderRadiusShorthand.parse.parseToEnd('10px 20px / 30px 40px'),
