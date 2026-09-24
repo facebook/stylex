@@ -749,7 +749,7 @@ function processStylexRules(
       if (refValue == null) continue;
       visited.add(ref);
       const replacement = resolveConstant(refValue, visited);
-      result = result.replace(match[0], replacement.toString());
+      result = result.replace(match[0], () => replacement.toString());
       visited.delete(ref);
       regex.lastIndex = 0;
     }
@@ -788,7 +788,7 @@ function processStylexRules(
         for (const [varRef, constValue] of constsMap.entries()) {
           if (typeof original !== 'string') continue;
           const replacement = String(constValue);
-          original = original.replaceAll(varRef, replacement);
+          original = original.replaceAll(varRef, () => replacement);
           if (replacement.startsWith('var(') && replacement.endsWith(')')) {
             const inside = replacement.slice(4, -1).trim();
             const commaIdx = inside.indexOf(',');
@@ -870,55 +870,73 @@ function processStylexRules(
       ';\n'
     : '';
 
-  const collectedCSS = grouped
-    .map((group, index) => {
-      const pri = group[0][2];
-      const collectedCSS = Array.from(
-        new Map(group.map(([a, b]) => [a, b])).values(),
-      )
-        .flatMap((rule) => {
-          const { ltr, rtl } = rule;
-          let ltrRule = ltr,
-            rtlRule = rtl;
+  const collectRules = (rules: Array<Rule>, index: number): string =>
+    Array.from(new Map(rules.map(([a, b]) => [a, b])).values())
+      .flatMap((rule) => {
+        const { ltr, rtl } = rule;
+        let ltrRule = ltr,
+          rtlRule = rtl;
 
-          if (!useLayers && !legacyDisableLayers) {
-            ltrRule = addSpecificityLevel(ltrRule, index);
-            rtlRule = rtlRule && addSpecificityLevel(rtlRule, index);
-          }
+        if (!useLayers && !legacyDisableLayers) {
+          ltrRule = addSpecificityLevel(ltrRule, index);
+          rtlRule = rtlRule && addSpecificityLevel(rtlRule, index);
+        }
 
-          // check if the selector looks like .xtrlmmh, .xtrlmmh:root
-          // if so, turn it into .xtrlmmh.xtrlmmh, .xtrlmmh.xtrlmmh:root
-          // This is to ensure the themes always have precedence over the
-          // default variable values
-          ltrRule = ltrRule.replace(
+        // check if the selector looks like .xtrlmmh, .xtrlmmh:root
+        // if so, turn it into .xtrlmmh.xtrlmmh, .xtrlmmh.xtrlmmh:root
+        // This is to ensure the themes always have precedence over the
+        // default variable values
+        ltrRule = ltrRule.replace(
+          /\.([a-zA-Z0-9]+), \.([a-zA-Z0-9]+):root/g,
+          '.$1.$1, .$1.$1:root',
+        );
+        if (rtlRule) {
+          rtlRule = rtlRule.replace(
             /\.([a-zA-Z0-9]+), \.([a-zA-Z0-9]+):root/g,
             '.$1.$1, .$1.$1:root',
           );
-          if (rtlRule) {
-            rtlRule = rtlRule.replace(
-              /\.([a-zA-Z0-9]+), \.([a-zA-Z0-9]+):root/g,
-              '.$1.$1, .$1.$1:root',
-            );
-          }
+        }
 
-          return rtlRule
-            ? enableLTRRTLComments
-              ? [
-                  `/* @ltr begin */${ltrRule}/* @ltr end */`,
-                  `/* @rtl begin */${rtlRule}/* @rtl end */`,
-                ]
-              : [
-                  addAncestorSelector(ltrRule, "html:not([dir='rtl'])"),
-                  addAncestorSelector(rtlRule, "html[dir='rtl']"),
-                ]
-            : [ltrRule];
-        })
-        .join('\n');
+        return rtlRule
+          ? enableLTRRTLComments
+            ? [
+                `/* @ltr begin */${ltrRule}/* @ltr end */`,
+                `/* @rtl begin */${rtlRule}/* @rtl end */`,
+              ]
+            : [
+                addAncestorSelector(ltrRule, "html:not([dir='rtl'])"),
+                addAncestorSelector(rtlRule, "html[dir='rtl']"),
+              ]
+          : [ltrRule];
+      })
+      .join('\n');
 
+  const collectedCSS = grouped
+    .map((group, index) => {
+      // A `priorityLevel` (Math.floor(priority / 1000)) can mix rules that must
+      // stay outside layers (`@property`, `@keyframes`, `@position-try` are all
+      // priority 0) with rules that belong inside them (CSS custom properties
+      // are priority 1). Deciding based on `group[0][2]` alone would let the
+      // first rule's priority pull the whole group out of its layer, so we
+      // partition the group by whether each rule is layerable (priority > 0).
+      if (!useLayers) {
+        return collectRules(group, index);
+      }
+
+      const layerable = group.filter(([, , pri]) => pri > 0);
+      const unlayered = group.filter(([, , pri]) => pri === 0);
+
+      const parts = [];
+      if (unlayered.length > 0) {
+        parts.push(collectRules(unlayered, index));
+      }
       // Don't put @property, @keyframe, @position-try in layers
-      return useLayers && pri > 0
-        ? `@layer ${layerName(index)}{\n${collectedCSS}\n}`
-        : collectedCSS;
+      if (layerable.length > 0) {
+        parts.push(
+          `@layer ${layerName(index)}{\n${collectRules(layerable, index)}\n}`,
+        );
+      }
+      return parts.join('\n');
     })
     .join('\n');
 
@@ -936,7 +954,11 @@ function addAncestorSelector(
   selector: string,
   ancestorSelector: string,
 ): string {
-  if (selector.startsWith('@keyframes')) {
+  // These at-rules contain declarations, not selectors, so we cannot add one.
+  if (
+    selector.startsWith('@keyframes') ||
+    selector.startsWith('@position-try')
+  ) {
     return selector;
   }
   if (!selector.startsWith('@')) {
@@ -954,7 +976,10 @@ function addAncestorSelector(
  * Adds :not(#\#) to bump up specificity. as a polyfill for @layer
  */
 function addSpecificityLevel(selector: string, index: number): string {
-  if (selector.startsWith('@keyframes')) {
+  if (
+    selector.startsWith('@keyframes') ||
+    selector.startsWith('@position-try')
+  ) {
     return selector;
   }
   const pseudo = Array.from({ length: index })

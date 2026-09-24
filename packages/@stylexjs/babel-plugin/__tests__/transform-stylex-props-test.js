@@ -542,8 +542,8 @@ describe('@stylexjs/babel-plugin', () => {
               "color-kMwMTN": "x1e2nbdu",
               $$css: "npm-package:js/node_modules/npm-package/dist/components/Foo.react.js:4"
             },
-            opacity: opacity => [{
-              "opacity-kSiTet": opacity != null ? "xb4nw82" : opacity,
+            opacity: opacity => [opacity !== undefined && {
+              "opacity-kSiTet": opacity != null ? "xb4nw82" : "",
               $$css: "npm-package:js/node_modules/npm-package/dist/components/Foo.react.js:7"
             }, {
               "--x-opacity": opacity != null ? opacity : undefined
@@ -804,8 +804,8 @@ describe('@stylexjs/babel-plugin', () => {
             priority: 0
           });
           const styles = {
-            color: c => [{
-              kMwMTN: c != null ? "x14rh7hd" : c,
+            color: c => [c !== undefined && {
+              kMwMTN: c != null ? "x14rh7hd" : "",
               $$css: true
             }, {
               "--x-color": c != null ? c : undefined
@@ -900,8 +900,8 @@ describe('@stylexjs/babel-plugin', () => {
             priority: 0
           });
           const styles = {
-            opacity: o => [{
-              kSiTet: o != null ? "xb4nw82" : o,
+            opacity: o => [o !== undefined && {
+              kSiTet: o != null ? "xb4nw82" : "",
               $$css: true
             }, {
               "--x-opacity": o != null ? o : undefined
@@ -942,8 +942,8 @@ describe('@stylexjs/babel-plugin', () => {
             priority: 0
           });
           const styles = {
-            opacity: o => [{
-              kSiTet: o != null ? "xb4nw82" : o,
+            opacity: o => [o !== undefined && {
+              kSiTet: o != null ? "xb4nw82" : "",
               $$css: true
             }, {
               "--x-opacity": o != null ? o : undefined
@@ -3377,7 +3377,7 @@ describe('@stylexjs/babel-plugin', () => {
       `);
     });
 
-    test('hoisting correctly with duplicte names', () => {
+    test('hoisting correctly with duplicate names', () => {
       expect(
         transform(
           `
@@ -3446,6 +3446,44 @@ describe('@stylexjs/babel-plugin', () => {
                           <Foo />
                           <Bar />
                         </>;
+        }"
+      `);
+    });
+
+    test('does not hoist $$css objects that reference local variables', () => {
+      expect(
+        transform(
+          `
+            import * as stylex from '@stylexjs/stylex';
+            const styles = stylex.create({
+              root: { display: 'flex' },
+            });
+            function Foo({className}) {
+              return <div {...stylex.props(styles.root, className && {$$css: true, __: className})}>Hello, foo!</div>;
+            }
+          `,
+        ),
+      ).toMatchInlineSnapshot(`
+        "import _inject from "@stylexjs/stylex/lib/stylex-inject";
+        var _inject2 = _inject;
+        import * as stylex from '@stylexjs/stylex';
+        _inject2({
+          ltr: ".x78zum5{display:flex}",
+          priority: 3000
+        });
+        const styles = {
+          root: {
+            k1xSpc: "x78zum5",
+            $$css: true
+          }
+        };
+        function Foo({
+          className
+        }) {
+          return <div {...stylex.props(styles.root, className && {
+            $$css: true,
+            __: className
+          })}>Hello, foo!</div>;
         }"
       `);
     });
