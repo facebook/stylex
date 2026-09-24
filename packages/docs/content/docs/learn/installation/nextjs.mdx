@@ -104,14 +104,13 @@ module.exports = {
 You can skip Babel transforms for anything other than StyleX in your PostCSS
 configuration to speed up CSS generation.
 
-## Styles from dependencies
+## Using StyleX from a dependency
 
-The configuration above compiles your own source files. A dependency that ships
-uncompiled StyleX — `stylex.create` or `stylex.keyframes` left in its published
-output — needs two more steps, and neither of them cascades through the
-dependency graph.
+The setup above compiles your own files. If you install a package that ships
+StyleX source (`stylex.create` calls that haven't been compiled), add it in two
+places.
 
-First, list the package in `transpilePackages` so that Babel runs on it.
+1. Add the package to `transpilePackages` so Babel compiles it:
 
 ```js title="next.config.js"
 module.exports = {
@@ -119,48 +118,29 @@ module.exports = {
 };
 ```
 
-Without this, the styles are still function calls at runtime:
-
-```
-Unexpected 'stylex.keyframes' call at runtime. Styles must be compiled by '@stylexjs/babel-plugin'.
-```
-
-If that package in turn depends on another package containing StyleX, every
-package in the chain has to be named.
-
-Second, add the package to the PostCSS `include` option. Babel only rewrites the
-JS; the rules themselves are collected by the PostCSS plugin, which reads the
-`include` globs and nothing else. When the package is missing from them, the
-generated class names appear in the HTML but no rules are generated for them,
-and nothing is printed.
+2. Add the package to `include` in your PostCSS config so its styles end up in
+   the CSS file:
 
 ```js title="postcss.config.js"
 include: [
   'app/**/*.{js,jsx,ts,tsx}',
+  'components/**/*.{js,jsx,ts,tsx}',
   'node_modules/your-stylex-package/**/*.{js,mjs,cjs}',
 ],
 ```
 
-Passing `include` explicitly turns off auto-discovery, so keep your own source
-globs in the list alongside the dependency. Paths under `node_modules` are
-skipped only by auto-discovery; an explicit `include` may point into them.
+If that package depends on other StyleX packages, add those to both lists as
+well. Neither option follows dependencies for you.
 
-In a layout that does not hoist the package to the top level — a transitive
-dependency under pnpm, for example — resolve its directory instead of writing
-the path by hand.
+With pnpm, a package that isn't a direct dependency may not be at
+`node_modules/<name>`. Point `include` at its actual location.
 
-```js title="postcss.config.js"
-const path = require('node:path');
+If you miss a step:
 
-const packageDir = path.dirname(
-  require.resolve('your-stylex-package', {
-    paths: [path.dirname(require.resolve('the-parent-package'))],
-  }),
-);
-```
-
-To see the globs and dependency directories the plugin ended up with, run the
-build with `STYLEX_POSTCSS_DEBUG=1`.
+- Missing from `transpilePackages`: the build fails with
+  `Unexpected 'stylex.create' call at runtime`.
+- Missing from `include`: elements get class names but no styles, and no error
+  is shown.
 
 ## Using the configurations
 
