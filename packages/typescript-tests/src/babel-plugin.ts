@@ -6,4 +6,5 @@
  */
 import stylexBabelPlugin from '@stylexjs/babel-plugin';
 
-console.log(stylexBabelPlugin);
+const css = stylexBabelPlugin.processStylexRules([]);
+console.log(css);
