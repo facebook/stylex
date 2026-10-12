@@ -81,6 +81,7 @@
     ]
   },
   "resolutions": {
-    "baseline-browser-mapping": "^2.9.14"
+    "baseline-browser-mapping": "^2.9.14",
+    "@vitest/browser": "4.1.10"
   }
 }
