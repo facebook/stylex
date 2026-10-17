@@ -12,7 +12,7 @@
     "@stylexjs/stylex": "0.19.1",
     "@stylexjs/shared-ui": "0.19.1",
     "@remix-run/node-fetch-server": "0.12.0",
-    "compression": "^1.8.0",
+    "compression": "^1.8.2",
     "express": "^5.1.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
