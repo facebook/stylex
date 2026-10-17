@@ -2421,6 +2421,30 @@ describe('@stylexjs/babel-plugin', () => {
       });
 
       describe('object values: queries', () => {
+        test.each([undefined, true, false])(
+          'preserves nested or groups with enableMediaQueryOrder: %s',
+          (enableMediaQueryOrder) => {
+            const query =
+              '@media (min-width: 600px) and ((orientation: landscape) or (hover: hover))';
+            const { metadata } = transform(
+              `
+              import * as stylex from '@stylexjs/stylex';
+              export const styles = stylex.create({
+                root: {
+                  color: {
+                    '${query}': 'red',
+                  },
+                },
+              });
+              `,
+              { enableMediaQueryOrder },
+            );
+
+            expect(metadata.stylex).toHaveLength(1);
+            expect(metadata.stylex[0][1].ltr).toContain(query + '{');
+          },
+        );
+
         test('media queries without last query wins', () => {
           const { code, metadata } = transform(
             `
