@@ -12,6 +12,7 @@ const os = require('node:os');
 const path = require('node:path');
 
 const { unplugin } = require('../src');
+const stylexEsbuild = require('../src/esbuild').default;
 const {
   unpluginFactory,
   pickCssAssetFromRollupBundle,
@@ -460,6 +461,97 @@ describe('@stylexjs/unplugin', () => {
       expect(css).toContain('color:');
       expect(css).toContain('.x1aif7nf');
     });
+  });
+
+  describe('esbuild adapter output paths', () => {
+    // Drives the adapter through a stub of esbuild's plugin build API: one
+    // StyleX module is loaded, then onEnd runs with the given metafile.
+    async function runBuild({ root, initialOptions, outputs }) {
+      const onStart = [];
+      const onLoad = [];
+      const onEnd = [];
+      const build = {
+        initialOptions,
+        onStart: (cb) => onStart.push(cb),
+        onResolve: () => {},
+        onLoad: (options, cb) => onLoad.push(cb),
+        onEnd: (cb) => onEnd.push(cb),
+      };
+      await stylexEsbuild({
+        dev: false,
+        runtimeInjection: false,
+        unstable_moduleResolution: { type: 'commonJS', rootDir: root },
+      }).setup(build);
+      for (const cb of onStart) await cb();
+      const source = path.join(root, 'src', 'main.js');
+      fs.mkdirSync(path.dirname(source), { recursive: true });
+      fs.writeFileSync(
+        source,
+        `import * as stylex from '@stylexjs/stylex';
+export const styles = stylex.create({ box: { color: 'red' } });
+`,
+      );
+      for (const cb of onLoad) {
+        await cb({ path: source, namespace: 'file', suffix: '' });
+      }
+      const result = {
+        errors: [],
+        warnings: [],
+        metafile: { inputs: {}, outputs },
+      };
+      for (const cb of onEnd) await cb(result);
+    }
+
+    function withTempDir(fn) {
+      const dir = fs.mkdtempSync(
+        path.join(os.tmpdir(), 'stylex-unplugin-esbuild-'),
+      );
+      return Promise.resolve(fn(dir)).finally(() =>
+        fs.rmSync(dir, { recursive: true, force: true }),
+      );
+    }
+
+    test('appends to the CSS output when metafile keys are relative to outdir (Bun.build)', () =>
+      withTempDir(async (root) => {
+        const outdir = path.join(root, 'dist');
+        fs.mkdirSync(outdir);
+        fs.writeFileSync(path.join(outdir, 'main.css'), 'body{margin:0}');
+        // A file with the same name in the working directory must not be
+        // mistaken for the output.
+        fs.writeFileSync(path.join(root, 'main.css'), 'source');
+        await runBuild({
+          root,
+          initialOptions: { outdir, absWorkingDir: root, metafile: true },
+          outputs: { './main.js': {}, './main.css': {} },
+        });
+        const css = fs.readFileSync(path.join(outdir, 'main.css'), 'utf8');
+        expect(css).toContain('body{margin:0}');
+        expect(css).toContain('color: red;');
+        expect(fs.readFileSync(path.join(root, 'main.css'), 'utf8')).toBe(
+          'source',
+        );
+      }));
+
+    test('appends to the CSS output when metafile keys are relative to absWorkingDir (esbuild)', () =>
+      withTempDir(async (root) => {
+        fs.mkdirSync(path.join(root, 'dist'));
+        fs.writeFileSync(path.join(root, 'dist', 'main.css'), 'body{margin:0}');
+        await runBuild({
+          root,
+          initialOptions: {
+            outdir: 'dist',
+            absWorkingDir: root,
+            metafile: true,
+          },
+          outputs: { 'dist/main.js': {}, 'dist/main.css': {} },
+        });
+        const css = fs.readFileSync(
+          path.join(root, 'dist', 'main.css'),
+          'utf8',
+        );
+        expect(css).toContain('body{margin:0}');
+        expect(css).toContain('color: red;');
+      }));
   });
 
   // Regression: https://github.com/facebook/stylex/issues/1836
