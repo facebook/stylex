@@ -23,7 +23,7 @@
   ],
   "dependencies": {
     "@stylexjs/stylex": "0.19.1",
-    "postcss-selector-parser": "7.1.4",
+    "postcss-selector-parser": "7.1.6",
     "react": "^19.2.3",
     "react-dom": "^19.2.3"
   },
