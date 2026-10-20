@@ -23,6 +23,9 @@ function startRuntime(script, css) {
     on: (event, handler) => {
       handlers[event] = handler;
     },
+    off: jest.fn((event, handler) => {
+      if (handlers[event] === handler) delete handlers[event];
+    }),
     dispose: (callback) => disposers.push(callback),
   };
   const fetch = jest.fn(async () => ({ text: async () => css }));
@@ -32,7 +35,12 @@ function startRuntime(script, css) {
   // The input is our generated module, not user-provided code.
   // eslint-disable-next-line no-new-func
   new Function('hot', 'fetch', source)(hot, fetch);
-  return { handlers, fetch, dispose: () => disposers.forEach((fn) => fn()) };
+  return {
+    handlers,
+    fetch,
+    off: hot.off,
+    dispose: () => disposers.forEach((fn) => fn()),
+  };
 }
 
 async function flushUpdate() {
@@ -237,18 +245,77 @@ describe('css-only stylesheet handoff', () => {
     expect(remote.isConnected).toBe(true);
   });
 
+  test('skips disabled links and sheets while refreshing enabled sheets', () => {
+    const disabled = createLink('/virtual:stylex.css?disabled');
+    disabled.disabled = true;
+    const sheetDisabled = createLink('/virtual:stylex.css?sheet-disabled');
+    const sheet = { disabled: true };
+    Object.defineProperty(sheetDisabled, 'sheet', { value: sheet });
+    const active = createLink('/virtual:stylex.css?active');
+    const { handlers } = start();
+    expect([...document.head.children]).toEqual([
+      disabled,
+      sheetDisabled,
+      active,
+      active.nextElementSibling,
+    ]);
+    active.nextElementSibling.dispatchEvent(new Event('load'));
+    expect(disabled.isConnected).toBe(true);
+    expect(sheet.disabled).toBe(true);
+
+    disabled.disabled = false;
+    sheet.disabled = false;
+    handlers['stylex:css-update']();
+    expect(disabled.nextElementSibling).not.toBe(sheetDisabled);
+    expect(sheetDisabled.nextElementSibling.href).toContain('sheet-disabled');
+  });
+
+  test.each(['href', 'media', 'disabled', 'sheet-disabled', 'reinserted'])(
+    'keeps host changes when the active link is %s while loading',
+    (change) => {
+      const link = createLink('/virtual:stylex.css');
+      const { handlers } = start();
+      const replacement = link.nextElementSibling;
+      if (change === 'href') link.href = '/host.css';
+      if (change === 'media') link.media = 'print';
+      if (change === 'disabled') link.disabled = true;
+      if (change === 'sheet-disabled') {
+        Object.defineProperty(link, 'sheet', { value: { disabled: true } });
+      }
+      if (change === 'reinserted') {
+        link.remove();
+        document.head.appendChild(link);
+      }
+      const markup = link.outerHTML;
+      replacement.dispatchEvent(new Event('load'));
+      expect([...document.head.children]).toEqual([link]);
+      expect(link.outerHTML).toBe(markup);
+      if (
+        change === 'href' ||
+        change === 'disabled' ||
+        change === 'sheet-disabled'
+      ) {
+        handlers['stylex:css-update']();
+        expect([...document.head.children]).toEqual([link]);
+      }
+    },
+  );
+
   test('waits for DOMContentLoaded and cleans pending requests on disposal', () => {
     readyState.mockReturnValue('loading');
     const link = createLink('/virtual:stylex.css');
-    const { handlers, dispose } = start();
+    const { handlers, dispose, off } = start();
+    const staleHandler = handlers['stylex:css-update'];
     expect([...document.head.children]).toEqual([link]);
     document.dispatchEvent(new Event('DOMContentLoaded'));
     const replacement = link.nextElementSibling;
     expect(document.head.children.length).toBe(2);
 
     dispose();
+    expect(off).toHaveBeenCalledWith('stylex:css-update', staleHandler);
+    expect(handlers['stylex:css-update']).toBeUndefined();
     replacement.dispatchEvent(new Event('load'));
-    handlers['stylex:css-update']();
+    staleHandler();
     document.dispatchEvent(new Event('DOMContentLoaded'));
     expect([...document.head.children]).toEqual([link]);
   });

@@ -92,8 +92,9 @@ function bust() {
       const url = new URL(link.href, location.origin);
       if (url.origin !== location.origin || !url.pathname.endsWith(DEV_CSS_PATH)) continue;
       pending.get(link)?.cancel();
-      if (!link.parentNode) continue;
+      if (!link.parentNode || link.disabled || link.sheet?.disabled) continue;
 
+      const markup = link.outerHTML;
       const replacement = link.cloneNode();
       url.searchParams.set('t', String(timestamp));
       replacement.href = url.pathname + url.search;
@@ -111,7 +112,10 @@ function bust() {
       }
       function onLoad() {
         if (pending.get(link) !== entry) return;
-        if (!link.isConnected || replacement.parentNode !== link.parentNode) {
+        if (
+          !link.isConnected || link.nextSibling !== replacement ||
+          link.outerHTML !== markup || link.disabled || link.sheet?.disabled
+        ) {
           cancel();
           return;
         }
@@ -140,6 +144,7 @@ if (import.meta.hot){
   import.meta.hot.on('stylex:css-update', bust);
   import.meta.hot.dispose(() => {
     disposed = true;
+    import.meta.hot.off('stylex:css-update', bust);
     document.removeEventListener('DOMContentLoaded', bust);
     for (const entry of pending.values()) entry.cancel();
   });
