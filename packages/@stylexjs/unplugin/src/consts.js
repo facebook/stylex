@@ -77,16 +77,54 @@ export {};
 
 export const VIRTUAL_STYLEX_CSS_ONLY_SCRIPT = `
 const DEV_CSS_PATH='${DEV_CSS_PATH}';
+const pending = new Map();
+const pendingLinks = new Set();
+let timestamp = 0;
+let disposed = false;
 
 function bust() {
+  if (disposed) return;
   try {
-    const links = [...document.querySelectorAll('link[rel="stylesheet"]')];
-    for (const l of links) {
-      if (typeof l.href==='string' && l.href.includes(DEV_CSS_PATH)) {
-        const u = new URL(l.href, location.origin);
-        u.searchParams.set('t', String(Date.now()));
-        l.href=u.pathname+u.search;
+    timestamp = Math.max(Date.now(), timestamp + 1);
+    const links = [...document.querySelectorAll('link[rel="stylesheet"]')]
+      .filter(link => !pendingLinks.has(link));
+    for (const link of links) {
+      const url = new URL(link.href, location.origin);
+      if (url.origin !== location.origin || !url.pathname.endsWith(DEV_CSS_PATH)) continue;
+      pending.get(link)?.cancel();
+      if (!link.parentNode) continue;
+
+      const replacement = link.cloneNode();
+      url.searchParams.set('t', String(timestamp));
+      replacement.href = url.pathname + url.search;
+      replacement.disabled = link.disabled;
+
+      function cleanup() {
+        replacement.removeEventListener('load', onLoad);
+        replacement.removeEventListener('error', cancel);
+        pendingLinks.delete(replacement);
+        if (pending.get(link) === entry) pending.delete(link);
       }
+      function cancel() {
+        cleanup();
+        replacement.remove();
+      }
+      function onLoad() {
+        if (pending.get(link) !== entry) return;
+        if (!link.isConnected || replacement.parentNode !== link.parentNode) {
+          cancel();
+          return;
+        }
+        cleanup();
+        link.remove();
+      }
+      const entry = {cancel};
+      pending.set(link, entry);
+      pendingLinks.add(replacement);
+      replacement.addEventListener('load', onLoad);
+      replacement.addEventListener('error', cancel);
+      // Keep the old sheet effective and preserve its position in the cascade.
+      link.after(replacement);
     }
   } catch {}
 }
@@ -95,11 +133,16 @@ function bust() {
 if (document.readyState !== 'loading') {
   bust();
 } else {
-  document.addEventListener('DOMContentLoaded', bust);
+  document.addEventListener('DOMContentLoaded', bust, {once: true});
 }
 
 if (import.meta.hot){
   import.meta.hot.on('stylex:css-update', bust);
+  import.meta.hot.dispose(() => {
+    disposed = true;
+    document.removeEventListener('DOMContentLoaded', bust);
+    for (const entry of pending.values()) entry.cancel();
+  });
 }
 
 export {};
