@@ -53,7 +53,7 @@ their **suggested replacements**.
 ### @stylexjs/sort-keys
 
 This rule helps to sort the StyleX property keys according to
-[property priorities](https://github.com/facebook/stylex/blob/main/packages/%40stylexjs/babel-plugin/src/shared/utils/property-priorities.js).
+[property priorities](https://github.com/facebook/stylex/blob/main/packages/%40stylexjs/shared/src/utils/property-priorities.js).
 
 #### Config options
 
