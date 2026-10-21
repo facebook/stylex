@@ -34,8 +34,6 @@ export const isNumber: RuleCheck = makeVariableCheckingRule(
     }
 
     if (node.type === 'Identifier' && context) {
-      // `context.getScope()` was removed in ESLint 9; `sourceCode.getScope(node)`
-      // is available since ESLint 8.37.
       // $FlowFixMe[prop-missing] Flow libdefs doesn't know SourceCode has `getScope`
       const scope = getSourceCode(context).getScope(node);
       const variable = scope.set.get(node.name);
