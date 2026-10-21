@@ -17,6 +17,7 @@ import type {
 import type { Node, Property } from 'estree';
 /*:: import { Rule } from 'eslint'; */
 import makeVariableCheckingRule from '../utils/makeVariableCheckingRule';
+import getSourceCode from '../utils/getSourceCode';
 
 const numericOperators = new Set(['+', '-', '*', '/']);
 const mathFunctions = new Set(['abs', 'ceil', 'floor', 'round']);
@@ -33,8 +34,10 @@ export const isNumber: RuleCheck = makeVariableCheckingRule(
     }
 
     if (node.type === 'Identifier' && context) {
-      // $FlowFixMe[prop-missing] Flow libdefs doesn't know Rule.RuleContext has `getScope`
-      const scope = context.getScope();
+      // `context.getScope()` was removed in ESLint 9; `sourceCode.getScope(node)`
+      // is available since ESLint 8.37.
+      // $FlowFixMe[prop-missing] Flow libdefs doesn't know SourceCode has `getScope`
+      const scope = getSourceCode(context).getScope(node);
       const variable = scope.set.get(node.name);
       const def = variable?.defs?.[0];
 
