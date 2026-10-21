@@ -1128,6 +1128,8 @@ const pageBreakInside: RuleCheck = makeUnionRule(
   makeLiteralRule('auto'),
   makeLiteralRule('avoid'),
 );
+// `auto | <custom-ident>` — any string is a valid named page
+const page: RuleCheck = makeUnionRule(all, isString);
 const perspective: RuleCheck = makeUnionRule(
   makeLiteralRule('none'),
   isNumber,
@@ -2139,6 +2141,7 @@ const CSSProperties = {
   paddingRight: length,
   paddingTop: length,
 
+  page: page,
   pageBreakAfter: pageBreak,
   pageBreakBefore: pageBreak,
   pageBreakInside: pageBreakInside,
