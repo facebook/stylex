@@ -760,6 +760,32 @@ function processStylexRules(
     constsMap.set(key, resolveConstant(value));
   }
 
+  // A const whose value is itself a `var()` also renames custom property
+  // declarations: `--constHash:` becomes `--target:`. Precompute those names
+  // so each rule is rewritten in a single pass instead of once per const.
+  const constTargetNames: Map<string, string> = new Map();
+  for (const [varRef, constValue] of constsMap.entries()) {
+    const replacement = String(constValue);
+    if (replacement.startsWith('var(') && replacement.endsWith(')')) {
+      const inside = replacement.slice(4, -1).trim();
+      const commaIdx = inside.indexOf(',');
+      const targetName = (
+        commaIdx >= 0 ? inside.slice(0, commaIdx) : inside
+      ).trim();
+      constTargetNames.set(varRef.slice(4, -1), targetName);
+    }
+  }
+  const constRefRegex = /var\(--[A-Za-z0-9_-]+\)|--[A-Za-z0-9_-]+:/g;
+  const substituteConsts = (rule: string): string =>
+    rule.replace(constRefRegex, (match) => {
+      if (match.startsWith('var(')) {
+        const constValue = constsMap.get(match);
+        return constValue == null ? match : String(constValue);
+      }
+      const targetName = constTargetNames.get(match.slice(0, -1));
+      return targetName == null ? match : `${targetName}:`;
+    });
+
   // Parsing is expensive and the comparator runs O(n log n) times. Key on the
   // at-rule chain, not the whole rule — every rule has a distinct class name,
   // so a full-rule key would never hit.
@@ -784,22 +810,9 @@ function processStylexRules(
   const sortedRules: Array<Rule> = nonConstantRules
     .map(([key, { ...styleObj }, priority]): Rule => {
       Object.keys(styleObj).forEach((dir) => {
-        let original = styleObj[dir];
-        for (const [varRef, constValue] of constsMap.entries()) {
-          if (typeof original !== 'string') continue;
-          const replacement = String(constValue);
-          original = original.replaceAll(varRef, () => replacement);
-          if (replacement.startsWith('var(') && replacement.endsWith(')')) {
-            const inside = replacement.slice(4, -1).trim();
-            const commaIdx = inside.indexOf(',');
-            const targetName = (
-              commaIdx >= 0 ? inside.slice(0, commaIdx) : inside
-            ).trim();
-            const constName = varRef.slice(4, -1);
-            original = original.replaceAll(`${constName}:`, `${targetName}:`);
-          }
-          styleObj[dir] = original;
-        }
+        const original = styleObj[dir];
+        if (typeof original !== 'string' || constsMap.size === 0) return;
+        styleObj[dir] = substituteConsts(original);
       });
       return [key, styleObj, priority];
     })
