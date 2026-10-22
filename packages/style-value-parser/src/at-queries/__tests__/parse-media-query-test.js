@@ -1361,6 +1361,19 @@ describe('style-value-parser/at-queries', () => {
       });
     });
 
+    describe('nested combinators', () => {
+      test.each([
+        '@media (min-width: 600px) and ((orientation: landscape) or (hover: hover))',
+        '@media ((orientation: landscape) or (hover: hover)) and (min-width: 600px)',
+        '@media (min-width: 600px) and (((orientation: landscape) and (hover: hover)) or (pointer: coarse))',
+        '@media (not ((min-width: 600px) and ((orientation: landscape) or (hover: hover))))',
+      ])('preserves grouping in %s', (input) => {
+        const parsed = MediaQuery.parser.parseToEnd(input);
+        expect(parsed.toString()).toBe(input);
+        expect(MediaQuery.parser.parseToEnd(parsed.toString())).toEqual(parsed);
+      });
+    });
+
     describe('or combinator', () => {
       test('@media (orientation: portrait), (orientation: landscape)', () => {
         const input =
