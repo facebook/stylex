@@ -14,15 +14,15 @@ import { INDEX_CSS_RE, STYLE_CSS_RE, unpluginFactory } from './core';
 
 function isInsideDir(dir, file) {
   const rel = path.relative(dir, file);
-  return rel !== '' && !rel.startsWith('..') && !path.isAbsolute(rel);
+  return (
+    rel !== '' &&
+    rel !== '..' &&
+    !rel.startsWith(`..${path.sep}`) &&
+    !path.isAbsolute(rel)
+  );
 }
 
-// esbuild keys `metafile.outputs` relative to `absWorkingDir`
-// (`dist/main.css`), Bun relative to `outdir` (`./main.css`). Only a path
-// inside the output directory can be a bundler output, so a source file with
-// the same name in the working directory is never picked.
 function resolveOutputFile(key, workingDir, outDir) {
-  if (path.isAbsolute(key)) return key;
   const candidates = [
     path.resolve(workingDir, key),
     path.resolve(outDir, key),

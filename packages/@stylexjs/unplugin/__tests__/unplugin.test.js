@@ -12,7 +12,6 @@ const os = require('node:os');
 const path = require('node:path');
 
 const { unplugin } = require('../src');
-const stylexEsbuild = require('../src/esbuild').default;
 const {
   unpluginFactory,
   pickCssAssetFromRollupBundle,
@@ -464,8 +463,6 @@ describe('@stylexjs/unplugin', () => {
   });
 
   describe('esbuild adapter output paths', () => {
-    // Drives the adapter through a stub of esbuild's plugin build API: one
-    // StyleX module is loaded, then onEnd runs with the given metafile.
     async function runBuild({ root, initialOptions, outputs }) {
       const onStart = [];
       const onLoad = [];
@@ -477,11 +474,12 @@ describe('@stylexjs/unplugin', () => {
         onLoad: (options, cb) => onLoad.push(cb),
         onEnd: (cb) => onEnd.push(cb),
       };
-      await stylexEsbuild({
+      const plugin = unplugin.esbuild({
         dev: false,
         runtimeInjection: false,
         unstable_moduleResolution: { type: 'commonJS', rootDir: root },
-      }).setup(build);
+      });
+      await plugin.setup(build);
       for (const cb of onStart) await cb();
       const source = path.join(root, 'src', 'main.js');
       fs.mkdirSync(path.dirname(source), { recursive: true });
@@ -516,8 +514,6 @@ export const styles = stylex.create({ box: { color: 'red' } });
         const outdir = path.join(root, 'dist');
         fs.mkdirSync(outdir);
         fs.writeFileSync(path.join(outdir, 'main.css'), 'body{margin:0}');
-        // A file with the same name in the working directory must not be
-        // mistaken for the output.
         fs.writeFileSync(path.join(root, 'main.css'), 'source');
         await runBuild({
           root,
