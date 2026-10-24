@@ -38,6 +38,9 @@ export default function normalizeZeroDimensions(
     if (endFunction > 0 && node.sourceIndex > endFunction) {
       endFunction = 0;
     }
+    if (node.type === 'function' && node.value.toLowerCase() === 'url') {
+      return false;
+    }
     if (node.type !== 'word') {
       return;
     }
