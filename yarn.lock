@@ -7207,9 +7207,9 @@ base64-js@^1.3.1:
   integrity sha512-AKpaYlHn8t4SVbOHCy+b5+KKgvR4vrsD8vbvrbiQJps7fKDTkjkDry6ji0rUJjC0kzbNePLwzxq8iypo41qeWA==
 
 baseline-browser-mapping@^2.8.25, baseline-browser-mapping@^2.9.0, baseline-browser-mapping@^2.9.14, baseline-browser-mapping@^2.9.19:
-  version "2.11.30"
-  resolved "https://registry.yarnpkg.com/baseline-browser-mapping/-/baseline-browser-mapping-2.11.30.tgz#cfff2f5f3954e9c9d1488949321bb310eacf346e"
-  integrity sha512-YJs6Pz17RMNv8HoyKREtCY38E3BV1nPkWVmIb+XN1uHC1Vqt3KZCH/uJH9ZKRoiKb/icZ6tvehyee6RZNbFfRA==
+  version "2.11.32"
+  resolved "https://registry.yarnpkg.com/baseline-browser-mapping/-/baseline-browser-mapping-2.11.32.tgz#39db30e6afecf5eeec4433c6a2fe0a39982b0997"
+  integrity sha512-UvuxFU9P3hM29LrQdwu0cD6w6/+SFr+UlB9s/knI7+O2rK9xFxKUwSDWxGdbbqQ9/V7BJ5s0NI5nQAE4uJp3gQ==
 
 basic-ftp@^5.0.2:
   version "5.3.1"
@@ -15963,7 +15963,7 @@ selfsigned@^5.5.0:
     "@peculiar/x509" "^1.14.2"
     pkijs "^3.3.3"
 
-semver@7.8.5, semver@^7.8.5:
+semver@7.8.5, semver@^7.5.3, semver@^7.5.4, semver@^7.6.0, semver@^7.6.2, semver@^7.6.3, semver@^7.7.1, semver@^7.7.2, semver@^7.7.3, semver@^7.8.5:
   version "7.8.5"
   resolved "https://registry.yarnpkg.com/semver/-/semver-7.8.5.tgz#39b646037dd50c14fb451e7e4cac58ed8b863f69"
   integrity sha512-Y7/KDsb8LjooZpwaqGyulO6DQlksgCncchHGk+sZIY4SBvUocMBEFH5Ur1fI4dV+Jvl0w6cjvucaIi40puRioA==
@@ -15977,11 +15977,6 @@ semver@^6.3.1:
   version "6.3.1"
   resolved "https://registry.npmjs.org/semver/-/semver-6.3.1.tgz"
   integrity sha512-BR7VvDCVHO+q2xBEWskxS6DJE1qRnb7DxzUrogb71CWoSficBxYsiAGd+Kl0mmq/MprG9yArRkyrQxTO6XjMzA==
-
-semver@^7.5.3, semver@^7.5.4, semver@^7.6.0, semver@^7.6.2, semver@^7.6.3, semver@^7.7.1, semver@^7.7.2, semver@^7.7.3:
-  version "7.7.3"
-  resolved "https://registry.npmjs.org/semver/-/semver-7.7.3.tgz"
-  integrity sha512-SdsKMrI9TdgjdweUSR9MweHA4EJ8YxHn8DFaDisvhVlUOe4BF1tLD7GAj0lIqWVl+dPb/rExr0Btby5loQm20Q==
 
 semver@~7.5.4:
   version "7.5.4"
@@ -16620,10 +16615,10 @@ stoppable@1.1.0:
   resolved "https://registry.npmjs.org/stoppable/-/stoppable-1.1.0.tgz"
   integrity sha512-KXDYZ9dszj6bzvnEMRYvxgeTHU74QBFL54XKtP3nyMuJ81CFYtABZ3bAzL2EdFUaEwJOBOgENyFj3R7oTzDyyw==
 
-storybook@^9.1.19:
-  version "9.1.20"
-  resolved "https://registry.yarnpkg.com/storybook/-/storybook-9.1.20.tgz#cd77047fcc9e6bcd2b442b349b10ad1bcabcadab"
-  integrity sha512-6rME2tww6PFhm96iG2Xx44yzwLDWBiDWy+kJ2ub6x90werSTOiuo+tZJ94BgCfFutR0tEfLRIq59s+Zg6YyChA==
+storybook@^9.1.21:
+  version "9.1.21"
+  resolved "https://registry.yarnpkg.com/storybook/-/storybook-9.1.21.tgz#f5649b193cc99a1be9dd5b63b88894436ffcfa41"
+  integrity sha512-ntKPfAlG6quovR5i40q3tOxgUq36o9mweZ1JA9YfNz/zpGvN5/Qw9IP3NUBFZ+KN3fps3FRa+X3YtY2+Wp3UcA==
   dependencies:
     "@storybook/global" "^5.0.0"
     "@testing-library/jest-dom" "^6.6.3"
