@@ -761,26 +761,36 @@ function processStylexRules(
     constsMap.set(key, resolveConstant(value));
   }
 
-  // A `defineConsts` at-rule used as a condition key is compiled as a
-  // `var(--hash){…}` wrapper, and its share of the rule's priority comes from
-  // that placeholder, which `getPriority` cannot tell from a selector. Now that
-  // the constant's value is known, give it the share the literal at-rule gets,
-  // so the rule sorts (and lands in the layer) exactly as if it were written
-  // inline.
+  // A `defineConsts` at-rule used as a condition key in `stylex.create()` is
+  // compiled as a `var(--hash){…}` wrapper, and its share of the rule's priority
+  // comes from that placeholder, which `getPriority` cannot tell from a
+  // selector. Now that the constant's value is known, give it the share the
+  // literal at-rule gets, so the rule sorts (and lands in the layer) exactly as
+  // if it were written inline. Variable and theme rules count at-rules in their
+  // own fractional priorities, which never include the placeholder's share, so
+  // they are left as they are.
   const constWrapperPattern = /var\(--[A-Za-z0-9_-]+\)(?=\{)/g;
-  const constAtRulePriorityDelta = (rule: unknown): number => {
+  const adjustConstAtRulePriority = (
+    rule: unknown,
+    priority: number,
+  ): number => {
     if (typeof rule !== 'string' || constsMap.size === 0) {
-      return 0;
+      return priority;
     }
-    let delta = 0;
+    let adjusted = priority;
     for (const match of rule.matchAll(constWrapperPattern)) {
       const placeholder = match[0];
       const value = constsMap.get(placeholder);
-      if (typeof value === 'string' && value.startsWith('@')) {
-        delta += getPriority(value) - getPriority(placeholder);
+      const placeholderShare = getPriority(placeholder);
+      if (
+        typeof value === 'string' &&
+        value.startsWith('@') &&
+        adjusted >= placeholderShare
+      ) {
+        adjusted += getPriority(value) - placeholderShare;
       }
     }
-    return delta;
+    return adjusted;
   };
 
   // Parsing is expensive and the comparator runs O(n log n) times. Key on the
@@ -806,8 +816,10 @@ function processStylexRules(
 
   const sortedRules: Array<Rule> = nonConstantRules
     .map(([key, { ...styleObj }, priority]): Rule => {
-      const adjustedPriority =
-        priority + constAtRulePriorityDelta(styleObj.ltr);
+      const adjustedPriority = adjustConstAtRulePriority(
+        styleObj.ltr,
+        priority,
+      );
       Object.keys(styleObj).forEach((dir) => {
         let original = styleObj[dir];
         for (const [varRef, constValue] of constsMap.entries()) {
