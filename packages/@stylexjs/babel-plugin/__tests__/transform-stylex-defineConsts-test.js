@@ -11,6 +11,7 @@
 
 jest.autoMockOff();
 
+import fs from 'fs';
 import path from 'path';
 import { transformSync } from '@babel/core';
 import stylexPlugin from '../src/index';
@@ -426,6 +427,75 @@ describe('@stylexjs/babel-plugin', () => {
             ],
           ],
         }
+      `);
+    });
+
+    test('an imported at-rule constant sorts like the at-rule it names', () => {
+      // The constant reaches stylex.create() as its `var(--hash)` placeholder;
+      // once processStylexRules knows its value, the rule must sort as if the
+      // media query were written inline: the coarse reset before the
+      // attribute rule.
+      const fixtureDir = path.join(__dirname, '__fixtures__');
+      const constantsFile = path.join(fixtureDir, 'constants.stylex.js');
+      const compile = (source, filename) =>
+        transformSync(source, {
+          filename,
+          parserOpts: { sourceType: 'module' },
+          babelrc: false,
+          plugins: [
+            [
+              stylexPlugin,
+              {
+                unstable_moduleResolution: {
+                  rootDir: fixtureDir,
+                  type: 'commonJS',
+                },
+              },
+            ],
+          ],
+        }).metadata.stylex;
+      const constants = compile(
+        fs.readFileSync(constantsFile, 'utf8'),
+        constantsFile,
+      );
+      const rules = (condition) => {
+        const created = compile(
+          `
+            import * as stylex from '@stylexjs/stylex';
+            import { breakpoints } from './constants.stylex';
+            export const styles = stylex.create({
+              overlay: {
+                backgroundImage: {
+                  default: null,
+                  ':active': {
+                    default: 'linear-gradient(red, red)',
+                    ${condition}: 'none',
+                  },
+                  '[data-press="on"]': 'linear-gradient(blue, blue)',
+                },
+              },
+            });
+          `,
+          path.join(fixtureDir, 'main.stylex.js'),
+        );
+        return stylexPlugin
+          .processStylexRules([...constants, ...created], {
+            useLayers: false,
+            legacyDisableLayers: true,
+          })
+          .split('\n')
+          .filter((line) => line.includes('background-image'))
+          .map((line) => line.replace(/\.x[a-z0-9]+/g, '.x'));
+      };
+
+      const constant = rules('[breakpoints.small]');
+      expect(constant).toEqual(rules("'@media (max-width: 600px)'"));
+      expect(constant).toMatchInlineSnapshot(`
+        [
+          ".x:active{background-image:linear-gradient(red,red)}",
+          "@media (max-width: 600px){.x.x:active{background-image:none}}",
+          ".x[data-press="on"]{background-image:linear-gradient(blue,blue)}",
+        ]
       `);
     });
 

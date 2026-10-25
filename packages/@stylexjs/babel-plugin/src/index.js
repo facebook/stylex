@@ -12,6 +12,7 @@ import type { PluginObj } from '@babel/core';
 import type { StyleXOptions } from './utils/state-manager';
 
 import * as t from '@babel/types';
+import { getPriority } from '@stylexjs/shared';
 import { MediaQuery } from 'style-value-parser';
 import type { MediaQueryRule } from 'style-value-parser';
 import StateManager from './utils/state-manager';
@@ -760,6 +761,28 @@ function processStylexRules(
     constsMap.set(key, resolveConstant(value));
   }
 
+  // A `defineConsts` at-rule used as a condition key is compiled as a
+  // `var(--hash){…}` wrapper, and its share of the rule's priority comes from
+  // that placeholder, which `getPriority` cannot tell from a selector. Now that
+  // the constant's value is known, give it the share the literal at-rule gets,
+  // so the rule sorts (and lands in the layer) exactly as if it were written
+  // inline.
+  const constWrapperPattern = /var\(--[A-Za-z0-9_-]+\)(?=\{)/g;
+  const constAtRulePriorityDelta = (rule: unknown): number => {
+    if (typeof rule !== 'string' || constsMap.size === 0) {
+      return 0;
+    }
+    let delta = 0;
+    for (const match of rule.matchAll(constWrapperPattern)) {
+      const placeholder = match[0];
+      const value = constsMap.get(placeholder);
+      if (typeof value === 'string' && value.startsWith('@')) {
+        delta += getPriority(value) - getPriority(placeholder);
+      }
+    }
+    return delta;
+  };
+
   // Parsing is expensive and the comparator runs O(n log n) times. Key on the
   // at-rule chain, not the whole rule — every rule has a distinct class name,
   // so a full-rule key would never hit.
@@ -783,6 +806,8 @@ function processStylexRules(
 
   const sortedRules: Array<Rule> = nonConstantRules
     .map(([key, { ...styleObj }, priority]): Rule => {
+      const adjustedPriority =
+        priority + constAtRulePriorityDelta(styleObj.ltr);
       Object.keys(styleObj).forEach((dir) => {
         let original = styleObj[dir];
         for (const [varRef, constValue] of constsMap.entries()) {
@@ -801,7 +826,7 @@ function processStylexRules(
           styleObj[dir] = original;
         }
       });
-      return [key, styleObj, priority];
+      return [key, styleObj, adjustedPriority];
     })
     .sort(
       (
