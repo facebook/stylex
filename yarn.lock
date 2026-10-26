@@ -4817,10 +4817,10 @@
   dependencies:
     "@storybook/global" "^5.0.0"
 
-"@storybook/addon-vitest@^9.1.7":
-  version "9.1.16"
-  resolved "https://registry.npmjs.org/@storybook/addon-vitest/-/addon-vitest-9.1.16.tgz"
-  integrity sha512-X0rOOUMb5UHbfekcjnTeiDTarZdsg5irXXPxxL//8QQCFyCLF6Bdm1YNlCdF560PtwaaQPXzlxByD0FfGbtdWA==
+"@storybook/addon-vitest@^9.1.21":
+  version "9.1.21"
+  resolved "https://registry.yarnpkg.com/@storybook/addon-vitest/-/addon-vitest-9.1.21.tgz#9fadf78fcf492461a081e0917f9958c669c7d2eb"
+  integrity sha512-PMT2fQU7kX8qP06up0ECEZhZSuqH16AjDLF5T6QWFSYr102PxKDM76KyvYuBc1EPvyPDl7ZHhv/zV2W+OUKbhw==
   dependencies:
     "@storybook/global" "^5.0.0"
     "@storybook/icons" "^1.4.0"
