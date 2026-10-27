@@ -1,9 +1,43 @@
 # Changelog
 
+## 0.19.1 (Sep 15, 2026)
+- Expand StyleX DevTools to Firefox and Safari, with improved style inspection,
+  overrides, and metadata export.
+- Breaking: Remove `enableDebugClassNames` and property-prefixed debug class
+  names so generated identifiers stay stable between development and production.
+- Add deterministic ordering for `defineConsts` pixel `min-width` and
+  `max-width` breakpoints, and avoid Chromium rounding gaps at generated
+  `max-width` boundaries.
+- Fix hashed CSS asset matching in `unplugin` and stale output from concurrent
+  PostCSS builds.
+- Correct generated `content` values containing quote characters.
+- Improve ESLint handling of media query ordering, numeric grid lines,
+  type-only exports, and `calc()` outline widths.
+
+## 0.19.0 (Jun 14, 2026)
+- New `@stylexjs/atoms` package for inline atomic styles.
+- ESLint 10 compatibility.
+- Add `gap` auto-fix for `legacy-expand-shorthands` and skip single-value `gap`
+  and `flex` in `valid-shorthands`.
+- Extend `textWrap` validation with `pretty` and `stable` values.
+- Fix `sx` prop runtime stylex import injection.
+- Fix pseudo-element + pseudo-class selector ordering.
+- Fix aliased theme file resolution to absolute paths.
+- Fix `sort-keys` autofix ordering.
+- Fix media type parenthesization in `and` chains in the style value parser.
+
+## 0.18.3 (Apr 29, 2026)
+- Experimental nested APIs for `defineVars`, `defineConsts`, and `createTheme`.
+- Add recursive derivation support for `defineVars`.
+- ESLint auto-fixers for shorthand expansion, gated by `styleResolution` config.
+- Respect project `browserslist` config instead of hardcoding `>= 1%`.
+- Add `:empty` pseudo-class and unclosed string detection to the compiler.
+- StyleX DevTools extension now available in the Chrome Web Store.
+
 ## 0.18.2 (Mar 23, 2026)
 - Bring back `stylex.attrs` for SSR and non-React frameworks.
 - Add `layersBefore`, `layersAfter`, and `layersPrefix` for `@layer` control.
-- Add `flex` and `grid` shorthand expansion to ESLint plugin.
+- Add `flex`, `grid`, and `animation` shorthand expansion to ESLint plugin.
 - ESLint fixes: bare number support, false positive fixes in `stylex.create`.
 
 ## 0.18.1 (Mar 5, 2026)
@@ -12,7 +46,7 @@
 
 ## 0.18.0 (Mar 3, 2026)
 - Add `stylex.env` API for compile-time constants and shareable design tokens.
-- New `create-stylex-app` CLI for scaffolding projects with `npx create-stylex-app`.
+- New `@stylexjs/create` CLI for scaffolding projects with `npm create @stylexjs`.
 - Add Bun support and improvements to the `unplugin` bundler plugin.
 - Support attribute selectors in `stylex.when` and conditional styles.
 - Fix priority calculation for compound pseudo selectors.

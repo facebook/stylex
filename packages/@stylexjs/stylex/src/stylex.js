@@ -10,6 +10,7 @@
 'use strict';
 
 import type {
+  CSSProperties,
   CompiledStyles,
   InlineStyles,
   Keyframes,
@@ -25,6 +26,7 @@ import type {
   StyleX$DefineConsts,
   StyleXArray,
   StyleXClassNameFor,
+  StyleXMarker,
   StyleXStyles,
   StyleXStylesWithout,
   StyleXVar,
@@ -33,7 +35,7 @@ import type {
   PositionTry,
   ViewTransitionClass,
   StyleX$When,
-  MapNamespace,
+  StyleX$DefaultMarker,
   StyleX$DefineMarker,
   StyleX$Env,
 } from './types/StyleXTypes';
@@ -41,6 +43,7 @@ import type { ValueWithDefault } from './types/StyleXUtils';
 import * as Types from './types/VarTypes';
 
 export type {
+  CSSProperties,
   CompiledStyles,
   InlineStyles,
   Keyframes,
@@ -49,6 +52,7 @@ export type {
   StaticStylesWithout,
   StyleXArray,
   StyleXClassNameFor,
+  StyleXMarker,
   StyleXStyles,
   StyleXStylesWithout,
   StyleXVar,
@@ -67,7 +71,7 @@ const errorForFn = (name: string) =>
 const errorForType = (key: keyof typeof types) => errorForFn(`types.${key}`);
 
 export const create: StyleX$Create = function stylexCreate<
-  const S extends { +[string]: unknown },
+  const S extends { readonly [string]: unknown },
 >(_styles: S): MapNamespaces<S> {
   throw errorForFn('create');
 };
@@ -77,7 +81,7 @@ export const createTheme: StyleX$CreateTheme = (_baseTokens, _overrides) => {
 };
 
 export const defineConsts: StyleX$DefineConsts = function stylexDefineConsts<
-  const T extends { +[string]: number | string },
+  const T extends { readonly [string]: number | string },
 >(_styles: T): T {
   throw errorForFn('defineConsts');
 };
@@ -89,26 +93,26 @@ export const defineVars: StyleX$DefineVars = function stylexDefineVars(
 };
 
 export const unstable_conditional = function stylexConditional<
-  const T extends { +default: unknown, +[string]: unknown },
+  const T extends { readonly default: unknown, readonly [string]: unknown },
 >(_value: T): T {
   throw errorForFn('unstable_conditional');
 };
 
 export const unstable_defineVarsNested = function stylexDefineVarsNested<
-  const T extends { +[string]: NestedVarsValue },
+  const T extends { readonly [string]: NestedVarsValue },
 >(_styles: T): T {
   throw errorForFn('unstable_defineVarsNested');
 };
 
 export const unstable_defineConstsNested = function stylexDefineConstsNested<
-  const T extends { +[string]: NestedConstsValue },
+  const T extends { readonly [string]: NestedConstsValue },
 >(_styles: T): T {
   throw errorForFn('unstable_defineConstsNested');
 };
 
 export const unstable_createThemeNested = (
-  _baseTokens: { +[string]: NestedStringValue },
-  _overrides: { +[string]: NestedVarsValue },
+  _baseTokens: { readonly [string]: NestedStringValue },
+  _overrides: { readonly [string]: NestedVarsValue },
 ): CompiledStyles => {
   throw errorForFn('unstable_createThemeNested');
 };
@@ -191,7 +195,13 @@ export function attrs(
   }
   if (style != null) {
     result.style = Object.entries(style)
-      .map(([key, value]) => `${toKebabCase(key)}:${value}`)
+      .map(([key, value]) => {
+        if (key.startsWith('--')) {
+          return `${key}:${value}`;
+        }
+
+        return `${toKebabCase(key)}:${value}`;
+      })
       .join(';');
   }
   if (dataStyleSrc != null) {
@@ -206,11 +216,7 @@ export const viewTransitionClass = (
   throw errorForFn('viewTransitionClass');
 };
 
-export const defaultMarker = (): MapNamespace<
-  Readonly<{
-    marker: 'default-marker',
-  }>,
-> => {
+export const defaultMarker: StyleX$DefaultMarker = () => {
   throw errorForFn('defaultMarker');
 };
 
@@ -311,11 +317,7 @@ type IStyleX = {
   defineConsts: StyleX$DefineConsts,
   defineVars: StyleX$DefineVars,
   env: StyleX$Env,
-  defaultMarker: () => MapNamespace<
-    Readonly<{
-      marker: 'default-marker',
-    }>,
-  >,
+  defaultMarker: StyleX$DefaultMarker,
   defineMarker: StyleX$DefineMarker,
   firstThatWorks: <T extends string | number>(
     ...v: ReadonlyArray<T>
@@ -350,21 +352,23 @@ type IStyleX = {
   types: typeof types,
   when: typeof when,
   unstable_conditional: <
-    const T extends { +default: unknown, +[string]: unknown },
+    const T extends { readonly default: unknown, readonly [string]: unknown },
   >(
     value: T,
   ) => T,
-  unstable_defineVarsNested: <const T extends { +[string]: NestedVarsValue }>(
+  unstable_defineVarsNested: <
+    const T extends { readonly [string]: NestedVarsValue },
+  >(
     tokens: T,
   ) => T,
   unstable_defineConstsNested: <
-    const T extends { +[string]: NestedConstsValue },
+    const T extends { readonly [string]: NestedConstsValue },
   >(
     tokens: T,
   ) => T,
   unstable_createThemeNested: (
-    baseTokens: { +[string]: NestedStringValue },
-    overrides: { +[string]: NestedVarsValue },
+    baseTokens: { readonly [string]: NestedStringValue },
+    overrides: { readonly [string]: NestedVarsValue },
   ) => CompiledStyles,
   __customProperties?: { [string]: unknown },
   ...
