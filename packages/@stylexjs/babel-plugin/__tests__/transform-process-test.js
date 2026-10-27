@@ -2328,7 +2328,7 @@ describe('@stylexjs/babel-plugin', () => {
       expect(stylexPlugin.processStylexRules(metadata, { useLayers: false }))
         .toMatchInlineSnapshot(`
         ".x1e2nbdu{color:red}
-        @media (max-width: 600px){.xcoj4fz.xcoj4fz:not(#\\#){color:blue}}"
+        @media (max-width: 600px){.xcoj4fz.xcoj4fz{color:blue}}"
       `);
     });
   });
