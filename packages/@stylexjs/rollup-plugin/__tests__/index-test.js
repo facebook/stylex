@@ -60,6 +60,37 @@ describe('rollup-plugin-stylex', () => {
     return { css, js, output };
   }
 
+  it('still transforms built-in imports when a custom importSource is set', async () => {
+    const { css } = await runStylex({
+      fileName: 'stylex.css',
+      importSources: ['custom-stylex'],
+    });
+    expect(css).toContain('display: flex;');
+  });
+
+  it('transforms a module that imports from a custom importSource', async () => {
+    const bundle = await rollup.rollup({
+      external: ['custom-stylex', '@stylexjs/stylex/lib/stylex-inject'],
+      input: path.resolve(__dirname, '__fixtures__/customSource.js'),
+      plugins: [
+        babel({
+          babelHelpers: 'bundled',
+          configFile: path.resolve(__dirname, '__fixtures__/.babelrc.json'),
+        }),
+        stylexPlugin({
+          fileName: 'stylex.css',
+          importSources: ['custom-stylex'],
+          lightningcssOptions: { minify: false },
+        }),
+      ],
+    });
+    const { output } = await bundle.generate({
+      file: path.resolve(__dirname, '/__builds__/bundle.js'),
+    });
+    const css = output.find((o) => o.fileName === 'stylex.css')?.source;
+    expect(css).toContain('color: red;');
+  });
+
   it('extracts CSS and removes stylex.inject calls', async () => {
     const { css, js } = await runStylex({ fileName: 'stylex.css' });
 

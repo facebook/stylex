@@ -21,6 +21,9 @@ import { transform as lightningTransform } from 'lightningcss';
 import browserslist from 'browserslist';
 import { browserslistToTargets } from 'lightningcss';
 
+// The babel plugin always recognises these on top of any configured source.
+const BUILT_IN_IMPORT_SOURCES = ['stylex', '@stylexjs/stylex'];
+
 // Vite and Rollup hash asset file names by default, so `index.css` reaches the
 // output directory as e.g. `assets/index-B5Jdbbfd.css`. Both patterns therefore
 // allow an optional content hash.
@@ -231,7 +234,7 @@ export const unpluginFactory = (userOptions = {}, metaOptions) => {
       process.env.BABEL_ENV === 'development',
     unstable_moduleResolution = { type: 'commonJS', rootDir: process.cwd() },
     babelConfig: { plugins = [], presets = [] } = {},
-    importSources = ['stylex', '@stylexjs/stylex'],
+    importSources = BUILT_IN_IMPORT_SOURCES,
     useCSSLayers = false,
     lightningcssOptions,
     cssInjectionTarget,
@@ -244,6 +247,8 @@ export const unpluginFactory = (userOptions = {}, metaOptions) => {
     treeshakeCompensation = ['vite', 'rollup', 'rolldown'].includes(framework),
     ...stylexOptions
   } = userOptions;
+
+  const gateImportSources = [...BUILT_IN_IMPORT_SOURCES, ...importSources];
 
   // Shared state across a single compilation (used for builds)
   const stylexRulesById = new Map(); // id -> Rule[]
@@ -342,7 +347,7 @@ export const unpluginFactory = (userOptions = {}, metaOptions) => {
 
   function shouldHandle(code) {
     if (!code) return false;
-    return importSources.some((src) => containsStylexImport(code, src));
+    return gateImportSources.some((src) => containsStylexImport(code, src));
   }
 
   function resetState() {
