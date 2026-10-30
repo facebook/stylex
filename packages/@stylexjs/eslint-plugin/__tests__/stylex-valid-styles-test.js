@@ -514,6 +514,23 @@ eslintTester.run('stylex-valid-styles', rule.default, {
          },
        },
      })`,
+
+    // test for progress elements
+    `import * as stylex from '@stylexjs/stylex';
+     stylex.create({
+       default: {
+         '::-webkit-progress-bar': {
+           appearance: 'none',
+         },
+         '::-webkit-progress-value': {
+           appearance: 'none',
+         },
+         '::-moz-progress-bar': {
+           appearance: 'none',
+         },
+       },
+     })`,
+
     // test for color
     `import * as stylex from '@stylexjs/stylex';
      stylex.create({
