@@ -1128,6 +1128,8 @@ const pageBreakInside: RuleCheck = makeUnionRule(
   makeLiteralRule('auto'),
   makeLiteralRule('avoid'),
 );
+// `auto | <custom-ident>` — any string is a valid named page
+const page: RuleCheck = makeUnionRule(all, isString);
 const perspective: RuleCheck = makeUnionRule(
   makeLiteralRule('none'),
   isNumber,
@@ -2139,6 +2141,7 @@ const CSSProperties = {
   paddingRight: length,
   paddingTop: length,
 
+  page: page,
   pageBreakAfter: pageBreak,
   pageBreakBefore: pageBreak,
   pageBreakInside: pageBreakInside,
@@ -2377,6 +2380,10 @@ export const pseudoElements: RuleCheck = makeUnionRule(
   makeLiteralRule('::-moz-range-thumb'),
   makeLiteralRule('::-moz-range-track'),
   makeLiteralRule('::-moz-range-progress'),
+  // For progress elements
+  makeLiteralRule('::-webkit-progress-bar'),
+  makeLiteralRule('::-webkit-progress-value'),
+  makeLiteralRule('::-moz-progress-bar'),
 );
 
 export const pseudoClassesAndAtRules: RuleCheck = makeUnionRule(

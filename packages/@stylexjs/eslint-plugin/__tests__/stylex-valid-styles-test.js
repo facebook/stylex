@@ -36,6 +36,21 @@ eslintTester.run('stylex-valid-styles', rule.default, {
         }
       });
     `,
+    // issue #1861 — the `page` property binds an element to a named `@page`
+    `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({
+        staticPage: {
+          page: 'bincard',
+        },
+        autoPage: {
+          page: 'auto',
+        },
+        conditionalPage: {
+          page: { default: null, '@media print': 'bincard' },
+        },
+      });
+    `,
     // test for local static variables
     `
       import * as stylex from '@stylexjs/stylex';
@@ -355,6 +370,51 @@ eslintTester.run('stylex-valid-styles', rule.default, {
       `,
       options: [{ allowOuterPseudoAndMedia: true }],
     },
+    // stylex.env member keys are compile time literals (issue 1764)
+    `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({
+        hideBelowSmall: {
+          display: {
+            [stylex.env.responsive.belowSmall]: 'none',
+          },
+        },
+      });
+    `,
+    `
+      import * as stylex from '@stylexjs/stylex';
+      const styles = stylex.create({
+        hideBelowSmall: {
+          display: {
+            default: 'block',
+            [stylex.env.responsive.belowSmall]: 'none',
+          },
+        },
+      });
+    `,
+    `
+      import { create, env } from '@stylexjs/stylex';
+      const styles = create({
+        hideBelowSmall: {
+          display: {
+            [env.responsive.belowSmall]: 'none',
+          },
+        },
+      });
+    `,
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          hideBelowSmall: {
+            [stylex.env.responsive.belowSmall]: {
+              display: 'none',
+            },
+          },
+        });
+      `,
+      options: [{ allowOuterPseudoAndMedia: true }],
+    },
     // test for positive numbers
     "import * as stylex from '@stylexjs/stylex'; stylex.create({default: {marginInlineStart: 5}});",
     // test for literals as namespaces
@@ -454,6 +514,23 @@ eslintTester.run('stylex-valid-styles', rule.default, {
          },
        },
      })`,
+
+    // test for progress elements
+    `import * as stylex from '@stylexjs/stylex';
+     stylex.create({
+       default: {
+         '::-webkit-progress-bar': {
+           appearance: 'none',
+         },
+         '::-webkit-progress-value': {
+           appearance: 'none',
+         },
+         '::-moz-progress-bar': {
+           appearance: 'none',
+         },
+       },
+     })`,
+
     // test for color
     `import * as stylex from '@stylexjs/stylex';
      stylex.create({
@@ -812,6 +889,31 @@ eslintTester.run('stylex-valid-styles', rule.default, {
     stylex.create({
       anchor: {
         positionTryFallbacks: \`\${fallback1}, \${fallback2}\`,
+      },
+    });
+    `,
+    // test for firstThatWorks
+    `
+    import stylex from '@stylexjs/stylex';
+    stylex.create({
+      default: {
+        position: stylex.firstThatWorks('sticky', 'fixed'),
+      },
+    });
+    `,
+    `
+    import * as stylex from '@stylexjs/stylex';
+    stylex.create({
+      default: {
+        display: stylex.firstThatWorks('grid', 'flex'),
+      },
+    });
+    `,
+    `
+    import { create, firstThatWorks } from '@stylexjs/stylex';
+    create({
+      default: {
+        position: firstThatWorks('sticky', 'fixed'),
       },
     });
     `,
@@ -2592,6 +2694,62 @@ revert`,
       ],
     },
     {
+      // A leading comma must not be accepted as a valid length. Regression
+      // test for the length validators previously using the character class
+      // `[-,+]`, which accidentally allowed a literal comma prefix.
+      // `textUnderlineOffset` is length-only (it does not accept arbitrary
+      // strings), so this exercises the length validators directly.
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          invalidStyle: {
+            textUnderlineOffset: ',4px',
+          },
+        });
+      `,
+      errors: [
+        {
+          message: `textUnderlineOffset value must be one of:
+auto
+a number literal or math expression
+a number ending in px, mm, in, pc, pt
+a number ending in ch, em, ex, ic, rem, vh, vw, vmin, vmax, svh, dvh, lvh, svw, dvw, ldw, cqw, cqh, cqmin, cqmax
+A string literal representing a percentage (e.g. 100%)
+null
+initial
+inherit
+unset
+revert`,
+        },
+      ],
+    },
+    {
+      // Same as above, for the relative-length validator.
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        const styles = stylex.create({
+          invalidStyle: {
+            textUnderlineOffset: ',4rem',
+          },
+        });
+      `,
+      errors: [
+        {
+          message: `textUnderlineOffset value must be one of:
+auto
+a number literal or math expression
+a number ending in px, mm, in, pc, pt
+a number ending in ch, em, ex, ic, rem, vh, vw, vmin, vmax, svh, dvh, lvh, svw, dvw, ldw, cqw, cqh, cqmin, cqmax
+A string literal representing a percentage (e.g. 100%)
+null
+initial
+inherit
+unset
+revert`,
+        },
+      ],
+    },
+    {
       code: `
         import * as stylex from '@stylexjs/stylex';
         const styles = stylex.create({
@@ -2647,6 +2805,58 @@ revert`,
 none
 a CSS Variable
 a \`positionTry(...)\` function call, a reference to it, or a list of references
+null
+initial
+inherit
+unset
+revert`,
+        },
+      ],
+    },
+    // test for firstThatWorks with an invalid argument value
+    {
+      code: `
+        import stylex from '@stylexjs/stylex';
+        stylex.create({
+          default: {
+            position: stylex.firstThatWorks('invalid-value', 'fixed'),
+          },
+        });
+      `,
+      errors: [
+        {
+          message: `position value must be one of:
+static
+relative
+absolute
+sticky
+fixed
+null
+initial
+inherit
+unset
+revert`,
+        },
+      ],
+    },
+    // test for firstThatWorks with an invalid argument value in second position
+    {
+      code: `
+        import stylex from '@stylexjs/stylex';
+        stylex.create({
+          default: {
+            position: stylex.firstThatWorks('fixed', 'invalid-value'),
+          },
+        });
+      `,
+      errors: [
+        {
+          message: `position value must be one of:
+static
+relative
+absolute
+sticky
+fixed
 null
 initial
 inherit
@@ -2935,6 +3145,24 @@ revert`,
         },
         {
           message: 'Keys must be strings',
+        },
+      ],
+    },
+    {
+      code: `
+        import * as stylex from '@stylexjs/stylex';
+        import { env } from 'some-other-library';
+        const styles = stylex.create({
+          hideBelowSmall: {
+            display: {
+              [env.responsive.belowSmall]: 'none',
+            },
+          },
+        });
+      `,
+      errors: [
+        {
+          message: 'All keys in a stylex object must be static literal values.',
         },
       ],
     },

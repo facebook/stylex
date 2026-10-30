@@ -723,14 +723,14 @@ describe('@stylexjs/babel-plugin', () => {
           priority: 3000
         });
         _inject2({
-          ltr: "@media (min-width: 1000px) and (max-width: 1999.99px){.xw6up8c.xw6up8c{background-color:blue}}",
+          ltr: "@media (min-width: 1000px) and (max-width: 1999.98px){.xr725a3.xr725a3{background-color:blue}}",
           priority: 3200
         });
         _inject2({
           ltr: "@media (min-width: 2000px){.x1ssfqz5.x1ssfqz5{background-color:purple}}",
           priority: 3200
         });
-        "xrkmrrc xw6up8c x1ssfqz5";"
+        "xrkmrrc xr725a3 x1ssfqz5";"
       `);
     });
 
