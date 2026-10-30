@@ -771,7 +771,14 @@ export class MediaQuery {
           ? `(not (${this.#toString(queries.rule)}))`
           : `(not ${this.#toString(queries.rule)})`;
       case 'and':
-        return queries.rules.map((rule) => this.#toString(rule)).join(' and ');
+        return queries.rules
+          .map((rule) => {
+            const ruleString = this.#toString(rule);
+            return rule.type === 'or' && queries.rules.length > 1
+              ? `(${ruleString})`
+              : ruleString;
+          })
+          .join(' and ');
       case 'or': {
         const validRules = queries.rules.filter(
           (r) => !(r.type === 'or' && r.rules.length === 0),
